@@ -1,1 +1,199 @@
-asdadasdadas
+<section>
+  <div class="w-[40%] mx-auto py-10">
+    <h1 class="text-6xl tracking-tight font-medium text-center mb-2">Discover clinical trials that match you.</h1>
+    <p class="text-lg text-center text-gray-600 mb-6">Personalized search, patient-friendly summaries, and trusted information.</p>
+    <%= form_with url: root_path, method: :get, local: true, class: "flex gap-4" do |f| %>
+      <div class="flex-1">
+        <%= f.text_field :query, 
+            value: @query,
+            placeholder: "Enter condition, disease, or keyword (e.g., diabetes, cancer, COVID-19)",
+            class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
+      </div>
+      <%= f.submit "Search", class: "px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer" %>
+    <% end %>
+  </div>
+</section>
+
+<section class="w-[80%] mx-auto py-10">
+  <div class="grid grid-cols-4 gap-6">
+    <div class="col-span-1 flex flex-col border border-gray-200 rounded-lg p-6 hover:bg-blue-600 transition-colors group cursor-pointer">
+      <div class="mx-auto mb-5">
+        <?xml version="1.0" encoding="UTF-8"?><svg width="64px" height="64px" stroke-width="1.5" viewBox="0 0 24 24" fill="none" class="stroke-blue-600 group-hover:stroke-white transition-colors"><path d="M12 7.01L12.01 6.99889" stroke-linecap="round" stroke-linejoin="round"></path><path d="M16 9.01L16.01 8.99889" stroke-linecap="round" stroke-linejoin="round"></path><path d="M8 9.01L8.01 8.99889" stroke-linecap="round" stroke-linejoin="round"></path><path d="M18 13.01L18.01 12.9989" stroke-linecap="round" stroke-linejoin="round"></path><path d="M6 13.01L6.01 12.9989" stroke-linecap="round" stroke-linejoin="round"></path><path d="M17 17.01L17.01 16.9989" stroke-linecap="round" stroke-linejoin="round"></path><path d="M7 17.01L7.01 16.9989" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 17L13 11" stroke-linecap="round" stroke-linejoin="round"></path><path d="M8.5 20.001H4C2.74418 18.3295 2 16.2516 2 14C2 8.47715 6.47715 4 12 4C17.5228 4 22 8.47715 22 14C22 16.2516 21.2558 18.3295 20 20.001L15.5 20" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 23C13.6569 23 15 21.6569 15 20C15 18.3431 13.6569 17 12 17C10.3431 17 9 18.3431 9 20C9 21.6569 10.3431 23 12 23Z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </div>
+      <h2 class="text-xl font-medium mb-1 group-hover:text-white transition-colors">Clinical Trial Fit Score</h2>
+      <p class="text-gray-600 font-light group-hover:text-white transition-colors">Recieve a score indicating how well you match with each trial.</p>
+    </div>
+    <div class="col-span-1 flex flex-col border border-gray-200 rounded-lg p-6 hover:bg-blue-600 transition-colors group cursor-pointer">
+      <div class="mx-auto mb-5">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-checks-icon lucide-list-checks stroke-blue-600 group-hover:stroke-white transition-colors"><path d="M13 5h8"/><path d="M13 12h8"/><path d="M13 19h8"/><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/></svg>
+      </div>
+      <h2 class="text-xl font-medium mb-1 group-hover:text-white transition-colors">Easy-to-Understand Results</h2>
+      <p class="text-gray-600 font-light group-hover:text-white transition-colors">Recieve a score indicating how well you match with each trial.</p>
+    </div>
+    <div class="col-span-1 flex flex-col border border-gray-200 rounded-lg p-6 hover:bg-blue-600 transition-colors group cursor-pointer">
+      <div class="mx-auto mb-5">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square-quote-icon lucide-message-square-quote stroke-blue-600 group-hover:stroke-white transition-colors"><path d="M14 14a2 2 0 0 0 2-2V8h-2"/><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/><path d="M8 14a2 2 0 0 0 2-2V8H8"/></svg>
+      </div>
+      <h2 class="text-xl font-medium mb-1 group-hover:text-white transition-colors">Participant Experience</h2>
+      <p class="text-gray-600 font-light group-hover:text-white transition-colors">Recieve a score indicating how well you match with each trial.</p>
+    </div>
+    <div class="col-span-1 flex flex-col border border-gray-200 rounded-lg p-6 hover:bg-blue-600 transition-colors group cursor-pointer">
+      <div class="mx-auto mb-5">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check-icon lucide-shield-check stroke-blue-600 group-hover:stroke-white transition-colors"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+      </div>
+      <h2 class="text-xl font-medium mb-1 group-hover:text-white transition-colors">Trusted & Transparent</h2>
+      <p class="text-gray-600 font-light group-hover:text-white transition-colors">Recieve a score indicating how well you match with each trial.</p>
+    </div>
+  </div>
+</section>
+
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold text-gray-900 mb-2">Clinical Trials Search</h1>
+      <p class="text-lg text-gray-600">Search for clinical trials from ClinicalTrials.gov</p>
+    </div>
+
+    <!-- Search Form -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <%= form_with url: root_path, method: :get, local: true, class: "flex gap-4" do |f| %>
+        <div class="flex-1">
+          <%= f.text_field :query, 
+              value: @query,
+              placeholder: "Enter condition, disease, or keyword (e.g., diabetes, cancer, COVID-19)",
+              class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" %>
+        </div>
+        <%= f.submit "Search", class: "px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer" %>
+      <% end %>
+    </div>
+
+    <!-- Error Message -->
+    <% if @error.present? %>
+      <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+        <strong>Error:</strong> <%= @error %>
+      </div>
+    <% end %>
+
+    <!-- Results -->
+    <% if @studies.present? %>
+      <div class="mb-6">
+        <div class="flex justify-between items-center">
+          <h2 class="text-2xl font-bold text-gray-900">
+            Results for "<%= @query %>"
+          </h2>
+          <span class="text-gray-600">
+            Found <%= @total_count %> trial<%= @total_count == 1 ? '' : 's' %>
+          </span>
+        </div>
+      </div>
+
+      <!-- Studies List -->
+      <div class="space-y-6">
+        <% @studies.each do |study| %>
+          <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+            <!-- Study Header -->
+            <div class="mb-4">
+              <div class="flex items-start justify-between gap-4">
+                <h3 class="text-xl font-semibold text-gray-900 flex-1">
+                  <%= study[:title] %>
+                </h3>
+                <% if study[:nct_id].present? %>
+                  <a href="https://clinicaltrials.gov/study/<%= study[:nct_id] %>" 
+                     target="_blank"
+                     class="px-3 py-1 bg-blue-100 text-blue-700 rounded-md text-sm font-medium hover:bg-blue-200 whitespace-nowrap">
+                    <%= study[:nct_id] %> ↗
+                  </a>
+                <% end %>
+              </div>
+            </div>
+
+            <!-- Study Metadata -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 text-sm">
+              <% if study[:status].present? %>
+                <div>
+                  <span class="font-semibold text-gray-700">Status:</span>
+                  <span class="px-2 py-1 rounded-full text-xs ml-2
+                    <%= study[:status]&.downcase&.include?('recruiting') ? 'bg-green-100 text-green-800' : 
+                        study[:status]&.downcase&.include?('completed') ? 'bg-gray-100 text-gray-800' : 
+                        'bg-yellow-100 text-yellow-800' %>">
+                    <%= study[:status] %>
+                  </span>
+                </div>
+              <% end %>
+
+              <% if study[:phase].present? %>
+                <div>
+                  <span class="font-semibold text-gray-700">Phase:</span>
+                  <span class="text-gray-600 ml-2"><%= study[:phase] %></span>
+                </div>
+              <% end %>
+
+              <% if study[:start_date].present? %>
+                <div>
+                  <span class="font-semibold text-gray-700">Start Date:</span>
+                  <span class="text-gray-600 ml-2"><%= study[:start_date] %></span>
+                </div>
+              <% end %>
+            </div>
+
+            <!-- Conditions -->
+            <% if study[:conditions].present? %>
+              <div class="mb-3">
+                <span class="font-semibold text-gray-700 text-sm">Conditions:</span>
+                <div class="flex flex-wrap gap-2 mt-2">
+                  <% study[:conditions].first(5).each do |condition| %>
+                    <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">
+                      <%= condition %>
+                    </span>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+
+            <!-- Summary -->
+            <% if study[:summary].present? %>
+              <div class="mb-3">
+                <p class="text-gray-700 text-sm leading-relaxed">
+                  <%= truncate(study[:summary], length: 300) %>
+                </p>
+              </div>
+            <% end %>
+
+            <!-- Locations -->
+            <% if study[:locations].present? %>
+              <div class="text-sm">
+                <span class="font-semibold text-gray-700">Locations:</span>
+                <span class="text-gray-600 ml-2"><%= study[:locations].join(" • ") %></span>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Pagination -->
+      <% if @total_count > 10 %>
+        <div class="mt-8 flex justify-center gap-2">
+          <% if @current_page > 1 %>
+            <%= link_to "← Previous", root_path(query: @query, page: @current_page - 1), 
+                class: "px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors" %>
+          <% end %>
+
+          <span class="px-4 py-2 bg-blue-600 text-white rounded-lg">
+            Page <%= @current_page %>
+          </span>
+
+          <% if @studies.present? && @studies.length >= 10 %>
+            <%= link_to "Next →", root_path(query: @query, page: @current_page + 1), 
+                class: "px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors" %>
+          <% end %>
+        </div>
+      <% end %>
+
+    <% elsif @query.present? %>
+      <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 px-6 py-4 rounded-lg text-center">
+        <p class="text-lg">No trials found for "<%= @query %>". Try different keywords.</p>
+      </div>
+    <% end %>
+  </div>
+</div>
