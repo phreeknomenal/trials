@@ -1,4 +1,6 @@
 class ApplicationComponent < ViewComponent::Base
+  delegate :user_signed_in?, :current_user, :current_profile, to: :helpers
+
   def readable_time(created_at)
     seconds_ago = (Time.current - created_at).to_i
     case seconds_ago

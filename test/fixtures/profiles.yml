@@ -1,0 +1,42 @@
+# == Schema Information
+#
+# Table name: profiles
+#
+#  id           :integer          not null, primary key
+#  birth_date   :date
+#  first_name   :string
+#  last_name    :string
+#  onboarded    :boolean          default(FALSE), not null
+#  phone_number :string
+#  pronouns     :string
+#  zip_code     :string
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  gender_id    :integer
+#  race_id      :integer
+#  user_id      :integer          not null
+#
+# Indexes
+#
+#  index_profiles_on_gender_id  (gender_id)
+#  index_profiles_on_race_id    (race_id)
+#  index_profiles_on_user_id    (user_id)
+#
+# Foreign Keys
+#
+#  gender_id  (gender_id => genders.id)
+#  race_id    (race_id => races.id)
+#  user_id    (user_id => users.id)
+#
+
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+# This model initially had no columns defined. If you add columns to the
+# model remove the "{}" from the fixture names and add the columns immediately
+# below each fixture, per the syntax in the comments below
+#
+one: {}
+# column: value
+#
+two: {}
+# column: value
