@@ -1,6 +1,6 @@
 class Utilities::IconComponent < ApplicationComponent
   erb_template <<-ERB
-    <svg class="<%= size_class(size) %> <%= options[:class] %>" width="<%= size %>px" height="<%= size %>px" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="<%= options[:fill] %>" stroke="<%= options[:stroke] %>" stroke-width="<%= options[:stroke_width] %>" viewBox="<%= options[:viewbox] %>" <%= stimulus_attributes(options) %>>
+    <svg class="<%= size_class(size) %> <%= options[:class] %>" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="<%= options[:fill] %>" stroke="<%= options[:stroke] %>" stroke-width="<%= options[:stroke_width] %>" viewBox="<%= options[:viewbox] %>" <%= stimulus_attributes(options) %>>
       <%= render partial: partial %>
     </svg>
   ERB
@@ -10,7 +10,7 @@ class Utilities::IconComponent < ApplicationComponent
   def initialize(icon, size: nil, options: {})
     @icon = icon
     @size = size
-    @options = { fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", strokeWidth: "2" }.merge(options)
+    @options = { fill: "none", viewbox: "0 0 24 24", stroke: "currentColor", stroke_width: "2" }.merge(options)
   end
 
   def partial

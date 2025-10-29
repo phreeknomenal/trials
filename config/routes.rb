@@ -8,10 +8,14 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Defines the root path route ("/")
-  root "home#index"
+  # Show home page when authenticated, welcome page when not
+  authenticated :user do
+    root "home#index", as: :authenticated_root
+  end
 
-  # Public routes
-  get "/welcome" => "public#index"
+  unauthenticated do
+    root "public#index"
+  end
 
   devise_for :users, controllers: {
     passwords: "users/passwords",

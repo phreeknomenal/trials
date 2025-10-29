@@ -5,7 +5,7 @@ class Layout::Navigation::HeaderComponent < ApplicationComponent
         <div>
           <h1 class="text-2xl font-bold tracking-tight">Clinical Trial Finder</h1>
         </div>
-        <div class="flex items-center gap-4">
+        <div class="hidden lg:flex items-center gap-4">
           <%= render Layout::Navigation::Menu::HeaderMenuComponent.new %>
           <% if user_signed_in? %>
             <div class="w-10 h-10 rounded-full overflow-hidden">
