@@ -1,3 +1,33 @@
+<section id="hero">
+  <div class="w-full h-172 grid grid-cols-2 px-[5%] bg-gradient-to-tr from-[#FFF9F9] to-[#F8F6FF] border-b border-zinc-200">
+    <div class="col-span-1 flex flex-col justify-center">
+      <div class="w-[90%]">
+        <h1 class="text-7xl tracking-tight font-bold text-left mb-4">Find clinical trials that match your journey</h1>
+        <p class="font-body text-lg font-light text-slategray mb-6">Connect with medical research that understands your unique health needs. Our platform helps patients discover personalized clinical trials with precision and hope.</p>
+        <div class="flex gap-4">
+          <%= render Buttons::ButtonComponent.new(path: "#", text: "Get Started", color: "lavender") %>
+          <%= render Buttons::ButtonComponent.new(path: "#", text: "Learn More") %>
+        </div>
+      </div>
+    </div>
+    <div class="col-span-1 flex overflow-hidden items-center justify-center">
+      <div class="w-full h-full flex gap-6">
+        <div class="w-1/2 flex flex-col gap-y-6 -mt-64">
+          <%= image_tag "https://picsum.photos/500/500", class: "w-full h-96 rounded-xl object-cover" %>
+          <%= image_tag "https://picsum.photos/501/500", class: "w-full h-96 rounded-xl object-cover" %>
+          <%= image_tag "https://picsum.photos/510/500", class: "w-full h-96 rounded-xl object-cover" %>
+        </div>
+        <div class="w-1/2 flex flex-col gap-y-6 -mt-36">
+          <%= image_tag "https://picsum.photos/503/500", class: "w-full h-96 rounded-xl object-cover" %>
+          <%= image_tag "https://picsum.photos/504/500", class: "w-full h-96 rounded-xl object-cover" %>
+          <%= image_tag "https://picsum.photos/505/500", class: "w-full h-96 rounded-xl object-cover" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
 <section>
   <div class="w-[40%] mx-auto py-10">
     <h1 class="text-6xl tracking-tight font-medium text-center mb-2">Discover clinical trials that match you.</h1>

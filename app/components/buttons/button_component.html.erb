@@ -1,6 +1,6 @@
-<%= link_to path, class: "inline-block px-4 font-medium py-2 bg-#{color}-600 hover:bg-#{color}-500 text-white rounded-md transition-colors cursor-pointer" do %>
+<%= link_to path, class: "inline-block px-4 font-medium py-2 rounded-md transition-colors cursor-pointer #{color_styles}" do %>
   <% if icon.present? %>
     <i class="fa-solid fa-<%= icon %> mr-2"></i>
   <% end %>
   <%= text %>
-<% end %> 
+<% end %>

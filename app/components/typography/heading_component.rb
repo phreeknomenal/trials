@@ -1,9 +1,9 @@
 class Typography::HeadingComponent < ApplicationComponent
   erb_template <<-ERB
-    <h1 class="inline-flex flex-col lg:flex-row lg:items-center gap-y-2 tracking-tight <%= styles %> <%= color if color.present? %>">
+    <h2 class="inline-flex flex-col lg:flex-row lg:items-center gap-y-2 tracking-tight <%= styles %> <%= color if color.present? %>">
       <%= content if content.present? %>
       <%= text %>
-    </h1>
+    </h2>
   ERB
 
   attr_reader :size, :text, :color

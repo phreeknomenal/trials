@@ -1,1 +1,41 @@
 @import "tailwindcss";
+
+@theme {
+  /* --font-primary: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif; */
+  --font-body: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-accent: "Caveat", cursive;
+
+  --color-coral: oklch(0.7151 0.1785 27.97);  
+  --color-coral-50: oklch(0.975 0.012 23.84);
+  --color-coral-100: oklch(0.951 0.024 20.79);
+  --color-coral-200: oklch(0.902 0.051 21.16);
+  --color-coral-300: oklch(0.854 0.079 22.69);
+  --color-coral-400: oklch(0.806 0.11 23.87);
+  --color-coral-500: oklch(0.758 0.145 25.59);
+  --color-coral-600: oklch(0.715 0.178 27.97);
+  --color-coral-700: oklch(0.576 0.208 33.83);
+  --color-coral-800: oklch(0.431 0.155 33.88);
+  --color-coral-900: oklch(0.288 0.105 33.6);
+  --color-coral-950: oklch(0.214 0.078 33.61);
+
+  --color-lavender-50: oklch(0.958 0.021 288.93);
+  --color-lavender-100: oklch(0.925 0.038 287.31);
+  --color-lavender-200: oklch(0.849 0.079 287.82);
+  --color-lavender-300: oklch(0.768 0.125 286.73);
+  --color-lavender-400: oklch(0.693 0.169 285.34);
+  --color-lavender-500: oklch(0.621 0.212 283.25);
+  --color-lavender-600: oklch(0.551 0.255 280.43);
+  --color-lavender-700: oklch(0.468 0.293 275.55);
+  --color-lavender-800: oklch(0.356 0.223 275.47);
+  --color-lavender-900: oklch(0.252 0.158 275.64);
+  --color-lavender-950: oklch(0.204 0.128 275.47);
+
+  --color-deepblue: #4E46DC;    /* link / hover */
+  --color-navyblue: #0F172A;    /* headings */
+  --color-slategray: #475569;   /* body text */
+  --color-seagreen: #2EAE97;    /* success / trust */
+  --color-sunset: #F7A35C;      /* warning / accent */
+  --color-cloud: #FAFAFB;       /* background */
+  --color-porcelain: #FFFFFF;   /* cards / surfaces */
+  --color-stone: #E5E7EB;  
+}
