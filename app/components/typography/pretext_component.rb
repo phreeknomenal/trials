@@ -1,21 +1,12 @@
 class Typography::PretextComponent < ApplicationComponent
   erb_template <<-ERB
-    <p class="<%= styles %> tracking-tight font-semibold text-zinc-600"><%= text %></p>
+    <p class="text-xl lg:text-3xl font-accent font-semibold <%= color if color.present? %>"><%= text %></p>
   ERB
 
-  attr_reader :text, :size
+  attr_reader :text, :color
 
-  def initialize(text:, size: :small)
+  def initialize(text:, color: nil)
     @text = text
-    @size = size
-  end
-
-  def styles
-    case size
-    when :small
-      "text-sm"
-    when :medium
-      "text-base"
-    end
+    @color = color
   end
 end

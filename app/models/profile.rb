@@ -43,4 +43,8 @@ class Profile < ApplicationRecord
   validates :last_name, presence: true, on: :update
   validates :zip_code, presence: true, on: :update
   validates :pronouns, inclusion: { in: PRONOUN_OPTIONS }, allow_blank: true
+
+  def full_name
+    "#{first_name} #{last_name}"
+  end
 end

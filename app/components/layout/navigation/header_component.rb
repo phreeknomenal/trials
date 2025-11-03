@@ -3,8 +3,11 @@ class Layout::Navigation::HeaderComponent < ApplicationComponent
     <header class="border-b border-zinc-200">
       <div class="w-[80%] mx-auto flex items-center justify-between py-4">
         <div>
-          <h1 class="text-2xl font-bold tracking-tight">Clinical Trial Finder</h1>
+          <%= link_to root_path, class: "font-primary text-2xl font-bold tracking-tight" do %>
+            Lumen
+          <% end %>
         </div>
+
         <div class="hidden lg:flex items-center gap-4">
           <%= render Layout::Navigation::Menu::HeaderMenuComponent.new %>
           <% if user_signed_in? %>
@@ -12,7 +15,7 @@ class Layout::Navigation::HeaderComponent < ApplicationComponent
               <%= render Utilities::AvatarComponent.new(current_profile) %>
             </div>
           <% else %>
-            <%= link_to "Login", new_user_session_path, class: "bg-blue-500 text-white px-4 py-2 font-medium rounded-md" %>
+            <%= link_to "Login", new_user_session_path, class: "bg-lavender-600 text-white px-4 py-2 font-medium rounded-md" %>
           <% end %>
         </div>
       </div>

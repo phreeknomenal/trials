@@ -1,9 +1,9 @@
 class Typography::HeadingComponent < ApplicationComponent
   erb_template <<-ERB
-    <h1 class="inline-flex flex-col lg:flex-row lg:items-center gap-y-2 tracking-tight <%= styles %> <%= color if color.present? %>">
+    <h2 class="inline-flex flex-col lg:flex-row lg:items-center gap-y-2 tracking-tight <%= styles %> <%= color if color.present? %>">
       <%= content if content.present? %>
       <%= text %>
-    </h1>
+    </h2>
   ERB
 
   attr_reader :size, :text, :color
@@ -17,21 +17,27 @@ class Typography::HeadingComponent < ApplicationComponent
   def styles
     case size
     when :h2
-      "text-3xl font-medium"
+      "text-3xl lg:text-5xl font-bold"
     when :h3
-      "text-2xl font-medium"
+      "text-4xl font-bold"
     when :h4
-      "text-xl font-medium"
+      "text-3xl font-bold"
     when :h5
-      "text-lg font-medium"
+      "text-2xl font-bold"
     when :h6
-      "text-base font-medium"
+      "text-xl font-bold"
     when :h7
+      "text-lg font-semibold leading-6"
+    when :h8
+      "text-base font-semibold leading-6"
+    when :h9
       "text-sm font-semibold leading-6"
+    when :h10
+      "text-xs font-semibold leading-6"
     when :heading
-      "text-5xl font-medium"
+      "text-5xl font-bold"
     else
-      "text-lg font-medium"
+      "text-lg font-bold"
     end
   end
 end
