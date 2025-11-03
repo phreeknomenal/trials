@@ -4,7 +4,7 @@ class Layout::Navigation::HeaderComponent < ApplicationComponent
       <div class="w-[80%] mx-auto flex items-center justify-between py-4">
         <div>
           <%= link_to root_path, class: "font-primary text-2xl font-bold tracking-tight" do %>
-            Clinical Trial Finder
+            Lumen
           <% end %>
         </div>
 

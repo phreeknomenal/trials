@@ -9,8 +9,8 @@ class Page::Cards::CardComponent < ApplicationComponent
 
       <div class="<%= content_wrapper_classes %>">
         <div class="flex flex-col gap-3">
-          <%= render Typography::PretextComponent.new(text: pretext, size: :small) %>
-          <%= render Typography::HeadingComponent.new(size: :h2, text: title) %>
+          <%= render Typography::PretextComponent.new(text: pretext) %>
+          <%= render Typography::HeadingComponent.new(size: :h3, text: title) %>
           <%= render Typography::ParagraphComponent.new(text: subtitle) %>
         </div>
         <div class="mt-4">
