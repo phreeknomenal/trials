@@ -2,19 +2,35 @@
 #
 # Table name: profiles
 #
-#  id           :integer          not null, primary key
-#  birth_date   :date
-#  first_name   :string
-#  last_name    :string
-#  onboarded    :boolean          default(FALSE), not null
-#  phone_number :string
-#  pronouns     :string
-#  zip_code     :string
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  gender_id    :integer
-#  race_id      :integer
-#  user_id      :integer          not null
+#  id                      :integer          not null, primary key
+#  birth_year              :integer
+#  city                    :string
+#  condition_subtype       :string
+#  contact_preference      :string
+#  country                 :string           default("US")
+#  current_treatment       :string
+#  diagnosis_timing        :string
+#  first_name              :string
+#  language_preference     :string
+#  last_name               :string
+#  onboarded               :boolean          default(FALSE), not null
+#  phone_number            :string
+#  primary_condition       :string
+#  prior_treatment         :boolean          default(FALSE)
+#  pronouns                :string
+#  remote_visit_preference :string
+#  risk_tolerance          :string
+#  sex_assigned_at_birth   :string
+#  state                   :string
+#  transportation_reliable :boolean          default(TRUE)
+#  trial_type_preference   :string
+#  willing_travel_miles    :integer
+#  zip_code                :string
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  gender_id               :integer
+#  race_id                 :integer
+#  user_id                 :integer          not null
 #
 # Indexes
 #

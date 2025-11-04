@@ -10,7 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_27_153230) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_03_184001) do
+  create_table "action_text_rich_texts", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "body"
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["record_type", "record_id", "name"], name: "index_action_text_rich_texts_uniqueness", unique: true
+  end
+
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -46,16 +56,66 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_153230) do
     t.index ["name"], name: "index_genders_on_name", unique: true
   end
 
+  create_table "identities", force: :cascade do |t|
+    t.text "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_identities_on_name", unique: true
+  end
+
+  create_table "interests", force: :cascade do |t|
+    t.text "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_interests_on_name", unique: true
+  end
+
+  create_table "profile_identities", force: :cascade do |t|
+    t.integer "profile_id", null: false
+    t.integer "identity_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identity_id"], name: "index_profile_identities_on_identity_id"
+    t.index ["profile_id", "identity_id"], name: "index_profile_identities_on_profile_id_and_identity_id", unique: true
+    t.index ["profile_id"], name: "index_profile_identities_on_profile_id"
+  end
+
+  create_table "profile_interests", force: :cascade do |t|
+    t.integer "profile_id", null: false
+    t.integer "interest_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["interest_id"], name: "index_profile_interests_on_interest_id"
+    t.index ["profile_id", "interest_id"], name: "index_profile_interests_on_profile_id_and_interest_id", unique: true
+    t.index ["profile_id"], name: "index_profile_interests_on_profile_id"
+  end
+
   create_table "profiles", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "race_id"
     t.integer "gender_id"
     t.string "first_name"
     t.string "last_name"
-    t.date "birth_date"
+    t.integer "birth_year"
+    t.string "pronouns"
+    t.string "sex_assigned_at_birth"
+    t.string "city"
+    t.string "state"
+    t.string "country", default: "US"
     t.string "zip_code"
     t.string "phone_number"
-    t.string "pronouns"
+    t.string "primary_condition"
+    t.string "condition_subtype"
+    t.string "diagnosis_timing"
+    t.string "current_treatment"
+    t.boolean "prior_treatment", default: false
+    t.integer "willing_travel_miles"
+    t.boolean "transportation_reliable", default: true
+    t.string "remote_visit_preference"
+    t.string "trial_type_preference"
+    t.string "risk_tolerance"
+    t.string "contact_preference"
+    t.string "language_preference"
     t.boolean "onboarded", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -86,6 +146,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_27_153230) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "profile_identities", "identities"
+  add_foreign_key "profile_identities", "profiles"
+  add_foreign_key "profile_interests", "interests"
+  add_foreign_key "profile_interests", "profiles"
   add_foreign_key "profiles", "genders"
   add_foreign_key "profiles", "races"
   add_foreign_key "profiles", "users"

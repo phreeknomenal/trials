@@ -1,0 +1,187 @@
+<section class="px-5 lg:px-24 py-16 border-b border-zinc-200">
+  <div class="flex flex-col justify-center items-center">
+    <div class="w-24 h-24 text-4xl mx-auto mb-3">
+      <%= render Utilities::AvatarComponent.new(@profile) %>
+    </div>
+    <div class="flex items-center gap-x-2">
+      <h3 class="text-3xl font-bold leading-none text-center mb-1"><%= @profile.full_name %></h3>
+      <span class="text-sm font-body leading-none font-medium text-zinc-600">(<%= @profile.pronouns %>)</span>
+    </div>
+    <div class="mb-4">
+      <% @profile.identities.each do |identity| %>
+        <span class="text-sm font-body font-medium text-zinc-600"><%= identity.name.titleize %></span>
+      <% end %>
+    </div>
+
+    <% if current_profile == @profile %>
+      <%= render Buttons::ButtonComponent.new(path: edit_profile_path(@profile), text: "Edit Profile") %>
+    <% end %>
+  </div>
+</section>
+
+<section class="px-5 lg:px-24 py-24">
+  <div class="grid grid-cols-5 gap-10">
+    <div class="col-span-3">
+      <div class="grid grid-cols-2 gap-6">
+        <div class="col-span-2">
+          <div class="">
+            <%= render Typography::HeadingComponent.new(size: :h5, text: "About") %>
+          </div>
+          <div class="text-lg text-zinc-600 font-body"><%= @profile.about.to_plain_text %></div>
+        </div>
+
+        <!-- Personal Information -->
+        <% if @profile.birth_year.present? %>
+          <div class="col-span-1">
+            <%= render Typography::HeadingComponent.new(size: :h7, text: "Birth Year") %>
+            <div class="text-lg text-zinc-600 font-body"><%= @profile.birth_year %></div>
+          </div>
+        <% end %>
+        <% if @profile.age.present? %>
+          <div class="col-span-1">
+            <%= render Typography::HeadingComponent.new(size: :h7, text: "Age") %>
+            <div class="text-lg text-zinc-600 font-body"><%= @profile.age %></div>
+          </div>
+        <% end %>
+        <% if @profile.gender.present? %>
+          <div class="col-span-1">
+            <%= render Typography::HeadingComponent.new(size: :h7, text: "Gender") %>
+            <div class="text-lg text-zinc-600 font-body"><%= @profile.gender.name.titleize %></div>
+          </div>
+        <% end %>
+        <% if @profile.sex_assigned_at_birth.present? %>
+          <div class="col-span-1">
+            <%= render Typography::HeadingComponent.new(size: :h7, text: "Sex Assigned at Birth") %>
+            <div class="text-lg text-zinc-600 font-body"><%= @profile.sex_assigned_at_birth.titleize %></div>
+          </div>
+        <% end %>
+
+        <!-- Location Information -->
+        <% if @profile.city.present? || @profile.state.present? || @profile.zip_code.present? %>
+          <div class="col-span-1">
+            <%= render Typography::HeadingComponent.new(size: :h7, text: "Location") %>
+            <div class="text-lg text-zinc-600 font-body">
+              <%= [@profile.city, @profile.state, @profile.zip_code].compact.join(", ") %>
+            </div>
+          </div>
+        <% end %>
+        <% if @profile.country.present? %>
+          <div class="col-span-1">
+            <%= render Typography::HeadingComponent.new(size: :h7, text: "Country") %>
+            <div class="text-lg text-zinc-600 font-body"><%= @profile.country %></div>
+          </div>
+        <% end %>
+        <% if @profile.phone_number.present? %>
+          <div class="col-span-1">
+            <%= render Typography::HeadingComponent.new(size: :h7, text: "Phone Number") %>
+            <div class="text-lg text-zinc-600 font-body"><%= @profile.phone_number %></div>
+          </div>
+        <% end %>
+
+        <!-- Medical Information -->
+        <% if @profile.primary_condition.present? %>
+          <div class="col-span-1">
+            <%= render Typography::HeadingComponent.new(size: :h7, text: "Primary Condition") %>
+            <div class="text-lg text-zinc-600 font-body"><%= @profile.primary_condition.titleize %></div>
+          </div>
+        <% end %>
+        <% if @profile.condition_subtype.present? %>
+          <div class="col-span-1">
+            <%= render Typography::HeadingComponent.new(size: :h7, text: "Condition Subtype") %>
+            <div class="text-lg text-zinc-600 font-body"><%= @profile.condition_subtype.titleize %></div>
+          </div>
+        <% end %>
+        <% if @profile.diagnosis_timing.present? %>
+          <div class="col-span-1">
+            <%= render Typography::HeadingComponent.new(size: :h7, text: "Diagnosis Timing") %>
+            <div class="text-lg text-zinc-600 font-body"><%= @profile.diagnosis_timing.titleize %></div>
+          </div>
+        <% end %>
+        <% if @profile.current_treatment.present? %>
+          <div class="col-span-1">
+            <%= render Typography::HeadingComponent.new(size: :h7, text: "Current Treatment") %>
+            <div class="text-lg text-zinc-600 font-body"><%= @profile.current_treatment.titleize %></div>
+          </div>
+        <% end %>
+        <div class="col-span-1">
+          <%= render Typography::HeadingComponent.new(size: :h7, text: "Prior Treatment") %>
+          <div class="text-lg text-zinc-600 font-body"><%= @profile.prior_treatment? ? "Yes" : "No" %></div>
+        </div>
+
+        <!-- Trial Preferences -->
+        <% if @profile.willing_travel_miles.present? %>
+          <div class="col-span-1">
+            <%= render Typography::HeadingComponent.new(size: :h7, text: "Willing to Travel") %>
+            <div class="text-lg text-zinc-600 font-body"><%= @profile.willing_travel_miles %> miles</div>
+          </div>
+        <% end %>
+        <div class="col-span-1">
+          <%= render Typography::HeadingComponent.new(size: :h7, text: "Reliable Transportation") %>
+          <div class="text-lg text-zinc-600 font-body"><%= @profile.transportation_reliable? ? "Yes" : "No" %></div>
+        </div>
+        <% if @profile.remote_visit_preference.present? %>
+          <div class="col-span-1">
+            <%= render Typography::HeadingComponent.new(size: :h7, text: "Remote Visit Preference") %>
+            <div class="text-lg text-zinc-600 font-body"><%= @profile.remote_visit_preference.titleize %></div>
+          </div>
+        <% end %>
+        <% if @profile.trial_type_preference.present? %>
+          <div class="col-span-1">
+            <%= render Typography::HeadingComponent.new(size: :h7, text: "Trial Type Preference") %>
+            <div class="text-lg text-zinc-600 font-body"><%= @profile.trial_type_preference.titleize %></div>
+          </div>
+        <% end %>
+        <% if @profile.risk_tolerance.present? %>
+          <div class="col-span-1">
+            <%= render Typography::HeadingComponent.new(size: :h7, text: "Risk Tolerance") %>
+            <div class="text-lg text-zinc-600 font-body"><%= @profile.risk_tolerance.titleize %></div>
+          </div>
+        <% end %>
+
+        <!-- Contact Preferences -->
+        <% if @profile.contact_preference.present? %>
+          <div class="col-span-1">
+            <%= render Typography::HeadingComponent.new(size: :h7, text: "Contact Preference") %>
+            <div class="text-lg text-zinc-600 font-body"><%= @profile.contact_preference.titleize %></div>
+          </div>
+        <% end %>
+        <% if @profile.language_preference.present? %>
+          <div class="col-span-1">
+            <%= render Typography::HeadingComponent.new(size: :h7, text: "Language Preference") %>
+            <div class="text-lg text-zinc-600 font-body"><%= @profile.language_preference.titleize %></div>
+          </div>
+        <% end %>
+
+        <!-- Identities and Interests -->
+        <% if @profile.identities.any? %>
+          <div class="col-span-2">
+            <%= render Typography::HeadingComponent.new(size: :h7, text: "Identities") %>
+            <div class="flex flex-wrap gap-2 mt-2">
+              <% @profile.identities.each do |identity| %>
+                <span class="px-3 py-1 bg-zinc-100 rounded-full text-sm font-body font-medium text-zinc-700"><%= identity.name.titleize %></span>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+        <% if @profile.interests.any? %>
+          <div class="col-span-2">
+            <%= render Typography::HeadingComponent.new(size: :h7, text: "Interests") %>
+            <div class="flex flex-wrap gap-2 mt-2">
+              <% @profile.interests.each do |interest| %>
+                <span class="px-3 py-1 bg-zinc-100 rounded-full text-sm font-body font-medium text-zinc-700"><%= interest.name.titleize %></span>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <div class="col-span-2 grid-cols-2 gap-6">
+      <div class="w-full">
+        This is where the health score component will go.
+      </div>
+      <div class="w-full">
+        This is where the health score component will go.
+      </div>
+    </div>
+  </div>
+</section>

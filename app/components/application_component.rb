@@ -20,4 +20,13 @@ class ApplicationComponent < ViewComponent::Base
       "#{seconds_ago / 31_557_600}y"
     end
   end
+
+  def age(birth_date)
+    calculated_age = Time.current.year - birth_date.year
+    if Time.current.month < birth_date.month || (Time.current.month == birth_date.month && Time.current.day < birth_date.day)
+      calculated_age - 1
+    else
+      calculated_age
+    end
+  end
 end
