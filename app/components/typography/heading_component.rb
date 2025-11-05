@@ -1,6 +1,6 @@
 class Typography::HeadingComponent < ApplicationComponent
   erb_template <<-ERB
-    <h2 class="inline-flex flex-col lg:flex-row lg:items-center gap-y-2 tracking-tight <%= styles %> <%= color if color.present? %>">
+    <h2 class="inline-flex flex-col lg:flex-row lg:items-center gap-y-2 tracking-tight <%= styles %> <%= color if color.present? %> text-zinc-900 dark:text-zinc-300">
       <%= content if content.present? %>
       <%= text %>
     </h2>

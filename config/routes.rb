@@ -26,4 +26,8 @@ Rails.application.routes.draw do
     get "users/password/confirmation", to: "users/passwords#confirmation"
     get "/users/sign_out" => "devise/sessions#destroy"
   end
+
+  resources :profiles, only: [ :show, :edit, :update ]
+  resources :search, only: [ :index, :show ]
+  resources :my_trials, only: [ :index, :show ]
 end

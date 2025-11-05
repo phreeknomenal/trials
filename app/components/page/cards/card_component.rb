@@ -55,7 +55,7 @@ class Page::Cards::CardComponent < ApplicationComponent
   end
 
   def container_classes
-    base = "w-full h-full border border-zinc-200 rounded-lg overflow-hidden bg-white"
+    base = "w-full h-full border border-zinc-300 dark:border-zinc-700 rounded-lg overflow-hidden bg-white dark:bg-zinc-900"
     if horizontal?
       "#{base} flex"
     else
@@ -64,7 +64,7 @@ class Page::Cards::CardComponent < ApplicationComponent
   end
 
   def image_wrapper_classes
-    horizontal? ? "w-1/2" : ""
+    horizontal? ? "w-1/2 border-x border-zinc-300 dark:border-zinc-700" : "border-y border-zinc-300 dark:border-zinc-700"
   end
 
   def image_classes
