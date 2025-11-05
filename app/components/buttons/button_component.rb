@@ -22,7 +22,7 @@ class Buttons::ButtonComponent < ApplicationComponent
     when "clear_navy"
       "border border-navy-600 text-navy-600 bg-transparent hover:border-coral-600 hover:text-white hover:bg-coral-600 transition-all"
     else
-      "border border-zinc-200 text-zinc-600 bg-transparent hover:border-coral-600 hover:text-white hover:bg-coral-600 transition-all"
+      "border border-zinc-700 text-zinc-300 bg-transparent hover:border-coral-600 hover:text-white hover:bg-coral-600 transition-all"
     end
   end
 end
