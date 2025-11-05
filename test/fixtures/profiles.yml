@@ -10,6 +10,7 @@
 #  country                 :string           default("US")
 #  current_treatment       :string
 #  diagnosis_timing        :string
+#  ethnicity               :string           default("prefer not to say")
 #  first_name              :string
 #  language_preference     :string
 #  last_name               :string

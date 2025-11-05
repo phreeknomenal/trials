@@ -1,0 +1,197 @@
+<section class="px-5 lg:px-24 py-16 border-b border-zinc-200 dark:border-zinc-700">
+  <div class="flex flex-col justify-center items-center">
+    <div class="w-24 h-24 text-4xl mx-auto mb-3">
+      <%= render Utilities::AvatarComponent.new(@profile) %>
+    </div>
+    <h3 class="text-3xl font-bold leading-none text-center mb-1 text-zinc-900 dark:text-zinc-300">Edit Profile</h3>
+    <span class="text-sm font-body font-medium text-center text-zinc-600 mb-8"><%= @profile.full_name %></span>
+  </div>
+</section>
+
+<section class="px-5 lg:px-36 py-24">
+  <%= form_with(model: @profile, local: true, class: "flex gap-10") do |f| %>
+    <div class="w-4/5">
+      <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-300 mb-5">Personal Information</h2>
+      <div class="w-full p-6 border border-zinc-200 dark:border-zinc-700 rounded-lg mb-8">
+        <div class="mb-6">
+          <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">About</label>
+          <%= f.rich_text_area :about, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6">
+          <div class="col-span-2 lg:col-span-1">
+            <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">First Name *</label>
+            <%= f.text_field :first_name, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+          </div>
+
+          <div class="col-span-2 lg:col-span-1">
+            <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Last Name *</label>
+            <%= f.text_field :last_name, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+          </div>
+
+          <div class="col-span-2 lg:col-span-1">
+            <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Pronouns</label>
+            <%= f.select :pronouns, Profile::PRONOUN_OPTIONS.map { |p| [p.titleize, p] }, { include_blank: "Select pronouns" }, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+          </div>
+
+          <div class="col-span-2 lg:col-span-1">
+            <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Birth Year</label>
+            <%= f.number_field :birth_year, min: 1900, max: Time.current.year, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+          </div>
+
+          <div class="col-span-2 lg:col-span-1">
+            <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Sex Assigned at Birth</label>
+            <%= f.select :sex_assigned_at_birth, Profile::SEX_ASSIGNED_AT_BIRTH_OPTIONS.map { |s| [s.titleize, s] }, { include_blank: "Select sex" }, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+          </div>
+
+          <div class="col-span-2 lg:col-span-1">
+            <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Gender</label>
+            <%= f.collection_select :gender_id, Gender.all, :id, :name, { include_blank: "Select gender" }, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+          </div>
+
+          <div class="col-span-2 lg:col-span-1">
+            <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Race</label>
+            <%= f.collection_select :race_id, Race.all, :id, :name, { include_blank: "Select race" }, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+          </div>
+
+          <div class="col-span-2 lg:col-span-1">
+            <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Ethnicity</label>
+            <%= f.select :ethnicity, Profile::ETHNICITY_OPTIONS.map { |e| [e.titleize, e] }, { include_blank: "Select ethnicity" }, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+          </div>
+
+          <div class="col-span-2 lg:col-span-1">
+            <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Phone Number</label>
+            <%= f.telephone_field :phone_number, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+          </div>
+
+          <div class="col-span-2 lg:col-span-1">
+            <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Zip Code *</label>
+            <%= f.text_field :zip_code, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+          </div>
+
+          <div class="col-span-2 lg:col-span-1">
+            <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">City</label>
+            <%= f.text_field :city, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+          </div>
+
+          <div class="col-span-2 lg:col-span-1">
+            <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">State</label>
+            <%= f.text_field :state, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+          </div>
+
+          <div class="col-span-2 lg:col-span-1">
+            <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Country</label>
+            <%= f.text_field :country, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+          </div>
+
+          <div class="col-span-2">
+            <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Identities</label>
+            <div class="flex flex-wrap gap-2 mt-2">
+              <%= f.collection_check_boxes :identity_ids, Identity.all, :id, :name do |b| %>
+                <label class="inline-flex items-center px-3 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-full cursor-pointer transition-colors">
+                  <%= b.check_box(class: "mr-2") %>
+                  <span class="text-sm font-body font-medium text-zinc-700 dark:text-zinc-300"><%= b.text.titleize %></span>
+                </label>
+              <% end %>
+            </div>
+          </div>
+
+          <div class="col-span-2">
+            <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Interests</label>
+            <div class="flex flex-wrap gap-2 mt-2">
+              <%= f.collection_check_boxes :interest_ids, Interest.all, :id, :name do |b| %>
+                <label class="inline-flex items-center px-3 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-full cursor-pointer transition-colors">
+                  <%= b.check_box(class: "mr-2") %>
+                  <span class="text-sm font-body font-medium text-zinc-700 dark:text-zinc-300"><%= b.text.titleize %></span>
+                </label>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-300 mb-5">Patient Information</h2>
+      <div class="w-full grid grid-cols-2 gap-6 p-6 border border-zinc-200 dark:border-zinc-700 rounded-lg mb-8">
+        <div class="col-span-2 lg:col-span-1">
+          <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Primary Condition</label>
+          <%= f.text_field :primary_condition, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+        </div>
+
+        <div class="col-span-2 lg:col-span-1">
+          <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Condition Subtype</label>
+          <%= f.text_field :condition_subtype, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+        </div>
+
+        <div class="col-span-2 lg:col-span-1">
+          <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Diagnosis Timing</label>
+          <%= f.select :diagnosis_timing, Profile::DIAGNOSIS_TIMING_OPTIONS.map { |d| [d.titleize, d] }, { include_blank: "Select timing" }, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+        </div>
+
+        <div class="col-span-2 lg:col-span-1">
+          <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Current Treatment</label>
+          <%= f.select :current_treatment, Profile::TREATMENT_OPTIONS.map { |t| [t.titleize, t] }, { include_blank: "Select treatment" }, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+        </div>
+
+        <div class="col-span-2 lg:col-span-1">
+          <label class="inline-flex items-center cursor-pointer">
+            <%= f.check_box :prior_treatment, class: "mr-2 w-5 h-5" %>
+            <span class="text-base font-bold text-zinc-900 dark:text-zinc-300">Prior Treatment</span>
+          </label>
+        </div>
+      </div>
+
+      <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-300 mb-5">Preferences</h2>
+      <div class="w-full grid grid-cols-2 gap-6 p-6 border border-zinc-200 dark:border-zinc-700 rounded-lg mb-8">
+        <div class="col-span-2 lg:col-span-1">
+          <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Willing to Travel (miles)</label>
+          <%= f.select :willing_travel_miles, Profile::TRAVEL_MILES_OPTIONS.map { |m| ["#{m} miles", m] }, { include_blank: "Select distance" }, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+        </div>
+
+        <div class="col-span-2 lg:col-span-1">
+          <label class="inline-flex items-center cursor-pointer">
+            <%= f.check_box :transportation_reliable, class: "mr-2 w-5 h-5" %>
+            <span class="text-base font-bold text-zinc-900 dark:text-zinc-300">Reliable Transportation</span>
+          </label>
+        </div>
+
+        <div class="col-span-2 lg:col-span-1">
+          <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Remote Visit Preference</label>
+          <%= f.select :remote_visit_preference, Profile::REMOTE_VISIT_PREFERENCE_OPTIONS.map { |r| [r.titleize, r] }, { include_blank: "Select preference" }, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+        </div>
+
+        <div class="col-span-2 lg:col-span-1">
+          <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Trial Type Preference</label>
+          <%= f.select :trial_type_preference, Profile::TRIAL_TYPE_PREFERENCE_OPTIONS.map { |t| [t.titleize, t] }, { include_blank: "Select type" }, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+        </div>
+
+        <div class="col-span-2 lg:col-span-1">
+          <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Risk Tolerance</label>
+          <%= f.select :risk_tolerance, Profile::RISK_TOLERANCE_OPTIONS.map { |r| [r.titleize, r] }, { include_blank: "Select tolerance" }, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+        </div>
+
+        <div class="col-span-2 lg:col-span-1">
+          <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Contact Preference</label>
+          <%= f.select :contact_preference, Profile::CONTACT_PREFERENCE_OPTIONS.map { |c| [c.titleize, c] }, { include_blank: "Select preference" }, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+        </div>
+
+        <div class="col-span-2 lg:col-span-1">
+          <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Language Preference</label>
+          <%= f.text_field :language_preference, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800" %>
+        </div>
+      </div>
+
+      <div class="flex gap-4">
+        <%= f.submit "Save Profile", class: "px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg cursor-pointer transition-colors" %>
+        <%= link_to "Cancel", profile_path(@profile), class: "px-6 py-3 bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-zinc-900 dark:text-zinc-300 font-bold rounded-lg transition-colors" %>
+      </div>
+    </div>
+
+    <div class="w-1/5 flex gap-10">
+      <div class="w-full h-124 bg-purple-300/10 rounded-lg border border-zinc-200 dark:border-zinc-700 p-4">
+        <p class="text-sm text-zinc-600 dark:text-zinc-400">
+          <strong>Note:</strong> Fields marked with * are required. Your profile helps us match you with relevant clinical trials.
+        </p>
+      </div>
+    </div>
+  <% end %>
+</section>

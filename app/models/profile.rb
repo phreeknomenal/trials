@@ -10,6 +10,7 @@
 #  country                 :string           default("US")
 #  current_treatment       :string
 #  diagnosis_timing        :string
+#  ethnicity               :string           default("prefer not to say")
 #  first_name              :string
 #  language_preference     :string
 #  last_name               :string
@@ -61,6 +62,12 @@ class Profile < ApplicationRecord
   PREFER_NOT_TO_SAY = "prefer not to say"
 
   SEX_ASSIGNED_AT_BIRTH_OPTIONS = [ FEMALE, MALE, INTERSEX, PREFER_NOT_TO_SAY ].freeze
+
+  # Ethnicity
+  HISPANIC_OR_LATINO = "hispanic or latino"
+  NOT_HISPANIC_OR_LATINO = "not hispanic or latino"
+
+  ETHNICITY_OPTIONS = [ HISPANIC_OR_LATINO, NOT_HISPANIC_OR_LATINO, PREFER_NOT_TO_SAY ].freeze
 
   # Diagnosis Timings
   LESS_THAN_SIX_MONTHS = "< 6 months"
@@ -147,6 +154,7 @@ class Profile < ApplicationRecord
 
   belongs_to :user
   belongs_to :gender, optional: true
+  belongs_to :race, optional: true
 
   has_many :profile_identities, dependent: :destroy
   has_many :identities, through: :profile_identities
@@ -162,6 +170,7 @@ class Profile < ApplicationRecord
   validates :zip_code, presence: true, on: :update
   validates :pronouns, inclusion: { in: PRONOUN_OPTIONS }, allow_blank: true
   validates :sex_assigned_at_birth, inclusion: { in: SEX_ASSIGNED_AT_BIRTH_OPTIONS }, allow_blank: true
+  validates :ethnicity, inclusion: { in: ETHNICITY_OPTIONS }, allow_blank: true
   validates :diagnosis_timing, inclusion: { in: DIAGNOSIS_TIMING_OPTIONS }, allow_blank: true
   validates :current_treatment, inclusion: { in: TREATMENT_OPTIONS }, allow_blank: true
   validates :willing_travel_miles, inclusion: { in: TRAVEL_MILES_OPTIONS }, allow_blank: true

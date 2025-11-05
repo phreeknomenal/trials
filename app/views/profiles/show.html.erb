@@ -45,6 +45,18 @@
               <div class="text-base text-zinc-600 font-body"><%= @profile.gender.name.titleize %></div>
             </div>
           <% end %>
+          <% if @profile.race.present? %>
+            <div class="col-span-2 lg:col-span-1">
+              <%= render Typography::HeadingComponent.new(size: :h7, text: "Race") %>
+              <div class="text-base text-zinc-600 font-body"><%= @profile.race.name %></div>
+            </div>
+          <% end %>
+          <% if @profile.ethnicity.present? %>
+            <div class="col-span-2 lg:col-span-1">
+              <%= render Typography::HeadingComponent.new(size: :h7, text: "Ethnicity") %>
+              <div class="text-base text-zinc-600 font-body"><%= @profile.ethnicity.titleize %></div>
+            </div>
+          <% end %>
           <% if @profile.city.present? || @profile.state.present? || @profile.zip_code.present? %>
             <div class="col-span-2 lg:col-span-1">
               <%= render Typography::HeadingComponent.new(size: :h7, text: "Location") %>

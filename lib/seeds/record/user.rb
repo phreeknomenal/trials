@@ -55,8 +55,10 @@ class Seeds::Record::User
         last_name: Faker::Name.last_name,
         birth_year: Faker::Date.between(from: 80.years.ago, to: 18.years.ago).year,
         gender: genders.sample,
+        race: races.sample,
         pronouns: Profile::PRONOUN_OPTIONS.sample,
         sex_assigned_at_birth: Profile::SEX_ASSIGNED_AT_BIRTH_OPTIONS.sample,
+        ethnicity: Profile::ETHNICITY_OPTIONS.sample,
         city: Faker::Address.city,
         state: Faker::Address.state,
         country: "US",
@@ -80,6 +82,10 @@ class Seeds::Record::User
 
     def genders
       @genders ||= Gender.all
+    end
+
+    def races
+      @races ||= Race.all
     end
 
     def create_profile_associations(profile)

@@ -19,7 +19,6 @@ class Seeds::Record::Race
         { name: "American Indian or Alaska Native" },
         { name: "Asian" },
         { name: "Black or African American" },
-        { name: "Hispanic or Latino" },
         { name: "Native Hawaiian or Other Pacific Islander" },
         { name: "White" },
         { name: "Two or More Races" },

@@ -99,6 +99,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_03_184001) do
     t.integer "birth_year"
     t.string "pronouns"
     t.string "sex_assigned_at_birth"
+    t.string "ethnicity", default: "prefer not to say"
     t.string "city"
     t.string "state"
     t.string "country", default: "US"
