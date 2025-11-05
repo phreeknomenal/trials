@@ -13,7 +13,9 @@ class Layout::Navigation::HeaderComponent < ApplicationComponent
           <%= render Buttons::DarkModeToggleComponent.new %>
           <% if user_signed_in? %>
             <div class="w-10 h-10 rounded-full overflow-hidden">
-              <%= render Utilities::AvatarComponent.new(current_profile) %>
+              <%= link_to profile_path(current_profile), class: "block w-full h-full" do %>
+                <%= render Utilities::AvatarComponent.new(current_profile) %>
+              <% end %>
             </div>
           <% else %>
             <%= link_to "Login", new_user_session_path, class: "bg-lavender-600 text-white px-4 py-2 font-medium rounded-md" %>
