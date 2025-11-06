@@ -106,16 +106,14 @@
 
       <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-300 mb-5">Patient Information</h2>
       <div class="w-full grid grid-cols-2 gap-6 p-6 border border-zinc-200 dark:border-zinc-700 rounded-lg mb-8">
-        <% if @profile.primary_condition.present? %>
-          <div class="col-span-1">
-            <%= render Typography::HeadingComponent.new(size: :h7, text: "Primary Condition") %>
-            <div class="text-base text-zinc-600 font-body"><%= @profile.primary_condition.titleize %></div>
-          </div>
-        <% end %>
-        <% if @profile.condition_subtype.present? %>
-          <div class="col-span-1">
-            <%= render Typography::HeadingComponent.new(size: :h7, text: "Condition Subtype") %>
-            <div class="text-base text-zinc-600 font-body"><%= @profile.condition_subtype.titleize %></div>
+        <% if @profile.conditions.any? %>
+          <div class="col-span-2">
+            <%= render Typography::HeadingComponent.new(size: :h7, text: "Conditions") %>
+            <div class="flex flex-wrap gap-2 mt-2">
+              <% @profile.conditions.each do |condition| %>
+                <span class="px-3 py-1 bg-zinc-100 rounded-full text-sm font-body font-medium text-zinc-700"><%= condition.name.titleize %></span>
+              <% end %>
+            </div>
           </div>
         <% end %>
         <% if @profile.diagnosis_timing.present? %>

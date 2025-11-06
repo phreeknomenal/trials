@@ -38,8 +38,6 @@ class ProfilesController < ApplicationController
       :gender_id,
       :race_id,
       :about,
-      :primary_condition,
-      :condition_subtype,
       :diagnosis_timing,
       :current_treatment,
       :prior_treatment,
@@ -51,7 +49,8 @@ class ProfilesController < ApplicationController
       :contact_preference,
       :language_preference,
       identity_ids: [],
-      interest_ids: []
+      interest_ids: [],
+      condition_ids: []
     )
   end
 end

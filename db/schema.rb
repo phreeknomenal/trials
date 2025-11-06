@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_03_184001) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_06_010821) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
@@ -49,6 +49,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_03_184001) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "conditions", force: :cascade do |t|
+    t.text "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_conditions_on_name", unique: true
+  end
+
   create_table "genders", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
@@ -68,6 +75,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_03_184001) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_interests_on_name", unique: true
+  end
+
+  create_table "profile_conditions", force: :cascade do |t|
+    t.integer "profile_id", null: false
+    t.integer "condition_id", null: false
+    t.boolean "is_primary", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["condition_id"], name: "index_profile_conditions_on_condition_id"
+    t.index ["profile_id", "condition_id"], name: "index_profile_conditions_on_profile_id_and_condition_id", unique: true
+    t.index ["profile_id"], name: "index_profile_conditions_on_profile_id"
   end
 
   create_table "profile_identities", force: :cascade do |t|
@@ -105,8 +123,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_03_184001) do
     t.string "country", default: "US"
     t.string "zip_code"
     t.string "phone_number"
-    t.string "primary_condition"
-    t.string "condition_subtype"
     t.string "diagnosis_timing"
     t.string "current_treatment"
     t.boolean "prior_treatment", default: false
@@ -147,6 +163,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_03_184001) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "profile_conditions", "conditions"
+  add_foreign_key "profile_conditions", "profiles"
   add_foreign_key "profile_identities", "identities"
   add_foreign_key "profile_identities", "profiles"
   add_foreign_key "profile_interests", "interests"

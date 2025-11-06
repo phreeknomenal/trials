@@ -18,8 +18,6 @@ class CreateProfiles < ActiveRecord::Migration[8.0]
       t.string :zip_code
       t.string :phone_number
 
-      t.string :primary_condition
-      t.string :condition_subtype
       t.string :diagnosis_timing
       t.string :current_treatment
       t.boolean :prior_treatment, default: false
