@@ -4,3 +4,6 @@ import "controllers"
 
 import "trix"
 import "@rails/actiontext"
+
+import "jquery"
+import "@nathanvda/cocoon"
