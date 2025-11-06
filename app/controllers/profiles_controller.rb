@@ -5,6 +5,19 @@ class ProfilesController < ApplicationController
   def show
   end
 
+  def new
+    @profile = Profile.new
+  end
+
+  def create
+    @profile = current_user.build_profile(profile_params)
+    if @profile.save
+      redirect_to profile_path(@profile), notice: "Profile was successfully created."
+    else
+      render :new, status: :unprocessable_entity
+    end
+  end
+
   def edit
   end
 

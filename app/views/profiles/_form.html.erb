@@ -1,306 +1,296 @@
-<%= form_with(model: profile, local: true, class: "flex gap-10") do |form| %>
-  <div class="w-full lg:w-4/5">
-    <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-300 mb-5">Personal Information</h2>
-    <div class="w-full p-6 border border-zinc-200 dark:border-zinc-700 rounded-lg mb-8">
-      <div class="mb-6">
-        <%= render Forms::FieldComponent.new(
-          form: form, 
-          attribute: :about, 
-          field_type: :rich_text,
-          label: "About"
-        ) %>
-      </div>
-
-      <div class="grid grid-cols-2 gap-6">
-        <div class="col-span-2 lg:col-span-1">
-          <%= render Forms::FieldComponent.new(
-            form: form, 
-            attribute: :first_name, 
-            label: "First Name",
-            options: { required: true }
-          ) %>
-        </div>
-
-        <div class="col-span-2 lg:col-span-1">
-          <%= render Forms::FieldComponent.new(
-            form: form, 
-            attribute: :last_name, 
-            label: "Last Name",
-            options: { required: true }
-          ) %>
-        </div>
-
-        <div class="col-span-2 lg:col-span-1">
-          <%= render Forms::FieldComponent.new(
-            form: form, 
-            attribute: :pronouns, 
-            field_type: :select,
-            label: "Pronouns",
-            select_options: Profile::PRONOUN_OPTIONS.map { |p| [p.titleize, p] },
-            options: { include_blank: "Select pronouns" }
-          ) %>
-        </div>
-
-        <div class="col-span-2 lg:col-span-1">
-          <%= render Forms::FieldComponent.new(
-            form: form, 
-            attribute: :birth_year, 
-            field_type: :number,
-            label: "Birth Year",
-            options: { min: 1900, max: Time.current.year }
-          ) %>
-        </div>
-
-        <div class="col-span-2 lg:col-span-1">
-          <%= render Forms::FieldComponent.new(
-            form: form, 
-            attribute: :sex_assigned_at_birth, 
-            field_type: :select,
-            label: "Sex Assigned at Birth",
-            select_options: Profile::SEX_ASSIGNED_AT_BIRTH_OPTIONS.map { |s| [s.titleize, s] },
-            options: { include_blank: "Select sex" }
-          ) %>
-        </div>
-
-        <div class="col-span-2 lg:col-span-1">
-          <%= render Forms::FieldComponent.new(
-            form: form, 
-            attribute: :gender_id, 
-            field_type: :select,
-            label: "Gender",
-            select_options: Gender.all.map { |g| [g.name.titleize, g.id] },
-            options: { include_blank: "Select gender" }
-          ) %>
-        </div>
-
-        <div class="col-span-2 lg:col-span-1">
-          <%= render Forms::FieldComponent.new(
-            form: form, 
-            attribute: :race_id, 
-            field_type: :select,
-            label: "Race",
-            select_options: Race.all.map { |r| [r.name.titleize, r.id] },
-            options: { include_blank: "Select race" }
-          ) %>
-        </div>
-
-        <div class="col-span-2 lg:col-span-1">
-          <%= render Forms::FieldComponent.new(
-            form: form, 
-            attribute: :ethnicity, 
-            field_type: :select,
-            label: "Ethnicity",
-            select_options: Profile::ETHNICITY_OPTIONS.map { |e| [e.titleize, e] },
-            options: { include_blank: "Select ethnicity" }
-          ) %>
-        </div>
-
-        <div class="col-span-2 lg:col-span-1">
-          <%= render Forms::FieldComponent.new(
-            form: form, 
-            attribute: :phone_number, 
-            label: "Phone Number"
-          ) %>
-        </div>
-
-        <div class="col-span-2 lg:col-span-1">
-          <%= render Forms::FieldComponent.new(
-            form: form, 
-            attribute: :zip_code, 
-            label: "Zip Code",
-            options: { required: true }
-          ) %>
-        </div>
-
-        <div class="col-span-2 lg:col-span-1">
-          <%= render Forms::FieldComponent.new(
-            form: form, 
-            attribute: :city, 
-            label: "City"
-          ) %>
-        </div>
-
-        <div class="col-span-2 lg:col-span-1">
-          <%= render Forms::FieldComponent.new(
-            form: form, 
-            attribute: :state, 
-            label: "State"
-          ) %>
-        </div>
-
-        <div class="col-span-2 lg:col-span-1">
-          <%= render Forms::FieldComponent.new(
-            form: form, 
-            attribute: :country, 
-            label: "Country"
-          ) %>
-        </div>
-
-        <div class="col-span-2">
-          <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Identities</label>
-          <div class="flex flex-wrap gap-2 mt-2">
-            <%= form.collection_check_boxes :identity_ids, Identity.all, :id, :name do |b| %>
-              <label class="inline-flex items-center px-3 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-full cursor-pointer transition-colors">
-                <%= b.check_box(class: "mr-2") %>
-                <span class="text-sm font-body font-medium text-zinc-700 dark:text-zinc-300"><%= b.text.titleize %></span>
-              </label>
-            <% end %>
-          </div>
-        </div>
-
-        <div class="col-span-2">
-          <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Interests</label>
-          <div class="flex flex-wrap gap-2 mt-2">
-            <%= form.collection_check_boxes :interest_ids, Interest.all, :id, :name do |b| %>
-              <label class="inline-flex items-center px-3 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-full cursor-pointer transition-colors">
-                <%= b.check_box(class: "mr-2") %>
-                <span class="text-sm font-body font-medium text-zinc-700 dark:text-zinc-300"><%= b.text.titleize %></span>
-              </label>
-            <% end %>
-          </div>
-        </div>
-      </div>
+<%= form_with(model: @profile, local: true) do |form| %>
+  <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-300 mb-5">Personal Information</h2>
+  <div class="w-full p-6 border border-zinc-200 dark:border-zinc-700 rounded-lg mb-8">
+    <div class="mb-6">
+      <%= render Forms::FieldComponent.new(
+        form: form, 
+        attribute: :about, 
+        field_type: :rich_text,
+        label: "About"
+      ) %>
     </div>
 
-    <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-300 mb-5">Patient Information</h2>
-    <div class="w-full grid grid-cols-2 gap-6 p-6 border border-zinc-200 dark:border-zinc-700 rounded-lg mb-8">
-      <div class="w-full col-span-2">
-        <div class="grid grid-cols-3 gap-6" id="conditions">
-          <%= form.fields_for :profile_conditions do |profile_condition_form| %>
-            <%= render "profile_condition_fields", f: profile_condition_form %>
-          <% end %>
-
-          <div class="col-span-3">
-            <%= link_to_add_association "Add Condition", form, :profile_conditions,
-              data: {
-                cocoon: true,
-                cocoon_target: "#conditions",
-                cocoon_insertion_method: "append"
-              },
-              class: "text-lavender-800 font-semibold bg-lavender-300 hover:bg-lavender-500 text-white px-4 py-2 rounded-lg"
-            %>
-          </div>
-        </div>
+    <div class="grid grid-cols-2 gap-6">
+      <div class="col-span-2 lg:col-span-1">
+        <%= render Forms::FieldComponent.new(
+          form: form, 
+          attribute: :first_name, 
+          label: "First Name",
+          options: { required: true }
+        ) %>
       </div>
 
       <div class="col-span-2 lg:col-span-1">
         <%= render Forms::FieldComponent.new(
           form: form, 
-          attribute: :diagnosis_timing, 
+          attribute: :last_name, 
+          label: "Last Name",
+          options: { required: true }
+        ) %>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1">
+        <%= render Forms::FieldComponent.new(
+          form: form, 
+          attribute: :pronouns, 
           field_type: :select,
-          label: "Diagnosis Timing",
-          select_options: Profile::DIAGNOSIS_TIMING_OPTIONS.map { |d| [d.titleize, d] },
-          options: { include_blank: "Select timing" }
+          label: "Pronouns",
+          select_options: Profile::PRONOUN_OPTIONS.map { |p| [p.titleize, p] },
+          options: { include_blank: "Select pronouns" }
         ) %>
       </div>
 
       <div class="col-span-2 lg:col-span-1">
         <%= render Forms::FieldComponent.new(
           form: form, 
-          attribute: :current_treatment, 
+          attribute: :birth_year, 
+          field_type: :number,
+          label: "Birth Year",
+          options: { min: 1900, max: Time.current.year }
+        ) %>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1">
+        <%= render Forms::FieldComponent.new(
+          form: form, 
+          attribute: :sex_assigned_at_birth, 
           field_type: :select,
-          label: "Current Treatment",
-          select_options: Profile::TREATMENT_OPTIONS.map { |t| [t.titleize, t] },
-          options: { include_blank: "Select treatment" }
+          label: "Sex Assigned at Birth",
+          select_options: Profile::SEX_ASSIGNED_AT_BIRTH_OPTIONS.map { |s| [s.titleize, s] },
+          options: { include_blank: "Select sex" }
         ) %>
       </div>
 
       <div class="col-span-2 lg:col-span-1">
         <%= render Forms::FieldComponent.new(
           form: form, 
-          attribute: :prior_treatment, 
-          field_type: :checkbox,
-          label: "Prior Treatment"
+          attribute: :gender_id, 
+          field_type: :select,
+          label: "Gender",
+          select_options: Gender.all.map { |g| [g.name.titleize, g.id] },
+          options: { include_blank: "Select gender" }
         ) %>
       </div>
-    </div>
 
-    <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-300 mb-5">Preferences</h2>
-    <div class="w-full grid grid-cols-2 gap-6 p-6 border border-zinc-200 dark:border-zinc-700 rounded-lg mb-8">
+      <div class="col-span-2 lg:col-span-1">
+        <%= render Forms::FieldComponent.new(
+          form: form, 
+          attribute: :race_id, 
+          field_type: :select,
+          label: "Race",
+          select_options: Race.all.map { |r| [r.name.titleize, r.id] },
+          options: { include_blank: "Select race" }
+        ) %>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1">
+        <%= render Forms::FieldComponent.new(
+          form: form, 
+          attribute: :ethnicity, 
+          field_type: :select,
+          label: "Ethnicity",
+          select_options: Profile::ETHNICITY_OPTIONS.map { |e| [e.titleize, e] },
+          options: { include_blank: "Select ethnicity" }
+        ) %>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1">
+        <%= render Forms::FieldComponent.new(
+          form: form, 
+          attribute: :phone_number, 
+          label: "Phone Number"
+        ) %>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1">
+        <%= render Forms::FieldComponent.new(
+          form: form, 
+          attribute: :zip_code, 
+          label: "Zip Code",
+          options: { required: true }
+        ) %>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1">
+        <%= render Forms::FieldComponent.new(
+          form: form, 
+          attribute: :city, 
+          label: "City"
+        ) %>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1">
+        <%= render Forms::FieldComponent.new(
+          form: form, 
+          attribute: :state, 
+          label: "State"
+        ) %>
+      </div>
+
+      <div class="col-span-2 lg:col-span-1">
+        <%= render Forms::FieldComponent.new(
+          form: form, 
+          attribute: :country, 
+          label: "Country"
+        ) %>
+      </div>
+
       <div class="col-span-2">
-        <%= render Forms::FieldComponent.new(
-          form: form, 
-          attribute: :transportation_reliable, 
-          field_type: :checkbox,
-          label: "Reliable Transportation"
-        ) %>
+        <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Identities</label>
+        <div class="flex flex-wrap gap-2 mt-2">
+          <%= form.collection_check_boxes :identity_ids, Identity.all, :id, :name do |b| %>
+            <label class="inline-flex items-center px-3 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-full cursor-pointer transition-colors">
+              <%= b.check_box(class: "mr-2") %>
+              <span class="text-sm font-body font-medium text-zinc-700 dark:text-zinc-300"><%= b.text.titleize %></span>
+            </label>
+          <% end %>
+        </div>
       </div>
 
-      <div class="col-span-2 lg:col-span-1">
-        <%= render Forms::FieldComponent.new(
-          form: form, 
-          attribute: :willing_travel_miles, 
-          field_type: :select,
-          label: "Willing to Travel (miles)",
-          select_options: Profile::TRAVEL_MILES_OPTIONS.map { |m| ["#{m} miles", m] },
-          options: { include_blank: "Select distance" }
-        ) %>
+      <div class="col-span-2">
+        <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Interests</label>
+        <div class="flex flex-wrap gap-2 mt-2">
+          <%= form.collection_check_boxes :interest_ids, Interest.all, :id, :name do |b| %>
+            <label class="inline-flex items-center px-3 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-full cursor-pointer transition-colors">
+              <%= b.check_box(class: "mr-2") %>
+              <span class="text-sm font-body font-medium text-zinc-700 dark:text-zinc-300"><%= b.text.titleize %></span>
+            </label>
+          <% end %>
+        </div>
       </div>
-
-      <div class="col-span-2 lg:col-span-1">
-        <%= render Forms::FieldComponent.new(
-          form: form, 
-          attribute: :remote_visit_preference, 
-          field_type: :select,
-          label: "Remote Visit Preference",
-          select_options: Profile::REMOTE_VISIT_PREFERENCE_OPTIONS.map { |r| [r.titleize, r] },
-          options: { include_blank: "Select preference" }
-        ) %>
-      </div>
-
-      <div class="col-span-2 lg:col-span-1">
-        <%= render Forms::FieldComponent.new(
-          form: form, 
-          attribute: :trial_type_preference, 
-          field_type: :select,
-          label: "Trial Type Preference",
-          select_options: Profile::TRIAL_TYPE_PREFERENCE_OPTIONS.map { |t| [t.titleize, t] },
-          options: { include_blank: "Select type" }
-        ) %>
-      </div>
-
-      <div class="col-span-2 lg:col-span-1">
-        <%= render Forms::FieldComponent.new(
-          form: form, 
-          attribute: :risk_tolerance, 
-          field_type: :select,
-          label: "Risk Tolerance",
-          select_options: Profile::RISK_TOLERANCE_OPTIONS.map { |r| [r.titleize, r] },
-          options: { include_blank: "Select tolerance" }
-        ) %>
-      </div>
-
-      <div class="col-span-2 lg:col-span-1">
-        <%= render Forms::FieldComponent.new(
-          form: form, 
-          attribute: :contact_preference, 
-          field_type: :select,
-          label: "Contact Preference",
-          select_options: Profile::CONTACT_PREFERENCE_OPTIONS.map { |c| [c.titleize, c] },
-          options: { include_blank: "Select preference" }
-        ) %>
-      </div>
-
-      <div class="col-span-2 lg:col-span-1">
-        <%= render Forms::FieldComponent.new(
-          form: form, 
-          attribute: :language_preference, 
-          label: "Language Preference"
-        ) %>
-      </div>
-    </div>
-
-    <div class="flex gap-4">
-      <%= form.submit "Save Profile", class: "px-6 py-3 bg-lavender-600 hover:bg-lavender-500 text-white font-bold rounded-lg cursor-pointer transition-colors" %>
-      <%= link_to "Cancel", profile_path(profile), class: "px-6 py-3 bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-zinc-900 dark:text-zinc-300 font-bold rounded-lg transition-colors" %>
     </div>
   </div>
 
-  <div class="w-1/5 flex gap-10">
-    <div class="w-full h-124 bg-purple-300/10 rounded-lg border border-zinc-200 dark:border-zinc-700 p-4">
-      <p class="text-sm text-zinc-600 dark:text-zinc-400">
-        <strong>Note:</strong> Fields marked with * are required. Your profile helps us match you with relevant clinical trials.
-      </p>
+  <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-300 mb-5">Patient Information</h2>
+  <div class="w-full grid grid-cols-2 gap-6 p-6 border border-zinc-200 dark:border-zinc-700 rounded-lg mb-8">
+    <div class="w-full col-span-2">
+      <div class="grid grid-cols-3 gap-6" id="conditions">
+        <%= form.fields_for :profile_conditions do |profile_condition_form| %>
+          <%= render "profile_condition_fields", f: profile_condition_form %>
+        <% end %>
+
+        <div class="col-span-3">
+          <%= link_to_add_association "Add Condition", form, :profile_conditions,
+            data: {
+              cocoon: true,
+              cocoon_target: "#conditions",
+              cocoon_insertion_method: "append"
+            },
+            class: "text-lavender-800 font-semibold bg-lavender-300 hover:bg-lavender-500 text-white px-4 py-2 rounded-lg"
+          %>
+        </div>
+      </div>
     </div>
+
+    <div class="col-span-2 lg:col-span-1">
+      <%= render Forms::FieldComponent.new(
+        form: form, 
+        attribute: :diagnosis_timing, 
+        field_type: :select,
+        label: "Diagnosis Timing",
+        select_options: Profile::DIAGNOSIS_TIMING_OPTIONS.map { |d| [d.titleize, d] },
+        options: { include_blank: "Select timing" }
+      ) %>
+    </div>
+
+    <div class="col-span-2 lg:col-span-1">
+      <%= render Forms::FieldComponent.new(
+        form: form, 
+        attribute: :current_treatment, 
+        field_type: :select,
+        label: "Current Treatment",
+        select_options: Profile::TREATMENT_OPTIONS.map { |t| [t.titleize, t] },
+        options: { include_blank: "Select treatment" }
+      ) %>
+    </div>
+
+    <div class="col-span-2 lg:col-span-1">
+      <%= render Forms::FieldComponent.new(
+        form: form, 
+        attribute: :prior_treatment, 
+        field_type: :checkbox,
+        label: "Prior Treatment"
+      ) %>
+    </div>
+  </div>
+
+  <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-300 mb-5">Preferences</h2>
+  <div class="w-full grid grid-cols-2 gap-6 p-6 border border-zinc-200 dark:border-zinc-700 rounded-lg mb-8">
+    <div class="col-span-2">
+      <%= render Forms::FieldComponent.new(
+        form: form, 
+        attribute: :transportation_reliable, 
+        field_type: :checkbox,
+        label: "Reliable Transportation"
+      ) %>
+    </div>
+
+    <div class="col-span-2 lg:col-span-1">
+      <%= render Forms::FieldComponent.new(
+        form: form, 
+        attribute: :willing_travel_miles, 
+        field_type: :select,
+        label: "Willing to Travel (miles)",
+        select_options: Profile::TRAVEL_MILES_OPTIONS.map { |m| ["#{m} miles", m] },
+        options: { include_blank: "Select distance" }
+      ) %>
+    </div>
+
+    <div class="col-span-2 lg:col-span-1">
+      <%= render Forms::FieldComponent.new(
+        form: form, 
+        attribute: :remote_visit_preference, 
+        field_type: :select,
+        label: "Remote Visit Preference",
+        select_options: Profile::REMOTE_VISIT_PREFERENCE_OPTIONS.map { |r| [r.titleize, r] },
+        options: { include_blank: "Select preference" }
+      ) %>
+    </div>
+
+    <div class="col-span-2 lg:col-span-1">
+      <%= render Forms::FieldComponent.new(
+        form: form, 
+        attribute: :trial_type_preference, 
+        field_type: :select,
+        label: "Trial Type Preference",
+        select_options: Profile::TRIAL_TYPE_PREFERENCE_OPTIONS.map { |t| [t.titleize, t] },
+        options: { include_blank: "Select type" }
+      ) %>
+    </div>
+
+    <div class="col-span-2 lg:col-span-1">
+      <%= render Forms::FieldComponent.new(
+        form: form, 
+        attribute: :risk_tolerance, 
+        field_type: :select,
+        label: "Risk Tolerance",
+        select_options: Profile::RISK_TOLERANCE_OPTIONS.map { |r| [r.titleize, r] },
+        options: { include_blank: "Select tolerance" }
+      ) %>
+    </div>
+
+    <div class="col-span-2 lg:col-span-1">
+      <%= render Forms::FieldComponent.new(
+        form: form, 
+        attribute: :contact_preference, 
+        field_type: :select,
+        label: "Contact Preference",
+        select_options: Profile::CONTACT_PREFERENCE_OPTIONS.map { |c| [c.titleize, c] },
+        options: { include_blank: "Select preference" }
+      ) %>
+    </div>
+
+    <div class="col-span-2 lg:col-span-1">
+      <%= render Forms::FieldComponent.new(
+        form: form, 
+        attribute: :language_preference, 
+        label: "Language Preference"
+      ) %>
+    </div>
+  </div>
+
+  <div class="flex gap-4">
+    <%= form.submit "Save Profile", class: "px-6 py-3 bg-lavender-600 hover:bg-lavender-500 text-white font-bold rounded-lg cursor-pointer transition-colors" %>
+    <%= link_to "Cancel", path, class: "px-6 py-3 bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-zinc-900 dark:text-zinc-300 font-bold rounded-lg transition-colors" %>
   </div>
 <% end %>

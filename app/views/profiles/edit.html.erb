@@ -9,5 +9,17 @@
 </section>
 
 <section class="px-5 lg:px-36 py-24">
-  <%= render partial: "form", locals: { profile: @profile } %>
+  <div class="flex gap-10">
+    <div class="w-full lg:w-4/5">
+      <%= render partial: "form", locals: { profile: @profile, path: profile_path(@profile) } %>
+    </div>
+
+    <div class="w-1/5 flex gap-10">
+      <div class="w-full h-124 bg-purple-300/10 rounded-lg border border-zinc-200 dark:border-zinc-700 p-4">
+        <p class="text-sm text-zinc-600 dark:text-zinc-400">
+          <strong>Note:</strong> Fields marked with * are required. Your profile helps us match you with relevant clinical trials.
+        </p>
+      </div>
+    </div>
+  </div>
 </section>
