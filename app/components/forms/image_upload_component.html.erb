@@ -1,0 +1,44 @@
+<div class="flex flex-col md:flex-row gap-4" data-controller="upload-photos">
+  <div class="w-full h-full flex flex-col items-center justify-center bg-secondary-100 border border-dashed border-secondary-400 rounded-lg py-4">
+    <!-- Take a photo button -->
+    <div class="mt-4 flex flex-col text-sm leading-6">
+      <label class="relative cursor-pointer rounded-md font-semibold text-center bg-primary text-white p-4 focus-within:outline-none focus-within:ring-2 focus-within:ring-primary-800 focus-within:ring-offset-2 hover:text-primary-600">
+        <span data-upload-photos-target="buttonText">Take a photo</span>
+        <%= form.file_field attribute,
+          {
+            accept: "image/*, application/pdf",
+            capture: "environment",
+            direct_upload: true,
+            class: "hidden",
+            required: false,
+            multiple: true,
+            data: { action: "change->upload-photos#handleFileSelect", "upload-photos-target": "input" }
+          } %>
+      </label>
+    </div>
+    
+    <!-- Image previews -->
+    <div class="mt-4 flex flex-col text-sm">
+      <div data-upload-photos-target="previewsContainer" class="flex flex-col lg:flex-row justify-center items-center mt-4 gap-4">
+      </div>
+      <div data-upload-photos-target="previewTemplate" class="hidden text-center">
+        <div class="relative inline-block">
+          <img data-upload-photos-target="previewImage" class="w-32 h-32 object-cover rounded-lg border-2 border-green-500 shadow-md pdf-preview:object-contain pdf-preview:bg-red-50 pdf-preview:border-red-500 pdf-preview:text-red-600">
+          <button type="button" class="absolute -top-2 -left-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 transition-colors cursor-pointer" data-action="click->upload-photos#removeFile" data-file-index="">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+        <p data-upload-photos-target="fileName" class="mt-2 text-xs text-gray-600"></p>
+      </div>
+    </div>
+
+    <!-- Clear all button -->
+    <div class="mt-4 flex flex-col text-sm leading-6">
+      <button type="button" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white text-sm rounded-md transition-colors hidden" data-upload-photos-target="clearButton" data-action="click->upload-photos#clearAll">
+        Clear All
+      </button>
+    </div>
+  </div>
+</div>
