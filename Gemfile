@@ -9,7 +9,6 @@ gem "httparty"
 gem "image_processing", "~> 1.2"
 gem "importmap-rails"
 gem "jbuilder"
-gem "jquery-rails"
 gem "kamal", require: false
 gem "pagy"
 gem "propshaft"

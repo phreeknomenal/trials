@@ -50,7 +50,8 @@ class ProfilesController < ApplicationController
       :language_preference,
       identity_ids: [],
       interest_ids: [],
-      condition_ids: []
+      condition_ids: [],
+      profile_conditions_attributes: [ :id, :condition_id, :is_primary, :_destroy ]
     )
   end
 end
