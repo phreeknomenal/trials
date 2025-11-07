@@ -29,11 +29,14 @@
   <body class=" dark:bg-zinc-900">
     <%= render Layout::Navigation::HeaderComponent.new %>
 
-    <p class="notice"><%= notice %></p>
-    <p class="alert"><%= alert %></p>
+    <%= render "shared/utilities/flash_messages" %>
     
     <%= yield %>
 
     <%= render Layout::Navigation::FooterComponent.new %>
+    
+    <% if user_signed_in? && current_profile && !current_profile.profile_completed? %>
+      <%= render "shared/profile_onboarding_modal" %>
+    <% end %>
   </body>
 </html>

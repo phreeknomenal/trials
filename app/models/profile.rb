@@ -190,4 +190,11 @@ class Profile < ApplicationRecord
     return nil unless birth_year.present?
     Time.current.year - birth_year
   end
+
+  def profile_completed?
+    return false unless onboarded?
+
+    required_fields = %i[first_name last_name zip_code]
+    required_fields.all? { |field| send(field).present? }
+  end
 end
