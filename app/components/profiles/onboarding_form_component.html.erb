@@ -4,7 +4,7 @@
       <!-- Avatar Upload (Optional) -->
       <div class="flex justify-center">
         <div class="relative">
-          <div class="w-24 h-24 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center text-3xl font-bold text-purple-600 dark:text-purple-300 overflow-hidden">
+          <div class="w-24 h-24 rounded-full bg-lavender-100 dark:bg-lavender-900 flex items-center justify-center text-3xl font-bold text-lavender-600 dark:text-lavender-300 overflow-hidden">
             <% if profile.avatar.attached? %>
               <%= image_tag profile.avatar, class: "w-full h-full object-cover" %>
             <% elsif profile.first_name.present? && profile.last_name.present? %>
@@ -13,7 +13,7 @@
               ?
             <% end %>
           </div>
-          <label for="profile_avatar" class="absolute bottom-0 right-0 bg-purple-600 hover:bg-purple-700 text-white rounded-full p-2 cursor-pointer transition-colors">
+          <label for="profile_avatar" class="absolute bottom-0 right-0 bg-lavender-600 hover:bg-lavender-700 text-white rounded-full p-2 cursor-pointer transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
               <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
             </svg>
@@ -26,7 +26,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="md:col-span-2">
           <label class="block text-sm font-bold text-zinc-900 dark:text-zinc-300 mb-2">First Name *</label>
-          <%= f.text_field :first_name, required: true, placeholder: "Enter your first name", class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800 focus:ring-2 focus:ring-purple-500 focus:border-transparent" %>
+          <%= f.text_field :first_name, required: true, placeholder: "Enter your first name", class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800 focus:ring-2 focus:ring-lavender-500 focus:border-transparent" %>
           <% if profile.errors[:first_name].any? %>
             <p class="text-red-500 text-xs mt-1"><%= profile.errors[:first_name].first %></p>
           <% end %>
@@ -34,7 +34,7 @@
 
         <div class="md:col-span-2">
           <label class="block text-sm font-bold text-zinc-900 dark:text-zinc-300 mb-2">Last Name *</label>
-          <%= f.text_field :last_name, required: true, placeholder: "Enter your last name", class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800 focus:ring-2 focus:ring-purple-500 focus:border-transparent" %>
+          <%= f.text_field :last_name, required: true, placeholder: "Enter your last name", class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800 focus:ring-2 focus:ring-lavender-500 focus:border-transparent" %>
           <% if profile.errors[:last_name].any? %>
             <p class="text-red-500 text-xs mt-1"><%= profile.errors[:last_name].first %></p>
           <% end %>
@@ -42,7 +42,7 @@
 
         <div class="md:col-span-2">
           <label class="block text-sm font-bold text-zinc-900 dark:text-zinc-300 mb-2">Zip Code *</label>
-          <%= f.text_field :zip_code, required: true, placeholder: "Enter your zip code", pattern: "[0-9]{5}", maxlength: 5, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800 focus:ring-2 focus:ring-purple-500 focus:border-transparent" %>
+          <%= f.text_field :zip_code, required: true, placeholder: "Enter your zip code", pattern: "[0-9]{5}", maxlength: 5, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800 focus:ring-2 focus:ring-lavender-500 focus:border-transparent" %>
           <% if profile.errors[:zip_code].any? %>
             <p class="text-red-500 text-xs mt-1"><%= profile.errors[:zip_code].first %></p>
           <% end %>
@@ -50,22 +50,22 @@
 
         <div class="md:col-span-1">
           <label class="block text-sm font-bold text-zinc-900 dark:text-zinc-300 mb-2">Pronouns</label>
-          <%= f.select :pronouns, Profile::PRONOUN_OPTIONS.map { |p| [p.titleize, p] }, { include_blank: "Select pronouns" }, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800 focus:ring-2 focus:ring-purple-500 focus:border-transparent" %>
+          <%= f.select :pronouns, Profile::PRONOUN_OPTIONS.map { |p| [p.titleize, p] }, { include_blank: "Select pronouns" }, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800 focus:ring-2 focus:ring-lavender-500 focus:border-transparent" %>
         </div>
 
         <div class="md:col-span-1">
           <label class="block text-sm font-bold text-zinc-900 dark:text-zinc-300 mb-2">Birth Year</label>
-          <%= f.number_field :birth_year, min: 1900, max: Time.current.year, placeholder: "e.g., 1990", class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800 focus:ring-2 focus:ring-purple-500 focus:border-transparent" %>
+          <%= f.number_field :birth_year, min: 1900, max: Time.current.year, placeholder: "e.g., 1990", class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800 focus:ring-2 focus:ring-lavender-500 focus:border-transparent" %>
         </div>
 
         <div class="md:col-span-1">
           <label class="block text-sm font-bold text-zinc-900 dark:text-zinc-300 mb-2">Gender</label>
-          <%= f.collection_select :gender_id, Gender.all, :id, :name, { include_blank: "Select gender" }, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800 focus:ring-2 focus:ring-purple-500 focus:border-transparent" %>
+          <%= f.collection_select :gender_id, Gender.all, :id, :name, { include_blank: "Select gender" }, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800 focus:ring-2 focus:ring-lavender-500 focus:border-transparent" %>
         </div>
 
         <div class="md:col-span-1">
           <label class="block text-sm font-bold text-zinc-900 dark:text-zinc-300 mb-2">Sex Assigned at Birth</label>
-          <%= f.select :sex_assigned_at_birth, Profile::SEX_ASSIGNED_AT_BIRTH_OPTIONS.map { |s| [s.titleize, s] }, { include_blank: "Select" }, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800 focus:ring-2 focus:ring-purple-500 focus:border-transparent" %>
+          <%= f.select :sex_assigned_at_birth, Profile::SEX_ASSIGNED_AT_BIRTH_OPTIONS.map { |s| [s.titleize, s] }, { include_blank: "Select" }, class: "w-full border border-zinc-300 dark:border-zinc-600 rounded-lg p-3 text-zinc-900 dark:text-zinc-300 dark:bg-zinc-800 focus:ring-2 focus:ring-lavender-500 focus:border-transparent" %>
         </div>
       </div>
 
@@ -75,7 +75,7 @@
           <label class="block text-sm font-bold text-zinc-900 dark:text-zinc-300 mb-3">I am a... <span class="font-normal text-zinc-500">(optional)</span></label>
           <div class="flex flex-wrap gap-2">
             <%= f.collection_check_boxes :identity_ids, Identity.all, :id, :name do |b| %>
-              <label class="inline-flex items-center px-4 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-purple-100 dark:hover:bg-purple-900 rounded-full cursor-pointer transition-colors border-2 border-transparent has-[:checked]:border-purple-500 has-[:checked]:bg-purple-50 dark:has-[:checked]:bg-purple-900/50">
+              <label class="inline-flex items-center px-4 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-lavender-100 dark:hover:bg-lavender-900 rounded-full cursor-pointer transition-colors border-2 border-transparent has-[:checked]:border-lavender-500 has-[:checked]:bg-lavender-50 dark:has-[:checked]:bg-lavender-900/50">
                 <%= b.check_box(class: "sr-only") %>
                 <span class="text-sm font-medium text-zinc-700 dark:text-zinc-300"><%= b.text.titleize %></span>
               </label>
@@ -90,7 +90,7 @@
           <label class="block text-sm font-bold text-zinc-900 dark:text-zinc-300 mb-3">Looking for... <span class="font-normal text-zinc-500">(optional)</span></label>
           <div class="flex flex-wrap gap-2">
             <%= f.collection_check_boxes :interest_ids, Interest.all, :id, :name do |b| %>
-              <label class="inline-flex items-center px-4 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-purple-100 dark:hover:bg-purple-900 rounded-full cursor-pointer transition-colors border-2 border-transparent has-[:checked]:border-purple-500 has-[:checked]:bg-purple-50 dark:has-[:checked]:bg-purple-900/50">
+              <label class="inline-flex items-center px-4 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-lavender-100 dark:hover:bg-lavender-900 rounded-full cursor-pointer transition-colors border-2 border-transparent has-[:checked]:border-lavender-500 has-[:checked]:bg-lavender-50 dark:has-[:checked]:bg-lavender-900/50">
                 <%= b.check_box(class: "sr-only") %>
                 <span class="text-sm font-medium text-zinc-700 dark:text-zinc-300"><%= b.text.titleize %></span>
               </label>
@@ -104,7 +104,7 @@
 
       <!-- Submit Button -->
       <div class="flex justify-end pt-4 border-t border-zinc-200 dark:border-zinc-700">
-        <%= f.submit "Complete Profile", class: "w-full md:w-auto px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg cursor-pointer transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 transition-transform" %>
+        <%= f.submit "Complete Profile", class: "w-full md:w-auto px-8 py-3 bg-lavender-600 hover:bg-lavender-700 text-white font-bold rounded-lg cursor-pointer transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 transition-transform" %>
       </div>
     </div>
   <% end %>

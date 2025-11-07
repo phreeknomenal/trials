@@ -32,6 +32,8 @@ class ProfilesController < ApplicationController
   end
 
   def update
+    authorize @profile
+
     respond_to do |format|
       if @profile.update(profile_params)
         format.turbo_stream do
@@ -46,8 +48,7 @@ class ProfilesController < ApplicationController
         format.turbo_stream do
           render turbo_stream: turbo_stream.replace(
             "profile-onboarding-form",
-            partial: "shared/profile_onboarding_form",
-            locals: { profile: @profile }
+            Profiles::OnboardingFormComponent.new(profile: @profile)
           ), status: :unprocessable_entity
         end
         format.html { render :edit, status: :unprocessable_entity }
