@@ -13,6 +13,7 @@ gem "kamal", require: false
 gem "pagy"
 gem "propshaft"
 gem "puma", ">= 5.0"
+gem "pundit"
 gem "rails", "~> 8.0.2"
 gem "solid_cable"
 gem "solid_cache"

@@ -3,14 +3,23 @@ class ProfilesController < ApplicationController
   before_action :set_profile, only: [ :show, :edit, :update ]
 
   def show
+    authorize @profile
   end
 
   def new
+    if current_user.profile.present?
+      redirect_to edit_profile_path(current_user.profile), notice: "You already have a profile. You can edit it here."
+      return
+    end
+
     @profile = Profile.new
+    authorize @profile
   end
 
   def create
     @profile = current_user.build_profile(profile_params)
+    authorize @profile
+
     if @profile.save
       redirect_to profile_path(@profile), notice: "Profile was successfully created."
     else
@@ -19,9 +28,12 @@ class ProfilesController < ApplicationController
   end
 
   def edit
+    authorize @profile
   end
 
   def update
+    authorize @profile
+
     if @profile.update(profile_params)
       redirect_to profile_path(@profile), notice: "Profile was successfully updated."
     else

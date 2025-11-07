@@ -71,30 +71,30 @@ class Forms::FieldComponent < ApplicationComponent
   end
 
   def checkbox_label_class
-    "ms-1 text-sm font-medium text-zinc-900 dark:text-zinc-300 form-check-label"
+    "ms-1 text-base font-medium text-zinc-900 dark:text-zinc-300 form-check-label"
   end
 
   def date_field_class
-    "block w-full form-control bg-white border border-secondary-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500"
+    "block w-full form-control bg-white border border-secondary-300 text-gray-900 text-base rounded-lg focus:ring-primary-500 focus:border-primary-500"
   end
 
   def file_field_class
-    "block w-full text-sm text-secondary-900 border border-secondary-300 rounded-lg cursor-pointer bg-secondary-50 focus:outline-none focus:ring-primary file:bg-secondary-800"
+    "block w-full text-base text-secondary-900 border border-secondary-300 rounded-lg cursor-pointer bg-secondary-50 focus:outline-none focus:ring-primary file:bg-secondary-800"
   end
 
   def rich_text_field_class
-    "prose p-2 max-w-none w-full rounded-lg text-zinc-900 dark:text-zinc-300 border-secondary-200 dark:border-zinc-700 focus:border-primary focus:ring-primary text-sm"
+    "prose p-2 max-w-none w-full rounded-lg text-zinc-900 dark:text-zinc-300 border-secondary-200 dark:border-zinc-700 focus:border-primary focus:ring-primary text-base"
   end
 
   def select_field_class
-    "block p-2 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-sm text-zinc-900 dark:text-zinc-300 rounded focus:ring-lavender-600 focus:border-lavender-600 disabled:bg-lavender-50 disabled:text-lavender-500 disabled:border-lavender-200 disabled:shadow-none"
+    "block p-2 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-lavender-600 focus:border-lavender-600 disabled:bg-lavender-50 disabled:text-lavender-500 disabled:border-lavender-200 disabled:shadow-none"
   end
 
   def text_field_class
-    "block w-full form-control bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-300 text-sm rounded focus:ring-lavender-600 focus:border-lavender-600 p-2 disabled:bg-lavender-50 disabled:text-lavender-500 disabled:border-lavender-200 disabled:shadow-none"
+    "block w-full form-control bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-300 text-base rounded focus:ring-lavender-600 focus:border-lavender-600 p-2 disabled:bg-lavender-50 disabled:text-lavender-500 disabled:border-lavender-200 disabled:shadow-none"
   end
 
   def text_area_class
-    "block w-full h-36 form-control bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-300 text-sm rounded focus:ring-lavender-600 focus:border-lavender-600 p-2"
+    "block w-full h-36 form-control bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-300 text-base rounded focus:ring-lavender-600 focus:border-lavender-600 p-2"
   end
 end
