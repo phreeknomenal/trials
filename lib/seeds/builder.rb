@@ -22,6 +22,7 @@ class Seeds::Builder
       Seeds::Record::Race.seed
       Seeds::Record::Identity.seed
       Seeds::Record::Interest.seed
+      Seeds::Record::Condition.seed
       # Seeds::Record::Tag.seed
       # Seeds::Record::Article.seed
       # Seeds::Record::Event.seed

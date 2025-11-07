@@ -64,8 +64,6 @@ class Seeds::Record::User
         country: "US",
         zip_code: Faker::Address.zip_code,
         phone_number: Faker::PhoneNumber.cell_phone,
-        primary_condition: Faker::Lorem.word,
-        condition_subtype: Faker::Lorem.word,
         diagnosis_timing: Profile::DIAGNOSIS_TIMING_OPTIONS.sample,
         current_treatment: Profile::TREATMENT_OPTIONS.sample,
         prior_treatment: [ true, false ].sample,
@@ -75,7 +73,7 @@ class Seeds::Record::User
         trial_type_preference: Profile::TRIAL_TYPE_PREFERENCE_OPTIONS.sample,
         risk_tolerance: Profile::RISK_TOLERANCE_OPTIONS.sample,
         contact_preference: Profile::CONTACT_PREFERENCE_OPTIONS.sample,
-        language_preference: Faker::Lorem.word,
+        language_preference: Faker::Nation.language,
         about: Faker::Lorem.paragraph(sentence_count: 5)
       }
     end
@@ -88,6 +86,10 @@ class Seeds::Record::User
       @races ||= Race.all
     end
 
+    def conditions
+      @conditions ||= Condition.all
+    end
+
     def create_profile_associations(profile)
       profile_identities = identities.sample(rand(1..5)).map do |identity|
         ProfileIdentity.new(profile: profile, identity: identity)
@@ -98,6 +100,11 @@ class Seeds::Record::User
         ProfileInterest.new(profile: profile, interest: interest)
       end
       ProfileInterest.import(profile_interests)
+
+      profile_conditions = conditions.sample(rand(1..5)).map do |condition|
+        ProfileCondition.new(profile: profile, condition: condition)
+      end
+      ProfileCondition.import(profile_conditions)
     end
 
     def identities

@@ -1,0 +1,25 @@
+<div class="nested-fields col-span-3 lg:col-span-1 flex flex-col items-center gap-3 p-3 border border-zinc-200 dark:border-zinc-700 rounded bg-white dark:bg-zinc-800">
+  <div class="flex-1 w-full">
+    <%= render Forms::FieldComponent.new(
+      form: f, 
+      attribute: :condition_id, 
+      field_type: :select,
+      label: "Condition",
+      select_options: Condition.all.order(:name).map { |c| [c.name.titleize, c.id] },
+      options: { prompt: "Select a Condition..." }
+    ) %>
+  </div>
+  
+  <div class="w-full flex items-center justify-between gap-2">
+    <%= render Forms::FieldComponent.new(
+      form: f, 
+      attribute: :is_primary, 
+      field_type: :checkbox,
+      label: "Primary Condition"
+    ) %>
+    
+    <div>
+      <%= link_to_remove_association "Remove", f, data: { cocoon: true }, class: "px-2 py-1 bg-red-500 hover:bg-red-600 text-white text-sm rounded transition-colors" %>
+    </div>
+  </div>
+</div>

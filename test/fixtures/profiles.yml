@@ -5,7 +5,6 @@
 #  id                      :integer          not null, primary key
 #  birth_year              :integer
 #  city                    :string
-#  condition_subtype       :string
 #  contact_preference      :string
 #  country                 :string           default("US")
 #  current_treatment       :string
@@ -16,7 +15,6 @@
 #  last_name               :string
 #  onboarded               :boolean          default(FALSE), not null
 #  phone_number            :string
-#  primary_condition       :string
 #  prior_treatment         :boolean          default(FALSE)
 #  pronouns                :string
 #  remote_visit_preference :string

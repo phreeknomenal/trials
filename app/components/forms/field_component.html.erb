@@ -1,0 +1,35 @@
+<div class="form-group">
+  <% case field_type %>
+  <% when :checkbox %>
+    <div class="form-check flex items-center gap-1">
+      <%= input_field %>
+      <%= form.label(attribute, field_label, class: checkbox_label_class) %>
+    </div>
+  <% when :checkbox_with_description %>
+    <div class="form-check">
+      <div class="flex items-center gap-2">
+        <%= input_field %>
+        <%= form.label(attribute, field_label, class: "text-sm font-medium text-secondary-800 mr-1") %>
+      </div>
+      <p class="text-sm text-gray-500"><%= options[:description] %></p>
+    </div>
+  <% when :collection_checkbox %>
+    <div class="flex items-center form-check">
+      <%= form.checkbox(merge_class(checkbox_field_class)) %>
+      <%= form.label(merge_class(checkbox_label_class)) %>
+    </div>
+  <% when :radio %>
+    <%= form.label(attribute, field_label, class: "block text-sm font-bold text-secondary-800") if label.present? %>
+    <div class="flex flex-col my-1">
+      <% select_options.each do |option| %>
+        <div>
+          <%= form.radio_button(attribute, option[0], options) %>
+          <%= form.label(attribute, option[1]) %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <%= form.label(attribute, field_label, class: "block text-sm font-medium text-zinc-900 dark:text-zinc-300 mb-0.5") if label.present? %>
+    <%= input_field %>
+  <% end %>
+</div>
