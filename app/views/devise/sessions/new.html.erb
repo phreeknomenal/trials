@@ -1,45 +1,69 @@
 <div class="w-full flex items-center justify-center">
   <div class="w-2/3 py-24">
-    <div class="w-full grid grid-cols-2 border border-zinc-200 rounded-2xl overflow-hidden">
+    <div class="w-full grid grid-cols-2 border border-zinc-300 dark:border-zinc-700 rounded-2xl overflow-hidden">
       <%# LEFT %>
-      <div class="p-10 border-r border-zinc-200">
-        Insert Carousel Here Later
-        <%#= render partial: "shared/onboarding/carousel", locals: {} %>
+      <div class="p-10 border-r border-zinc-300 dark:border-zinc-700">
+        <%= render Page::CarouselComponent.new(
+          slides: [
+            {
+              image: "onboarding/profile.jpeg",
+              title: "Create Your Profile",
+              description: "Tell us about your health journey to receive personalized clinical trial recommendations.",
+              image_alt: "Create profile illustration"
+            },
+            {
+              image: "onboarding/discover.jpeg",
+              title: "Discover Matching Trials",
+              description: "Browse clinical trials that match your health profile, location, and interests.",
+              image_alt: "Discover trials illustration"
+            },
+            {
+              image: "onboarding/connect.jpeg",
+              title: "Connect & Participate",
+              description: "Join clinical research and help advance medical treatments for your condition.",
+              image_alt: "Connect and participate illustration"
+            }
+          ],
+          interval: 3000
+        ) %>
       </div>
 
       <%# RIGHT %>
       <div class="p-10">
-        <h3 class="text-lg font-semibold text-zinc-500 leading-none">Welcome back to</h3>
-        <h1 class="text-5xl font-bold tracking-tight leading-none">Clinical Trial Finder</h1>
-        <h2 class="text-md text-zinc-500 mb-10">Find the perfect clinical trial for you.</h2>
+        <h3 class="text-2xl font-semibold font-accent text-lavender-600 leading-none">Welcome back to</h3>
+        <h1 class="text-5xl font-bold tracking-tight leading-none text-zinc-900 dark:text-zinc-300">Lumen</h1>
+        <h2 class="text-md font-body text-zinc-600 dark:text-zinc-400 mb-10">Find the perfect clinical trial for you.</h2>
 
         <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
           <div class="field mb-4">
-            <%= f.email_field :email, autocomplete: "email", placeholder: "Email address", class: "w-full border border-zinc-200 rounded text-zinc-800 p-5 mb-2" %>
+            <%= f.email_field :email, autocomplete: "email", placeholder: "Email address", class: "w-full border border-zinc-300 dark:border-zinc-700 rounded text-zinc-600 dark:text-zinc-400 placeholder:text-zinc-600 dark:placeholder:text-zinc-400 p-5 mb-2" %>
           </div>
 
           <div class="field mb-6">
-            <%= f.password_field :password, autocomplete: "current-password", placeholder: "Password", class: "w-full border border-zinc-200 rounded text-zinc-800 p-5 mb-2" %>
+            <%= f.password_field :password, autocomplete: "current-password", placeholder: "Password", class: "w-full border border-zinc-300 dark:border-zinc-700 rounded text-zinc-600 dark:text-zinc-400 placeholder:text-zinc-600 dark:placeholder:text-zinc-400 p-5 mb-2" %>
           </div>
 
           <div class="flex items-center justify-between">
             <% if devise_mapping.rememberable? %>
-              <div class="field">
-                <%= f.check_box :remember_me %>
-                <%= f.label :remember_me %>
-              </div>
+              <%= render Forms::FieldComponent.new(
+                form: f,
+                attribute: :remember_me,
+                label: "Remember me",
+                field_type: :checkbox,
+                options: { class: "form-check-input accent-lavender-600" }
+              ) %>
             <% end %>
 
-            <p class=""><%= link_to "Forgot password?", new_user_password_path, class: "text-blue-500" %></p>
+            <p class=""><%= link_to "Forgot password?", new_user_password_path, class: "text-lavender-600 hover:text-coral-600 transition-all duration-300 cursor-pointer" %></p>
           </div>
 
           <div class="actions mt-10">
-            <%= f.submit "Log in", class: "w-full bg-blue-600 text-white font-medium py-3 px-4 rounded-lg hover:bg-blue-500 transition-all duration-300 cursor-pointer" %>
+            <%= f.submit "Log in", class: "w-full bg-lavender-600 text-white font-medium py-3 px-4 rounded-lg hover:bg-coral-600 transition-all duration-300 cursor-pointer" %>
           </div>
         <% end %>
 
         <div class="flex items-center justify-between mt-20">
-          <p class="text-zinc-500">Don't have an account? <%= link_to "Sign up", new_user_registration_path, class: "text-blue-500" %></p>
+          <p class="text-zinc-500">Don't have an account? <%= link_to "Sign up", new_user_registration_path, class: "text-lavender-600 hover:text-coral-600 transition-all duration-300 cursor-pointer" %></p>
         </div>
       </div>
     </div>
