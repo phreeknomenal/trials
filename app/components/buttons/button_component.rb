@@ -18,11 +18,11 @@ class Buttons::ButtonComponent < ApplicationComponent
     when "white"
       "border border-zinc-200 text-zinc-600 bg-white hover:border-coral-600 hover:text-white hover:bg-coral-600 transition-all"
     when "clear"
-      "border border-transparent text-navy-600 bg-transparent hover:border-coral-600 hover:text-white hover:bg-coral-600 transition-all"
-    when "clear_navy"
-      "border border-navy-600 text-navy-600 bg-transparent hover:border-coral-600 hover:text-white hover:bg-coral-600 transition-all"
+      "border border-transparent text-zinc-600 dark:text-zinc-300 bg-transparent hover:border-coral-600 hover:text-white hover:bg-coral-600 transition-all"
+    when "clear_zinc"
+      "border border-zinc-600 dark:border-zinc-300 text-zinc-600 dark:text-zinc-300 bg-transparent hover:border-coral-600 hover:text-white hover:bg-coral-600 transition-all"
     else
-      "border border-zinc-700 text-zinc-300 bg-transparent hover:border-coral-600 hover:text-white hover:bg-coral-600 transition-all"
+      "border border-zinc-600 dark:border-zinc-300 text-zinc-900 dark:text-zinc-300 bg-transparent hover:border-coral-600 hover:text-white hover:bg-coral-600 transition-all"
     end
   end
 end

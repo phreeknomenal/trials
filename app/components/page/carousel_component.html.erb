@@ -1,0 +1,21 @@
+<div data-controller="carousel" data-carousel-interval-value="<%= interval %>">
+  <div class="carousel-wrapper">
+    <% slides.each do |slide| %>
+      <div class="carousel-slide" data-carousel-target="slide">
+        <%= render Page::CarouselSlideComponent.new(
+          image: slide[:image],
+          title: slide[:title],
+          description: slide[:description],
+          image_alt: slide[:image_alt]
+        ) %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- NAVIGATION DOTS -->
+  <div class="carousel-dots">
+    <% slides.each do |slide| %>
+      <span class="dot" data-carousel-target="dot" data-action="click->carousel#goToSlide"></span>
+    <% end %>
+  </div>
+</div>

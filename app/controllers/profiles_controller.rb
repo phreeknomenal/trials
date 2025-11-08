@@ -34,10 +34,25 @@ class ProfilesController < ApplicationController
   def update
     authorize @profile
 
-    if @profile.update(profile_params)
-      redirect_to profile_path(@profile), notice: "Profile was successfully updated."
-    else
-      render :edit, status: :unprocessable_entity
+    respond_to do |format|
+      if @profile.update(profile_params)
+        format.turbo_stream do
+          flash.now[:notice] = "Your profile was successfully completed!"
+          render turbo_stream: [
+            turbo_stream.replace("main-flash-messages", partial: "shared/utilities/flash_messages"),
+            turbo_stream.remove("profile-onboarding-modal")
+          ]
+        end
+        format.html { redirect_to profile_path(@profile), notice: "Profile was successfully updated." }
+      else
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            "profile-onboarding-form",
+            Profiles::OnboardingFormComponent.new(profile: @profile)
+          ), status: :unprocessable_entity
+        end
+        format.html { render :edit, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -49,6 +64,7 @@ class ProfilesController < ApplicationController
 
   def profile_params
     params.require(:profile).permit(
+      :onboarded,
       :first_name,
       :last_name,
       :birth_year,
@@ -63,6 +79,7 @@ class ProfilesController < ApplicationController
       :gender_id,
       :race_id,
       :about,
+      :avatar,
       :diagnosis_timing,
       :current_treatment,
       :prior_treatment,

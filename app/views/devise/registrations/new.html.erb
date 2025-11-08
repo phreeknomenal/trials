@@ -1,29 +1,66 @@
-<h2>Sign up</h2>
+<div class="w-full flex items-center justify-center">
+  <div class="w-2/3 py-24">
+    <div class="w-full grid grid-cols-2 border border-zinc-300 dark:border-zinc-700 rounded-2xl overflow-hidden">
+      <%# LEFT %>
+      <div class="p-10 border-r border-zinc-300 dark:border-zinc-700">
+        <%= render Page::CarouselComponent.new(
+          slides: [
+            {
+              image: "onboarding/profile.jpeg",
+              title: "Create Your Profile",
+              description: "Tell us about your health journey to receive personalized clinical trial recommendations.",
+              image_alt: "Create profile illustration"
+            },
+            {
+              image: "onboarding/discover.jpeg",
+              title: "Discover Matching Trials",
+              description: "Browse clinical trials that match your health profile, location, and interests.",
+              image_alt: "Discover trials illustration"
+            },
+            {
+              image: "onboarding/connect.jpeg",
+              title: "Connect & Participate",
+              description: "Join clinical research and help advance medical treatments for your condition.",
+              image_alt: "Connect and participate illustration"
+            }
+          ],
+          interval: 3000
+        ) %>
+      </div>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+      <%# RIGHT %>
+      <div class="p-10">
+        <h3 class="text-2xl font-semibold font-accent text-lavender-600 leading-none">Welcome to</h3>
+        <h1 class="text-6xl font-bold leading-none text-zinc-900 dark:text-zinc-300">Lumen</h1>
+        <h2 class="text-md text-zinc-600 dark:text-zinc-400 mb-10">Find the perfect clinical trial for you.</h2>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+        <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+          <%= render "devise/shared/error_messages", resource: resource %>
+
+          <div class="field mb-4">
+            <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "Email address", class: "w-full border border-zinc-300 dark:border-zinc-700 rounded text-zinc-600 dark:text-zinc-400 placeholder:text-zinc-600 dark:placeholder:text-zinc-400 p-5 mb-2" %>
+          </div>
+
+          <div class="field mb-4">
+            <%= f.password_field :password, autocomplete: "new-password", placeholder: "Password", class: "w-full border border-zinc-300 dark:border-zinc-700 rounded text-zinc-600 dark:text-zinc-400 placeholder:text-zinc-600 dark:placeholder:text-zinc-400 p-5 mb-2" %>
+            <% if @minimum_password_length %>
+              <em class="text-sm text-zinc-600 dark:text-zinc-400">(<%= @minimum_password_length %> characters minimum)</em>
+            <% end %>
+          </div>
+
+          <div class="field mb-6">
+            <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "Confirm password", class: "w-full border border-zinc-300 dark:border-zinc-700 rounded text-zinc-600 dark:text-zinc-400 placeholder:text-zinc-600 dark:placeholder:text-zinc-400 p-5 mb-2" %>
+          </div>
+
+          <div class="actions mt-10">
+            <%= f.submit "Sign up", class: "w-full bg-lavender-600 text-white font-medium py-3 px-4 rounded-lg hover:bg-coral-600 transition-all duration-300 cursor-pointer" %>
+          </div>
+        <% end %>
+
+        <div class="flex items-center justify-between mt-20">
+          <p class="text-zinc-500">Already have an account? <%= link_to "Log in", new_user_session_path, class: "text-lavender-600 hover:text-coral-600 transition-all duration-300 cursor-pointer" %></p>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <div class="field">
-    <%= f.label :password %>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Sign up" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>

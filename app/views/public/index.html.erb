@@ -1,9 +1,9 @@
-<section id="hero" class="border-b border-zinc-200 px-0 lg:px-24 bg-[url('landing-bg.png')] bg-cover bg-center">
+<section id="hero" class="border-b border-zinc-300 dark:border-zinc-700 px-0 lg:px-24 bg-[url('landing-bg.png')] bg-cover bg-center">
   <div class="w-full h-auto lg:h-172 grid grid-cols-2 gap-10">
     <div class="col-span-2 lg:col-span-1 flex flex-col justify-center">
       <div class="w-[90%] mx-auto lg:mx-0 pt-5 lg:pt-0">
-        <h1 class="text-5xl lg:text-7xl tracking-tight font-bold text-left mb-4">Find clinical trials that match your journey</h1>
-        <p class="font-body text-base lg:text-lg text-slategray mb-6">Connect with medical research that understands your unique health needs. Our platform helps patients discover personalized clinical trials with precision and hope.</p>
+        <h1 class="text-5xl lg:text-7xl tracking-tight font-bold text-left text-zinc-900 dark:text-zinc-300 mb-4">Find clinical trials that match your journey</h1>
+        <p class="font-body text-base lg:text-lg text-zinc-600 dark:text-zinc-400 mb-6">Connect with medical research that understands your unique health needs. Our platform helps patients discover personalized clinical trials with precision and hope.</p>
         <div class="flex gap-4">
           <%= render Buttons::ButtonComponent.new(path: "#", text: "Get Started", color: "lavender") %>
           <%= render Buttons::ButtonComponent.new(path: "#", text: "Learn More") %>
@@ -27,7 +27,7 @@
   </div>
 </section>
 
-<section id="intro" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-zinc-200">
+<section id="intro" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-zinc-300 dark:border-zinc-700">
   <div class="w-full lg:w-1/2">
     <%= render Page::HeaderComponent.new(
       pretext: "Journey", 
@@ -39,47 +39,35 @@
 
   <div class="w-full grid grid-cols-3 gap-10 mb-10">
     <div class="col-span-3 lg:col-span-1">
-      <div class="w-full h-full flex gap-x-4 border border-zinc-200 rounded-lg p-6 space-y-3">
-        <div class="w-24">
-          <%= render Utilities::IconComponent.new("search", size: 14) %>
-        </div>
-        <div class="space-y-3">
-          <%= render Typography::HeadingComponent.new(size: :h3, text: "Search with precision") %>
-          <%= render Typography::ParagraphComponent.new(text: "Use our intelligent matching system to find trials that match your health profile and needs.") %>
-        </div>
-      </div>
+      <%= render Page::Cards::IconCardComponent.new(
+        icon: "search", 
+        title: "Search with precision", 
+        subtitle: "Use our intelligent matching system to find trials that match your health profile and needs."
+      ) %>
     </div>
     <div class="col-span-3 lg:col-span-1">
-      <div class="w-full h-full flex gap-x-4 border border-zinc-200 rounded-lg p-6 space-y-3">
-        <div class="w-24">
-          <%= render Utilities::IconComponent.new("grid", size: 14) %>
-        </div>
-        <div class="space-y-3">
-          <%= render Typography::HeadingComponent.new(size: :h3, text: "Review and understand") %>
-          <%= render Typography::ParagraphComponent.new(text: "Use our intelligent matching system to find trials that match your health profile and needs.") %>
-        </div>
-      </div>
+      <%= render Page::Cards::IconCardComponent.new(
+        icon: "badge_check", 
+        title: "Review and understand", 
+        subtitle: "Use our intelligent matching system to find trials that match your health profile and needs."
+      ) %>
     </div>
     <div class="col-span-3 lg:col-span-1">
-      <div class="w-full h-full flex gap-x-4 border border-zinc-200 rounded-lg p-6 space-y-3">
-        <div class="w-24">
-          <%= render Utilities::IconComponent.new("grid", size: 14) %>
-        </div>
-        <div class="space-y-3">
-          <%= render Typography::HeadingComponent.new(size: :h3, text: "Connect and participate") %>
-          <%= render Typography::ParagraphComponent.new(text: "Use our intelligent matching system to find trials that match your health profile and needs.") %>
-        </div>
-      </div>
+      <%= render Page::Cards::IconCardComponent.new(
+        icon: "mail_box", 
+        title: "Connect and participate", 
+        subtitle: "Use our intelligent matching system to find trials that match your health profile and needs."
+      ) %>
     </div>
   </div>
 
   <div class="flex gap-2">
-    <%= render Buttons::ButtonComponent.new(path: "#", text: "Start", color: "clear_navy") %>
+    <%= render Buttons::ButtonComponent.new(path: "#", text: "Start") %>
     <%= render Buttons::ButtonComponent.new(path: "#", text: "Explore", color: "clear", icon: "arrow_right", icon_position: "right") %>
   </div>
 </section>
 
-<section id="how-it-works" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-zinc-200">
+<section id="how-it-works" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-zinc-300 dark:border-zinc-700">
   <div class="w-full grid grid-cols-2 gap-6 lg:gap-12">
     <div class="col-span-2 lg:col-span-1 order-2 lg:order-1">
       <%= render Page::HeaderComponent.new(
@@ -92,7 +80,7 @@
       <div class="w-full grid grid-cols-2 gap-12 mb-10">
         <div class="col-span-2 lg:col-span-1">
           <div class="w-full h-full flex gap-x-4">
-            <div class="w-24">
+            <div class="w-24 text-lavender-600">
               <%= render Utilities::IconComponent.new("map", size: 14) %>
             </div>
             <div class="space-y-3">
@@ -103,7 +91,7 @@
         </div>
         <div class="col-span-2 lg:col-span-1">
           <div class="w-full h-full flex gap-x-4">
-            <div class="w-24">
+            <div class="w-24 text-lavender-600">
               <%= render Utilities::IconComponent.new("grid", size: 14) %>
             </div>
             <div class="space-y-3">
@@ -127,7 +115,7 @@
   </div>
 </section>
 
-<section id="testimonials" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-zinc-200">
+<section id="testimonials" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-zinc-300 dark:border-zinc-700">
   <div class="w-full lg:w-1/2 mx-auto text-center">
     <%= render Page::HeaderComponent.new(
       pretext: "Mission", 
@@ -139,54 +127,36 @@
 
   <div class="w-full grid grid-cols-3 gap-10 mb-10">
     <div class="col-span-3 lg:col-span-1">
-      <div class="w-full h-full flex flex-col gap-x-4 border border-zinc-200 rounded-lg p-6 space-y-3">
-        <div class="w-12 h-12 ">
-          <%= render Utilities::IconComponent.new("search", size: 8) %>
-        </div>
-        <%= render Typography::HeadingComponent.new(size: :h3, text: "Accessibility for all") %>
-        <%= render Typography::ParagraphComponent.new(text: "Breaking down barriers in medical research participation.") %>
-        <div class="mt-auto">
-          <%= link_to "#", class: "flex items-center gap-1 font-semibold text-lg hover:text-blue-600 transition group" do %>
-            <span>Learn More</span>
-            <%= render Utilities::IconComponent.new("arrow_right", size: 6) %>
-          <% end %>
-        </div>
-      </div>
+      <%= render Page::Cards::IconCardComponent.new(
+        icon: "open_door", 
+        title: "Accessibility for all", 
+        subtitle: "Breaking down barriers in medical research participation.",
+        style: :top,
+        path: "#"
+      ) %>
     </div>
     <div class="col-span-3 lg:col-span-1">
-      <div class="w-full h-full flex flex-col gap-x-4 border border-zinc-200 rounded-lg p-6 space-y-3">
-        <div class="w-12 h-12 ">
-          <%= render Utilities::IconComponent.new("search", size: 8) %>
-        </div>
-        <%= render Typography::HeadingComponent.new(size: :h3, text: "Diversity in clinical trials") %>
-        <%= render Typography::ParagraphComponent.new(text: "Representing diverse populations in medical research.") %>
-        <div class="mt-auto">
-          <%= link_to "#", class: "flex items-center gap-1 font-semibold text-lg hover:text-blue-600 transition group" do %>
-            <span>Learn More</span>
-            <%= render Utilities::IconComponent.new("arrow_right", size: 6) %>
-          <% end %>
-        </div>
-      </div>
+      <%= render Page::Cards::IconCardComponent.new(
+        icon: "users_group", 
+        title: "Diversity in clinical trials", 
+        subtitle: "Representing diverse populations in medical research.",
+        style: :top,
+        path: "#"
+      ) %>
     </div>
     <div class="col-span-3 lg:col-span-1">
-      <div class="w-full h-full flex flex-col gap-x-4 border border-zinc-200 rounded-lg p-6 space-y-3">
-        <div class="w-12 h-12 ">
-          <%= render Utilities::IconComponent.new("search", size: 8) %>
-        </div>
-        <%= render Typography::HeadingComponent.new(size: :h3, text: "Shared knowledge and learning") %>
-        <%= render Typography::ParagraphComponent.new(text: "Collaborative approach to advancing medical understanding") %>
-        <div class="mt-auto">
-          <%= link_to "#", class: "flex items-center gap-1 font-semibold text-lg hover:text-blue-600 transition group" do %>
-            <span>Learn More</span>
-            <%= render Utilities::IconComponent.new("arrow_right", size: 6) %>
-          <% end %>
-        </div>
-      </div>
+      <%= render Page::Cards::IconCardComponent.new(
+        icon: "book_open", 
+        title: "Shared knowledge and learning", 
+        subtitle: "Collaborative approach to advancing medical understanding",
+        style: :top,
+        path: "#"
+      ) %>
     </div>
   </div>
 </section>
 
-<section id="intro" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-zinc-200">
+<section id="intro" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-zinc-300 dark:border-zinc-700">
   <div class="w-full lg:w-1/2 mx-auto text-center">
     <%= render Page::HeaderComponent.new(
       heading: "Patient Stories", 
@@ -217,7 +187,7 @@
   </div>
 </section>
 
-<section id="" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-zinc-200">
+<section id="" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-zinc-300 dark:border-zinc-700">
   <div class="w-full mx-auto text-center bg-lavender-600 text-white flex flex-col items-center justify-center p-10 rounded-2xl">
     <div class="w-4/5 mb-8 gap-5">
       <h3 class="text-7xl font-bold mb-5">Join the medical research community</h3>
@@ -225,8 +195,8 @@
     </div>
 
     <div class="flex justify-center gap-2">
-      <%= render Buttons::ButtonComponent.new(path: "#", text: "Start", color: "clear_navy") %>
-      <%= render Buttons::ButtonComponent.new(path: "#", text: "Explore", color: "clear", icon: "arrow_right", icon_position: "right") %>
+      <%= render Buttons::ButtonComponent.new(path: "#", text: "Start", color: "white") %>
+      <%= render Buttons::ButtonComponent.new(path: "#", text: "Explore", color: "white", icon: "arrow_right", icon_position: "right") %>
     </div>
   </div>
 </section>

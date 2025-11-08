@@ -1,0 +1,14 @@
+<div id="main-flash-messages">
+  <% if notice.present? %>
+    <div class="bg-green-100 dark:bg-green-900 border-l-4 border-green-500 text-green-700 dark:text-green-200 p-4 mb-4" role="alert">
+      <p><%= notice %></p>
+    </div>
+  <% end %>
+
+  <% if alert.present? %>
+    <div class="bg-red-100 dark:bg-red-900 border-l-4 border-red-500 text-red-700 dark:text-red-200 p-4 mb-4" role="alert">
+      <p><%= alert %></p>
+    </div>
+  <% end %>
+</div>
+
