@@ -1,0 +1,209 @@
+<div class="min-h-screen bg-zinc-50 dark:bg-zinc-900">
+  <div class="px-5 lg:px-24 py-10 lg:py-18">
+    <!-- Back Link -->
+    <div class="mb-6">
+      <%= link_to search_index_path, class: "inline-flex items-center text-lavender-600 hover:text-lavender-700 font-medium" do %>
+        <%= render Utilities::IconComponent.new("arrow_left", size: 5) %>
+        <span class="ml-2">Back to Search Results</span>
+      <% end %>
+    </div>
+
+    <% if @error.present? %>
+      <!-- Error State -->
+      <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
+        <h2 class="text-xl font-semibold text-red-800 dark:text-red-200 mb-2">Error Loading Trial</h2>
+        <p class="text-red-700 dark:text-red-300"><%= @error %></p>
+      </div>
+    <% elsif @study.present? %>
+      <!-- Trial Details -->
+      <div class="bg-white dark:bg-zinc-800 rounded-lg shadow-sm overflow-hidden">
+        <!-- Header Section -->
+        <div class="p-6 lg:p-8 border-b border-zinc-200 dark:border-zinc-700">
+          <div class="flex justify-between items-start mb-4">
+            <div class="flex-1">
+              <h1 class="text-3xl lg:text-4xl font-bold text-zinc-900 dark:text-zinc-300 mb-3">
+                <%= @study[:title] %>
+              </h1>
+              <div class="flex items-center gap-3 mb-2">
+                <span class="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+                  <%= @study[:nct_id] %>
+                </span>
+                <span class="px-3 py-1 text-sm font-medium rounded-full <%= status_badge_class(@study[:status]) %>">
+                  <%= @study[:status] %>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <% if @study[:phase].present? %>
+            <div class="inline-flex items-center px-3 py-1 bg-lavender-100 dark:bg-lavender-900/20 text-lavender-800 dark:text-lavender-300 rounded-full text-sm font-medium">
+              <%= @study[:phase] %>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Content Section -->
+        <div class="p-6 lg:p-8 space-y-8">
+          <!-- Summary -->
+          <% if @study[:summary].present? %>
+            <div>
+              <h2 class="text-xl font-semibold text-zinc-900 dark:text-zinc-300 mb-3">Study Summary</h2>
+              <div class="prose dark:prose-invert max-w-none">
+                <p class="text-zinc-700 dark:text-zinc-300 leading-relaxed">
+                  <%= @study[:summary] %>
+                </p>
+              </div>
+            </div>
+          <% end %>
+
+          <!-- Conditions -->
+          <% if @study[:conditions].present? %>
+            <div>
+              <h2 class="text-xl font-semibold text-zinc-900 dark:text-zinc-300 mb-3">Conditions</h2>
+              <div class="flex flex-wrap gap-2">
+                <% @study[:conditions].each do |condition| %>
+                  <span class="px-3 py-1 bg-zinc-100 dark:bg-zinc-700 text-zinc-800 dark:text-zinc-300 rounded-full text-sm">
+                    <%= condition %>
+                  </span>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+
+          <!-- Study Details Grid -->
+          <div>
+            <h2 class="text-xl font-semibold text-zinc-900 dark:text-zinc-300 mb-4">Study Details</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <!-- Status -->
+              <div class="bg-zinc-50 dark:bg-zinc-900 rounded-lg p-4">
+                <h3 class="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">Overall Status</h3>
+                <p class="text-base font-semibold text-zinc-900 dark:text-zinc-300">
+                  <%= @study[:status] %>
+                </p>
+              </div>
+
+              <!-- Start Date -->
+              <% if @study[:start_date].present? %>
+                <div class="bg-zinc-50 dark:bg-zinc-900 rounded-lg p-4">
+                  <h3 class="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">Start Date</h3>
+                  <p class="text-base font-semibold text-zinc-900 dark:text-zinc-300">
+                    <%= @study[:start_date] %>
+                  </p>
+                </div>
+              <% end %>
+
+              <!-- Phase -->
+              <% if @study[:phase].present? %>
+                <div class="bg-zinc-50 dark:bg-zinc-900 rounded-lg p-4">
+                  <h3 class="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">Study Phase</h3>
+                  <p class="text-base font-semibold text-zinc-900 dark:text-zinc-300">
+                    <%= @study[:phase] %>
+                  </p>
+                </div>
+              <% end %>
+
+              <!-- NCT ID -->
+              <div class="bg-zinc-50 dark:bg-zinc-900 rounded-lg p-4">
+                <h3 class="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-1">ClinicalTrials.gov ID</h3>
+                <p class="text-base font-semibold text-zinc-900 dark:text-zinc-300">
+                  <%= @study[:nct_id] %>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Locations -->
+          <% if @study[:locations].present? %>
+            <div>
+              <h2 class="text-xl font-semibold text-zinc-900 dark:text-zinc-300 mb-3">Study Locations</h2>
+              <div class="bg-zinc-50 dark:bg-zinc-900 rounded-lg p-4">
+                <ul class="space-y-2">
+                  <% @study[:locations].each do |location| %>
+                    <li class="flex items-start">
+                      <span class="text-lavender-600 mr-2">
+                        <%= render Utilities::IconComponent.new("map_pin", size: 5) %>
+                      </span>
+                      <span class="text-zinc-700 dark:text-zinc-300"><%= location %></span>
+                    </li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
+          <% end %>
+
+          <!-- External Link -->
+          <div class="pt-6 border-t border-zinc-200 dark:border-zinc-700">
+            <div class="flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between">
+              <div>
+                <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-300 mb-1">Interested in This Trial?</h3>
+                <p class="text-sm text-zinc-600 dark:text-zinc-400">
+                  View complete details and contact information on ClinicalTrials.gov
+                </p>
+              </div>
+              <div class="flex gap-4">
+                <%= link_to "https://clinicaltrials.gov/study/#{@study[:nct_id]}", 
+                    target: "_blank",
+                    rel: "noopener noreferrer",
+                    class: "inline-flex items-center px-6 py-3 bg-lavender-600 text-white font-medium rounded hover:bg-lavender-700 transition-colors" do %>
+                  View on ClinicalTrials.gov
+                  <span class="ml-2">
+                    <%= render Utilities::IconComponent.new("external_link", size: 4) %>
+                  </span>
+                <% end %>
+              </div>
+            </div>
+          </div>
+
+          <!-- Save for Later (Authenticated Users) -->
+          <% if user_signed_in? %>
+            <div class="pt-6 border-t border-zinc-200 dark:border-zinc-700">
+              <%= render Buttons::ButtonComponent.new(
+                path: "#",
+                text: "Save to My Trials",
+                color: "clear_navy",
+                icon: "bookmark",
+                icon_position: "left"
+              ) %>
+            </div>
+          <% else %>
+            <div class="pt-6 border-t border-zinc-200 dark:border-zinc-700 bg-lavender-50 dark:bg-lavender-900/10 rounded-lg p-6">
+              <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-300 mb-2">
+                Want to save this trial?
+              </h3>
+              <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                Create a free account to save trials and get personalized recommendations.
+              </p>
+              <div class="flex gap-4">
+                <%= render Buttons::ButtonComponent.new(
+                  path: new_user_registration_path,
+                  text: "Sign Up",
+                  color: "lavender"
+                ) %>
+                <%= render Buttons::ButtonComponent.new(
+                  path: new_user_session_path,
+                  text: "Sign In",
+                  color: "clear"
+                ) %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% else %>
+      <!-- Not Found State -->
+      <div class="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-8 text-center">
+        <div class="text-zinc-400 dark:text-zinc-500 mb-4">
+          <%= render Utilities::IconComponent.new("search", size: 16) %>
+        </div>
+        <h3 class="text-xl font-semibold text-zinc-900 dark:text-zinc-300 mb-2">
+          Trial Not Found
+        </h3>
+        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+          The clinical trial you're looking for could not be found.
+        </p>
+        <%= link_to "Back to Search", search_index_path, class: "text-lavender-600 hover:text-lavender-700 font-medium" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
