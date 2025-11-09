@@ -113,10 +113,11 @@ class ClinicalTrialClient
   def self.parse_response(response)
     data = response.parsed_response
     studies = data.dig("studies") || []
+    formatted_studies = studies.map { |study| format_study(study) }
 
     {
-      studies: studies.map { |study| format_study(study) },
-      total_count: data.dig("totalCount") || 0,
+      studies: formatted_studies,
+      total_count: formatted_studies.length, # API v2 doesn't provide totalCount, use page count
       next_page_token: data.dig("nextPageToken")
     }
   end
