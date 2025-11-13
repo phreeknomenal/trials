@@ -32,7 +32,7 @@ class ClinicalTrialClient
     { studies: [], total_count: 0, error: e.message }
   end
 
-  def self.advanced_search(condition: nil, location: nil, status: nil, min_age: nil, max_age: nil, page: 1, page_size: 10)
+  def self.advanced_search(condition: nil, location: nil, page: 1, page_size: 10)
     query_parts = []
 
     # Build simple query parts
@@ -49,22 +49,11 @@ class ClinicalTrialClient
       "format" => "json"
     }.compact
 
-    # Add status filter if provided
-    query_params["filter.overallStatus"] = status if status.present?
-
     Rails.logger.info("ClinicalTrials API Request: /studies with params: #{query_params.inspect}")
     response = get("/studies", query: query_params)
 
     if response.success?
-      result = parse_response(response)
-
-      # Client-side age filtering if needed
-      if (min_age.present? || max_age.present?) && result[:studies].present?
-        result[:studies] = filter_by_age(result[:studies], min_age, max_age)
-        result[:total_count] = result[:studies].length
-      end
-
-      result
+      parse_response(response)
     else
       Rails.logger.error("ClinicalTrials API Error: #{response.code} - #{response.message}")
       Rails.logger.error("Response body: #{response.body}")
@@ -129,16 +118,45 @@ class ClinicalTrialClient
     description = protocol.dig("descriptionModule") || {}
     conditions = protocol.dig("conditionsModule") || {}
     contacts = protocol.dig("contactsLocationsModule") || {}
+    sponsors = protocol.dig("sponsorCollaboratorsModule") || {}
+    eligibility = protocol.dig("eligibilityModule") || {}
+    design = protocol.dig("designModule") || {}
+    arms_interventions = protocol.dig("armsInterventionsModule") || {}
+    outcomes = protocol.dig("outcomesModule") || {}
 
     {
       nct_id: identification.dig("nctId"),
       title: identification.dig("briefTitle") || identification.dig("officialTitle"),
       status: status.dig("overallStatus"),
       summary: description.dig("briefSummary"),
+      detailed_description: description.dig("detailedDescription"),
       conditions: conditions.dig("conditions") || [],
-      phase: protocol.dig("designModule", "phases")&.join(", "),
+      phase: design.dig("phases")&.join(", "),
       start_date: status.dig("startDateStruct", "date"),
-      locations: extract_locations(contacts)
+      completion_date: status.dig("completionDateStruct", "date") || status.dig("primaryCompletionDateStruct", "date"),
+      sponsor: sponsors.dig("leadSponsor", "name"),
+      min_age: eligibility.dig("minimumAge"),
+      max_age: eligibility.dig("maximumAge"),
+      sex: eligibility.dig("sex"),
+      inclusion_criteria: eligibility.dig("eligibilityCriteria"),
+      enrollment_count: design.dig("enrollmentInfo", "count"),
+      enrollment_type: design.dig("enrollmentInfo", "type"),
+      interventions: extract_interventions(arms_interventions),
+      locations: extract_locations(contacts),
+      # Study Type & Design
+      study_type: design.dig("studyType"),
+      design_allocation: design.dig("designInfo", "allocation"),
+      design_intervention_model: design.dig("designInfo", "interventionModel"),
+      design_masking: design.dig("designInfo", "maskingInfo", "masking"),
+      design_primary_purpose: design.dig("designInfo", "primaryPurpose"),
+      # Outcome Measures
+      primary_outcomes: extract_outcomes(outcomes.dig("primaryOutcomes")),
+      secondary_outcomes: extract_outcomes(outcomes.dig("secondaryOutcomes")),
+      # Contact Information
+      central_contacts: extract_contacts(contacts.dig("centralContacts")),
+      overall_officials: extract_officials(contacts.dig("overallOfficials")),
+      # Why Stopped
+      why_stopped: status.dig("whyStopped")
     }
   end
 
@@ -149,10 +167,51 @@ class ClinicalTrialClient
     end
   end
 
-  def self.filter_by_age(studies, min_age, max_age)
-    # Note: This is client-side filtering since the API doesn't support age filtering well
-    # In production, you might want to extract age eligibility from the study details
-    # For now, we'll return all studies as the API doesn't provide structured age data
-    studies
+  def self.extract_interventions(arms_interventions)
+    interventions = arms_interventions.dig("interventions") || []
+    interventions.map do |intervention|
+      {
+        type: intervention["type"],
+        name: intervention["name"],
+        description: intervention["description"]
+      }
+    end
+  end
+
+  def self.extract_outcomes(outcomes)
+    return [] unless outcomes
+
+    outcomes.map do |outcome|
+      {
+        measure: outcome["measure"],
+        description: outcome["description"],
+        time_frame: outcome["timeFrame"]
+      }
+    end
+  end
+
+  def self.extract_contacts(contacts)
+    return [] unless contacts
+
+    contacts.map do |contact|
+      {
+        name: contact["name"],
+        role: contact["role"],
+        phone: contact["phone"],
+        email: contact["email"]
+      }
+    end
+  end
+
+  def self.extract_officials(officials)
+    return [] unless officials
+
+    officials.map do |official|
+      {
+        name: official["name"],
+        role: official["role"],
+        affiliation: official["affiliation"]
+      }
+    end
   end
 end

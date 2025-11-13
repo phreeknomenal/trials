@@ -1,0 +1,31 @@
+<nav class="flex flex-row" aria-label="Breadcrumb">
+  <ol role="list" class="flex items-center space-x-2 font-normal text-sm">
+    <li>
+      <div>
+        <%= link_to root_path, class: "text-lavender-600 hover:text-lavender-800" do %>
+          <%= render Utilities::IconComponent.new(:home) %>
+
+          <span class="sr-only">Home</span>
+        <% end %>
+      </div>
+    </li>
+
+    <% crumbs.each do |crumb| %>
+      <li>
+        <div class="flex items-center space-x-2">
+          <span class="text-zinc-500 dark:text-zinc-400">/</span>
+
+          <% if crumb[:path].present? %>
+            <%= link_to crumb[:path], class: "text-zinc-500 dark:text-zinc-400 hover:text-lavender-600" do %>
+              <%= crumb[:name] %>
+            <% end %>
+          <% else %>
+            <span class="text-zinc-500 dark:text-zinc-400">
+              <%= crumb[:name] %>
+            </span>
+          <% end %>
+        </div>
+      </li>
+    <% end %>
+  </ol>
+</nav>

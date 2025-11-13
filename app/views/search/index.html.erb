@@ -31,48 +31,12 @@
                 class: "block w-full form-control bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-300 text-base rounded focus:ring-lavender-600 focus:border-lavender-600 p-2" 
             %>
           </div>
-
-          <!-- Trial Status -->
-          <div class="form-group">
-            <%= f.label :status, "Trial Status", class: "block text-sm font-medium text-zinc-900 dark:text-zinc-300 mb-2" %>
-            <%= f.select :status,
-                options_for_select(ClinicalTrialClient::TRIAL_STATUSES.map { |s| [s, s] }, params[:status]),
-                { include_blank: "All statuses" },
-                { class: "block p-2 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-lavender-600 focus:border-lavender-600" }
-            %>
-          </div>
-
-          <!-- Age Range -->
-          <div class="form-group">
-            <label class="block text-sm font-medium text-zinc-900 dark:text-zinc-300 mb-2">Age Range</label>
-            <div class="flex gap-4">
-              <div class="flex-1">
-                <%= f.number_field :min_age,
-                    value: params[:min_age],
-                    placeholder: "Min age",
-                    min: 0,
-                    max: 120,
-                    class: "block w-full form-control bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-300 text-base rounded focus:ring-lavender-600 focus:border-lavender-600 p-2"
-                %>
-              </div>
-              <div class="flex items-center text-zinc-500">to</div>
-              <div class="flex-1">
-                <%= f.number_field :max_age,
-                    value: params[:max_age],
-                    placeholder: "Max age",
-                    min: 0,
-                    max: 120,
-                    class: "block w-full form-control bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-300 text-base rounded focus:ring-lavender-600 focus:border-lavender-600 p-2"
-                %>
-              </div>
-            </div>
-          </div>
         </div>
 
         <!-- Submit Button -->
         <div class="flex gap-4">
           <%= f.submit "Search Trials", class: "inline-flex items-center gap-1 px-4 font-medium py-2 rounded-md transition-colors cursor-pointer border border-lavender-600 text-white bg-lavender-600 hover:border-coral-600 hover:bg-coral-600" %>
-          <% if params[:condition].present? || params[:location].present? || params[:status].present? || params[:min_age].present? || params[:max_age].present? %>
+          <% if params[:condition].present? || params[:location].present? %>
             <%= link_to "Clear Filters", search_index_path, class: "inline-flex items-center px-4 py-2 text-base font-medium text-zinc-700 dark:text-zinc-300 hover:text-lavender-600" %>
           <% end %>
         </div>
@@ -98,9 +62,9 @@
       </div>
 
       <!-- Results Grid -->
-      <div class="space-y-4 mb-8">
+      <div class="space-y-8 mb-8">
         <% @studies.each do |study| %>
-          <%= render Page::StudyCardComponent.new(study: study) %>
+          <%= render Page::Cards::StudyCardComponent.new(study: study) %>
         <% end %>
       </div>
 

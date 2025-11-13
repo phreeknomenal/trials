@@ -32,10 +32,7 @@ class SearchController < ApplicationController
   def sanitized_params
     @sanitized_params ||= {
       condition: params[:condition].presence,
-      location: params[:location].presence,
-      status: params[:status].presence,
-      min_age: params[:min_age].presence,
-      max_age: params[:max_age].presence
+      location: params[:location].presence
     }
   end
 
