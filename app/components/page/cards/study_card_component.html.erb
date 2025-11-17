@@ -1,0 +1,81 @@
+<div class="bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-6 hover:shadow-md transition-shadow">
+  <h3 class="text-3xl font-bold text-zinc-900 dark:text-zinc-300 mb-2">
+    <%= link_to study[:title], search_path(study[:nct_id]), class: "hover:text-lavender-600" %>
+  </h3>
+  <div class="flex items-start gap-2 mb-3">
+    <%= render Utilities::BadgeComponent.new(
+      text: study[:nct_id],
+      variant: :nct_id,
+      size: :md
+    ) %>
+    <%= render Utilities::BadgeComponent.new(
+      status: study[:status],
+      size: :md
+    ) %>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
+    <% if study[:phase].present? %>
+      <div class="flex flex-col">
+        <span class="font-bold text-zinc-700 dark:text-zinc-300">Phase:</span>
+        <span class="text-zinc-600 dark:text-zinc-400"><%= study[:phase] %></span>
+      </div>
+    <% end %>
+
+    <% if study[:start_date].present? || study[:completion_date].present? %>
+      <div class="flex flex-col">
+        <span class="font-bold text-zinc-700 dark:text-zinc-300">Span:</span>
+        <span class="text-zinc-600 dark:text-zinc-400">
+          <%= [study[:start_date], study[:completion_date]].compact.join(" - ") %>
+        </span>
+      </div>
+    <% end %>
+
+    <% if study[:sponsor].present? %>
+      <div class="flex flex-col">
+        <span class="font-bold text-zinc-700 dark:text-zinc-300">Sponsor:</span>
+        <span class="text-zinc-600 dark:text-zinc-400"><%= study[:sponsor] %></span>
+      </div>
+    <% end %>
+
+    <% if study[:min_age].present? || study[:max_age].present? %>
+      <div class="flex flex-col">
+        <span class="font-bold text-zinc-700 dark:text-zinc-300">Age Range:</span>
+        <span class="text-zinc-600 dark:text-zinc-400">
+          <%= [study[:min_age], study[:max_age]].compact.join(" - ") %>
+        </span>
+      </div>
+    <% end %>
+
+    <% if study[:conditions].present? %>
+      <div class="flex flex-col">
+        <span class="font-bold text-zinc-700 dark:text-zinc-300">Conditions:</span>
+        <span class="text-zinc-600 dark:text-zinc-400"><%= study[:conditions].join(", ") %></span>
+      </div>
+    <% end %>
+
+    <% if study[:locations].present? %>
+      <div class="flex flex-col">
+        <span class="font-bold text-zinc-700 dark:text-zinc-300">Locations:</span>
+        <span class="text-zinc-600 dark:text-zinc-400"><%= study[:locations].join("; ") %></span>
+      </div>
+    <% end %>
+  </div>
+
+  <% if study[:summary].present? %>
+    <p class="text-zinc-600 dark:text-zinc-400 line-clamp-3">
+      <%= study[:summary] %>
+    </p>
+  <% end %>
+
+  <div class="mt-4">
+    <%= render Buttons::ButtonComponent.new(
+      path: search_path(study[:nct_id]),
+      text: "View Details",
+      color: "clear",
+      icon: "arrow_right",
+      icon_position: "right"
+    ) %>
+  </div>
+</div>
+

@@ -5,8 +5,8 @@
         <h1 class="text-5xl lg:text-7xl tracking-tight font-bold text-left text-zinc-900 dark:text-zinc-300 mb-4">Find clinical trials that match your journey</h1>
         <p class="font-body text-base lg:text-lg text-zinc-600 dark:text-zinc-400 mb-6">Connect with medical research that understands your unique health needs. Our platform helps patients discover personalized clinical trials with precision and hope.</p>
         <div class="flex gap-4">
-          <%= render Buttons::ButtonComponent.new(path: "#", text: "Get Started", color: "lavender") %>
-          <%= render Buttons::ButtonComponent.new(path: "#", text: "Learn More") %>
+          <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Search Trials", color: "lavender") %>
+          <%= render Buttons::ButtonComponent.new(path: new_user_registration_path, text: "Sign Up") %>
         </div>
       </div>
     </div>
@@ -62,8 +62,8 @@
   </div>
 
   <div class="flex gap-2">
-    <%= render Buttons::ButtonComponent.new(path: "#", text: "Start") %>
-    <%= render Buttons::ButtonComponent.new(path: "#", text: "Explore", color: "clear", icon: "arrow_right", icon_position: "right") %>
+    <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Start Searching") %>
+    <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Explore Trials", color: "clear", icon: "arrow_right", icon_position: "right") %>
   </div>
 </section>
 
@@ -103,8 +103,8 @@
       </div>
 
       <div class="flex gap-2">
-        <%= render Buttons::ButtonComponent.new(path: "#", text: "Start", color: "clear_navy") %>
-        <%= render Buttons::ButtonComponent.new(path: "#", text: "Explore", color: "clear", icon: "arrow_right", icon_position: "right") %>
+        <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Start Searching", color: "clear_navy") %>
+        <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Explore Trials", color: "clear", icon: "arrow_right", icon_position: "right") %>
       </div>
     </div>
     <div class="col-span-2 lg:col-span-1 order-1 lg:order-2 mb-8 lg:mb-0">
@@ -195,8 +195,8 @@
     </div>
 
     <div class="flex justify-center gap-2">
-      <%= render Buttons::ButtonComponent.new(path: "#", text: "Start", color: "white") %>
-      <%= render Buttons::ButtonComponent.new(path: "#", text: "Explore", color: "white", icon: "arrow_right", icon_position: "right") %>
+      <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Search Trials", color: "white") %>
+      <%= render Buttons::ButtonComponent.new(path: new_user_registration_path, text: "Sign Up Free", color: "white", icon: "arrow_right", icon_position: "right") %>
     </div>
   </div>
 </section>

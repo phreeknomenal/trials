@@ -1,15 +1,15 @@
 class PublicController < ApplicationController
-  def index
-    if params[:query].present?
-      @query = params[:query]
-      page = params[:page].to_i
-      page = 1 if page < 1
+  include Paginatable
 
-      result = ClinicalTrialClient.search(@query, page: page, page_size: 10)
-      @studies = result[:studies]
-      @total_count = result[:total_count]
-      @error = result[:error]
-      @current_page = page
-    end
+  def index
+    return unless params[:query].present?
+
+    @query = params[:query]
+    result = ClinicalTrialClient.search(@query, page: current_page, page_size: page_size)
+
+    @studies = result[:studies]
+    @total_count = result[:total_count]
+    @error = result[:error]
+    @current_page = current_page
   end
 end
