@@ -24,7 +24,7 @@
       <%# RIGHT CONTENT %>
       <div class="col-span-6">
         <!-- Key Details Grid -->
-        <div class="border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 mb-8">
+        <div id="key-details" class="border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 mb-8">
           <div class="mb-4">
             <%= render Typography::HeadingComponent.new(size: :h4, text: "Key Details") %>
           </div>
@@ -60,7 +60,7 @@
         </div>
 
         <% if @study[:summary].present? || @study[:detailed_description].present? %>
-          <div class="border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 mb-8">
+          <div id="study-overview" class="border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 mb-8">
             <div class="mb-3">
               <%= render Typography::HeadingComponent.new(size: :h4, text: "Study Overview") %>
             </div>
@@ -85,7 +85,7 @@
 
         <!-- Study Type & Design -->
         <% if @study[:study_type].present? || @study[:design_allocation].present? %>
-          <div class="border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 mb-8">
+          <div id="study-design" class="border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 mb-8">
             <div class="mb-4">
               <%= render Typography::HeadingComponent.new(size: :h4, text: "Study Design") %>
             </div>
@@ -136,7 +136,7 @@
 
         <!-- Conditions -->
         <% if @study[:conditions].present? %>
-          <div class="border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 mb-8">
+          <div id="conditions" class="border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 mb-8">
             <div class="mb-3">
               <%= render Typography::HeadingComponent.new(size: :h4, text: "Conditions") %>
             </div>
@@ -154,7 +154,7 @@
 
         <!-- Interventions/Treatments -->
         <% if @study[:interventions].present? && @study[:interventions].any? %>
-          <div class="border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 mb-8">
+          <div id="interventions" class="border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 mb-8">
             <div class="mb-4">
               <%= render Typography::HeadingComponent.new(size: :h4, text: "Interventions/Treatments") %>
             </div>
@@ -184,7 +184,7 @@
 
         <!-- Outcome Measures -->
         <% if (@study[:primary_outcomes].present? && @study[:primary_outcomes].any?) || (@study[:secondary_outcomes].present? && @study[:secondary_outcomes].any?) %>
-          <div class="border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 mb-8">
+          <div id="outcome-measures" class="border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 mb-8">
             <div class="mb-4">
               <%= render Typography::HeadingComponent.new(size: :h4, text: "Outcome Measures") %>
             </div>
@@ -245,7 +245,7 @@
 
         <!-- Eligibility Criteria -->
         <% if @study[:inclusion_criteria].present? %>
-          <div class="border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 mb-8">
+          <div id="eligibility-criteria" class="border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 mb-8">
             <div class="mb-3">
               <%= render Typography::HeadingComponent.new(size: :h4, text: "Eligibility Criteria") %>
             </div>
@@ -259,7 +259,7 @@
 
         <!-- Study Locations -->
         <% if @study[:locations].present? %>
-          <div class="border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 mb-8">
+          <div id="study-locations" class="border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 mb-8">
             <div class="mb-3">
               <%= render Typography::HeadingComponent.new(size: :h4, text: "Study Locations") %>
             </div>
@@ -280,7 +280,7 @@
 
         <!-- Contact Information -->
         <% if (@study[:central_contacts].present? && @study[:central_contacts].any?) || (@study[:overall_officials].present? && @study[:overall_officials].any?) %>
-          <div class="border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 mb-8">
+          <div id="contact-information" class="border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 mb-8">
             <div class="mb-4">
               <%= render Typography::HeadingComponent.new(size: :h4, text: "Contact Information") %>
             </div>
