@@ -1,0 +1,177 @@
+<section class="px-5 lg:px-24 py-16 border-b border-zinc-200 dark:border-zinc-700">
+  <%= render Page::HeaderComponent.new(
+    heading: "My Trial Search",
+    subheading: "Find clinical trials personalized to your health profile",
+    position: :left
+  ) %>
+</section>
+
+<div class="min-h-screen">
+  <div class="px-5 lg:px-24 py-10 lg:py-18">
+    
+    <!-- Profile Quick Info -->
+    <% if @profile&.conditions&.any? %>
+      <div class="bg-lavender-50 dark:bg-lavender-900/20 border border-lavender-200 dark:border-lavender-800 rounded-lg p-6 mb-8">
+        <div class="flex items-start gap-4">
+          <div class="flex-shrink-0">
+            <%= render Utilities::IconComponent.new("user_circle", size: 8, options: { class: "text-lavender-600" }) %>
+          </div>
+          <div class="flex-1">
+            <h3 class="text-lg font-semibold text-lavender-900 dark:text-lavender-100 mb-2">
+              Your Health Profile
+            </h3>
+            <div class="text-sm text-lavender-800 dark:text-lavender-200">
+              <p class="mb-1"><strong>Conditions:</strong> <%= @profile.conditions.pluck(:name).join(", ") %></p>
+              <% if @profile.city && @profile.state %>
+                <p class="mb-1"><strong>Location:</strong> <%= @profile.city %>, <%= @profile.state %></p>
+              <% end %>
+              <% if @profile.age.present? %>
+                <p class="mb-1"><strong>Age:</strong> <%= @profile.age %> years</p>
+              <% end %>
+            </div>
+            <%= link_to "Update Profile", edit_profile_path(@profile), class: "inline-block mt-3 text-sm font-medium text-lavender-700 dark:text-lavender-300 hover:text-lavender-800 dark:hover:text-lavender-200" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Search Form -->
+    <div class="border border-zinc-200 dark:border-zinc-700 rounded-lg p-6 mb-8">
+      <%= form_with url: my_trials_path, method: :get, class: "space-y-6" do |f| %>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Condition -->
+          <div class="form-group">
+            <%= f.label :condition, "Condition", class: "block text-sm font-medium text-zinc-900 dark:text-zinc-300 mb-2" %>
+            <%= f.select :condition, 
+                options_for_select(@conditions.pluck(:name, :name), params[:condition] || @default_condition),
+                { include_blank: "Select a condition" },
+                { class: "block p-2 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-lavender-600 focus:border-lavender-600" } 
+            %>
+            <% if @profile&.conditions&.any? %>
+              <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                Defaults to your profile conditions
+              </p>
+            <% end %>
+          </div>
+
+          <!-- Location -->
+          <div class="form-group">
+            <%= f.label :location, "Location (City, State)", class: "block text-sm font-medium text-zinc-900 dark:text-zinc-300 mb-2" %>
+            <%= f.text_field :location, 
+                value: params[:location] || (@profile && @profile.city && @profile.state ? "#{@profile.city}, #{@profile.state}" : nil),
+                placeholder: "e.g., Boston, MA",
+                class: "block w-full form-control bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-300 text-base rounded focus:ring-lavender-600 focus:border-lavender-600 p-2" 
+            %>
+            <% if @profile&.city && @profile&.state %>
+              <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                Defaults to your profile location
+              </p>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex gap-4">
+          <%= f.submit "Search Trials", class: "cursor-pointer inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-lavender-600 hover:bg-lavender-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lavender-500" %>
+          
+          <% if params[:condition].present? || params[:location].present? %>
+            <%= link_to "Clear Filters", my_trials_path, class: "inline-flex items-center px-4 py-2 text-base font-medium text-zinc-700 dark:text-zinc-300 hover:text-lavender-600" %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Error Message -->
+    <% if @error.present? %>
+      <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-8">
+        <p class="text-red-800 dark:text-red-200"><%= @error %></p>
+      </div>
+    <% end %>
+
+    <!-- Search Results -->
+    <% if @studies.present? %>
+      <div class="mb-6">
+        <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
+          Search Results
+        </h2>
+        <p class="text-zinc-600 dark:text-zinc-400">
+          Showing <%= number_with_delimiter(@total_count) %> clinical trials on this page
+        </p>
+      </div>
+
+      <!-- Results Grid -->
+      <div class="space-y-8 mb-8">
+        <% @studies.each do |study| %>
+          <%= render Page::Cards::StudyCardComponent.new(study: study, base_path: :my_trials) %>
+        <% end %>
+      </div>
+
+      <!-- Pagination -->
+      <% if @current_page > 1 || @has_next_page %>
+        <div class="flex justify-center gap-4 items-center">
+          <% if @current_page > 1 %>
+            <%= link_to "Previous", my_trials_path(params.permit!.merge(page: @current_page - 1)), 
+                class: "px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded hover:bg-zinc-50 dark:hover:bg-zinc-700" %>
+          <% end %>
+
+          <span class="text-sm text-zinc-600 dark:text-zinc-400">
+            Page <%= @current_page %>
+          </span>
+
+          <% if @has_next_page %>
+            <%= link_to "Next", my_trials_path(params.permit!.merge(page: @current_page + 1)),
+                class: "px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded hover:bg-zinc-50 dark:hover:bg-zinc-700" %>
+          <% end %>
+        </div>
+      <% end %>
+
+    <% elsif params[:condition].present? || params[:location].present? %>
+      <!-- No Results -->
+      <div class="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-8 text-center">
+        <div class="text-zinc-400 dark:text-zinc-500 mb-4">
+          <%= render Utilities::IconComponent.new("search", size: 16) %>
+        </div>
+        <h3 class="text-xl font-semibold text-zinc-900 dark:text-zinc-300 mb-2">
+          No trials found
+        </h3>
+        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+          Try adjusting your search criteria to find more results.
+        </p>
+        <%= link_to "Clear All Filters", my_trials_path, class: "text-lavender-600 hover:text-lavender-700 font-medium" %>
+      </div>
+    <% elsif @default_condition.present? %>
+      <!-- Auto-searching with default -->
+      <div class="bg-lavender-50 dark:bg-lavender-900/20 rounded-lg p-8 text-center">
+        <div class="text-lavender-400 dark:text-lavender-500 mb-4">
+          <%= render Utilities::IconComponent.new("search", size: 16) %>
+        </div>
+        <h3 class="text-xl font-semibold text-lavender-900 dark:text-lavender-100 mb-2">
+          Searching for trials...
+        </h3>
+        <p class="text-lavender-700 dark:text-lavender-300">
+          Looking for trials related to <%= @default_condition %>
+        </p>
+      </div>
+    <% else %>
+      <!-- Empty State -->
+      <div class="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-8 text-center">
+        <div class="w-24 h-24 mx-auto text-zinc-400 dark:text-zinc-500 mb-4">
+          <%= render Utilities::IconComponent.new("search", size: 16) %>
+        </div>
+        <h3 class="text-xl font-semibold text-zinc-900 dark:text-zinc-300 mb-2">
+          Start Your Personalized Search
+        </h3>
+        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+          Use the filters above to find clinical trials that match your needs.
+        </p>
+        <% if @profile && @profile.conditions.empty? %>
+          <p class="text-sm text-zinc-500 dark:text-zinc-400">
+            <%= link_to "Add conditions to your profile", edit_profile_path(@profile), class: "text-lavender-600 hover:text-lavender-700 font-medium" %> 
+            for personalized recommendations.
+          </p>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+

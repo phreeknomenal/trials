@@ -24,4 +24,8 @@ module ApplicationHelper
       "N/A"
     end
   end
+
+  def user_onboarded?
+    user_signed_in? && current_user.profile&.onboarded?
+  end
 end
