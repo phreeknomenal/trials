@@ -23,7 +23,7 @@ class Utilities::BadgeComponent < ApplicationComponent
   end
 
   def badge_classes
-    base_classes = "inline-block rounded-full"
+    base_classes = "inline-block rounded-full uppercase"
     "#{base_classes} #{variant_classes} #{size_classes}"
   end
 
@@ -73,13 +73,13 @@ class Utilities::BadgeComponent < ApplicationComponent
   def size_classes
     case size
     when :sm
-      "text-sm px-2 py-1"
+      "text-xs px-2 py-1"
     when :md
-      "text-base px-3 py-1"
+      "text-sm px-3 py-1"
     when :lg
-      "text-xl px-3 py-1.5"
+      "text-base px-3 py-1.5"
     else
-      "text-base px-3 py-1"
+      "text-sm px-3 py-1"
     end
   end
 end

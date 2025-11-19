@@ -1,0 +1,16 @@
+<div id="overview">
+  <%= render Typography::HeadingComponent.new(size: :h4, text: "Overview") %>
+  <div class="text-zinc-600 dark:text-zinc-400 font-body max-w-none mt-4">
+    <%= simple_format(@summary) %>
+  </div>
+  
+  <% if @detailed_description.present? %>
+    <div class="mt-4">
+      <%= render Page::DropdownComponent.new(
+        title: "Detailed Description",
+        body: @detailed_description
+      ) %>
+    </div>
+  <% end %>
+</div>
+

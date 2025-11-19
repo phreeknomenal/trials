@@ -1,4 +1,6 @@
 class ApplicationComponent < ViewComponent::Base
+  include ApplicationHelper
+
   delegate :user_signed_in?, :current_user, :current_profile, to: :helpers
 
   def readable_time(created_at)
