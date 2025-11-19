@@ -34,48 +34,11 @@
           
           <!-- Trial Match Score -->
           <% if @trial_score.present? %>
-            <div class="mt-6 p-4 <%= match_score_bg_class(@match_level) %> border <%= match_score_border_class(@match_level) %> rounded-lg">
-              <h3 class="text-sm font-semibold <%= match_score_text_class(@match_level) %> mb-3">
-                Your Match Score
-              </h3>
-              <div class="text-center mb-3">
-                <div class="text-4xl font-bold <%= match_score_text_class(@match_level) %>">
-                  <%= @trial_score %>%
-                </div>
-                <div class="text-xs <%= match_score_text_class(@match_level) %> opacity-75 mt-1">
-                  <%= @match_level.capitalize %> Match
-                </div>
-              </div>
-              
-              <div class="space-y-2 pt-3 border-t <%= match_score_border_class(@match_level) %>">
-                <div class="text-xs space-y-1.5">
-                  <div class="flex justify-between items-center">
-                    <span class="<%= match_score_text_class(@match_level) %> opacity-90">Age:</span>
-                    <span class="font-semibold <%= match_score_text_class(@match_level) %>"><%= @score_breakdown[:age] %>%</span>
-                  </div>
-                  <div class="flex justify-between items-center">
-                    <span class="<%= match_score_text_class(@match_level) %> opacity-90">Sex:</span>
-                    <span class="font-semibold <%= match_score_text_class(@match_level) %>"><%= @score_breakdown[:sex] %>%</span>
-                  </div>
-                  <div class="flex justify-between items-center">
-                    <span class="<%= match_score_text_class(@match_level) %> opacity-90">Conditions:</span>
-                    <span class="font-semibold <%= match_score_text_class(@match_level) %>"><%= @score_breakdown[:conditions] %>%</span>
-                  </div>
-                  <div class="flex justify-between items-center">
-                    <span class="<%= match_score_text_class(@match_level) %> opacity-90">Location:</span>
-                    <span class="font-semibold <%= match_score_text_class(@match_level) %>"><%= @score_breakdown[:location] %>%</span>
-                  </div>
-                  <div class="flex justify-between items-center">
-                    <span class="<%= match_score_text_class(@match_level) %> opacity-90">Study Type:</span>
-                    <span class="font-semibold <%= match_score_text_class(@match_level) %>"><%= @score_breakdown[:study_type] %>%</span>
-                  </div>
-                  <div class="flex justify-between items-center">
-                    <span class="<%= match_score_text_class(@match_level) %> opacity-90">Risk Level:</span>
-                    <span class="font-semibold <%= match_score_text_class(@match_level) %>"><%= @score_breakdown[:phase_risk] %>%</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <%= render Page::Trials::MatchScoreCardComponent.new(
+              trial_score: @trial_score,
+              match_level: @match_level,
+              score_breakdown: @score_breakdown
+            ) %>
           <% end %>
 
           <!-- Profile Match Info -->

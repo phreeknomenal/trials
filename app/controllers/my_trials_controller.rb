@@ -29,9 +29,12 @@ class MyTrialsController < ApplicationController
     unless @error
       scorer = TrialScorer.new(@profile, @study)
       score_result = scorer.calculate_score
-      @trial_score = score_result[:total]
-      @score_breakdown = score_result[:breakdown]
-      @match_level = score_result[:match_level]
+
+      if score_result
+        @trial_score = score_result[:total]
+        @score_breakdown = score_result[:breakdown]
+        @match_level = score_result[:match_level]
+      end
     end
   end
 
@@ -54,16 +57,24 @@ class MyTrialsController < ApplicationController
       scorer = TrialScorer.new(@profile, study)
       score_result = scorer.calculate_score
 
-      study.merge(
-        trial_score: score_result[:total],
-        score_breakdown: score_result[:breakdown],
-        match_level: score_result[:match_level]
-      )
+      if score_result
+        study.merge(
+          trial_score: score_result[:total],
+          score_breakdown: score_result[:breakdown],
+          match_level: score_result[:match_level]
+        )
+      else
+        study.merge(
+          trial_score: nil,
+          score_breakdown: nil,
+          match_level: nil
+        )
+      end
     end
 
     # Sort by score if requested
     if params[:sort_by] == "score"
-      @studies_with_scores.sort_by! { |s| -s[:trial_score] }
+      @studies_with_scores.sort_by! { |s| -(s[:trial_score] || 0) }
     end
 
     @total_count = result[:total_count]
@@ -102,7 +113,8 @@ class MyTrialsController < ApplicationController
 
     {
       condition: params[:condition].presence || @default_condition,
-      location: params[:location].presence
+      location: params[:location].presence,
+      sort_by: params[:sort_by].presence
     }.compact
   end
   helper_method :pagination_params

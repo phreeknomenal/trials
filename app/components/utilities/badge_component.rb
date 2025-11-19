@@ -15,11 +15,7 @@ class Utilities::BadgeComponent < ApplicationComponent
   end
 
   def display_text
-    if status.present?
-      status&.gsub("_", " ")&.titleize
-    else
-      text
-    end
+    super(status: status, text: text)
   end
 
   def badge_classes

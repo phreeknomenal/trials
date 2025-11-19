@@ -99,16 +99,11 @@
             Showing <%= number_with_delimiter(@total_count) %> clinical trials on this page
           </p>
         </div>
-        <div class="flex gap-2">
-          <%= link_to my_trials_path(pagination_params.merge(sort_by: "score")), 
-              class: "px-3 py-2 text-sm #{params[:sort_by] == 'score' ? 'bg-lavender-100 dark:bg-lavender-900/30 text-lavender-700 dark:text-lavender-300' : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'} rounded" do %>
-            Sort by Match
-          <% end %>
-          <%= link_to my_trials_path(pagination_params), 
-              class: "px-3 py-2 text-sm #{params[:sort_by].blank? ? 'bg-lavender-100 dark:bg-lavender-900/30 text-lavender-700 dark:text-lavender-300' : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'} rounded" do %>
-            Sort by Relevance
-          <% end %>
-        </div>
+        <%= render Page::Trials::SortByComponent.new(
+          current_sort: params[:sort_by],
+          base_path: :my_trials,
+          pagination_params: pagination_params
+        ) %>
       </div>
 
       <!-- Results Grid -->

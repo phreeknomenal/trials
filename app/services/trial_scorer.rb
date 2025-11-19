@@ -9,9 +9,25 @@ class TrialScorer
     phase_risk: 10
   }.freeze
 
-  def initialize(profile, trial_data)
+  # Default configuration matching Profile model constants
+  # This allows the scorer to work independently of the Profile class
+  DEFAULT_CONFIG = {
+    trial_type_preferences: {
+      either: "either",
+      interventional: "interventional",
+      observational: "observational"
+    },
+    risk_tolerance_levels: {
+      approved_only: "approved treatments only",
+      tested: "tested in other patients",
+      early_stage_okay: "early-stage is okay"
+    }
+  }.freeze
+
+  def initialize(profile, trial_data, config: DEFAULT_CONFIG)
     @profile = profile
     @trial = trial_data
+    @config = config
   end
 
   def calculate_score
@@ -83,7 +99,7 @@ class TrialScorer
     # At least one condition must match to score above 0
     return 0 if matching_conditions.zero?
 
-    (matching_conditions.to_f / profile_conditions.length * 100).round
+    (matching_conditions.to_f / trial_conditions.length * 100).round
   end
 
   def score_location
@@ -102,7 +118,7 @@ class TrialScorer
   end
 
   def score_study_type
-    return 100 if @profile.trial_type_preference == Profile::EITHER
+    return 100 if @profile.trial_type_preference == @config[:trial_type_preferences][:either]
     return 50 unless @profile.trial_type_preference
 
     trial_type = @trial[:study_type]&.downcase
@@ -119,15 +135,15 @@ class TrialScorer
     phase = @trial[:phase]&.downcase
 
     case @profile.risk_tolerance
-    when Profile::APPROVED_ONLY
+    when @config[:risk_tolerance_levels][:approved_only]
       return 100 if phase.include?("phase 4") || phase.include?("not applicable")
       return 50 if phase.include?("phase 3")
       0
-    when Profile::TESTED
+    when @config[:risk_tolerance_levels][:tested]
       return 100 if phase.include?("phase 2") || phase.include?("phase 3") || phase.include?("phase 4")
       return 50 if phase.include?("phase 1")
       0
-    when Profile::EARLY_STAGE_OKAY
+    when @config[:risk_tolerance_levels][:early_stage_okay]
       100 # Willing to try any phase
     else
       100

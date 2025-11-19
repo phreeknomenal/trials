@@ -1,0 +1,6 @@
+<div class="flex gap-2">
+  <% sort_buttons.each do |button| %>
+    <%= link_to button[:label], button_path(button[:sort_value]), class: button_classes(button[:active]) %>
+  <% end %>
+</div>
+

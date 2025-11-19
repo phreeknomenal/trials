@@ -31,4 +31,58 @@ class ApplicationComponent < ViewComponent::Base
       calculated_age
     end
   end
+
+  def match_score_bg_class(match_level)
+    case match_level
+    when "excellent"
+      "bg-green-50 dark:bg-green-900/20"
+    when "good"
+      "bg-blue-50 dark:bg-blue-900/20"
+    when "fair"
+      "bg-yellow-50 dark:bg-yellow-900/20"
+    else
+      "bg-red-50 dark:bg-red-900/20"
+    end
+  end
+
+  def match_score_border_class(match_level)
+    case match_level
+    when "excellent"
+      "border-green-200 dark:border-green-800"
+    when "good"
+      "border-blue-200 dark:border-blue-800"
+    when "fair"
+      "border-yellow-200 dark:border-yellow-800"
+    else
+      "border-red-200 dark:border-red-800"
+    end
+  end
+
+  def match_score_text_class(match_level)
+    case match_level
+    when "excellent"
+      "text-green-800 dark:text-green-200"
+    when "good"
+      "text-blue-800 dark:text-blue-200"
+    when "fair"
+      "text-yellow-800 dark:text-yellow-200"
+    else
+      "text-red-800 dark:text-red-200"
+    end
+  end
+
+  # Combined class for inline badge display
+  def match_score_badge_class(match_level)
+    "#{match_score_bg_class(match_level)} #{match_score_text_class(match_level)} border #{match_score_border_class(match_level)}"
+  end
+
+  # Text formatting helper for badges and status displays
+  # Converts underscored status to titleized text, or returns raw text
+  def display_text(status: nil, text: nil)
+    if status.present?
+      status&.gsub("_", " ")&.titleize
+    else
+      text
+    end
+  end
 end
