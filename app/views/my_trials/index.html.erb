@@ -89,19 +89,31 @@
     <% end %>
 
     <!-- Search Results -->
-    <% if @studies.present? %>
-      <div class="mb-6">
-        <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
-          Search Results
-        </h2>
-        <p class="text-zinc-600 dark:text-zinc-400">
-          Showing <%= number_with_delimiter(@total_count) %> clinical trials on this page
-        </p>
+    <% if @studies_with_scores.present? %>
+      <div class="mb-6 flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
+            Search Results
+          </h2>
+          <p class="text-zinc-600 dark:text-zinc-400">
+            Showing <%= number_with_delimiter(@total_count) %> clinical trials on this page
+          </p>
+        </div>
+        <div class="flex gap-2">
+          <%= link_to my_trials_path(pagination_params.merge(sort_by: "score")), 
+              class: "px-3 py-2 text-sm #{params[:sort_by] == 'score' ? 'bg-lavender-100 dark:bg-lavender-900/30 text-lavender-700 dark:text-lavender-300' : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'} rounded" do %>
+            Sort by Match
+          <% end %>
+          <%= link_to my_trials_path(pagination_params), 
+              class: "px-3 py-2 text-sm #{params[:sort_by].blank? ? 'bg-lavender-100 dark:bg-lavender-900/30 text-lavender-700 dark:text-lavender-300' : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'} rounded" do %>
+            Sort by Relevance
+          <% end %>
+        </div>
       </div>
 
       <!-- Results Grid -->
       <div class="space-y-8 mb-8">
-        <% @studies.each do |study| %>
+        <% @studies_with_scores.each do |study| %>
           <%= render Page::Cards::StudyCardComponent.new(study: study, base_path: :my_trials) %>
         <% end %>
       </div>

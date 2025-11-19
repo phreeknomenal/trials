@@ -1,4 +1,17 @@
 <div class="bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-6 hover:shadow-md transition-shadow">
+  <!-- Match Score Badge (if available) -->
+  <% if study[:trial_score].present? %>
+    <div class="mb-3">
+      <span class="<%= match_score_class(study[:match_level]) %> inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <%= study[:trial_score] %>% Match
+        <span class="text-xs opacity-75">(<%= study[:match_level].capitalize %>)</span>
+      </span>
+    </div>
+  <% end %>
+
   <h3 class="text-3xl font-bold text-zinc-900 dark:text-zinc-300 mb-2">
     <%= link_to study[:title], detail_path, class: "hover:text-lavender-600" %>
   </h3>

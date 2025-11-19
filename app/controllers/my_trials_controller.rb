@@ -24,6 +24,15 @@ class MyTrialsController < ApplicationController
     @study = ClinicalTrialClient.get_study(params[:id])
     @error = @study[:error]
     @profile = current_profile
+
+    # Calculate trial score for detail view
+    unless @error
+      scorer = TrialScorer.new(@profile, @study)
+      score_result = scorer.calculate_score
+      @trial_score = score_result[:total]
+      @score_breakdown = score_result[:breakdown]
+      @match_level = score_result[:match_level]
+    end
   end
 
   private
@@ -39,6 +48,24 @@ class MyTrialsController < ApplicationController
     )
 
     @studies = result[:studies]
+
+    # Add trial scores to each study
+    @studies_with_scores = @studies.map do |study|
+      scorer = TrialScorer.new(@profile, study)
+      score_result = scorer.calculate_score
+
+      study.merge(
+        trial_score: score_result[:total],
+        score_breakdown: score_result[:breakdown],
+        match_level: score_result[:match_level]
+      )
+    end
+
+    # Sort by score if requested
+    if params[:sort_by] == "score"
+      @studies_with_scores.sort_by! { |s| -s[:trial_score] }
+    end
+
     @total_count = result[:total_count]
     @error = result[:error]
     @current_page = current_page_num
