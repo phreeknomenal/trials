@@ -12,61 +12,35 @@
   </div>
 <% elsif @study.present? %>
   <!-- Header Section -->
-  <section class="px-5 lg:px-44 py-12 border-b border-zinc-200 dark:border-zinc-700">
-    <div class="mb-4">
-      <%= link_to my_trials_path, class: "inline-flex items-center text-lavender-600 hover:text-lavender-700 font-medium" do %>
-        <%= render Utilities::IconComponent.new("arrow_left", size: 5) %>
-        <span class="ml-2">Back to My Search</span>
-      <% end %>
-    </div>
-    
-    <div class="mb-4">
-      <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full <%= @study[:status] == 'Recruiting' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-zinc-200 text-zinc-700 dark:bg-zinc-700 dark:text-zinc-300' %>">
-        <%= @study[:status] %>
-      </span>
-    </div>
-    
-    <h1 class="text-3xl lg:text-4xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">
-      <%= @study[:title] %>
-    </h1>
-    
-    <div class="flex flex-wrap gap-4 text-sm text-zinc-600 dark:text-zinc-400">
-      <div class="flex items-center gap-2">
-        <%= render Utilities::IconComponent.new("identification", size: 5) %>
-        <span><strong>NCT ID:</strong> <%= @study[:nct_id] %></span>
-      </div>
-      <% if @study[:phase].present? %>
-        <div class="flex items-center gap-2">
-          <%= render Utilities::IconComponent.new("beaker", size: 5) %>
-          <span><strong>Phase:</strong> <%= @study[:phase] %></span>
-        </div>
-      <% end %>
-    </div>
+  <%= render Page::Trials::HeaderComponent.new(study: @study) %>
+
+  <section class="px-5 lg:px-44 pt-8 flex flex-row justify-between items-center">
+    <%= render Page::Navigation::BreadcrumbComponent.new %>
   </section>
 
   <section class="px-5 lg:px-44 pt-8 pb-16">
     <div class="grid grid-cols-1 lg:grid-cols-8 gap-10">
       <%# LEFT SIDEBAR %>
       <div class="lg:col-span-2">
-        <div class="sticky top-8">
-          <nav class="space-y-2">
-            <a href="#overview" class="block px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded">
-              Overview
-            </a>
-            <a href="#key-details" class="block px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded">
-              Key Details
-            </a>
-            <a href="#eligibility" class="block px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded">
-              Eligibility
-            </a>
-            <a href="#locations" class="block px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded">
-              Locations
-            </a>
-            <a href="#study-design" class="block px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded">
-              Study Design
-            </a>
-          </nav>
+        <div class="sticky top-10">
+          <%= render Page::Trials::Sidebar::ContainerComponent.new() do %>
+            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#key-details", text: "Key Details") %>
+            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#study-overview", text: "Study Overview") %>
+            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#eligibility", text: "Eligibility Criteria") %>
+            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#interventions", text: "Interventions/Treatments") %>
+            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#locations", text: "Trial Locations") %>
+            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#contact-information", text: "Contact Information") %>
+          <% end %>
           
+          <!-- Trial Match Score -->
+          <% if @trial_score.present? %>
+            <%= render Page::Trials::MatchScoreCardComponent.new(
+              trial_score: @trial_score,
+              match_level: @match_level,
+              score_breakdown: @score_breakdown
+            ) %>
+          <% end %>
+
           <!-- Profile Match Info -->
           <% if @profile %>
             <div class="mt-6 p-4 bg-lavender-50 dark:bg-lavender-900/20 border border-lavender-200 dark:border-lavender-800 rounded-lg">
@@ -91,77 +65,18 @@
 
       <%# RIGHT CONTENT %>
       <div class="lg:col-span-6 space-y-8">
-        <!-- Overview -->
-        <div id="overview">
-          <%= render Typography::HeadingComponent.new(size: :h3, text: "Overview") %>
-          <div class="prose dark:prose-invert max-w-none mt-4">
-            <%= simple_format(@study[:summary]) %>
-          </div>
-          
-          <% if @study[:detailed_description].present? %>
-            <div class="mt-4">
-              <details class="border border-zinc-200 dark:border-zinc-700 rounded-lg">
-                <summary class="cursor-pointer px-4 py-3 font-medium text-zinc-900 dark:text-zinc-100 hover:bg-zinc-50 dark:hover:bg-zinc-800">
-                  Detailed Description
-                </summary>
-                <div class="px-4 py-3 border-t border-zinc-200 dark:border-zinc-700 prose dark:prose-invert max-w-none">
-                  <%= simple_format(@study[:detailed_description]) %>
-                </div>
-              </details>
-            </div>
-          <% end %>
-        </div>
-
         <!-- Key Details -->
-        <div id="key-details" class="border border-zinc-300 dark:border-zinc-700 rounded-lg p-6">
-          <div class="mb-4">
-            <%= render Typography::HeadingComponent.new(size: :h4, text: "Key Details") %>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <% if @study[:phase].present? %>
-              <%= render Page::Trials::TileComponent.new(title: "Phase", record: @study[:phase]) %>
-            <% end %>
+        <%= render Page::Trials::KeyDetailsComponent.new(study: @study) %>
 
-            <% if @study[:status].present? %>
-              <%= render Page::Trials::TileComponent.new(title: "Status", record: @study[:status]) %>
-            <% end %>
-
-            <% if @study[:enrollment_count].present? %>
-              <%= render Page::Trials::TileComponent.new(title: "Enrollment", record: @study[:enrollment_count]) %>
-            <% end %>
-
-            <% if @study[:sponsor].present? %>
-              <%= render Page::Trials::TileComponent.new(title: "Sponsor", record: @study[:sponsor]) %>
-            <% end %>
-
-            <% if @study[:start_date].present? || @study[:completion_date].present? %>
-              <%= render Page::Trials::TileComponent.new(title: "Study Duration", record: "#{@study[:start_date]} - #{@study[:completion_date]}") %>
-            <% end %>
-
-            <% if @study[:study_type].present? %>
-              <%= render Page::Trials::TileComponent.new(title: "Study Type", record: @study[:study_type]) %>
-            <% end %>
-          </div>
-        </div>
-
-        <!-- Conditions -->
-        <% if @study[:conditions].present? %>
-          <div>
-            <%= render Typography::HeadingComponent.new(size: :h4, text: "Conditions Studied") %>
-            <div class="mt-4 flex flex-wrap gap-2">
-              <% @study[:conditions].each do |condition| %>
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
-                  <%= condition %>
-                </span>
-              <% end %>
-            </div>
-          </div>
-        <% end %>
+        <!-- Overview -->
+        <%= render Page::Trials::OverviewComponent.new(
+          summary: @study[:summary],
+          detailed_description: @study[:detailed_description]
+        ) %>
 
         <!-- Eligibility Criteria -->
-        <div id="eligibility" class="border border-zinc-200 dark:border-zinc-700 rounded-lg p-6">
+        <div id="eligibility" class="mb-8">
           <%= render Typography::HeadingComponent.new(size: :h4, text: "Eligibility Criteria") %>
-          
           <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
             <% if @study[:min_age].present? %>
               <div>
@@ -187,35 +102,53 @@
 
           <% if @study[:inclusion_criteria].present? %>
             <div class="mt-6">
-              <details class="border border-zinc-200 dark:border-zinc-700 rounded-lg" open>
-                <summary class="cursor-pointer px-4 py-3 font-medium text-zinc-900 dark:text-zinc-100 hover:bg-zinc-50 dark:hover:bg-zinc-800">
-                  Full Eligibility Criteria
-                </summary>
-                <div class="px-4 py-3 border-t border-zinc-200 dark:border-zinc-700 prose dark:prose-invert max-w-none text-sm">
-                  <%= simple_format(@study[:inclusion_criteria]) %>
-                </div>
-              </details>
+              <%= render Page::DropdownComponent.new(title: "Eligibility Criteria", body: @study[:inclusion_criteria]) %>
             </div>
           <% end %>
         </div>
+
+        <!-- Interventions/Treatments -->
+        <% if @study[:interventions].present? && @study[:interventions].any? %>
+          <div id="interventions" class="mb-8">
+            <div class="mb-4">
+              <%= render Typography::HeadingComponent.new(size: :h4, text: "Interventions/Treatments") %>
+            </div>
+            <div class="space-y-4">
+              <% @study[:interventions].each do |intervention| %>
+                <div class="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-4">
+                  <div class="flex items-start gap-2 mb-2">
+                    <%= render Utilities::BadgeComponent.new(
+                      text: intervention[:type],
+                      variant: :tag,
+                      size: :sm
+                    ) %>
+                    <h3 class="text-base font-semibold text-zinc-900 dark:text-zinc-300">
+                      <%= intervention[:name] %>
+                    </h3>
+                  </div>
+                  <% if intervention[:description].present? %>
+                    <p class="text-sm text-zinc-600 dark:text-zinc-400">
+                      <%= intervention[:description] %>
+                    </p>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
 
         <!-- Locations -->
         <div id="locations">
           <%= render Typography::HeadingComponent.new(size: :h4, text: "Trial Locations") %>
           <% if @study[:locations].present? %>
-            <div class="mt-4 space-y-2">
+            <div class="grid grid-cols-2 mt-4 gap-6">
               <% @study[:locations].each do |location| %>
-                <div class="flex items-start gap-3 p-3 border border-zinc-200 dark:border-zinc-700 rounded-lg">
+                <div class="col-span-1 flex items-start gap-1 p-3 border border-zinc-300 dark:border-zinc-700 rounded-lg">
                   <div class="mt-0.5">
                     <%= render Utilities::IconComponent.new("map_pin", size: 5, options: { class: "text-lavender-600" }) %>
                   </div>
                   <span class="text-zinc-900 dark:text-zinc-100"><%= location %></span>
                 </div>
-              <% end %>
-              <% if @study[:locations].length >= 3 %>
-                <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-2">
-                  Showing first 3 locations. More may be available.
-                </p>
               <% end %>
             </div>
           <% else %>
@@ -223,60 +156,69 @@
           <% end %>
         </div>
 
-        <!-- Study Design -->
-        <div id="study-design" class="border border-zinc-200 dark:border-zinc-700 rounded-lg p-6">
-          <%= render Typography::HeadingComponent.new(size: :h4, text: "Study Design") %>
-          
-          <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <% if @study[:study_type].present? %>
-              <div>
-                <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Study Type</p>
-                <p class="text-base text-zinc-900 dark:text-zinc-100"><%= @study[:study_type] %></p>
-              </div>
-            <% end %>
-            
-            <% if @study[:design_allocation].present? %>
-              <div>
-                <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Allocation</p>
-                <p class="text-base text-zinc-900 dark:text-zinc-100"><%= @study[:design_allocation] %></p>
-              </div>
-            <% end %>
-            
-            <% if @study[:design_intervention_model].present? %>
-              <div>
-                <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Intervention Model</p>
-                <p class="text-base text-zinc-900 dark:text-zinc-100"><%= @study[:design_intervention_model] %></p>
-              </div>
-            <% end %>
-            
-            <% if @study[:design_primary_purpose].present? %>
-              <div>
-                <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Primary Purpose</p>
-                <p class="text-base text-zinc-900 dark:text-zinc-100"><%= @study[:design_primary_purpose] %></p>
-              </div>
-            <% end %>
-          </div>
-        </div>
+        <!-- Contact Information -->
+        <% if (@study[:central_contacts].present? && @study[:central_contacts].any?) || (@study[:overall_officials].present? && @study[:overall_officials].any?) %>
+          <div id="contact-information" class="mb-8">
+            <div class="mb-4">
+              <%= render Typography::HeadingComponent.new(size: :h4, text: "Contact Information") %>
+            </div>
 
-        <!-- Interventions -->
-        <% if @study[:interventions].present? %>
-          <div>
-            <%= render Typography::HeadingComponent.new(size: :h4, text: "Interventions") %>
-            <div class="mt-4 space-y-4">
-              <% @study[:interventions].each do |intervention| %>
-                <div class="border border-zinc-200 dark:border-zinc-700 rounded-lg p-4">
-                  <div class="flex items-center gap-2 mb-2">
-                    <span class="px-2 py-1 text-xs font-semibold rounded bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
-                      <%= intervention[:type] %>
-                    </span>
-                    <h5 class="font-semibold text-zinc-900 dark:text-zinc-100"><%= intervention[:name] %></h5>
-                  </div>
-                  <% if intervention[:description].present? %>
-                    <p class="text-sm text-zinc-600 dark:text-zinc-400"><%= intervention[:description] %></p>
+            <% if @study[:central_contacts].present? && @study[:central_contacts].any? %>
+              <div class="mb-6">
+                <%= render Typography::HeadingComponent.new(size: :h6, text: "Study Contacts") %>
+                <div class="mt-3 space-y-3">
+                  <% @study[:central_contacts].each do |contact| %>
+                    <div class="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-4">
+                      <h4 class="font-semibold text-zinc-900 dark:text-zinc-300">
+                        <%= contact[:name] %>
+                      </h4>
+                      <% if contact[:role].present? %>
+                        <p class="text-sm text-zinc-500 dark:text-zinc-400">
+                          <%= contact[:role] %>
+                        </p>
+                      <% end %>
+                      <div class="mt-2 space-y-1">
+                        <% if contact[:phone].present? %>
+                          <p class="text-sm text-zinc-600 dark:text-zinc-400">
+                            <strong>Phone:</strong> <%= contact[:phone] %>
+                          </p>
+                        <% end %>
+                        <% if contact[:email].present? %>
+                          <p class="text-sm text-zinc-600 dark:text-zinc-400">
+                            <strong>Email:</strong> <%= contact[:email] %>
+                          </p>
+                        <% end %>
+                      </div>
+                    </div>
                   <% end %>
                 </div>
-              <% end %>
-            </div>
+              </div>
+            <% end %>
+
+            <% if @study[:overall_officials].present? && @study[:overall_officials].any? %>
+              <div>
+                <%= render Typography::HeadingComponent.new(size: :h6, text: "Principal Investigators") %>
+                <div class="mt-3 space-y-3">
+                  <% @study[:overall_officials].each do |official| %>
+                    <div class="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-4">
+                      <h4 class="font-semibold text-zinc-900 dark:text-zinc-300">
+                        <%= official[:name] %>
+                      </h4>
+                      <% if official[:role].present? %>
+                        <p class="text-sm text-zinc-500 dark:text-zinc-400">
+                          <%= official[:role] %>
+                        </p>
+                      <% end %>
+                      <% if official[:affiliation].present? %>
+                        <p class="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                          <%= official[:affiliation] %>
+                        </p>
+                      <% end %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
           </div>
         <% end %>
 
@@ -294,6 +236,22 @@
               class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-lavender-600 hover:bg-lavender-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lavender-500" %>
         </div>
       </div>
+    </div>
+  </section>
+<% else %>
+  <!-- Not Found State -->
+  <section class="px-5 lg:px-24 py-16">
+    <div class="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-8 text-center">
+      <div class="text-zinc-400 dark:text-zinc-500 mb-4">
+        <%= render Utilities::IconComponent.new("search", size: 16) %>
+      </div>
+      <h3 class="text-xl font-semibold text-zinc-900 dark:text-zinc-300 mb-2">
+        Trial Not Found
+      </h3>
+      <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+        The clinical trial you're looking for could not be found.
+      </p>
+      <%= link_to "Back to Search", search_index_path, class: "text-lavender-600 hover:text-lavender-700 font-medium" %>
     </div>
   </section>
 <% end %>

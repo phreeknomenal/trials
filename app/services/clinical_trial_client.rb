@@ -32,7 +32,7 @@ class ClinicalTrialClient
     { studies: [], total_count: 0, error: e.message }
   end
 
-  def self.advanced_search(condition: nil, location: nil, page: 1, page_size: 10)
+  def self.advanced_search(condition: nil, location: nil, page_token: nil, page_size: 10)
     query_parts = []
 
     # Build simple query parts
@@ -45,7 +45,7 @@ class ClinicalTrialClient
     query_params = {
       "query.term" => query_parts.join(" "),
       "pageSize" => page_size,
-      "pageToken" => page > 1 ? page.to_s : nil,
+      "pageToken" => page_token,
       "format" => "json"
     }.compact
 
