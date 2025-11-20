@@ -91,7 +91,8 @@ class TrialScorer
 
     return 50 if trial_conditions.empty?
 
-    # Calculate overlap percentage
+    # Calculate overlap percentage from user's perspective
+    # Score = what percentage of MY conditions does this trial address?
     matching_conditions = profile_conditions.count do |pc|
       trial_conditions.any? { |tc| tc.include?(pc) || pc.include?(tc) }
     end
@@ -99,7 +100,9 @@ class TrialScorer
     # At least one condition must match to score above 0
     return 0 if matching_conditions.zero?
 
-    (matching_conditions.to_f / trial_conditions.length * 100).round
+    # User-centric scoring: percentage of profile conditions that match
+    # This doesn't penalize trials for studying additional conditions
+    (matching_conditions.to_f / profile_conditions.length * 100).round
   end
 
   def score_location

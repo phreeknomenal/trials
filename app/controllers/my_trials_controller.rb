@@ -26,63 +26,43 @@ class MyTrialsController < ApplicationController
     @profile = current_profile
 
     # Calculate trial score for detail view
-    unless @error
-      scorer = TrialScorer.new(@profile, @study)
-      score_result = scorer.calculate_score
-
-      if score_result
-        @trial_score = score_result[:total]
-        @score_breakdown = score_result[:breakdown]
-        @match_level = score_result[:match_level]
-      end
-    end
+    calculate_trial_score unless @error
   end
 
   private
+
+  def calculate_trial_score
+    scorer = TrialScorer.new(@profile, @study)
+    score_result = scorer.calculate_score
+
+    return unless score_result
+
+    @trial_score = score_result[:total]
+    @score_breakdown = score_result[:breakdown]
+    @match_level = score_result[:match_level]
+  end
 
   def perform_search
     current_page_num = params[:page]&.to_i || 1
     page_token = get_page_token(current_page_num)
 
-    result = ClinicalTrialClient.advanced_search(
-      **sanitized_params,
-      page_token: page_token,
-      page_size: page_size
+    service = TrialSearchService.new(
+      profile: @profile,
+      search_params: sanitized_params,
+      page: current_page_num,
+      page_size: page_size,
+      page_token: page_token
     )
 
-    @studies = result[:studies]
+    result = service.search(sort_by: params[:sort_by])
 
-    # Add trial scores to each study
-    @studies_with_scores = @studies.map do |study|
-      scorer = TrialScorer.new(@profile, study)
-      score_result = scorer.calculate_score
-
-      if score_result
-        study.merge(
-          trial_score: score_result[:total],
-          score_breakdown: score_result[:breakdown],
-          match_level: score_result[:match_level]
-        )
-      else
-        study.merge(
-          trial_score: nil,
-          score_breakdown: nil,
-          match_level: nil
-        )
-      end
-    end
-
-    # Sort by score if requested
-    if params[:sort_by] == "score"
-      @studies_with_scores.sort_by! { |s| -(s[:trial_score] || 0) }
-    end
-
+    @studies_with_scores = result[:studies]
     @total_count = result[:total_count]
     @error = result[:error]
-    @current_page = current_page_num
-    @has_next_page = result[:next_page_token].present?
+    @current_page = result[:current_page]
+    @has_next_page = result[:has_next_page]
 
-    # Store the next page token for future use
+    # Store the next page token for future use (only for standard search)
     if result[:next_page_token].present?
       store_page_token(current_page_num + 1, result[:next_page_token])
     end
