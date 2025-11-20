@@ -21,7 +21,11 @@ class Page::Trials::SortByComponent < ApplicationComponent
   end
 
   def button_path(sort_value)
-    params = sort_value ? @pagination_params.merge(sort_by: sort_value) : @pagination_params
+    params = if sort_value
+      @pagination_params.merge(sort_by: sort_value)
+    else
+      @pagination_params.except(:sort_by)
+    end
     helpers.url_for(controller: @base_path, action: :index, **params)
   end
 
