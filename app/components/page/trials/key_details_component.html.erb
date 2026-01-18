@@ -1,10 +1,14 @@
 <div id="key-details" class="border border-zinc-300 dark:border-zinc-700 p-8 rounded-lg">
   <div class="mb-4">
-    <%= render Typography::HeadingComponent.new(size: :h4, text: "Key Details") %>
+    <%= render Typography::HeadingComponent.new(size: :h5, text: "Key Details") %>
   </div>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-y-6">
     <% if @study[:phase].present? %>
       <%= render Page::Trials::TileComponent.new(title: "Phase", record: @study[:phase], icon: "swatch") %>
+    <% end %>
+
+    <% if @study[:study_type].present? %>
+      <%= render Page::Trials::TileComponent.new(title: "Study Type", record: @study[:study_type], icon: "rectangle_stack") %>
     <% end %>
 
     <% if @study[:status].present? %>
@@ -15,39 +19,17 @@
       <%= render Page::Trials::TileComponent.new(title: "Age Range", record: [@study[:min_age], @study[:max_age]].compact.join(" - "), icon: "calendar_month") %>
     <% end %>
 
-    <% if @study[:start_date].present? || @study[:completion_date].present? %>
-      <%= render Page::Trials::TileComponent.new(title: "Study Duration", record: parse_date_range(@study[:start_date], @study[:completion_date]), icon: "clock_arrow") %>
-    <% end %>
-
-    <% if @study[:study_type].present? %>
-      <%= render Page::Trials::TileComponent.new(title: "Study Type", record: @study[:study_type], icon: "rectangle_stack") %>
-    <% end %>
-
     <% if @study[:enrollment_count].present? %>
       <%= render Page::Trials::TileComponent.new(title: "Enrollment", record: @study[:enrollment_count], icon: "users_group") %>
+    <% end %>
+
+    <% if @study[:start_date].present? || @study[:completion_date].present? %>
+      <%= render Page::Trials::TileComponent.new(title: "Study Duration", record: parse_date_range(@study[:start_date], @study[:completion_date]), icon: "clock_arrow") %>
     <% end %>
 
     <div class="col-span-3">
       <%= render Page::Trials::TileComponent.new(title: "Sponsor(s)", record: @study[:sponsor], icon: "building_office") %>
     </div>
   </div>
-
-  <% if @study[:conditions].present? %>
-    <div class="flex gap-2 items-start mt-6">
-      <div class="w-5 h-5 mt-[3px] shrink-0 text-lavender-600">
-        <%= render Utilities::IconComponent.new("microscope", size: 16) %>
-      </div>
-      <div class="">
-        <%= render Typography::HeadingComponent.new(size: :h7, text: "Conditions") %>
-        <div class="mt-2 flex flex-wrap gap-2">
-          <% @study[:conditions].each do |condition| %>
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
-              <%= condition %>
-            </span>
-          <% end %>
-        </div>
-      </div>
-    </div>
-  <% end %>
 </div>
 

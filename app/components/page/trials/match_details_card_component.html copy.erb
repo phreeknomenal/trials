@@ -1,0 +1,26 @@
+<div class="mt-6 p-4 <%= match_details_bg_class(@match_level) %> border <%= match_details_border_class(@match_level) %> rounded-lg">
+  <h3 class="text-sm font-semibold <%= match_details_text_class(@match_level) %> mb-3">
+    Your Match Score Details
+  </h3>
+  
+  <div class="text-center mb-3">
+    <div class="text-4xl font-bold <%= match_details_text_class(@match_level) %>">
+      <%= @trial_score %>%
+    </div>
+    <div class="text-xs <%= match_details_text_class(@match_level) %> opacity-75 mt-1">
+      <%= @match_level.capitalize %> Match
+    </div>
+  </div>
+  
+  <div class="space-y-2 pt-3 border-t <%= match_details_border_class(@match_level) %>">
+    <div class="text-xs space-y-1.5">
+      <% breakdown_items.each do |item| %>
+        <div class="flex justify-between items-center">
+          <span class="<%= match_details_text_class(@match_level) %> opacity-90"><%= item[:label] %>:</span>
+          <span class="font-semibold <%= match_details_text_class(@match_level) %>"><%= item[:value] %>%</span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,39 @@
+<div id="what-this-means-for-you"
+  class="border border-zinc-300 dark:border-zinc-700 rounded-lg p-8"
+  role="region"
+  aria-labelledby="status-message-title"
+>
+  <%= render Typography::HeadingComponent.new(size: :h5, text: "What This Means For You") %>
+    
+  <% if status_message.present? %>
+    <p 
+      class="text-zinc-700 dark:text-zinc-300 text-base font-body leading-relaxed mb-4"
+      aria-label="<%= aria_label %>"
+    >
+      <%= status_message %>
+    </p>
+  <% end %>
+
+  <% if match_factors.any? %>
+    <div class="mt-4">
+      <h4 class="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-3">
+        Your Match Factors
+      </h4>
+      <ul class="grid grid-cols-2 gap-4">
+        <% match_factors.each do |factor| %>
+          <li class="<%= factor[:css_classes] %>">
+            <div class="flex-1">
+              <p class="font-bold text-zinc-900 dark:text-zinc-100 text-sm leading-none">
+                <%= factor[:label] %>
+              </p>
+              <p class="text-zinc-700 dark:text-zinc-300 text-sm font-body mt-1 leading-none">
+                <%= factor[:message] %>
+              </p>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+</div>
+

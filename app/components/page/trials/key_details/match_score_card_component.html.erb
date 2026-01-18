@@ -1,0 +1,36 @@
+<div id="match-score-card" class="grid grid-cols-4 gap-8 p-8 <%= match_score_bg_class(@match_level) %> border <%= match_score_border_class(@match_level) %> rounded-lg mb-6">
+  <div class="col-span-1">
+    <h3 class="text-lg font-bold text-center text-zinc-900 dark:text-zinc-200">
+      Your Match Score
+    </h3>
+    
+    <div class="text-center">
+      <div class="text-6xl <%= match_score_text_class(@match_level) %> font-bold mt-2 mb-3">
+        <%= @trial_score %>%
+      </div>
+      <div class="text-sm text-zinc-900 dark:text-zinc-200 font-semibold mt-1 leading-none">
+        <%= match_phrase(@match_level) %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-span-3">
+    <h3 class="text-lg font-bold text-zinc-900 dark:text-zinc-200 mb-2">
+      Match Score Details
+    </h3>
+    <div class="grid grid-cols-2 gap-x-8 gap-y-4">
+      <% breakdown_items.each do |item| %>
+        <div class="flex gap-1 items-start">
+          <div class="w-5 h-5 mt-[3px] <%= match_score_text_class(@match_level) %>">
+            <%= render Utilities::IconComponent.new(item[:icon], size: 16) %>
+          </div>
+          <div class="w-full flex items-center justify-between">
+            <h3 class="text-base font-semibold text-zinc-900 dark:text-zinc-300"><%= item[:label] %></h3>
+            <p class="text-sm font-body font-bold <%= match_score_text_class(@match_level) %>"><%= item[:value] %>%</p>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+

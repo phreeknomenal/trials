@@ -24,21 +24,14 @@
       <div class="lg:col-span-2">
         <div class="sticky top-10">
           <%= render Page::Trials::Sidebar::ContainerComponent.new() do %>
+            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#match-score-card", text: "Match Score") %>
             <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#key-details", text: "Key Details") %>
+            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#what-this-means-for-you", text: "What This Means For You") %>
             <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#study-overview", text: "Study Overview") %>
             <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#eligibility", text: "Eligibility Criteria") %>
             <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#interventions", text: "Interventions/Treatments") %>
             <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#locations", text: "Trial Locations") %>
             <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#contact-information", text: "Contact Information") %>
-          <% end %>
-          
-          <!-- Trial Match Score -->
-          <% if @trial_score.present? %>
-            <%= render Page::Trials::MatchScoreCardComponent.new(
-              trial_score: @trial_score,
-              match_level: @match_level,
-              score_breakdown: @score_breakdown
-            ) %>
           <% end %>
 
           <!-- Profile Match Info -->
@@ -65,18 +58,28 @@
 
       <%# RIGHT CONTENT %>
       <div class="lg:col-span-6 space-y-8">
+        <% if @trial_score.present? %>
+          <%= render Page::Trials::KeyDetails::MatchScoreCardComponent.new(
+            trial_score: @trial_score,
+            match_level: @match_level,
+            score_breakdown: @score_breakdown
+          ) %>
+        <% end %>
+
         <!-- Key Details -->
-        <%= render Page::Trials::KeyDetailsComponent.new(study: @study) %>
+        <%= render Page::Trials::KeyDetailsComponent.new(study: @study, trial_score: @trial_score, match_level: @match_level, score_breakdown: @score_breakdown) %>
+
+        <!-- Status Message -->
+        <%= render Page::Trials::StatusMessageComponent.new(study: @study, score_breakdown: @score_breakdown, trial_score: @trial_score, match_level: @match_level) %>
 
         <!-- Overview -->
         <%= render Page::Trials::OverviewComponent.new(
-          summary: @study[:summary],
-          detailed_description: @study[:detailed_description]
+          study: @study
         ) %>
 
         <!-- Eligibility Criteria -->
-        <div id="eligibility" class="mb-8">
-          <%= render Typography::HeadingComponent.new(size: :h4, text: "Eligibility Criteria") %>
+        <div id="eligibility" class="mb-8 p-8 border border-zinc-300 dark:border-zinc-700 rounded-lg">
+          <%= render Typography::HeadingComponent.new(size: :h5, text: "Eligibility Criteria") %>
           <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
             <% if @study[:min_age].present? %>
               <div>
@@ -109,9 +112,9 @@
 
         <!-- Interventions/Treatments -->
         <% if @study[:interventions].present? && @study[:interventions].any? %>
-          <div id="interventions" class="mb-8">
+          <div id="interventions" class="mb-8 p-8 border border-zinc-300 dark:border-zinc-700 rounded-lg">
             <div class="mb-4">
-              <%= render Typography::HeadingComponent.new(size: :h4, text: "Interventions/Treatments") %>
+              <%= render Typography::HeadingComponent.new(size: :h5, text: "Treatments") %>
             </div>
             <div class="space-y-4">
               <% @study[:interventions].each do |intervention| %>
@@ -138,8 +141,8 @@
         <% end %>
 
         <!-- Locations -->
-        <div id="locations">
-          <%= render Typography::HeadingComponent.new(size: :h4, text: "Trial Locations") %>
+        <div id="locations" class="p-8 border border-zinc-300 dark:border-zinc-700 rounded-lg">
+          <%= render Typography::HeadingComponent.new(size: :h5, text: "Trial Locations") %>
           <% if @study[:locations].present? %>
             <div class="grid grid-cols-2 mt-4 gap-6">
               <% @study[:locations].each do |location| %>
@@ -158,9 +161,9 @@
 
         <!-- Contact Information -->
         <% if (@study[:central_contacts].present? && @study[:central_contacts].any?) || (@study[:overall_officials].present? && @study[:overall_officials].any?) %>
-          <div id="contact-information" class="mb-8">
+          <div id="contact-information" class="mb-8 p-8 border border-zinc-300 dark:border-zinc-700 rounded-lg">
             <div class="mb-4">
-              <%= render Typography::HeadingComponent.new(size: :h4, text: "Contact Information") %>
+              <%= render Typography::HeadingComponent.new(size: :h5, text: "Contact Information") %>
             </div>
 
             <% if @study[:central_contacts].present? && @study[:central_contacts].any? %>

@@ -1,6 +1,15 @@
 class Page::Trials::OverviewComponent < ApplicationComponent
-  def initialize(summary:, detailed_description: nil)
-    @summary = summary
-    @detailed_description = detailed_description
+  attr_reader :study
+
+  def initialize(study: nil)
+    @study = study
+  end
+
+  def summary
+    @study[:summary]
+  end
+
+  def detailed_description
+    @study[:detailed_description]
   end
 end
