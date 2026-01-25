@@ -30,4 +30,5 @@ Rails.application.routes.draw do
   resources :profiles, only: [ :new, :create, :show, :edit, :update ]
   resources :search, only: [ :index, :show ]
   resources :my_trials, only: [ :index, :show ]
+  resources :saved_trials, only: [ :index, :show, :edit, :create, :update, :destroy ]
 end

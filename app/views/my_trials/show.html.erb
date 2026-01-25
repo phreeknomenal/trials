@@ -12,7 +12,7 @@
   </div>
 <% elsif @study.present? %>
   <!-- Header Section -->
-  <%= render Page::Trials::HeaderComponent.new(study: @study) %>
+  <%= render Page::Trials::HeaderComponent.new(study: @study, saved_trial: @saved_trial, nct_id: @nct_id, match_score: @trial_score) %>
 
   <section class="px-5 lg:px-44 pt-8 flex flex-row justify-between items-center">
     <%= render Page::Navigation::BreadcrumbComponent.new %>

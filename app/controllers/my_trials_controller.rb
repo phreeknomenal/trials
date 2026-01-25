@@ -22,11 +22,28 @@ class MyTrialsController < ApplicationController
 
   def show
     @study = ClinicalTrialClient.get_study(params[:id])
+    @nct_id = params[:id]  # Capture the nct_id directly
     @error = @study[:error]
     @profile = current_profile
 
+    # Check if trial is already saved
+    @saved_trial = current_user.saved_trials.find_by(nct_id: @nct_id) if current_user.present?
+
     # Calculate trial score for detail view
     calculate_trial_score unless @error
+  end
+
+  private
+
+  def calculate_trial_score
+    scorer = TrialScorer.new(@profile, @study)
+    score_result = scorer.calculate_score
+
+    return unless score_result
+
+    @trial_score = score_result[:total]
+    @score_breakdown = score_result[:breakdown]
+    @match_level = score_result[:match_level]
   end
 
   private

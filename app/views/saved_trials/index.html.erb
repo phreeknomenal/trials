@@ -1,0 +1,120 @@
+<section class="px-5 lg:px-44 py-16 border-b border-zinc-200 dark:border-zinc-700">
+  <%= render Page::HeaderComponent.new(
+    heading: "Saved Trials",
+    subheading: "Keep track of clinical trials you're interested in",
+    position: :left
+  ) %>
+</section>
+
+<div class="px-5 lg:px-44 py-16">
+  <!-- Filters and Search -->
+  <div class="bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6 mb-6">
+    <%= form_with url: saved_trials_path, method: :get, class: "space-y-4", local: true do |f| %>
+      <!-- Search -->
+      <div class="flex gap-4">
+        <div class="flex-1">
+          <%= f.text_field :search, 
+              placeholder: "Search by trial title or notes...", 
+              value: params[:search],
+              class: "block p-2 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-lavender-600 focus:border-lavender-600" %>
+        </div>
+        <%= f.submit "Search", class: "cursor-pointer inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-md text-white bg-lavender-600 hover:bg-lavender-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lavender-500" %>
+      </div>
+
+      <!-- Filters -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Status Filter -->
+        <div>
+          <%= f.select :status, 
+              options_for_select(
+                [["All Statuses", ""]] + SavedTrial::STATUSES.map { |s| [s.humanize, s] },
+                params[:status]
+              ),
+              { include_blank: false },
+              class: "block p-2 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-lavender-600 focus:border-lavender-600" %>
+        </div>
+
+        <!-- Sort By -->
+        <div>
+          <%= f.select :sort_by, 
+              options_for_select(
+                [["Date Saved", "date"], ["Status", "status"], ["Match Score", "match_score"]],
+                params[:sort_by] || "date"
+              ),
+              { include_blank: false },
+              class: "block p-2 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-lavender-600 focus:border-lavender-600" %>
+        </div>
+
+        <!-- Sort Order -->
+        <div>
+          <%= f.select :sort, 
+              options_for_select(
+                [["Newest First", "newest"], ["Oldest First", "oldest"]],
+                params[:sort] || "newest"
+              ),
+              { include_blank: false },
+              class: "block p-2 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-lavender-600 focus:border-lavender-600" %>
+        </div>
+      </div>
+
+      <!-- Bulk Action Checkbox -->
+      <div class="flex items-center gap-4">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" id="select-all" class="w-4 h-4 rounded border-gray-300 text-blue-600">
+          <span class="text-sm text-gray-700">Select All</span>
+        </label>
+        <div id="bulk-actions" class="hidden flex items-center gap-2">
+          <label for="bulk-status" class="text-sm text-gray-700">Mark as:</label>
+          <select id="bulk-status" class="px-3 py-1 border border-gray-300 rounded text-sm">
+            <option value="">-- Select Status --</option>
+            <% SavedTrial::STATUSES.each do |status| %>
+              <option value="<%= status %>"><%= status.humanize %></option>
+            <% end %>
+          </select>
+          <button type="button" id="bulk-update-btn" class="px-4 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
+            Update
+          </button>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Results -->
+  <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-8">
+    Saved Trials (<%= @saved_trials.count %>)
+  </h2>
+  <% if @saved_trials.any? %>
+    <div class="grid grid-cols-2 gap-8">
+      <% @saved_trials.each do |saved_trial| %>
+        <%= render Page::SavedTrials::CardComponent.new(saved_trial: saved_trial) %>
+      <% end %>
+    </div>
+
+    <!-- Pagination Info -->
+    <% if @pagy %>
+      <div class="mt-8 text-center text-sm text-gray-600">
+        <p>Page <%= @pagy.page %> of <%= @pagy.pages %> (<%= @pagy.count %> total trials)</p>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="flex flex-col justify-center items-center text-center py-12">
+      <div class="text-lavender-600">
+        <%= render Utilities::IconComponent.new("bookmark", size: 12) %>
+      </div>
+      <h3 class="mt-2 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">No saved trials yet</h3>
+      <p class="mt-1 text-gray-500">Start saving trials to keep track of ones you're interested in</p>
+      <%= link_to "Search Trials", my_trials_path, class: "mt-4 inline-block px-6 py-3 bg-lavender-600 text-white rounded-lg hover:bg-lavender-700 transition-colors" %>
+    </div>
+  <% end %>
+</div>
+
+<style>
+  .status-interested { @apply bg-blue-100 text-blue-800; }
+  .status-applying { @apply bg-yellow-100 text-yellow-800; }
+  .status-contacted { @apply bg-purple-100 text-purple-800; }
+  .status-enrolled { @apply bg-green-100 text-green-800; }
+  .status-rejected { @apply bg-red-100 text-red-800; }
+  .status-completed { @apply bg-gray-100 text-gray-800; }
+  .status-not_eligible { @apply bg-orange-100 text-orange-800; }
+</style>
+

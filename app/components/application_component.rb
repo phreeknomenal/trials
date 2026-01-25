@@ -72,7 +72,17 @@ class ApplicationComponent < ViewComponent::Base
   end
 
   # Combined class for inline badge display
-  def match_score_badge_class(match_level)
+  def match_score_badge_class(match_score)
+    match_level = case match_score
+    when 80..100
+      "excellent"
+    when 60..79
+      "good"
+    when 40..59
+      "fair"
+    else
+      "poor"
+    end
     "#{match_score_bg_class(match_level)} #{match_score_text_class(match_level)} border #{match_score_border_class(match_level)}"
   end
 

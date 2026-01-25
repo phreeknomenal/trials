@@ -1,0 +1,65 @@
+<div class="col-span-2 lg:col-span-1 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg p-6" id="saved-trial-<%= saved_trial.id %>">
+  <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-2 truncate" title="<%= saved_trial.trial_title %>">
+    <%= link_to truncate(saved_trial.trial_title, length: 300), saved_trial_path(id: saved_trial), class: "text-zinc-600 dark:text-zinc-400 hover:text-lavender-500 hover:underline" %>
+  </h3>
+  
+  <div class="flex flex-wrap gap-4 mb-3 text-sm items-center justify-between text-gray-600">
+    <div class="flex items-center gap-1 text-xs text-zinc-600 dark:text-zinc-400">
+      <%= render Utilities::IconComponent.new("profile_card", size: 6) %>
+      <span><strong>NCT-ID:</strong> <%= saved_trial.nct_id %></span>
+    </div>
+    <div class="flex items-center gap-1 text-xs text-zinc-600 dark:text-zinc-400">
+      <%= render Utilities::IconComponent.new("bookmark", size: 4) %>
+      <span>Saved <%= time_ago_in_words(saved_trial.created_at) %> ago</span>
+    </div>
+  </div>
+
+  <div class="mb-5">
+    <span class="inline-block px-3 py-1 text-sm font-medium rounded-full <%= status_badge_classes(saved_trial.status) %>">
+      <%= saved_trial.status.humanize %>
+    </span>
+  </div>
+
+  <div class="flex gap-1 text-sm text-zinc-600 dark:text-zinc-400 mb-3">
+    <%= render Utilities::IconComponent.new("tag", size: 5) %>
+    <span class="font-medium">Tags</span>
+  </div>
+  <% if @saved_trial.tags_array.any? %>
+    <div class="flex flex-wrap gap-2 mb-5">
+      <% @saved_trial.tags_array.each do |tag| %>
+        <span class="inline-block bg-zinc-200 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-300 px-3 py-1 rounded-full text-sm font-medium">
+          <%= tag %>
+        </span>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-gray-500 font-body italic text-sm mt-1 mb-8">No tags added yet.</p>
+  <% end %>
+
+  <div class="flex items-center justify-between gap-2">
+    <% if saved_trial.match_score.present? %>
+      <div class="flex items-center px-2 py-1 rounded-lg mb-3 <%= match_score_badge_class(saved_trial.match_score) %> ">
+        <div class="">
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <span class="font-medium mr-1">Match Score:</span>
+        <span class="font-bold"><%= saved_trial.match_score %>%</span>
+      </div>
+    <% end %>
+
+    <div class="flex items-center justify-between">
+      <%= link_to edit_saved_trial_path(saved_trial), class: "px-3 py-2 flex items-center gap-1 text-sm font-medium text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded transition-colors" do %>
+        <%= render Utilities::IconComponent.new("pencil", size: 4) %>
+        <span>Edit</span>
+      <% end %>
+
+      <%= form_with url: saved_trial_path(saved_trial), method: :delete, local: true, class: "flex items-center gap-1 *:cursor-pointer px-3 py-2 cursor-pointer text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors border-0 bg-transparent cursor-pointer" do |f| %>
+        <%= render Utilities::IconComponent.new("trash", size: 4) %>
+        <%= f.submit "Remove", class: "", 
+            data: { turbo_confirm: "Are you sure you want to remove this trial?" } %>
+      <% end %>
+    </div>
+  </div>
+</div>

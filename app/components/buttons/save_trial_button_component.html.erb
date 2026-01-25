@@ -1,0 +1,24 @@
+<div data-controller="save-trial"
+     data-save-trial-nct-id-value="<%= nct_id %>"
+     data-save-trial-trial-title-value="<%= trial_title %>"
+     data-save-trial-is-saved-value="<%= is_saved? %>"
+     data-save-trial-match-score-value="<%= match_score %>"
+     data-save-trial-trial-data-value="<%= trial_data_json %>"
+     <% if is_saved? %>data-save-trial-saved-trial-id-value="<%= @saved_trial.id %>"<% end %>>
+  <button type="button"
+          data-save-trial-target="button"
+          class="<%= button_classes %>"
+          data-action="save-trial#toggleSave">
+    <% if is_saved? %>
+      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path>
+      </svg>
+    <% else %>
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 19V5z"></path>
+      </svg>
+    <% end %>
+    <%= button_text %>
+  </button>
+</div>
+

@@ -11,7 +11,11 @@ class SearchController < ApplicationController
 
   def show
     @study = ClinicalTrialClient.get_study(params[:id])
+    @nct_id = params[:id]  # Capture the nct_id directly
     @error = @study[:error]
+
+    # Check if trial is already saved (for authenticated users)
+    @saved_trial = current_user.saved_trials.find_by(nct_id: @nct_id) if user_signed_in? && current_user.present?
   end
 
   private
