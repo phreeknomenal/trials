@@ -29,7 +29,7 @@
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
     <% if study[:phase].present? %>
-      <%= render Page::Trials::TileComponent.new(title: "Phase", record: @study[:phase], icon: "beaker") %>
+      <%= render Page::Trials::TileComponent.new(title: "Phase", record: study[:phase], icon: "beaker") %>
     <% end %>
 
     <% if study[:start_date].present? || study[:completion_date].present? %>

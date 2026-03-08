@@ -8,6 +8,7 @@ export default class extends Controller {
     isSaved: Boolean,
     matchScore: String,
     trialData: String,
+    savedTrialId: Number,
   }
 
   connect() {
@@ -107,9 +108,7 @@ export default class extends Controller {
   }
 
   getSavedTrialId() {
-    // Fetch from server or data attribute if available
-    // For now, return null - will need to implement based on your needs
-    return this.element.dataset.savedTrialId || null
+    return this.savedTrialIdValue ?? null
   }
 
   updateButtonState() {

@@ -80,9 +80,17 @@
   </div>
 
   <!-- Results -->
-  <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-8">
-    Saved Trials (<%= @saved_trials.count %>)
-  </h2>
+  <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+    <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+      Saved Trials (<%= @saved_trials.count %>)
+    </h2>
+    <% if @saved_trials.any? && @saved_trials.count >= 2 %>
+      <%= form_with url: my_trials_trial_comparison_path, method: :get, id: "compare-trials-form", local: true, class: "flex items-center gap-2" do |f| %>
+        <span class="text-sm text-zinc-600 dark:text-zinc-400">Select 2–3 trials above, then</span>
+        <%= f.submit "Compare selected", class: "cursor-pointer inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-lavender-600 hover:bg-lavender-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lavender-500" %>
+      <% end %>
+    <% end %>
+  </div>
   <% if @saved_trials.any? %>
     <div class="grid grid-cols-2 gap-8">
       <% @saved_trials.each do |saved_trial| %>

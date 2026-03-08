@@ -11,7 +11,7 @@ class CreateSavedTrials < ActiveRecord::Migration[8.1]
       t.string :phase
       t.string :study_type
       t.string :trial_status
-      t.string :min_age
+      t.integer :min_age
       t.integer :max_age
       t.integer :enrollment_count
       t.date :start_date

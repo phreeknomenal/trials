@@ -36,9 +36,11 @@ class MyTrialsController < ApplicationController
   end
 
   def trial_comparison
-    # Comparison page - gets trial IDs from params
+    # Comparison page - gets trial IDs from params (comma-separated string or array from form)
     @profile = current_profile
-    trial_ids = params[:ids]&.split(",")&.map(&:to_i) || []
+    raw_ids = params[:ids]
+    trial_ids = raw_ids.is_a?(Array) ? raw_ids : (raw_ids&.split(",") || [])
+    trial_ids = trial_ids.map(&:to_i).reject(&:zero?)
 
     if trial_ids.blank? || trial_ids.length < 2
       redirect_to my_trials_saved_trials_path, alert: "Please select at least 2 trials to compare"

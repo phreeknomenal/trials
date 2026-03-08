@@ -12,4 +12,8 @@ class Page::Trials::OverviewComponent < ApplicationComponent
   def detailed_description
     @study[:detailed_description]
   end
+
+  def conditions
+    @study[:conditions]
+  end
 end

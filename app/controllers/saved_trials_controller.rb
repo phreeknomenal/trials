@@ -44,14 +44,6 @@ class SavedTrialsController < ApplicationController
 
   def edit
     authorize @saved_trial
-
-    respond_to do |format|
-      if @saved_trial.save
-        format.html { render :edit, status: :unprocessable_entity }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-      end
-    end
   end
 
   def create

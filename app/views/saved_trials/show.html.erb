@@ -150,7 +150,7 @@
         </div>
 
         <div class="pt-4 border-t border-zinc-200 dark:border-zinc-700 space-y-2">
-          <%= link_to "View Full Trial", my_trials_path(id: @saved_trial.nct_id),
+          <%= link_to "View Full Trial", my_trial_path(@saved_trial.nct_id),
               class: "block w-full text-center px-4 py-2 bg-lavender-600 text-white rounded-lg hover:bg-lavender-700 transition-colors font-medium" %>
           
           <%= link_to "Edit Trial", edit_saved_trial_path(@saved_trial),

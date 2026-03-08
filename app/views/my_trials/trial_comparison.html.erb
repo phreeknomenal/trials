@@ -32,7 +32,7 @@
             <% if trial.match_score.present? %>
               <div class="pb-4 border-b border-zinc-200 dark:border-zinc-700">
                 <p class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">MATCH SCORE</p>
-                <%= render "page/saved_trials/match_score_card_component", match_score: trial.match_score %>
+                <%= render Page::SavedTrials::MatchScoreCardComponent.new(match_score: trial.match_score) %>
               </div>
             <% end %>
 
@@ -113,7 +113,7 @@
 
           <!-- Actions -->
           <div class="bg-zinc-50 dark:bg-zinc-700/50 p-6 border-t border-zinc-200 dark:border-zinc-700 space-y-2">
-            <%= link_to "View Full Trial", my_trials_path(trial.nct_id), 
+            <%= link_to "View Full Trial", my_trial_path(trial.nct_id), 
                 class: "block w-full px-4 py-2 bg-lavender-600 text-white rounded-lg hover:bg-lavender-700 transition-colors text-center font-medium" %>
             <%= link_to "Edit", edit_saved_trial_path(trial), 
                 class: "block w-full px-4 py-2 bg-zinc-200 dark:bg-zinc-600 text-zinc-900 dark:text-zinc-100 rounded-lg hover:bg-zinc-300 dark:hover:bg-zinc-500 transition-colors text-center font-medium" %>
