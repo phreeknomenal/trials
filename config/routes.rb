@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # Show home page when authenticated, welcome page when not
   authenticated :user do
-    root "home#index", as: :authenticated_root
+    root "my_trials#index", as: :authenticated_root
   end
 
   unauthenticated do
@@ -29,6 +29,17 @@ Rails.application.routes.draw do
 
   resources :profiles, only: [ :new, :create, :show, :edit, :update ]
   resources :search, only: [ :index, :show ]
-  resources :my_trials, only: [ :index, :show ]
+
+  namespace :my_trials do
+    root action: :index
+    get :search
+    get :saved_trials
+    get :trial_comparison
+  end
+
+  # My Trials show action (for viewing individual trial details with scoring)
+  resources :my_trials, only: [ :show ]
+
+  # Keep old saved_trials routes for backward compatibility
   resources :saved_trials, only: [ :index, :show, :edit, :create, :update, :destroy ]
 end

@@ -5,6 +5,16 @@ class MyTrialsController < ApplicationController
   before_action :ensure_profile_exists
 
   def index
+    # Hub/Dashboard page
+    @profile = current_profile
+    @saved_trials_count = current_user.saved_trials.count
+    @excellent_count = current_user.saved_trials.where("match_score >= ?", 80).count
+    @good_count = current_user.saved_trials.where("match_score >= ? AND match_score < ?", 60, 80).count
+    @fair_count = current_user.saved_trials.where("match_score >= ? AND match_score < ?", 40, 60).count
+  end
+
+  def search
+    # Personalized trial search
     @conditions = Condition.order(:name)
     @profile = current_profile
 
@@ -20,6 +30,34 @@ class MyTrialsController < ApplicationController
     perform_search
   end
 
+  def saved_trials
+    # Redirect to the saved trials index
+    redirect_to saved_trials_path
+  end
+
+  def trial_comparison
+    # Comparison page - gets trial IDs from params
+    @profile = current_profile
+    trial_ids = params[:ids]&.split(",")&.map(&:to_i) || []
+
+    if trial_ids.blank? || trial_ids.length < 2
+      redirect_to my_trials_saved_trials_path, alert: "Please select at least 2 trials to compare"
+      return
+    end
+
+    if trial_ids.length > 3
+      redirect_to my_trials_saved_trials_path, alert: "You can compare a maximum of 3 trials"
+      return
+    end
+
+    @saved_trials = current_user.saved_trials.where(id: trial_ids)
+
+    if @saved_trials.count != trial_ids.length
+      redirect_to my_trials_saved_trials_path, alert: "Some trials not found"
+      return
+    end
+  end
+
   def show
     @study = ClinicalTrialClient.get_study(params[:id])
     @nct_id = params[:id]  # Capture the nct_id directly
@@ -31,19 +69,6 @@ class MyTrialsController < ApplicationController
 
     # Calculate trial score for detail view
     calculate_trial_score unless @error
-  end
-
-  private
-
-  def calculate_trial_score
-    scorer = TrialScorer.new(@profile, @study)
-    score_result = scorer.calculate_score
-
-    return unless score_result
-
-    @trial_score = score_result[:total]
-    @score_breakdown = score_result[:breakdown]
-    @match_level = score_result[:match_level]
   end
 
   private
