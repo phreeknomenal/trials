@@ -25,6 +25,26 @@ module ApplicationHelper
     end
   end
 
+  def trial_duration(start_date, completion_date)
+    return nil unless start_date.present? && completion_date.present?
+
+    start_d = start_date.is_a?(String) ? Date.parse(start_date) : start_date
+    end_d = completion_date.is_a?(String) ? Date.parse(completion_date) : completion_date
+    return nil if end_d < start_d
+
+    months = (end_d.year * 12 + end_d.month) - (start_d.year * 12 + start_d.month)
+    if months >= 24
+      years = (months / 12.0).round
+      "#{years} #{years == 1 ? 'year' : 'years'}"
+    elsif months >= 1
+      "#{months} #{months == 1 ? 'month' : 'months'}"
+    else
+      "Less than 1 month"
+    end
+  rescue ArgumentError
+    nil
+  end
+
   def user_onboarded?
     user_signed_in? && current_user.profile&.onboarded?
   end

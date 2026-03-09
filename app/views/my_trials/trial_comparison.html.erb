@@ -12,115 +12,138 @@
 </section>
 
 <section class="px-5 lg:px-44 py-12">
-  <div class="overflow-x-auto">
-    <div class="grid gap-8" style="grid-template-columns: repeat(<%= @saved_trials.count %>, minmax(350px, 1fr));">
-      <% @saved_trials.each do |trial| %>
-        <div class="bg-white dark:bg-zinc-800 rounded-lg shadow-md border border-zinc-200 dark:border-zinc-700 overflow-hidden">
-          <!-- Trial Header -->
-          <div class="bg-gradient-to-r from-lavender-50 to-blue-50 dark:from-lavender-900/20 dark:to-blue-900/20 p-6 border-b border-zinc-200 dark:border-zinc-700">
-            <h3 class="font-bold text-zinc-900 dark:text-zinc-100 line-clamp-2 mb-2">
-              <%= trial.trial_title %>
-            </h3>
-            <p class="text-sm text-zinc-600 dark:text-zinc-400">
-              NCT<%= trial.nct_id %>
-            </p>
-          </div>
-
-          <!-- Trial Content -->
-          <div class="p-6 space-y-4">
-            <!-- Match Score -->
-            <% if trial.match_score.present? %>
-              <div class="pb-4 border-b border-zinc-200 dark:border-zinc-700">
-                <p class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">MATCH SCORE</p>
-                <%= render Page::SavedTrials::MatchScoreCardComponent.new(match_score: trial.match_score) %>
+  <div class="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-md bg-white dark:bg-zinc-800">
+    <table class="w-full min-w-[800px] border-collapse">
+      <thead>
+        <tr class="border-b border-zinc-200 dark:border-zinc-700">
+          <th scope="col" class="text-left py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 bg-transparent align-top w-40">
+            Trial Details
+          </th>
+          <% @saved_trials.each do |trial| %>
+            <th scope="col" class="text-left py-4 px-5 align-top border-l border-zinc-200 dark:border-zinc-700 min-w-[280px]">
+              <div class="space-y-2">
+                <p class="text-sm text-zinc-500 dark:text-zinc-400">NCT<%= trial.nct_id %></p>
+                <h3 class="font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-2 text-base leading-snug">
+                  <%= trial.trial_title %>
+                </h3>
+                <% if trial.match_score.present? %>
+                  <% match_component = Page::SavedTrials::MatchScoreCardComponent.new(match_score: trial.match_score) %>
+                  <div class="flex flex-wrap items-center gap-2 pt-1">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold <%= match_component.score_badge_classes %>">
+                      <%= trial.match_score %>% Match
+                    </span>
+                    <span class="text-sm font-medium <%= match_component.score_color_classes %>"><%= match_component.score_label %></span>
+                  </div>
+                <% end %>
               </div>
-            <% end %>
-
-            <!-- Status -->
-            <div class="pb-4 border-b border-zinc-200 dark:border-zinc-700">
-              <p class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">STATUS</p>
-              <div class="inline-block px-3 py-1 rounded-full text-sm font-medium <%= send(:status_badge_classes, trial.status) %>">
+            </th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border-b border-zinc-200 dark:border-zinc-700">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Status</td>
+          <% @saved_trials.each do |trial| %>
+            <td class="py-4 px-5 border-l border-zinc-200 dark:border-zinc-700">
+              <span class="inline-block px-3 py-1 rounded-full text-sm font-medium <%= status_badge_classes(trial.status) %>">
                 <%= trial.status.titleize %>
-              </div>
-            </div>
-
-            <!-- Phase -->
-            <% if trial.phase.present? %>
-              <div class="pb-4 border-b border-zinc-200 dark:border-zinc-700">
-                <p class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">PHASE</p>
-                <p class="text-sm text-zinc-900 dark:text-zinc-100"><%= trial.phase %></p>
-              </div>
-            <% end %>
-
-            <!-- Study Type -->
-            <% if trial.study_type.present? %>
-              <div class="pb-4 border-b border-zinc-200 dark:border-zinc-700">
-                <p class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">STUDY TYPE</p>
-                <p class="text-sm text-zinc-900 dark:text-zinc-100"><%= trial.study_type %></p>
-              </div>
-            <% end %>
-
-            <!-- Age Range -->
-            <% if trial.min_age.present? || trial.max_age.present? %>
-              <div class="pb-4 border-b border-zinc-200 dark:border-zinc-700">
-                <p class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">AGE RANGE</p>
-                <p class="text-sm text-zinc-900 dark:text-zinc-100">
-                  <%= "#{trial.min_age} - #{trial.max_age}" %>
-                </p>
-              </div>
-            <% end %>
-
-            <!-- Sponsor -->
-            <% if trial.sponsor.present? %>
-              <div class="pb-4 border-b border-zinc-200 dark:border-zinc-700">
-                <p class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">SPONSOR</p>
-                <p class="text-sm text-zinc-900 dark:text-zinc-100 line-clamp-2"><%= trial.sponsor %></p>
-              </div>
-            <% end %>
-
-            <!-- Enrollment -->
-            <% if trial.enrollment_count.present? %>
-              <div class="pb-4 border-b border-zinc-200 dark:border-zinc-700">
-                <p class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">ENROLLMENT</p>
-                <p class="text-sm text-zinc-900 dark:text-zinc-100"><%= number_with_delimiter(trial.enrollment_count) %> participants</p>
-              </div>
-            <% end %>
-
-            <!-- Trial Status -->
-            <% if trial.trial_status.present? %>
-              <div class="pb-4 border-b border-zinc-200 dark:border-zinc-700">
-                <p class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">TRIAL STATUS</p>
-                <p class="text-sm text-zinc-900 dark:text-zinc-100"><%= trial.trial_status %></p>
-              </div>
-            <% end %>
-
-            <!-- Start Date -->
-            <% if trial.start_date.present? %>
-              <div class="pb-4 border-b border-zinc-200 dark:border-zinc-700">
-                <p class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">START DATE</p>
-                <p class="text-sm text-zinc-900 dark:text-zinc-100"><%= trial.start_date.strftime("%B %Y") %></p>
-              </div>
-            <% end %>
-
-            <!-- Completion Date -->
-            <% if trial.completion_date.present? %>
-              <div>
-                <p class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">COMPLETION DATE</p>
-                <p class="text-sm text-zinc-900 dark:text-zinc-100"><%= trial.completion_date.strftime("%B %Y") %></p>
-              </div>
-            <% end %>
-          </div>
-
-          <!-- Actions -->
-          <div class="bg-zinc-50 dark:bg-zinc-700/50 p-6 border-t border-zinc-200 dark:border-zinc-700 space-y-2">
-            <%= link_to "View Full Trial", my_trial_path(trial.nct_id), 
-                class: "block w-full px-4 py-2 bg-lavender-600 text-white rounded-lg hover:bg-lavender-700 transition-colors text-center font-medium" %>
-            <%= link_to "Edit", edit_saved_trial_path(trial), 
-                class: "block w-full px-4 py-2 bg-zinc-200 dark:bg-zinc-600 text-zinc-900 dark:text-zinc-100 rounded-lg hover:bg-zinc-300 dark:hover:bg-zinc-500 transition-colors text-center font-medium" %>
-          </div>
-        </div>
-      <% end %>
-    </div>
+              </span>
+            </td>
+          <% end %>
+        </tr>
+        <tr class="border-b border-zinc-200 dark:border-zinc-700">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Phase</td>
+          <% @saved_trials.each do |trial| %>
+            <td class="py-4 px-5 text-sm text-zinc-900 dark:text-zinc-100 border-l border-zinc-200 dark:border-zinc-700">
+              <%= trial.phase.presence || "—" %>
+            </td>
+          <% end %>
+        </tr>
+        <tr class="border-b border-zinc-200 dark:border-zinc-700">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Study Type</td>
+          <% @saved_trials.each do |trial| %>
+            <td class="py-4 px-5 text-sm text-zinc-900 dark:text-zinc-100 border-l border-zinc-200 dark:border-zinc-700">
+              <%= trial.study_type.presence || "—" %>
+            </td>
+          <% end %>
+        </tr>
+        <tr class="border-b border-zinc-200 dark:border-zinc-700">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Age Range</td>
+          <% @saved_trials.each do |trial| %>
+            <td class="py-4 px-5 text-sm text-zinc-900 dark:text-zinc-100 border-l border-zinc-200 dark:border-zinc-700">
+              <%= trial.min_age.present? || trial.max_age.present? ? "#{trial.min_age} - #{trial.max_age}" : "—" %>
+            </td>
+          <% end %>
+        </tr>
+        <tr class="border-b border-zinc-200 dark:border-zinc-700">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Sponsor(s)</td>
+          <% @saved_trials.each do |trial| %>
+            <td class="py-4 px-5 text-sm text-zinc-900 dark:text-zinc-100 border-l border-zinc-200 dark:border-zinc-700 align-top max-w-[280px]">
+              <span class="block line-clamp-2 break-words"><%= trial.sponsor.presence || "—" %></span>
+            </td>
+          <% end %>
+        </tr>
+        <tr class="border-b border-zinc-200 dark:border-zinc-700">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Summary</td>
+          <% @saved_trials.each do |trial| %>
+            <td class="py-4 px-5 text-sm text-zinc-900 dark:text-zinc-100 border-l border-zinc-200 dark:border-zinc-700 align-top max-w-[280px]">
+              <span class="block line-clamp-3 break-words"><%= trial.summary.presence || "—" %></span>
+            </td>
+          <% end %>
+        </tr>
+        <tr class="border-b border-zinc-200 dark:border-zinc-700">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Enrollment</td>
+          <% @saved_trials.each do |trial| %>
+            <td class="py-4 px-5 text-sm text-zinc-900 dark:text-zinc-100 border-l border-zinc-200 dark:border-zinc-700">
+              <%= trial.enrollment_count.present? ? "#{number_with_delimiter(trial.enrollment_count)} participants" : "—" %>
+            </td>
+          <% end %>
+        </tr>
+        <tr class="border-b border-zinc-200 dark:border-zinc-700">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Trial Status</td>
+          <% @saved_trials.each do |trial| %>
+            <td class="py-4 px-5 border-l border-zinc-200 dark:border-zinc-700">
+              <%= render Utilities::BadgeComponent.new(status: trial.trial_status, text: trial.trial_status.blank? ? "—" : nil) %>
+            </td>
+          <% end %>
+        </tr>
+        <tr class="border-b border-zinc-200 dark:border-zinc-700">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Start Date</td>
+          <% @saved_trials.each do |trial| %>
+            <td class="py-4 px-5 text-sm text-zinc-900 dark:text-zinc-100 border-l border-zinc-200 dark:border-zinc-700">
+              <%= trial.start_date.present? ? trial.start_date.strftime("%B %Y") : "—" %>
+            </td>
+          <% end %>
+        </tr>
+        <tr class="border-b border-zinc-200 dark:border-zinc-700">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Completion Date</td>
+          <% @saved_trials.each do |trial| %>
+            <td class="py-4 px-5 text-sm text-zinc-900 dark:text-zinc-100 border-l border-zinc-200 dark:border-zinc-700">
+              <%= trial.completion_date.present? ? trial.completion_date.strftime("%B %Y") : "—" %>
+            </td>
+          <% end %>
+        </tr>
+        <tr class="border-b border-zinc-200 dark:border-zinc-700">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Duration</td>
+          <% @saved_trials.each do |trial| %>
+            <td class="py-4 px-5 text-sm text-zinc-900 dark:text-zinc-100 border-l border-zinc-200 dark:border-zinc-700">
+              <%= trial_duration(trial.start_date, trial.completion_date).presence || "—" %>
+            </td>
+          <% end %>
+        </tr>
+        <tr class="bg-zinc-50 dark:bg-zinc-700/50">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400"></td>
+          <% @saved_trials.each do |trial| %>
+            <td class="py-4 px-5 border-l border-zinc-200 dark:border-zinc-700 space-y-2">
+              <%= link_to "View Full Trial", my_trial_path(trial.nct_id), 
+                  class: "block w-full px-4 py-2 bg-lavender-600 text-white rounded-lg hover:bg-lavender-700 transition-colors text-center font-medium text-sm" %>
+              <%= link_to "Edit Entry", edit_saved_trial_path(trial), 
+                  class: "block w-full px-4 py-2 bg-white dark:bg-zinc-800 border-2 border-lavender-600 text-lavender-600 dark:text-lavender-400 rounded-lg hover:bg-lavender-50 dark:hover:bg-lavender-900/20 transition-colors text-center font-medium text-sm" %>
+            </td>
+          <% end %>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </section>
 
