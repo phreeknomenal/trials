@@ -107,9 +107,9 @@ class TrialScorer
 
   def score_location
     return 50 unless @profile.city && @profile.state
-    return 50 if @trial[:locations].empty?
-
+    
     trial_locations = @trial[:locations]
+    return 50 if trial_locations.nil? || trial_locations.empty?
 
     # Check if any location matches user's state or city
     state_match = trial_locations.any? { |loc| loc.to_s.include?(@profile.state) }

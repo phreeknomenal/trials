@@ -34,6 +34,9 @@
 #  user_id  (user_id => users.id)
 #
 class SavedTrial < ApplicationRecord
+  # In-memory attributes (not persisted to DB)
+  attr_accessor :score_breakdown, :match_level
+
   # Status enum
   INTERESTED = "interested".freeze
   APPLYING = "applying".freeze

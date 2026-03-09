@@ -15,22 +15,48 @@
   </div>
 
   <div class="col-span-3">
-    <h3 class="text-lg font-bold text-zinc-900 dark:text-zinc-200 mb-2">
+    <h3 class="text-lg font-bold text-zinc-900 dark:text-zinc-200 mb-4">
       Match Score Details
     </h3>
-    <div class="grid grid-cols-2 gap-x-8 gap-y-4">
-      <% breakdown_items.each do |item| %>
-        <div class="flex gap-1 items-start">
-          <div class="w-5 h-5 mt-[3px] <%= match_score_text_class(@match_level) %>">
+    <div class="grid grid-cols-2 gap-x-8 gap-y-6">
+      <% breakdown_items.each_with_index do |item, index| %>
+        <div class="flex gap-3 items-start" data-controller="expandable-explanation">
+          <div class="w-5 h-5 mt-1 flex-shrink-0 <%= match_score_text_class(@match_level) %>">
             <%= render Utilities::IconComponent.new(item[:icon], size: 16) %>
           </div>
-          <div class="w-full flex items-center justify-between">
-            <h3 class="text-base font-semibold text-zinc-900 dark:text-zinc-300"><%= item[:label] %></h3>
-            <p class="text-sm font-body font-bold <%= match_score_text_class(@match_level) %>"><%= item[:value] %>%</p>
+          <div class="w-full min-w-0 flex-1">
+            <%= render Utilities::ScoreProgressBarComponent.new(
+              score: item[:value],
+              label: item[:label],
+              match_level: @match_level
+            ) %>
+            <% explanation = generate_explanations[item[:label].downcase.to_sym] %>
+            <% if explanation.present? %>
+              <button
+                type="button"
+                class="mt-2 text-xs text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300 flex items-center gap-1 transition-colors"
+                data-action="expandable-explanation#toggle"
+                aria-expanded="false"
+                aria-controls="explanation-<%= index %>"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" fill-rule="evenodd" />
+                </svg>
+                <span>Why this score?</span>
+              </button>
+              <div
+                id="explanation-<%= index %>"
+                class="hidden mt-2 p-3 bg-zinc-100 dark:bg-zinc-700/50 rounded-md"
+                data-expandable-explanation-target="explanation"
+              >
+                <p class="text-xs leading-relaxed text-zinc-700 dark:text-zinc-300">
+                  <%= explanation %>
+                </p>
+              </div>
+            <% end %>
           </div>
         </div>
       <% end %>
     </div>
   </div>
 </div>
-

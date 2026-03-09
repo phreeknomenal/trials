@@ -58,6 +58,27 @@ class MyTrialsController < ApplicationController
       redirect_to my_trials_saved_trials_path, alert: "Some trials not found"
       return
     end
+
+    # Calculate score breakdowns for each trial
+    @saved_trials.each do |trial|
+      trial_data = {
+        min_age: trial.min_age,
+        max_age: trial.max_age,
+        sex: nil,
+        conditions: [],
+        locations: [],
+        study_type: trial.study_type,
+        phase: trial.phase,
+        status: trial.trial_status
+      }
+
+      scorer = TrialScorer.new(@profile, trial_data)
+      score_result = scorer.calculate_score
+
+      if score_result
+        trial.score_breakdown = score_result[:breakdown]
+      end
+    end
   end
 
   def show
