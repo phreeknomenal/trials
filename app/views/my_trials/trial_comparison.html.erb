@@ -13,14 +13,20 @@
 
 <section class="px-5 lg:px-44 py-12">
   <div class="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-md bg-white dark:bg-zinc-800">
-    <table class="w-full min-w-[800px] border-collapse">
+    <table class="w-full min-w-[800px] border-collapse table-fixed">
+      <colgroup>
+        <col style="width: 160px;">
+        <% @saved_trials.each do |_trial| %>
+          <col style="width: 280px;">
+        <% end %>
+      </colgroup>
       <thead>
         <tr class="border-b border-zinc-200 dark:border-zinc-700">
-          <th scope="col" class="text-left py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 bg-transparent align-top w-40">
+          <th scope="col" class="text-left py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 bg-transparent align-top">
             Trial Details
           </th>
           <% @saved_trials.each do |trial| %>
-            <th scope="col" class="text-left py-4 px-5 align-top border-l border-zinc-200 dark:border-zinc-700 min-w-[280px]">
+            <th scope="col" class="text-left py-4 px-5 align-top border-l border-zinc-200 dark:border-zinc-700">
               <div class="space-y-2">
                 <p class="text-sm text-zinc-500 dark:text-zinc-400">NCT<%= trial.nct_id %></p>
                 <h3 class="font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-2 text-base leading-snug">
@@ -78,7 +84,7 @@
         <tr class="border-b border-zinc-200 dark:border-zinc-700">
           <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Sponsor(s)</td>
           <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 text-sm text-zinc-900 dark:text-zinc-100 border-l border-zinc-200 dark:border-zinc-700 align-top max-w-[280px]">
+            <td class="py-4 px-5 text-sm text-zinc-900 dark:text-zinc-100 border-l border-zinc-200 dark:border-zinc-700 align-top">
               <span class="block line-clamp-2 break-words"><%= trial.sponsor.presence || "—" %></span>
             </td>
           <% end %>
@@ -86,7 +92,7 @@
         <tr class="border-b border-zinc-200 dark:border-zinc-700">
           <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Summary</td>
           <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 text-sm text-zinc-900 dark:text-zinc-100 border-l border-zinc-200 dark:border-zinc-700 align-top max-w-[280px]">
+            <td class="py-4 px-5 text-sm text-zinc-900 dark:text-zinc-100 border-l border-zinc-200 dark:border-zinc-700 align-top">
               <span class="block line-clamp-3 break-words"><%= trial.summary.presence || "—" %></span>
             </td>
           <% end %>

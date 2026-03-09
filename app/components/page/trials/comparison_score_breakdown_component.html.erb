@@ -4,10 +4,16 @@
   </div>
 
   <div class="overflow-x-auto">
-    <table class="w-full min-w-[600px]">
+    <table class="w-full min-w-[600px] table-fixed">
+      <colgroup>
+        <col style="width: 160px;">
+        <% @trials.each do |_trial| %>
+          <col style="width: auto;">
+        <% end %>
+      </colgroup>
       <thead>
         <tr class="border-b border-zinc-200 dark:border-zinc-700">
-          <th scope="col" class="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 w-32">
+          <th scope="col" class="text-left py-3 px-4 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
             Criteria
           </th>
           <% @trials.each_with_index do |trial, idx| %>

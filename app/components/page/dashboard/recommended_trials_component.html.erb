@@ -1,0 +1,85 @@
+<% if @trials.present? && @trials.any? %>
+  <section class="mb-12">
+    <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-6">Recommended Trials</h2>
+    <p class="text-zinc-600 dark:text-zinc-400 mb-6">
+      Based on your profile, here are some trials that might be a good match for you.
+    </p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <% @trials.each do |trial| %>
+        <div class="bg-white dark:bg-zinc-800 rounded-lg shadow-md border border-zinc-200 dark:border-zinc-700 hover:shadow-lg transition-shadow p-6 flex flex-col">
+          <!-- Match Score Badge -->
+          <div class="mb-4">
+            <% if trial[:trial_score].present? %>
+              <div class="flex items-center gap-3 mb-2">
+                <div class="flex-shrink-0">
+                  <%= render Utilities::ScoreProgressBarComponent.new(
+                    score: trial[:trial_score],
+                    label: "Match",
+                    match_level: trial[:match_level]
+                  ) %>
+                </div>
+                <span class="text-xs font-semibold px-2 py-1 rounded-full <%= match_score_badge_class(trial[:trial_score]) %>">
+                  <%= case trial[:match_level]
+                      when "excellent" then "Excellent"
+                      when "good" then "Good"
+                      when "fair" then "Fair"
+                      else "Poor"
+                      end %>
+                </span>
+              </div>
+            <% end %>
+          </div>
+
+          <!-- Trial Title -->
+          <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-2 line-clamp-2">
+            <%= truncate(trial[:title] || trial[:nct_id], length: 60) %>
+          </h3>
+
+          <!-- Trial ID -->
+          <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-3">
+            NCT<%= trial[:nct_id] %>
+          </p>
+
+          <!-- Conditions -->
+          <% if trial[:conditions].present? && trial[:conditions].any? %>
+            <div class="mb-3 flex flex-wrap gap-1">
+              <% trial[:conditions].take(2).each do |condition| %>
+                <span class="inline-block text-xs px-2 py-1 rounded-full bg-lavender-100 dark:bg-lavender-900/30 text-lavender-700 dark:text-lavender-300">
+                  <%= truncate(condition, length: 20) %>
+                </span>
+              <% end %>
+              <% if trial[:conditions].length > 2 %>
+                <span class="inline-block text-xs px-2 py-1 text-zinc-600 dark:text-zinc-400">
+                  +<%= trial[:conditions].length - 2 %> more
+                </span>
+              <% end %>
+            </div>
+          <% end %>
+
+          <!-- Location -->
+          <% if trial[:locations].present? && trial[:locations].any? %>
+            <div class="mb-3 flex items-center gap-1 text-xs text-zinc-600 dark:text-zinc-400">
+              <div class="mt-0.5 flex-shrink-0">
+                <%= render Utilities::IconComponent.new("map_pin", size: 4) %>
+              </div>
+              <span><%= trial[:locations].first %></span>
+            </div>
+          <% end %>
+
+          <!-- Status -->
+          <div class="mb-4 flex items-center gap-1 text-xs text-zinc-600 dark:text-zinc-400">
+            <div class="w-2 h-2 rounded-full bg-green-500"></div>
+            <span><%= trial[:status] || trial[:trial_status] || "Active" %></span>
+          </div>
+
+          <!-- CTA -->
+          <div class="mt-auto pt-4 border-t border-zinc-200 dark:border-zinc-700">
+            <%= link_to "View Details", my_trial_path(trial[:nct_id]), 
+                class: "inline-block w-full text-center px-4 py-2 bg-lavender-600 hover:bg-lavender-700 text-white rounded-lg transition-colors font-medium text-sm" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </section>
+<% end %>

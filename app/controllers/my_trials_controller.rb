@@ -11,6 +11,9 @@ class MyTrialsController < ApplicationController
     @excellent_count = current_user.saved_trials.where("match_score >= ?", 80).count
     @good_count = current_user.saved_trials.where("match_score >= ? AND match_score < ?", 60, 80).count
     @fair_count = current_user.saved_trials.where("match_score >= ? AND match_score < ?", 40, 60).count
+
+    # Generate recommendations
+    @recommended_trials = TrialRecommendationService.new(@profile).recommend
   end
 
   def search
@@ -92,6 +95,9 @@ class MyTrialsController < ApplicationController
 
     # Calculate trial score for detail view
     calculate_trial_score unless @error
+
+    # Generate eligibility checklist
+    build_eligibility_checklist unless @error
   end
 
   private
@@ -105,6 +111,11 @@ class MyTrialsController < ApplicationController
     @trial_score = score_result[:total]
     @score_breakdown = score_result[:breakdown]
     @match_level = score_result[:match_level]
+  end
+
+  def build_eligibility_checklist
+    checker = EligibilityChecker.new(@profile, @study)
+    @eligibility_checklist = checker.build_checklist
   end
 
   def perform_search
