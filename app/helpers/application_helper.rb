@@ -49,6 +49,23 @@ module ApplicationHelper
     user_signed_in? && current_user.profile&.onboarded?
   end
 
+  # Sorts trial locations so those near the profile (same state/city) appear first.
+  # Returns array of hashes with :display and :near_you.
+  def sort_locations_near_user(locations_detailed, profile)
+    return [] if locations_detailed.blank?
+
+    profile_state = profile&.state&.to_s&.strip&.upcase
+    profile_city = profile&.city&.to_s&.strip&.downcase
+
+    locations_detailed.map do |loc|
+      state = loc[:state]&.to_s&.strip&.upcase
+      city = loc[:city]&.to_s&.strip&.downcase
+      near_you = (profile_state.present? && state == profile_state) ||
+                 (profile_city.present? && profile_state.present? && city == profile_city && state == profile_state)
+      { display: loc[:display], near_you: near_you }
+    end.sort_by { |h| h[:near_you] ? 0 : 1 }
+  end
+
   def status_badge_classes(status)
     case status
     when "interested"

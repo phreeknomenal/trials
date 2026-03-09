@@ -32,6 +32,9 @@
             <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#interventions", text: "Interventions/Treatments") %>
             <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#locations", text: "Trial Locations") %>
             <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#contact-information", text: "Contact Information") %>
+            <% if @similar_trials.present? && @similar_trials.any? %>
+              <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#similar-trials", text: "More trials like this") %>
+            <% end %>
           <% end %>
 
           <!-- Profile Match Info -->
@@ -76,6 +79,12 @@
         <!-- Key Details -->
         <%= render Page::Trials::KeyDetailsComponent.new(study: @study, trial_score: @trial_score, match_level: @match_level, score_breakdown: @score_breakdown) %>
 
+        <!-- Phase / Status explainer -->
+        <%= render Page::Trials::PhaseStatusExplainerComponent.new(phase: @study[:phase], status: @study[:status]) %>
+
+        <!-- Key dates timeline -->
+        <%= render Page::Trials::KeyDatesTimelineComponent.new(study: @study) %>
+
         <!-- Status Message -->
         <%= render Page::Trials::StatusMessageComponent.new(study: @study, score_breakdown: @score_breakdown, trial_score: @trial_score, match_level: @match_level) %>
 
@@ -112,7 +121,12 @@
 
           <% if @study[:inclusion_criteria].present? %>
             <div class="mt-6">
-              <%= render Page::DropdownComponent.new(title: "Eligibility Criteria", body: @study[:inclusion_criteria]) %>
+              <%= render Page::DropdownComponent.new(title: "Inclusion Criteria", body: @study[:inclusion_criteria]) %>
+            </div>
+          <% end %>
+          <% if @study[:exclusion_criteria].present? %>
+            <div class="mt-4">
+              <%= render Page::DropdownComponent.new(title: "Exclusion Criteria", body: @study[:exclusion_criteria]) %>
             </div>
           <% end %>
         </div>
@@ -150,7 +164,22 @@
         <!-- Locations -->
         <div id="locations" class="p-8 border border-zinc-300 dark:border-zinc-700 rounded-lg">
           <%= render Typography::HeadingComponent.new(size: :h5, text: "Trial Locations") %>
-          <% if @study[:locations].present? %>
+          <% locations_to_show = @study[:locations_detailed].present? ? sort_locations_near_user(@study[:locations_detailed], @profile) : (@study[:locations] || []).map { |l| { display: l, near_you: false } } %>
+          <% if locations_to_show.any? %>
+            <div class="grid grid-cols-2 mt-4 gap-6">
+              <% locations_to_show.each do |loc| %>
+                <div class="col-span-1 flex items-start gap-1 p-3 border border-zinc-300 dark:border-zinc-700 rounded-lg <%= "ring-2 ring-lavender-500 bg-lavender-50 dark:bg-lavender-900/20" if loc[:near_you] %>">
+                  <div class="mt-0.5">
+                    <%= render Utilities::IconComponent.new("map_pin", size: 5, options: { class: "text-lavender-600" }) %>
+                  </div>
+                  <span class="text-zinc-900 dark:text-zinc-100"><%= loc[:display] %></span>
+                  <% if loc[:near_you] %>
+                    <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-lavender-100 text-lavender-800 dark:bg-lavender-900/40 dark:text-lavender-200">Near you</span>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          <% elsif @study[:locations].present? %>
             <div class="grid grid-cols-2 mt-4 gap-6">
               <% @study[:locations].each do |location| %>
                 <div class="col-span-1 flex items-start gap-1 p-3 border border-zinc-300 dark:border-zinc-700 rounded-lg">
@@ -232,6 +261,11 @@
           </div>
         <% end %>
 
+        <!-- Similar trials -->
+        <% if @similar_trials.present? && @similar_trials.any? %>
+          <%= render Page::Trials::SimilarTrialsComponent.new(trials: @similar_trials) %>
+        <% end %>
+
         <!-- CTA Section -->
         <div class="bg-lavender-50 dark:bg-lavender-900/20 border border-lavender-200 dark:border-lavender-800 rounded-lg p-6">
           <h3 class="text-lg font-semibold text-lavender-900 dark:text-lavender-100 mb-2">
@@ -240,10 +274,21 @@
           <p class="text-lavender-800 dark:text-lavender-200 mb-4">
             Visit ClinicalTrials.gov for contact information and to learn more about participating.
           </p>
-          <%= link_to "View on ClinicalTrials.gov", "https://clinicaltrials.gov/study/#{@study[:nct_id]}", 
-              target: "_blank", 
-              rel: "noopener noreferrer",
-              class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-lavender-600 hover:bg-lavender-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lavender-500" %>
+          <div class="flex flex-wrap gap-3">
+            <%= link_to "View on ClinicalTrials.gov", "https://clinicaltrials.gov/study/#{@study[:nct_id]}",
+                target: "_blank",
+                rel: "noopener noreferrer",
+                class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-lavender-600 hover:bg-lavender-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lavender-500" %>
+            <% if @saved_trial.present? %>
+              <%= link_to "Edit status & notes", edit_saved_trial_path(@saved_trial),
+                  class: "inline-flex items-center px-4 py-2 border border-lavender-600 dark:border-lavender-500 text-sm font-medium rounded-md text-lavender-700 dark:text-lavender-300 bg-white dark:bg-zinc-800 hover:bg-lavender-50 dark:hover:bg-lavender-900/20" %>
+              <% other_saved_count = current_user.saved_trials.where.not(id: @saved_trial.id).count %>
+              <% if other_saved_count >= 1 %>
+                <%= link_to "Add to comparison", my_trials_trial_comparison_path(ids: [ @saved_trial.id, current_user.saved_trials.where.not(id: @saved_trial.id).limit(2).pluck(:id) ].flatten.uniq.take(3)),
+                    class: "inline-flex items-center px-4 py-2 border border-lavender-600 dark:border-lavender-500 text-sm font-medium rounded-md text-lavender-700 dark:text-lavender-300 bg-white dark:bg-zinc-800 hover:bg-lavender-50 dark:hover:bg-lavender-900/20" %>
+              <% end %>
+            <% end %>
+          </div>
         </div>
       </div>
     </div>

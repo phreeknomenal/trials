@@ -1,6 +1,6 @@
 class Page::HeaderComponent < ApplicationComponent
   erb_template <<-ERB
-  <div class="w-full flex flex-col <%= position_classes %> justify-center gap-3">
+  <div class="w-full flex flex-col <%= position_classes %> justify-center gap-3 mb-10">
     <% if pretext.present? %>
       <%= render Typography::PretextComponent.new(text: pretext, color: "text-lavender-600") %>
     <% end %>

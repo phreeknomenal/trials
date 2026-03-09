@@ -120,6 +120,8 @@ class ClinicalTrialClient
     contacts = protocol.dig("contactsLocationsModule") || {}
     sponsors = protocol.dig("sponsorCollaboratorsModule") || {}
     eligibility = protocol.dig("eligibilityModule") || {}
+    eligibility_criteria_raw = eligibility.dig("eligibilityCriteria")
+    inclusion_criteria, exclusion_criteria = parse_eligibility_criteria(eligibility_criteria_raw)
     design = protocol.dig("designModule") || {}
     arms_interventions = protocol.dig("armsInterventionsModule") || {}
     outcomes = protocol.dig("outcomesModule") || {}
@@ -133,16 +135,19 @@ class ClinicalTrialClient
       conditions: conditions.dig("conditions") || [],
       phase: design.dig("phases")&.join(", "),
       start_date: status.dig("startDateStruct", "date"),
+      primary_completion_date: status.dig("primaryCompletionDateStruct", "date"),
       completion_date: status.dig("completionDateStruct", "date") || status.dig("primaryCompletionDateStruct", "date"),
       sponsor: sponsors.dig("leadSponsor", "name"),
       min_age: eligibility.dig("minimumAge"),
       max_age: eligibility.dig("maximumAge"),
       sex: eligibility.dig("sex"),
-      inclusion_criteria: eligibility.dig("eligibilityCriteria"),
+      inclusion_criteria: inclusion_criteria,
+      exclusion_criteria: exclusion_criteria,
       enrollment_count: design.dig("enrollmentInfo", "count"),
       enrollment_type: design.dig("enrollmentInfo", "type"),
       interventions: extract_interventions(arms_interventions),
       locations: extract_locations(contacts),
+      locations_detailed: extract_locations_detailed(contacts),
       # Study Type & Design
       study_type: design.dig("studyType"),
       design_allocation: design.dig("designInfo", "allocation"),
@@ -161,10 +166,33 @@ class ClinicalTrialClient
   end
 
   def self.extract_locations(contacts)
+    locations_detailed = extract_locations_detailed(contacts)
+    locations_detailed.map { |loc| loc[:display] }
+  end
+
+  def self.extract_locations_detailed(contacts)
     locations = contacts.dig("locations") || []
-    locations.first(3).map do |loc|
-      [ loc["city"], loc["state"], loc["country"] ].compact.join(", ")
+    locations.map do |loc|
+      city = loc["city"]
+      state = loc["state"]
+      country = loc["country"]
+      display = [ city, state, country ].compact.join(", ")
+      { city: city, state: state, country: country, display: display }
     end
+  end
+
+  # Splits eligibilityCriteria text into inclusion and exclusion when present.
+  # ClinicalTrials.gov often provides one block with "Inclusion Criteria:" and "Exclusion Criteria:" sections.
+  def self.parse_eligibility_criteria(raw_text)
+    return [ nil, nil ] if raw_text.blank?
+
+    text = raw_text.to_s.strip
+    return [ text, nil ] unless text.match?(/\bexclusion\s+criteria\s*:/i)
+
+    parts = text.split(/\bexclusion\s+criteria\s*:/i)
+    inclusion = parts[0]&.sub(/\ainclusion\s+criteria\s*:/i, "")&.strip.presence
+    exclusion = parts[1]&.strip.presence
+    [ inclusion.presence || text, exclusion ]
   end
 
   def self.extract_interventions(arms_interventions)

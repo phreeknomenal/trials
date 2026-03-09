@@ -98,6 +98,17 @@ class MyTrialsController < ApplicationController
 
     # Generate eligibility checklist
     build_eligibility_checklist unless @error
+
+    # Similar trials (same condition, exclude current)
+    if @profile && @study.present? && @study[:nct_id].present?
+      @similar_trials = TrialRecommendationService.new(@profile).similar_to_study(
+        @study,
+        exclude_nct_id: @study[:nct_id],
+        limit: 5
+      )
+    else
+      @similar_trials = []
+    end
   end
 
   private
@@ -137,8 +148,13 @@ class MyTrialsController < ApplicationController
     @error = result[:error]
     @current_page = result[:current_page]
     @has_next_page = result[:has_next_page]
+    @next_page_token = result[:next_page_token]
+    @prev_page_token = (current_page_num > 1) ? get_page_token(current_page_num - 1) : nil
 
-    # Store the next page token for future use (only for standard search)
+    # Persist token from URL so Previous link can use it
+    if params[:page_token].present? && current_page_num >= 2
+      store_page_token(current_page_num, params[:page_token])
+    end
     if result[:next_page_token].present?
       store_page_token(current_page_num + 1, result[:next_page_token])
     end
@@ -190,6 +206,8 @@ class MyTrialsController < ApplicationController
 
   def get_page_token(page_num)
     return nil if page_num <= 1
+    # Prefer token from URL (from Next link) so pagination works across tabs/session
+    return params[:page_token].presence if page_num == (params[:page]&.to_i || 1)
     session.dig(:page_tokens, search_key, page_num)
   end
 

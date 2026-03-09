@@ -21,6 +21,35 @@ class TrialRecommendationService
     end
   end
 
+  # Returns trials similar to the given study (same condition, excluded nct_id), scored for profile.
+  def similar_to_study(study, exclude_nct_id:, limit: 5)
+    return [] unless @profile && study.present? && exclude_nct_id.present?
+
+    condition = study[:conditions]&.first
+    condition = condition.is_a?(Hash) ? condition[:name] : condition
+    condition = condition.presence || @profile.conditions.first&.name
+    return [] unless condition.present?
+
+    begin
+      Timeout.timeout(REQUEST_TIMEOUT) do
+        result = ClinicalTrialClient.advanced_search(
+          condition: condition,
+          page_size: RECOMMENDATION_BATCH_SIZE
+        )
+        studies = result[:studies] || []
+        studies = studies.reject { |s| s[:nct_id].to_s == exclude_nct_id.to_s }
+        scored = score_trials(studies)
+        scored
+          .select { |t| t[:trial_score].present? && is_actively_recruiting?(t) }
+          .sort_by { |t| -(t[:trial_score] || 0) }
+          .take(limit)
+      end
+    rescue Timeout::Error, StandardError => e
+      Rails.logger.error("Error generating similar trials: #{e.class} - #{e.message}")
+      []
+    end
+  end
+
   private
 
   def fetch_and_score_trials
