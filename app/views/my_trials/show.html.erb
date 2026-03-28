@@ -79,14 +79,14 @@
         <!-- Key Details -->
         <%= render Page::Trials::KeyDetailsComponent.new(study: @study, trial_score: @trial_score, match_level: @match_level, score_breakdown: @score_breakdown) %>
 
+        <!-- Status Message -->
+        <%= render Page::Trials::StatusMessageComponent.new(study: @study, score_breakdown: @score_breakdown, trial_score: @trial_score, match_level: @match_level) %>
+
         <!-- Phase / Status explainer -->
         <%= render Page::Trials::PhaseStatusExplainerComponent.new(phase: @study[:phase], status: @study[:status]) %>
 
         <!-- Key dates timeline -->
         <%= render Page::Trials::KeyDatesTimelineComponent.new(study: @study) %>
-
-        <!-- Status Message -->
-        <%= render Page::Trials::StatusMessageComponent.new(study: @study, score_breakdown: @score_breakdown, trial_score: @trial_score, match_level: @match_level) %>
 
         <!-- Overview -->
         <%= render Page::Trials::OverviewComponent.new(

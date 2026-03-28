@@ -1,17 +1,21 @@
 <% if render? %>
-  <div class="mt-4 p-4 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 rounded-lg">
-    <p class="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">What does this mean?</p>
-    <ul class="space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
+  <div class="mt-4 p-5 lg:p-10 bg-white dark:bg-zinc-800/900 border border-zinc-200 dark:border-zinc-700 rounded-lg">
+    <%= render Typography::HeadingComponent.new(size: :h5, text: "Study Phase and Status") %>
+    <p class="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-4">What does they mean?</p>
+
+    <ul class="space-y-2 text-base text-zinc-600 dark:text-zinc-400">
       <% if phase_explanation.present? %>
-        <li>
+        <li class="flex items-center gap-1">
+          <%= render Utilities::IconComponent.new("swatch", size: 6, options: { class: "text-lavender-500" }) %>
           <strong class="text-zinc-800 dark:text-zinc-200">Phase:</strong>
-          <%= phase_explanation %>
+          <p class="font-body leading-relaxed text-base text-zinc-600 dark:text-zinc-400"><%= phase_explanation %></p>
         </li>
       <% end %>
       <% if status_explanation.present? %>
-        <li>
+        <li class="flex items-center gap-1">
+          <%= render Utilities::IconComponent.new("exclamation_triangle", size: 6, options: { class: "text-green-500" }) %>
           <strong class="text-zinc-800 dark:text-zinc-200">Status:</strong>
-          <%= status_explanation %>
+          <p class="font-body leading-relaxed text-base text-zinc-600 dark:text-zinc-400"><%= status_explanation %></p>
         </li>
       <% end %>
     </ul>

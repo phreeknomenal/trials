@@ -33,17 +33,12 @@ class ClinicalTrialClient
   end
 
   def self.advanced_search(condition: nil, location: nil, page_token: nil, page_size: 10)
-    query_parts = []
+    # API v2 uses query.cond for condition/disease and query.locn for location
+    return { studies: [], total_count: 0 } if condition.blank? && location.blank?
 
-    # Build simple query parts
-    query_parts << condition if condition.present?
-    query_parts << location if location.present?
-
-    return { studies: [], total_count: 0 } if query_parts.empty?
-
-    # Build query parameters
     query_params = {
-      "query.term" => query_parts.join(" "),
+      "query.cond" => condition.presence,
+      "query.locn" => location.presence,
       "pageSize" => page_size,
       "pageToken" => page_token,
       "format" => "json"

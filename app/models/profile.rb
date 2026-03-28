@@ -161,7 +161,8 @@ class Profile < ApplicationRecord
   has_many :profile_conditions, dependent: :destroy
   has_many :conditions, through: :profile_conditions
 
-  accepts_nested_attributes_for :profile_conditions, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :profile_conditions, allow_destroy: true,
+    reject_if: proc { |attrs| attrs["condition_id"].blank? }
 
   has_one_attached :avatar
   has_rich_text :about

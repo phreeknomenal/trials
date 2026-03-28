@@ -164,21 +164,20 @@
   <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-300 mb-5">Patient Information</h2>
   <div class="w-full grid grid-cols-2 gap-6 p-6 border border-zinc-200 dark:border-zinc-700 rounded-lg mb-8">
     <div class="w-full col-span-2">
-      <div class="grid grid-cols-3 gap-6" id="conditions">
+      <div class="grid grid-cols-3 gap-6 mb-8" id="conditions">
         <%= form.fields_for :profile_conditions do |profile_condition_form| %>
           <%= render "profile_condition_fields", f: profile_condition_form %>
         <% end %>
+      </div>
 
-        <div class="col-span-3">
-          <%= link_to_add_association "Add Condition", form, :profile_conditions,
-            data: {
-              cocoon: true,
-              cocoon_target: "#conditions",
-              cocoon_insertion_method: "append"
-            },
-            class: "text-lavender-800 font-semibold bg-lavender-300 hover:bg-lavender-500 text-white px-4 py-2 rounded-lg"
-          %>
-        </div>
+      <div class="col-span-3">
+        <%= link_to_add_association "Add Condition", form, :profile_conditions,
+          data: {
+            association_insertion_node: "#conditions",
+            association_insertion_method: "append"
+          },
+          class: "text-lavender-800 font-semibold bg-lavender-300 hover:bg-lavender-500 text-white px-4 py-2 rounded-lg"
+        %>
       </div>
     </div>
 
