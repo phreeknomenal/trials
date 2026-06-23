@@ -30,7 +30,9 @@ gem "view_component"
 group :development, :test do
   gem "brakeman", require: false
   gem "debug", platforms: %i[mri windows], require: "debug/prelude"
-  gem "rubocop-rails-omakase", require: false
+  gem "factory_bot_rails"
+  gem "rspec-rails"
+  gem "standard", require: false
 end
 
 group :development do
@@ -42,4 +44,5 @@ end
 group :test do
   gem "capybara"
   gem "selenium-webdriver"
+  gem "shoulda-matchers"
 end
