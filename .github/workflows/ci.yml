@@ -78,7 +78,7 @@ jobs:
       - name: Run tests
         env:
           RAILS_ENV: test
-        run: bundle exec rails db:test:prepare && bundle exec rspec
+        run: bundle exec rails db:test:prepare && bin/rails test
 
       - name: Keep screenshots from failed system tests
         uses: actions/upload-artifact@v6
