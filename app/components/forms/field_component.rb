@@ -11,7 +11,7 @@ class Forms::FieldComponent < ApplicationComponent
   end
 
   def merge_class(default_class)
-    classes = [ default_class, options[:class] ].compact.join(" ")
+    classes = [default_class, options[:class]].compact.join(" ")
     merged_options = options.dup
     merged_options[:class] = classes
     merged_options
@@ -46,7 +46,7 @@ class Forms::FieldComponent < ApplicationComponent
         html_options[:required] = options[:required]
       end
 
-      html_options[:class] = [ select_field_class, html_options[:class] ].compact.join(" ")
+      html_options[:class] = [select_field_class, html_options[:class]].compact.join(" ")
 
       form.select(attribute, select_options, options.except(:data, :class, :required), html_options)
     when :text

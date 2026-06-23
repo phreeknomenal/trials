@@ -15,7 +15,7 @@ class TrialRecommendationService
       Timeout.timeout(REQUEST_TIMEOUT) do
         fetch_and_score_trials
       end
-    rescue Timeout::Error, StandardError => e
+    rescue => e
       Rails.logger.error("Error generating trial recommendations: #{e.class} - #{e.message}")
       []
     end
@@ -44,7 +44,7 @@ class TrialRecommendationService
           .sort_by { |t| -(t[:trial_score] || 0) }
           .take(limit)
       end
-    rescue Timeout::Error, StandardError => e
+    rescue => e
       Rails.logger.error("Error generating similar trials: #{e.class} - #{e.message}")
       []
     end
@@ -103,7 +103,7 @@ class TrialRecommendationService
   end
 
   def is_actively_recruiting?(trial)
-    recruiting_statuses = [ "recruiting", "active, not recruiting", "enrolling by invitation" ]
+    recruiting_statuses = ["recruiting", "active, not recruiting", "enrolling by invitation"]
     status = trial[:status]&.downcase || ""
     recruiting_statuses.any? { |s| status.include?(s) }
   end

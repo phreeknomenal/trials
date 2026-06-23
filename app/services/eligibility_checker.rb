@@ -7,15 +7,13 @@ class EligibilityChecker
   def build_checklist
     return [] unless @profile && @trial
 
-    items = [
+    [
       check_age,
       check_sex,
       check_status,
       check_conditions,
       check_parsed_criteria
     ].compact
-
-    items
   end
 
   private
@@ -77,7 +75,7 @@ class EligibilityChecker
   def check_status
     trial_status = @trial[:status]&.downcase || @trial[:trial_status]&.downcase
 
-    recruiting_statuses = [ "recruiting", "active, not recruiting", "enrolling by invitation" ]
+    recruiting_statuses = ["recruiting", "active, not recruiting", "enrolling by invitation"]
     is_recruiting = recruiting_statuses.any? { |status| trial_status&.include?(status) }
 
     return nil unless trial_status
@@ -106,14 +104,14 @@ class EligibilityChecker
     total = user_conditions.length
 
     status = if meets
-      matching == total ? "met" : "warning"
+      (matching == total) ? "met" : "warning"
     else
       "not_met"
     end
 
     if matching > 0
       explanation = "#{matching}/#{total} of your conditions match this trial. "
-      explanation += matching == total ? "Excellent!" : "Partial match."
+      explanation += (matching == total) ? "Excellent!" : "Partial match."
     else
       explanation = "None of your recorded conditions directly match this trial's focus areas."
     end

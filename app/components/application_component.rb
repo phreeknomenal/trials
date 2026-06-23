@@ -90,7 +90,7 @@ class ApplicationComponent < ViewComponent::Base
   # Converts underscored status to titleized text, or returns raw text
   def display_text(status: nil, text: nil)
     if status.present?
-      status&.gsub("_", " ")&.titleize
+      status&.tr("_", " ")&.titleize
     else
       text
     end

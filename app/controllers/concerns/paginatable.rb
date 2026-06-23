@@ -4,7 +4,7 @@ module Paginatable
   private
 
   def current_page
-    @current_page ||= [ params[:page].to_i, 1 ].max
+    @current_page ||= [params[:page].to_i, 1].max
   end
 
   def page_size

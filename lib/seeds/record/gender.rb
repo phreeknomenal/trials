@@ -16,13 +16,13 @@ class Seeds::Record::Gender
 
     def gender_params
       [
-        { name: "Man" },
-        { name: "Woman" },
-        { name: "Non-Binary/Genderfluid" },
-        { name: "Trans" },
-        { name: "Prefer not to say" },
-        { name: "Trans Man" },
-        { name: "Trans Woman" }
+        {name: "Man"},
+        {name: "Woman"},
+        {name: "Non-Binary/Genderfluid"},
+        {name: "Trans"},
+        {name: "Prefer not to say"},
+        {name: "Trans Man"},
+        {name: "Trans Woman"}
       ]
     end
   end

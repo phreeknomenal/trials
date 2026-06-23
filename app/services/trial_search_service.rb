@@ -58,7 +58,7 @@ class TrialSearchService
 
     {
       studies: paginated_studies,
-      total_count: [ result[:total_count], SCORE_SORT_BATCH_SIZE ].min,
+      total_count: [result[:total_count], SCORE_SORT_BATCH_SIZE].min,
       error: result[:error],
       current_page: @page,
       has_next_page: end_index < sorted_studies.length - 1,

@@ -51,7 +51,7 @@ class Profile < ApplicationRecord
   THEY_THEM = "they/them"
   OTHER = "other"
 
-  PRONOUN_OPTIONS = [ HE_HIM, SHE_HER, THEY_THEM, OTHER ].freeze
+  PRONOUN_OPTIONS = [HE_HIM, SHE_HER, THEY_THEM, OTHER].freeze
 
   # Sexes
   FEMALE = "female"
@@ -59,13 +59,13 @@ class Profile < ApplicationRecord
   INTERSEX = "intersex"
   PREFER_NOT_TO_SAY = "prefer not to say"
 
-  SEX_ASSIGNED_AT_BIRTH_OPTIONS = [ FEMALE, MALE, INTERSEX, PREFER_NOT_TO_SAY ].freeze
+  SEX_ASSIGNED_AT_BIRTH_OPTIONS = [FEMALE, MALE, INTERSEX, PREFER_NOT_TO_SAY].freeze
 
   # Ethnicity
   HISPANIC_OR_LATINO = "hispanic or latino"
   NOT_HISPANIC_OR_LATINO = "not hispanic or latino"
 
-  ETHNICITY_OPTIONS = [ HISPANIC_OR_LATINO, NOT_HISPANIC_OR_LATINO, PREFER_NOT_TO_SAY ].freeze
+  ETHNICITY_OPTIONS = [HISPANIC_OR_LATINO, NOT_HISPANIC_OR_LATINO, PREFER_NOT_TO_SAY].freeze
 
   # Diagnosis Timings
   LESS_THAN_SIX_MONTHS = "< 6 months"
@@ -73,7 +73,7 @@ class Profile < ApplicationRecord
   GREATER_THAN_TWO_YEARS = "> 2 years"
   NOT_SURE = "not sure"
 
-  DIAGNOSIS_TIMING_OPTIONS = [ LESS_THAN_SIX_MONTHS, SIX_TO_TWENTYFOUR_MONTHS, GREATER_THAN_TWO_YEARS, NOT_SURE ].freeze
+  DIAGNOSIS_TIMING_OPTIONS = [LESS_THAN_SIX_MONTHS, SIX_TO_TWENTYFOUR_MONTHS, GREATER_THAN_TWO_YEARS, NOT_SURE].freeze
 
   # Treatments
   NONE = "none"
@@ -171,17 +171,17 @@ class Profile < ApplicationRecord
   validates :first_name, presence: true, on: :update
   validates :last_name, presence: true, on: :update
   validates :zip_code, presence: true, on: :update
-  validates :pronouns, inclusion: { in: PRONOUN_OPTIONS }, allow_blank: true
-  validates :sex_assigned_at_birth, inclusion: { in: SEX_ASSIGNED_AT_BIRTH_OPTIONS }, allow_blank: true
-  validates :ethnicity, inclusion: { in: ETHNICITY_OPTIONS }, allow_blank: true
-  validates :diagnosis_timing, inclusion: { in: DIAGNOSIS_TIMING_OPTIONS }, allow_blank: true
-  validates :current_treatment, inclusion: { in: TREATMENT_OPTIONS }, allow_blank: true
-  validates :willing_travel_miles, inclusion: { in: TRAVEL_MILES_OPTIONS }, allow_blank: true
-  validates :remote_visit_preference, inclusion: { in: REMOTE_VISIT_PREFERENCE_OPTIONS }, allow_blank: true
-  validates :trial_type_preference, inclusion: { in: TRIAL_TYPE_PREFERENCE_OPTIONS }, allow_blank: true
-  validates :risk_tolerance, inclusion: { in: RISK_TOLERANCE_OPTIONS }, allow_blank: true
-  validates :contact_preference, inclusion: { in: CONTACT_PREFERENCE_OPTIONS }, allow_blank: true
-  validates :onboarded, inclusion: [ true, false ]
+  validates :pronouns, inclusion: {in: PRONOUN_OPTIONS}, allow_blank: true
+  validates :sex_assigned_at_birth, inclusion: {in: SEX_ASSIGNED_AT_BIRTH_OPTIONS}, allow_blank: true
+  validates :ethnicity, inclusion: {in: ETHNICITY_OPTIONS}, allow_blank: true
+  validates :diagnosis_timing, inclusion: {in: DIAGNOSIS_TIMING_OPTIONS}, allow_blank: true
+  validates :current_treatment, inclusion: {in: TREATMENT_OPTIONS}, allow_blank: true
+  validates :willing_travel_miles, inclusion: {in: TRAVEL_MILES_OPTIONS}, allow_blank: true
+  validates :remote_visit_preference, inclusion: {in: REMOTE_VISIT_PREFERENCE_OPTIONS}, allow_blank: true
+  validates :trial_type_preference, inclusion: {in: TRIAL_TYPE_PREFERENCE_OPTIONS}, allow_blank: true
+  validates :risk_tolerance, inclusion: {in: RISK_TOLERANCE_OPTIONS}, allow_blank: true
+  validates :contact_preference, inclusion: {in: CONTACT_PREFERENCE_OPTIONS}, allow_blank: true
+  validates :onboarded, inclusion: [true, false]
 
   def full_name
     "#{first_name} #{last_name}"

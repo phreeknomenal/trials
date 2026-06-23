@@ -16,7 +16,7 @@ class Utilities::AvatarComponent < ApplicationComponent
   end
 
   def background_color
-    avatar_colors = [ "#534d6e", "#464d66", "#425b5e", "#65705b", "#3c6660", "#355c73", "#6c456e", "#7d4a62", "#0e0e0f" ]
+    avatar_colors = ["#534d6e", "#464d66", "#425b5e", "#65705b", "#3c6660", "#355c73", "#6c456e", "#7d4a62", "#0e0e0f"]
     seed = (initials[0].ord + initials[1].ord) % avatar_colors.length
     avatar_colors[seed] || "#000000"
   end

@@ -19,9 +19,9 @@ class Page::Trials::KeyDatesTimelineComponent < ApplicationComponent
 
   def dates
     [
-      [ "Study start", start_date ],
-      [ "Primary completion", primary_completion_date ],
-      [ "Study completion", completion_date ]
+      ["Study start", start_date],
+      ["Primary completion", primary_completion_date],
+      ["Study completion", completion_date]
     ].reject { |_label, d| d.blank? }.uniq { |_label, d| d }
   end
 

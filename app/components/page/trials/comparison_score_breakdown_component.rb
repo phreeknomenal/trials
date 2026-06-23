@@ -1,8 +1,8 @@
 class Page::Trials::ComparisonScoreBreakdownComponent < ApplicationComponent
   def initialize(trials:)
     @trials = trials
-    @criteria = [ "Age", "Sex", "Conditions", "Location", "Study Type", "Risk Level" ]
-    @criteria_keys = [ :age, :sex, :conditions, :location, :study_type, :phase_risk ]
+    @criteria = ["Age", "Sex", "Conditions", "Location", "Study Type", "Risk Level"]
+    @criteria_keys = [:age, :sex, :conditions, :location, :study_type, :phase_risk]
   end
 
   def score_for_trial_and_criteria(trial, criteria_key)

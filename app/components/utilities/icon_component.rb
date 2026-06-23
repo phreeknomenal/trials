@@ -10,7 +10,7 @@ class Utilities::IconComponent < ApplicationComponent
   def initialize(icon, size: nil, options: {})
     @icon = icon
     @size = size
-    @options = { fill: "none", viewbox: "0 0 24 24", stroke: "currentColor", stroke_width: "2" }.merge(options)
+    @options = {fill: "none", viewbox: "0 0 24 24", stroke: "currentColor", stroke_width: "2"}.merge(options)
   end
 
   def partial

@@ -1,5 +1,6 @@
 class ClinicalTrialClient
   include HTTParty
+
   base_uri "https://clinicaltrials.gov/api/v2"
 
   TRIAL_STATUSES = [
@@ -14,27 +15,27 @@ class ClinicalTrialClient
   ].freeze
 
   def self.search(query, page: 1, page_size: 10)
-    return { studies: [], total_count: 0 } if query.blank?
+    return {studies: [], total_count: 0} if query.blank?
 
     response = get("/studies", query: {
       "query.term" => query,
       "pageSize" => page_size,
-      "pageToken" => page > 1 ? page.to_s : nil,
+      "pageToken" => (page > 1) ? page.to_s : nil,
       "format" => "json"
     }.compact)
 
     if response.success?
       parse_response(response)
     else
-      { studies: [], total_count: 0, error: "API request failed" }
+      {studies: [], total_count: 0, error: "API request failed"}
     end
-  rescue StandardError => e
-    { studies: [], total_count: 0, error: e.message }
+  rescue => e
+    {studies: [], total_count: 0, error: e.message}
   end
 
   def self.advanced_search(condition: nil, location: nil, page_token: nil, page_size: 10)
     # API v2 uses query.cond for condition/disease and query.locn for location
-    return { studies: [], total_count: 0 } if condition.blank? && location.blank?
+    return {studies: [], total_count: 0} if condition.blank? && location.blank?
 
     query_params = {
       "query.cond" => condition.presence,
@@ -52,16 +53,16 @@ class ClinicalTrialClient
     else
       Rails.logger.error("ClinicalTrials API Error: #{response.code} - #{response.message}")
       Rails.logger.error("Response body: #{response.body}")
-      { studies: [], total_count: 0, error: "Unable to fetch trials (Status: #{response.code}). Please try different search terms." }
+      {studies: [], total_count: 0, error: "Unable to fetch trials (Status: #{response.code}). Please try different search terms."}
     end
-  rescue StandardError => e
+  rescue => e
     Rails.logger.error("ClinicalTrials API Exception: #{e.class} - #{e.message}")
     Rails.logger.error(e.backtrace.join("\n"))
-    { studies: [], total_count: 0, error: "Search temporarily unavailable. Please try again later." }
+    {studies: [], total_count: 0, error: "Search temporarily unavailable. Please try again later."}
   end
 
   def self.get_study(nct_id)
-    return { error: "NCT ID is required" } if nct_id.blank?
+    return {error: "NCT ID is required"} if nct_id.blank?
 
     Rails.logger.info("ClinicalTrials API Request: /studies/#{nct_id}")
     response = get("/studies/#{nct_id}", query: {
@@ -81,17 +82,17 @@ class ClinicalTrialClient
         format_study(data["studies"].first)
       else
         Rails.logger.error("No study data found in response for #{nct_id}")
-        { error: "Study not found" }
+        {error: "Study not found"}
       end
     else
       Rails.logger.error("API request failed for #{nct_id}: #{response.code} - #{response.message}")
       Rails.logger.error("Response body: #{response.body}")
-      { error: "Unable to load trial details. Please try again." }
+      {error: "Unable to load trial details. Please try again."}
     end
-  rescue StandardError => e
+  rescue => e
     Rails.logger.error("Exception getting study #{nct_id}: #{e.class} - #{e.message}")
     Rails.logger.error(e.backtrace.join("\n"))
-    { error: "Error loading trial details: #{e.message}" }
+    {error: "Error loading trial details: #{e.message}"}
   end
 
   def self.parse_response(response)
@@ -171,23 +172,23 @@ class ClinicalTrialClient
       city = loc["city"]
       state = loc["state"]
       country = loc["country"]
-      display = [ city, state, country ].compact.join(", ")
-      { city: city, state: state, country: country, display: display }
+      display = [city, state, country].compact.join(", ")
+      {city: city, state: state, country: country, display: display}
     end
   end
 
   # Splits eligibilityCriteria text into inclusion and exclusion when present.
   # ClinicalTrials.gov often provides one block with "Inclusion Criteria:" and "Exclusion Criteria:" sections.
   def self.parse_eligibility_criteria(raw_text)
-    return [ nil, nil ] if raw_text.blank?
+    return [nil, nil] if raw_text.blank?
 
     text = raw_text.to_s.strip
-    return [ text, nil ] unless text.match?(/\bexclusion\s+criteria\s*:/i)
+    return [text, nil] unless text.match?(/\bexclusion\s+criteria\s*:/i)
 
     parts = text.split(/\bexclusion\s+criteria\s*:/i)
     inclusion = parts[0]&.sub(/\ainclusion\s+criteria\s*:/i, "")&.strip.presence
     exclusion = parts[1]&.strip.presence
-    [ inclusion.presence || text, exclusion ]
+    [inclusion.presence || text, exclusion]
   end
 
   def self.extract_interventions(arms_interventions)

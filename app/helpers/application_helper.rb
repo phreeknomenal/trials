@@ -35,9 +35,9 @@ module ApplicationHelper
     months = (end_d.year * 12 + end_d.month) - (start_d.year * 12 + start_d.month)
     if months >= 24
       years = (months / 12.0).round
-      "#{years} #{years == 1 ? 'year' : 'years'}"
+      "#{years} #{(years == 1) ? "year" : "years"}"
     elsif months >= 1
-      "#{months} #{months == 1 ? 'month' : 'months'}"
+      "#{months} #{(months == 1) ? "month" : "months"}"
     else
       "Less than 1 month"
     end
@@ -61,8 +61,8 @@ module ApplicationHelper
       state = loc[:state]&.to_s&.strip&.upcase
       city = loc[:city]&.to_s&.strip&.downcase
       near_you = (profile_state.present? && state == profile_state) ||
-                 (profile_city.present? && profile_state.present? && city == profile_city && state == profile_state)
-      { display: loc[:display], near_you: near_you }
+        (profile_city.present? && profile_state.present? && city == profile_city && state == profile_state)
+      {display: loc[:display], near_you: near_you}
     end.sort_by { |h| h[:near_you] ? 0 : 1 }
   end
 

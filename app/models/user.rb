@@ -31,7 +31,7 @@ class User < ApplicationRecord
 
   validates :email, presence: true, uniqueness: true
   validates :password, presence: true
-  validates :role, presence: true, inclusion: { in: ROLES }
+  validates :role, presence: true, inclusion: {in: ROLES}
 
   before_create :add_default_profile
 

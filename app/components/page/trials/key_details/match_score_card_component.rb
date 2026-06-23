@@ -22,12 +22,12 @@ class Page::Trials::KeyDetails::MatchScoreCardComponent < ApplicationComponent
 
   def breakdown_items
     [
-      { label: "Age", value: @score_breakdown[:age], icon: "calendar_month" },
-      { label: "Sex", value: @score_breakdown[:sex], icon: "user" },
-      { label: "Conditions", value: @score_breakdown[:conditions], icon: "microscope" },
-      { label: "Location", value: @score_breakdown[:location], icon: "map_pin" },
-      { label: "Study Type", value: @score_breakdown[:study_type], icon: "rectangle_stack" },
-      { label: "Risk Level", value: @score_breakdown[:phase_risk], icon: "exclamation_triangle" }
+      {label: "Age", value: @score_breakdown[:age], icon: "calendar_month"},
+      {label: "Sex", value: @score_breakdown[:sex], icon: "user"},
+      {label: "Conditions", value: @score_breakdown[:conditions], icon: "microscope"},
+      {label: "Location", value: @score_breakdown[:location], icon: "map_pin"},
+      {label: "Study Type", value: @score_breakdown[:study_type], icon: "rectangle_stack"},
+      {label: "Risk Level", value: @score_breakdown[:phase_risk], icon: "exclamation_triangle"}
     ]
   end
 
@@ -56,7 +56,7 @@ class Page::Trials::KeyDetails::MatchScoreCardComponent < ApplicationComponent
     if min_age.nil? && max_age.nil?
       "You're #{user_age} years old. This trial has no age restrictions."
     elsif min_age && max_age
-      in_range = user_age >= min_age && user_age <= max_age
+      in_range = user_age.between?(min_age, max_age)
       status = in_range ? "✓ You're within the accepted age range." : "✗ You're outside the accepted age range."
       "You're #{user_age} years old. #{status} This trial accepts ages #{min_age}-#{max_age}."
     elsif min_age
@@ -99,8 +99,8 @@ class Page::Trials::KeyDetails::MatchScoreCardComponent < ApplicationComponent
 
     if matching.any?
       non_matching = profile_conditions - matching
-      msg = "✓ This trial addresses #{matching.join(', ')}."
-      msg += " Conditions not covered: #{non_matching.join(', ')}." if non_matching.any?
+      msg = "✓ This trial addresses #{matching.join(", ")}."
+      msg += " Conditions not covered: #{non_matching.join(", ")}." if non_matching.any?
       msg
     else
       "✗ None of your conditions match this trial's focus areas."
@@ -119,11 +119,11 @@ class Page::Trials::KeyDetails::MatchScoreCardComponent < ApplicationComponent
     state_match = trial_locations.any? { |loc| loc.to_s.include?(@profile.state) }
 
     if city_match
-      "✓ Exact city match. You're in #{user_location}. Trial is located in #{trial_locations.join(', ')}."
+      "✓ Exact city match. You're in #{user_location}. Trial is located in #{trial_locations.join(", ")}."
     elsif state_match
-      "Trial is in your state (#{@profile.state}) but not your city (#{@profile.city}). Locations: #{trial_locations.join(', ')}."
+      "Trial is in your state (#{@profile.state}) but not your city (#{@profile.city}). Locations: #{trial_locations.join(", ")}."
     else
-      "✗ Trial is in a different state. You're in #{user_location}. Trial locations: #{trial_locations.join(', ')}."
+      "✗ Trial is in a different state. You're in #{user_location}. Trial locations: #{trial_locations.join(", ")}."
     end
   end
 

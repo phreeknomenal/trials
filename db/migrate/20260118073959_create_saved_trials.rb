@@ -22,7 +22,7 @@ class CreateSavedTrials < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :saved_trials, [ :user_id, :nct_id ], unique: true, name: "index_saved_trials_on_user_and_nct"
+    add_index :saved_trials, [:user_id, :nct_id], unique: true, name: "index_saved_trials_on_user_and_nct"
     add_index :saved_trials, :status
     add_index :saved_trials, :created_at
   end
