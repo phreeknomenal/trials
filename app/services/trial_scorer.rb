@@ -107,7 +107,7 @@ class TrialScorer
 
   def score_location
     return 50 unless @profile.city && @profile.state
-    
+
     trial_locations = @trial[:locations]
     return 50 if trial_locations.nil? || trial_locations.empty?
 

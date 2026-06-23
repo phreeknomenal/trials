@@ -103,7 +103,7 @@ class TrialRecommendationService
   end
 
   def is_actively_recruiting?(trial)
-    recruiting_statuses = ["recruiting", "active, not recruiting", "enrolling by invitation"]
+    recruiting_statuses = [ "recruiting", "active, not recruiting", "enrolling by invitation" ]
     status = trial[:status]&.downcase || ""
     recruiting_statuses.any? { |s| status.include?(s) }
   end
