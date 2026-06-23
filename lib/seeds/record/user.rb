@@ -27,10 +27,10 @@ class Seeds::Record::User
 
     def admin_user_params
       [
-        { email: "marques@acclinate.com", password: admin_password, role: "super_admin", profile_attributes: profile_params },
-        { email: "bryan@acclinate.com", password: admin_password, role: "super_admin", profile_attributes: profile_params },
-        { email: "austin@acclinate.com", password: admin_password, role: "super_admin", profile_attributes: profile_params },
-        { email: "jaeson@acclinate.com", password: admin_password, role: "super_admin", profile_attributes: profile_params }
+        {email: "marques@acclinate.com", password: admin_password, role: "super_admin", profile_attributes: profile_params},
+        {email: "bryan@acclinate.com", password: admin_password, role: "super_admin", profile_attributes: profile_params},
+        {email: "austin@acclinate.com", password: admin_password, role: "super_admin", profile_attributes: profile_params},
+        {email: "jaeson@acclinate.com", password: admin_password, role: "super_admin", profile_attributes: profile_params}
       ]
     end
 
@@ -66,9 +66,9 @@ class Seeds::Record::User
         phone_number: Faker::PhoneNumber.cell_phone,
         diagnosis_timing: Profile::DIAGNOSIS_TIMING_OPTIONS.sample,
         current_treatment: Profile::TREATMENT_OPTIONS.sample,
-        prior_treatment: [ true, false ].sample,
+        prior_treatment: [true, false].sample,
         willing_travel_miles: Profile::TRAVEL_MILES_OPTIONS.sample,
-        transportation_reliable: [ true, false ].sample,
+        transportation_reliable: [true, false].sample,
         remote_visit_preference: Profile::REMOTE_VISIT_PREFERENCE_OPTIONS.sample,
         trial_type_preference: Profile::TRIAL_TYPE_PREFERENCE_OPTIONS.sample,
         risk_tolerance: Profile::RISK_TOLERANCE_OPTIONS.sample,

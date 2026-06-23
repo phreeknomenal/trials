@@ -12,21 +12,15 @@ class Buttons::SaveTrialButtonComponent < ApplicationComponent
     @saved_trial.present?
   end
 
-  def nct_id
-    @nct_id
-  end
+  attr_reader :nct_id
 
-  def trial_title
-    @trial_title
-  end
+  attr_reader :trial_title
 
   def trial_data_json
     @trial_data.to_json
   end
 
-  def match_score
-    @match_score
-  end
+  attr_reader :match_score
 
   def button_size_classes
     case @size

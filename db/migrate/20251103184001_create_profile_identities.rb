@@ -7,6 +7,6 @@ class CreateProfileIdentities < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :profile_identities, [ :profile_id, :identity_id ], unique: true
+    add_index :profile_identities, [:profile_id, :identity_id], unique: true
   end
 end

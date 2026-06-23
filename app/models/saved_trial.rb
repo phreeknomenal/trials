@@ -60,8 +60,8 @@ class SavedTrial < ApplicationRecord
 
   validates :nct_id, presence: true
   validates :user_id, presence: true
-  validates :status, presence: true, inclusion: { in: STATUSES }
-  validates :nct_id, uniqueness: { scope: :user_id, message: "already saved by this user" }
+  validates :status, presence: true, inclusion: {in: STATUSES}
+  validates :nct_id, uniqueness: {scope: :user_id, message: "already saved by this user"}
 
   has_rich_text :notes
 

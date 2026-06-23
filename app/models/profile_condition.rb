@@ -24,7 +24,7 @@ class ProfileCondition < ApplicationRecord
   belongs_to :profile
   belongs_to :condition
 
-  validates :condition_id, uniqueness: { scope: :profile_id }
+  validates :condition_id, uniqueness: {scope: :profile_id}
   validate :profile_id_not_updated
   validate :condition_id_not_updated
   validate :only_one_primary_condition

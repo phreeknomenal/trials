@@ -1,14 +1,14 @@
 class SavedTrialsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_saved_trial, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_saved_trial, only: [:show, :edit, :update, :destroy]
   after_action :verify_authorized
   include Paginatable
 
   def index
     authorize SavedTrial
     @saved_trials = policy_scope(SavedTrial)
-                      .includes(:user)
-                      .order(created_at: :desc)
+      .includes(:user)
+      .order(created_at: :desc)
 
     # Filtering
     @saved_trials = @saved_trials.where(status: params[:status]) if params[:status].present?
@@ -24,14 +24,14 @@ class SavedTrialsController < ApplicationController
     end
 
     # Sorting
-    sort_order = params[:sort] == "oldest" ? :asc : :desc
-    case params[:sort_by]
+    sort_order = (params[:sort] == "oldest") ? :asc : :desc
+    @saved_trials = case params[:sort_by]
     when "status"
-      @saved_trials = @saved_trials.order(status: sort_order)
+      @saved_trials.order(status: sort_order)
     when "match_score"
-      @saved_trials = @saved_trials.order(match_score: sort_order)
+      @saved_trials.order(match_score: sort_order)
     else
-      @saved_trials = @saved_trials.order(created_at: sort_order)
+      @saved_trials.order(created_at: sort_order)
     end
 
     # Pagination with Pagy

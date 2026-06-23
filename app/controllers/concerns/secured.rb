@@ -1,5 +1,6 @@
 module Secured
   extend ActiveSupport::Concern
+
   def current_profile
     @current_profile ||= current_user&.profile
   end

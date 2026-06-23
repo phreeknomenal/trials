@@ -18,11 +18,8 @@ class Page::Trials::StatusMessageComponent < ApplicationComponent
       "This study is not yet enrolling participants, but you can still review the details to see if it might be relevant for you."
     when "active_not_recruiting"
       "This study is active but not currently enrolling new participants."
-    else
-      nil
     end
   end
-
 
   def aria_label
     case status

@@ -1,6 +1,7 @@
 class MyTrialsController < ApplicationController
   include Paginatable
   include Secured
+
   before_action :authenticate_user!
   before_action :ensure_profile_exists
 
@@ -100,14 +101,14 @@ class MyTrialsController < ApplicationController
     build_eligibility_checklist unless @error
 
     # Similar trials (same condition, exclude current)
-    if @profile && @study.present? && @study[:nct_id].present?
-      @similar_trials = TrialRecommendationService.new(@profile).similar_to_study(
+    @similar_trials = if @profile && @study.present? && @study[:nct_id].present?
+      TrialRecommendationService.new(@profile).similar_to_study(
         @study,
         exclude_nct_id: @study[:nct_id],
         limit: 5
       )
     else
-      @similar_trials = []
+      []
     end
   end
 
@@ -171,7 +172,7 @@ class MyTrialsController < ApplicationController
     return nil unless @profile
 
     # Build location from profile data
-    parts = [ @profile.city, @profile.state ].compact
+    parts = [@profile.city, @profile.state].compact
     parts.join(", ").presence
   end
 

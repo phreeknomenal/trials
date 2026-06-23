@@ -16,13 +16,13 @@ class Seeds::Record::Race
 
     def race_params
       [
-        { name: "American Indian or Alaska Native" },
-        { name: "Asian" },
-        { name: "Black or African American" },
-        { name: "Native Hawaiian or Other Pacific Islander" },
-        { name: "White" },
-        { name: "Two or More Races" },
-        { name: "Prefer not to say" }
+        {name: "American Indian or Alaska Native"},
+        {name: "Asian"},
+        {name: "Black or African American"},
+        {name: "Native Hawaiian or Other Pacific Islander"},
+        {name: "White"},
+        {name: "Two or More Races"},
+        {name: "Prefer not to say"}
       ]
     end
   end

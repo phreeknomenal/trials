@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
-  get "up" => "rails/health#show", as: :rails_health_check
+  get "up" => "rails/health#show", :as => :rails_health_check
 
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
@@ -27,8 +27,8 @@ Rails.application.routes.draw do
     get "/users/sign_out" => "devise/sessions#destroy"
   end
 
-  resources :profiles, only: [ :new, :create, :show, :edit, :update ]
-  resources :search, only: [ :index, :show ]
+  resources :profiles, only: [:new, :create, :show, :edit, :update]
+  resources :search, only: [:index, :show]
 
   namespace :my_trials do
     root action: :index
@@ -38,8 +38,8 @@ Rails.application.routes.draw do
   end
 
   # My Trials show action (for viewing individual trial details with scoring)
-  resources :my_trials, only: [ :show ]
+  resources :my_trials, only: [:show]
 
   # Keep old saved_trials routes for backward compatibility
-  resources :saved_trials, only: [ :index, :show, :edit, :create, :update, :destroy ]
+  resources :saved_trials, only: [:index, :show, :edit, :create, :update, :destroy]
 end

@@ -23,7 +23,7 @@ class ProfileIdentity < ApplicationRecord
   belongs_to :profile
   belongs_to :identity
 
-  validates :identity_id, uniqueness: { scope: :profile_id }
+  validates :identity_id, uniqueness: {scope: :profile_id}
   validate :profile_id_not_updated
   validate :identity_id_not_updated
 

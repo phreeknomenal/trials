@@ -7,6 +7,6 @@ class CreateProfileInterests < ActiveRecord::Migration[8.0]
       t.timestamps
     end
 
-    add_index :profile_interests, [ :profile_id, :interest_id ], unique: true
+    add_index :profile_interests, [:profile_id, :interest_id], unique: true
   end
 end

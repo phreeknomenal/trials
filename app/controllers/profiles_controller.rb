@@ -1,6 +1,6 @@
 class ProfilesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_profile, only: [ :show, :edit, :update ]
+  before_action :set_profile, only: [:show, :edit, :update]
 
   def show
     authorize @profile
@@ -93,7 +93,7 @@ class ProfilesController < ApplicationController
       identity_ids: [],
       interest_ids: [],
       condition_ids: [],
-      profile_conditions_attributes: [ :id, :condition_id, :is_primary, :_destroy ]
+      profile_conditions_attributes: [:id, :condition_id, :is_primary, :_destroy]
     )
   end
 end

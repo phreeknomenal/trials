@@ -43,15 +43,15 @@ class Page::Cards::CardComponent < ApplicationComponent
   private
 
   def vertical?
-    [ :top, :bottom ].include?(type)
+    [:top, :bottom].include?(type)
   end
 
   def horizontal?
-    [ :left, :right ].include?(type)
+    [:left, :right].include?(type)
   end
 
   def image_first?
-    [ :top, :left ].include?(type)
+    [:top, :left].include?(type)
   end
 
   def container_classes
