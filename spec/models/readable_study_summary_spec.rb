@@ -8,6 +8,10 @@ RSpec.describe ReadableStudySummary, type: :model do
     it { is_expected.to validate_presence_of(:status) }
     it { is_expected.to validate_uniqueness_of(:nct_id) }
     it { is_expected.to validate_inclusion_of(:status).in_array(described_class::STATUSES) }
+
+    it { is_expected.to allow_value("NCT01234567").for(:nct_id) }
+    it { is_expected.not_to allow_value("FOO").for(:nct_id) }
+    it { is_expected.not_to allow_value("NCT1234").for(:nct_id) }
   end
 
   describe "predicates" do

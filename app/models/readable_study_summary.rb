@@ -28,7 +28,9 @@ class ReadableStudySummary < ApplicationRecord
 
   STALE_AFTER = 2.minutes
 
-  validates :nct_id, presence: true, uniqueness: true
+  NCT_ID_FORMAT = /\ANCT\d{8}\z/
+
+  validates :nct_id, presence: true, uniqueness: true, format: {with: NCT_ID_FORMAT}
   validates :status, presence: true, inclusion: {in: STATUSES}
 
   def self.find_or_create_pending(nct_id)

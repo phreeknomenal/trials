@@ -113,6 +113,8 @@ class MyTrialsController < ApplicationController
   end
 
   def generate_readable_summary
+    return reject_invalid_nct_id unless params[:id].match?(ReadableStudySummary::NCT_ID_FORMAT)
+
     record = ReadableStudySummary.find_or_create_pending(params[:id])
     enqueue_readable_summary(record)
 
@@ -129,6 +131,13 @@ class MyTrialsController < ApplicationController
   end
 
   private
+
+  def reject_invalid_nct_id
+    respond_to do |format|
+      format.turbo_stream { head :unprocessable_entity }
+      format.html { redirect_to my_trial_path(params[:id]), alert: "Invalid trial id" }
+    end
+  end
 
   def enqueue_readable_summary(record)
     just_created = record.previously_new_record?
