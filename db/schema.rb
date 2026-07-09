@@ -154,7 +154,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_18_073959) do
     t.integer "enrollment_count"
     t.decimal "match_score", precision: 5, scale: 2
     t.integer "max_age"
-    t.string "min_age"
+    t.integer "min_age"
     t.string "nct_id", null: false
     t.string "phase"
     t.string "sponsor"
