@@ -3,7 +3,12 @@
   <div class="text-zinc-600 dark:text-zinc-400 font-body max-w-none mt-4">
     <%= simple_format(summary) %>
   </div>
-  
+
+  <%= helpers.turbo_stream_from "readable_study_summary_#{nct_id}" %>
+  <div id="readable-study-summary-content-<%= nct_id %>" class="mt-6">
+    <%= helpers.render partial: "my_trials/readable_study_summary_content", locals: {record: readable_summary, nct_id: nct_id, source_present: source_present?} %>
+  </div>
+
   <% if detailed_description.present? %>
     <div class="mt-4">
       <%= render Page::DropdownComponent.new(

@@ -1,6 +1,7 @@
 source "https://rubygems.org"
 
 gem "activerecord-import"
+gem "anthropic"
 gem "bootsnap", require: false
 gem "cocoon"
 gem "devise"
@@ -30,6 +31,7 @@ gem "view_component"
 group :development, :test do
   gem "brakeman", require: false
   gem "debug", platforms: %i[mri windows], require: "debug/prelude"
+  gem "dotenv-rails"
   gem "factory_bot_rails"
   gem "rspec-rails"
   gem "standard", require: false

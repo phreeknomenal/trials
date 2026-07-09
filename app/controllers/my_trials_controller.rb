@@ -112,7 +112,53 @@ class MyTrialsController < ApplicationController
     end
   end
 
+  def generate_readable_summary
+    return reject_invalid_nct_id unless params[:id].match?(ReadableStudySummary::NCT_ID_FORMAT)
+
+    record = ReadableStudySummary.find_or_create_pending(params[:id])
+    enqueue_readable_summary(record)
+
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.update(
+          "readable-study-summary-content-#{params[:id]}",
+          partial: "my_trials/readable_study_summary_content",
+          locals: {record: record.reload, nct_id: params[:id], source_present: true}
+        )
+      end
+      format.html { redirect_to my_trial_path(params[:id]) }
+    end
+  end
+
   private
+
+  def reject_invalid_nct_id
+    respond_to do |format|
+      format.turbo_stream { head :unprocessable_entity }
+      format.html { redirect_to my_trial_path(params[:id]), alert: "Invalid trial id" }
+    end
+  end
+
+  def enqueue_readable_summary(record)
+    just_created = record.previously_new_record?
+
+    enqueue =
+      if record.completed?
+        false
+      elsif record.failed?
+        record.update!(status: ReadableStudySummary::PENDING, error_message: nil)
+        true
+      elsif just_created
+        true
+      elsif record.stale?
+        record.touch
+        true
+      else
+        false
+      end
+
+    GenerateReadableStudySummaryJob.perform_later(params[:id]) if enqueue
+  end
 
   def calculate_trial_score
     scorer = TrialScorer.new(@profile, @study)
