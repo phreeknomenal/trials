@@ -60,7 +60,8 @@ RSpec.describe GenerateReadableStudySummaryJob, type: :job do
 
       record = ReadableStudySummary.find_by(nct_id: nct_id)
       expect(record.failed?).to be(true)
-      expect(record.error_message).to eq("boom")
+      expect(record.error_message).to eq(described_class::GENERIC_ERROR_MESSAGE)
+      expect(record.error_message).not_to include("boom")
       expect(Rails.logger).to have_received(:error).with(/boom/)
     end
 
@@ -83,6 +84,10 @@ RSpec.describe GenerateReadableStudySummaryJob, type: :job do
 
       record = ReadableStudySummary.find_by(nct_id: nct_id)
       expect(record.failed?).to be(false)
+      expect(Turbo::StreamsChannel).to have_received(:broadcast_update_to).with(
+        "readable_study_summary_#{nct_id}",
+        hash_including(target: "readable-study-summary-content-#{nct_id}")
+      )
     end
   end
 end
