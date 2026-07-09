@@ -38,7 +38,11 @@ Rails.application.routes.draw do
   end
 
   # My Trials show action (for viewing individual trial details with scoring)
-  resources :my_trials, only: [:show]
+  resources :my_trials, only: [:show] do
+    member do
+      post :generate_readable_summary
+    end
+  end
 
   # Keep old saved_trials routes for backward compatibility
   resources :saved_trials, only: [:index, :show, :edit, :create, :update, :destroy]

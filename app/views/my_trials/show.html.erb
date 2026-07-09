@@ -90,7 +90,8 @@
 
         <!-- Overview -->
         <%= render Page::Trials::OverviewComponent.new(
-          study: @study
+          study: @study,
+          nct_id: @nct_id
         ) %>
 
         <!-- Eligibility Criteria -->

@@ -1,0 +1,33 @@
+<% if record&.completed? %>
+  <div class="rounded-lg border border-lavender-200 dark:border-lavender-800 bg-lavender-50 dark:bg-lavender-900/20 p-6">
+    <div class="flex items-center gap-2 text-lavender-700 dark:text-lavender-300 mb-3">
+      <div class="w-4 h-4 shrink-0">
+        <%= render Utilities::IconComponent.new("star", size: 16) %>
+      </div>
+      <span class="text-xs font-semibold uppercase tracking-wide">AI-generated, plain-language summary</span>
+    </div>
+    <div class="text-zinc-700 dark:text-zinc-300 font-body max-w-none">
+      <%= simple_format(record.content) %>
+    </div>
+  </div>
+<% elsif record&.pending? %>
+  <div class="flex items-center gap-3 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/40 p-6 text-zinc-600 dark:text-zinc-400">
+    <span class="inline-block w-4 h-4 rounded-full border-2 border-lavender-500 border-t-transparent animate-spin" aria-hidden="true"></span>
+    <span class="text-sm">Generating a more readable version&hellip;</span>
+  </div>
+<% elsif record&.failed? %>
+  <div class="rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-6">
+    <p class="text-sm text-red-800 dark:text-red-200 mb-3">
+      <%= record.error_message.presence || "We couldn't generate a readable version right now." %>
+    </p>
+    <%= button_to "Try again",
+      generate_readable_summary_my_trial_path(nct_id),
+      method: :post,
+      class: "inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-lavender-600 text-white hover:bg-lavender-700" %>
+  </div>
+<% elsif source_present %>
+  <%= button_to "Generate a more readable version",
+    generate_readable_summary_my_trial_path(nct_id),
+    method: :post,
+    class: "inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-lavender-600 text-white hover:bg-lavender-700" %>
+<% end %>
