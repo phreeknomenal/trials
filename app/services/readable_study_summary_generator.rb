@@ -55,10 +55,6 @@ class ReadableStudySummaryGenerator
   end
 
   def client
-    @client ||= Anthropic::Client.new(api_key: api_key)
-  end
-
-  def api_key
-    Rails.application.credentials.dig(:anthropic, :api_key)
+    @client ||= Anthropic::Client.new(api_key: ENV.fetch("ANTHROPIC_API_KEY"))
   end
 end

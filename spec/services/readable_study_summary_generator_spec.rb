@@ -6,6 +6,8 @@ RSpec.describe ReadableStudySummaryGenerator do
   let(:messages) { double("messages") }
 
   before do
+    allow(ENV).to receive(:fetch).and_call_original
+    allow(ENV).to receive(:fetch).with("ANTHROPIC_API_KEY").and_return("test-key")
     allow(Anthropic::Client).to receive(:new).and_return(client)
     allow(client).to receive(:messages).and_return(messages)
   end
