@@ -1,6 +1,7 @@
 source "https://rubygems.org"
 
 gem "activerecord-import"
+gem "anthropic"
 gem "bootsnap", require: false
 gem "cocoon"
 gem "devise"
