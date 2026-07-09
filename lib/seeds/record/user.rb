@@ -27,10 +27,10 @@ class Seeds::Record::User
 
     def admin_user_params
       [
-        {email: "marques@acclinate.com", password: admin_password, role: "super_admin", profile_attributes: profile_params},
-        {email: "bryan@acclinate.com", password: admin_password, role: "super_admin", profile_attributes: profile_params},
-        {email: "austin@acclinate.com", password: admin_password, role: "super_admin", profile_attributes: profile_params},
-        {email: "jaeson@acclinate.com", password: admin_password, role: "super_admin", profile_attributes: profile_params}
+        {email: "marques@example.com", password: admin_password, role: "super_admin", profile_attributes: profile_params},
+        {email: "bryan@example.com", password: admin_password, role: "super_admin", profile_attributes: profile_params},
+        {email: "austin@example.com", password: admin_password, role: "super_admin", profile_attributes: profile_params},
+        {email: "jaeson@example.com", password: admin_password, role: "super_admin", profile_attributes: profile_params}
       ]
     end
 

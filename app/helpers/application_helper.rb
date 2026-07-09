@@ -1,5 +1,5 @@
 module ApplicationHelper
-  include Pagy::Loader
+  include Pagy::NumericHelperLoader
 
   def parse_date(date)
     return "N/A" unless date.presence
