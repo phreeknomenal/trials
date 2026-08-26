@@ -11,6 +11,12 @@ development:
 test:
   <<: *default
 
+# No `database:` key -- Solid Cache shares the primary connection, because Heroku
+# provisions a single database. store_options is restated in full rather than
+# merged: YAML merge keys replace nested hashes wholesale, so inheriting from
+# *default here would silently drop `namespace`. 32MB keeps the cache from
+# claiming a quarter of the 1GB Essential-0 storage quota.
 production:
-  database: cache
-  <<: *default
+  store_options:
+    max_size: <%= 32.megabytes %>
+    namespace: <%= Rails.env %>

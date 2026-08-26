@@ -8,10 +8,10 @@ development:
 test:
   adapter: test
 
+# No `connects_to` -- Solid Cable shares the primary connection. polling_interval
+# raised from 0.1s: against shared Heroku Postgres that was 10 queries/second
+# competing with web traffic for a 20-connection pool.
 production:
   adapter: solid_cable
-  connects_to:
-    database:
-      writing: cable
-  polling_interval: 0.1.seconds
+  polling_interval: 1.second
   message_retention: 1.day
