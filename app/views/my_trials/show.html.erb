@@ -69,24 +69,19 @@
           ) %>
         <% end %>
 
-        <!-- Eligibility Checklist -->
-        <% if @eligibility_checklist.present? && @eligibility_checklist.any? %>
-          <%= render Page::Trials::EligibilityChecklistComponent.new(
-            checklist_items: @eligibility_checklist
-          ) %>
-        <% end %>
-
         <!-- Key Details -->
         <%= render Page::Trials::KeyDetailsComponent.new(study: @study, trial_score: @trial_score, match_level: @match_level, score_breakdown: @score_breakdown) %>
+
+        
 
         <!-- Status Message -->
         <%= render Page::Trials::StatusMessageComponent.new(study: @study, score_breakdown: @score_breakdown, trial_score: @trial_score, match_level: @match_level) %>
 
         <!-- Phase / Status explainer -->
-        <%= render Page::Trials::PhaseStatusExplainerComponent.new(phase: @study[:phase], status: @study[:status]) %>
+        <%#= render Page::Trials::PhaseStatusExplainerComponent.new(phase: @study[:phase], status: @study[:status]) %>
 
         <!-- Key dates timeline -->
-        <%= render Page::Trials::KeyDatesTimelineComponent.new(study: @study) %>
+        <%#= render Page::Trials::KeyDatesTimelineComponent.new(study: @study) %>
 
         <!-- Overview -->
         <%= render Page::Trials::OverviewComponent.new(
@@ -131,6 +126,13 @@
             </div>
           <% end %>
         </div>
+
+        <!-- Eligibility Checklist -->
+        <% if @eligibility_checklist.present? && @eligibility_checklist.any? %>
+          <%= render Page::Trials::EligibilityChecklistComponent.new(
+            checklist_items: @eligibility_checklist
+          ) %>
+        <% end %>
 
         <!-- Interventions/Treatments -->
         <% if @study[:interventions].present? && @study[:interventions].any? %>
