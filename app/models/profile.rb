@@ -155,11 +155,14 @@ class Profile < ApplicationRecord
   belongs_to :race, optional: true
 
   has_many :profile_identities, dependent: :destroy
-  has_many :identities, through: :profile_identities
+  # Ordered explicitly: SQLite happened to return these in rowid order, so the
+  # profile page looked stable without an ORDER BY. Postgres makes no such
+  # guarantee and the display order can shuffle between requests.
+  has_many :identities, -> { order(:name) }, through: :profile_identities
   has_many :profile_interests, dependent: :destroy
-  has_many :interests, through: :profile_interests
+  has_many :interests, -> { order(:name) }, through: :profile_interests
   has_many :profile_conditions, dependent: :destroy
-  has_many :conditions, through: :profile_conditions
+  has_many :conditions, -> { order(:name) }, through: :profile_conditions
 
   accepts_nested_attributes_for :profile_conditions, allow_destroy: true,
     reject_if: proc { |attrs| attrs["condition_id"].blank? }
