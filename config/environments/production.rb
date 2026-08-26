@@ -21,8 +21,9 @@ Rails.application.configure do
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
 
-  # Store uploaded files on the local file system (see config/storage.yml for options).
-  config.active_storage.service = :local
+  # Object storage, not local disk: Heroku dyno filesystems are ephemeral, so
+  # uploads written locally survive only until the next restart.
+  config.active_storage.service = :amazon
 
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
   config.assume_ssl = true
@@ -56,8 +57,10 @@ Rails.application.configure do
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
 
-  # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = {host: "example.com"}
+  # Set host to be used by links generated in mailer templates. Deliberately no
+  # default: fetch raises at boot if APP_HOST is unset, rather than silently
+  # mailing password-reset links that point nowhere.
+  config.action_mailer.default_url_options = {host: ENV.fetch("APP_HOST")}
 
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via rails credentials:edit.
   # config.action_mailer.smtp_settings = {

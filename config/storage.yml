@@ -6,13 +6,18 @@ local:
   service: Disk
   root: <%= Rails.root.join("storage") %>
 
-# Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
-# amazon:
-#   service: S3
-#   access_key_id: <%= Rails.application.credentials.dig(:aws, :access_key_id) %>
-#   secret_access_key: <%= Rails.application.credentials.dig(:aws, :secret_access_key) %>
-#   region: us-east-1
-#   bucket: your_own_bucket-<%= Rails.env %>
+# Credentials come from config vars, not the encrypted credentials file, since
+# this app has no master key. AWS_ENDPOINT is optional and only needed for an
+# S3-compatible host such as Cloudflare R2; leave it unset for real AWS.
+amazon:
+  service: S3
+  access_key_id: <%= ENV["AWS_ACCESS_KEY_ID"] %>
+  secret_access_key: <%= ENV["AWS_SECRET_ACCESS_KEY"] %>
+  region: <%= ENV.fetch("AWS_REGION", "us-east-1") %>
+  bucket: <%= ENV["AWS_BUCKET"] %>
+<% if ENV["AWS_ENDPOINT"].present? %>
+  endpoint: <%= ENV["AWS_ENDPOINT"] %>
+<% end %>
 
 # Remember not to checkin your GCS keyfile to a repository
 # google:

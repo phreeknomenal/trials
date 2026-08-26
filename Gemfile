@@ -1,6 +1,7 @@
 source "https://rubygems.org"
 
 gem "activerecord-import"
+gem "aws-sdk-s3", require: false
 gem "anthropic"
 gem "bootsnap", require: false
 gem "cocoon"
