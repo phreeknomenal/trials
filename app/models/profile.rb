@@ -2,7 +2,7 @@
 #
 # Table name: profiles
 #
-#  id                      :integer          not null, primary key
+#  id                      :bigint           not null, primary key
 #  birth_year              :integer
 #  city                    :string
 #  contact_preference      :string
@@ -39,9 +39,9 @@
 #
 # Foreign Keys
 #
-#  gender_id  (gender_id => genders.id)
-#  race_id    (race_id => races.id)
-#  user_id    (user_id => users.id)
+#  fk_rails_...  (gender_id => genders.id)
+#  fk_rails_...  (race_id => races.id)
+#  fk_rails_...  (user_id => users.id)
 #
 
 class Profile < ApplicationRecord

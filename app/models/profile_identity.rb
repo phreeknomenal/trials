@@ -2,7 +2,7 @@
 #
 # Table name: profile_identities
 #
-#  id          :integer          not null, primary key
+#  id          :bigint           not null, primary key
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  identity_id :integer          not null
@@ -16,8 +16,8 @@
 #
 # Foreign Keys
 #
-#  identity_id  (identity_id => identities.id)
-#  profile_id   (profile_id => profiles.id)
+#  fk_rails_...  (identity_id => identities.id)
+#  fk_rails_...  (profile_id => profiles.id)
 #
 class ProfileIdentity < ApplicationRecord
   belongs_to :profile

@@ -2,7 +2,7 @@
 #
 # Table name: profile_conditions
 #
-#  id           :integer          not null, primary key
+#  id           :bigint           not null, primary key
 #  is_primary   :boolean          default(FALSE)
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
@@ -17,8 +17,8 @@
 #
 # Foreign Keys
 #
-#  condition_id  (condition_id => conditions.id)
-#  profile_id    (profile_id => profiles.id)
+#  fk_rails_...  (condition_id => conditions.id)
+#  fk_rails_...  (profile_id => profiles.id)
 #
 class ProfileCondition < ApplicationRecord
   belongs_to :profile
