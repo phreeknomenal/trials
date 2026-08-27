@@ -5,8 +5,8 @@
 #  id          :bigint           not null, primary key
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
-#  interest_id :integer          not null
-#  profile_id  :integer          not null
+#  interest_id :bigint           not null
+#  profile_id  :bigint           not null
 #
 # Indexes
 #

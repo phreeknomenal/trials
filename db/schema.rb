@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_26_000003) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_27_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -81,10 +81,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_26_000003) do
   end
 
   create_table "profile_conditions", force: :cascade do |t|
-    t.integer "condition_id", null: false
+    t.bigint "condition_id", null: false
     t.datetime "created_at", null: false
     t.boolean "is_primary", default: false
-    t.integer "profile_id", null: false
+    t.bigint "profile_id", null: false
     t.datetime "updated_at", null: false
     t.index ["condition_id"], name: "index_profile_conditions_on_condition_id"
     t.index ["profile_id", "condition_id"], name: "index_profile_conditions_on_profile_id_and_condition_id", unique: true
@@ -93,8 +93,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_26_000003) do
 
   create_table "profile_identities", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.integer "identity_id", null: false
-    t.integer "profile_id", null: false
+    t.bigint "identity_id", null: false
+    t.bigint "profile_id", null: false
     t.datetime "updated_at", null: false
     t.index ["identity_id"], name: "index_profile_identities_on_identity_id"
     t.index ["profile_id", "identity_id"], name: "index_profile_identities_on_profile_id_and_identity_id", unique: true
@@ -103,8 +103,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_26_000003) do
 
   create_table "profile_interests", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.integer "interest_id", null: false
-    t.integer "profile_id", null: false
+    t.bigint "interest_id", null: false
+    t.bigint "profile_id", null: false
     t.datetime "updated_at", null: false
     t.index ["interest_id"], name: "index_profile_interests_on_interest_id"
     t.index ["profile_id", "interest_id"], name: "index_profile_interests_on_profile_id_and_interest_id", unique: true
@@ -121,14 +121,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_26_000003) do
     t.string "diagnosis_timing"
     t.string "ethnicity", default: "prefer not to say"
     t.string "first_name"
-    t.integer "gender_id"
+    t.bigint "gender_id"
     t.string "language_preference"
     t.string "last_name"
     t.boolean "onboarded", default: false, null: false
     t.string "phone_number"
     t.boolean "prior_treatment", default: false
     t.string "pronouns"
-    t.integer "race_id"
+    t.bigint "race_id"
     t.string "remote_visit_preference"
     t.string "risk_tolerance"
     t.string "sex_assigned_at_birth"
@@ -136,7 +136,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_26_000003) do
     t.boolean "transportation_reliable", default: true
     t.string "trial_type_preference"
     t.datetime "updated_at", null: false
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.integer "willing_travel_miles"
     t.string "zip_code"
     t.index ["gender_id"], name: "index_profiles_on_gender_id"
@@ -180,7 +180,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_26_000003) do
     t.string "trial_status"
     t.string "trial_title"
     t.datetime "updated_at", null: false
-    t.integer "user_id", null: false
+    t.bigint "user_id", null: false
     t.index ["created_at"], name: "index_saved_trials_on_created_at"
     t.index ["status"], name: "index_saved_trials_on_status"
     t.index ["user_id", "nct_id"], name: "index_saved_trials_on_user_and_nct", unique: true

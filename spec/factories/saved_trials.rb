@@ -1,3 +1,38 @@
+# == Schema Information
+#
+# Table name: saved_trials
+#
+#  id               :bigint           not null, primary key
+#  completion_date  :date
+#  enrollment_count :integer
+#  match_score      :decimal(5, 2)
+#  max_age          :integer
+#  min_age          :integer
+#  phase            :string
+#  sponsor          :string
+#  start_date       :date
+#  status           :string           default("interested"), not null
+#  study_type       :string
+#  summary          :text
+#  tags             :string
+#  trial_status     :string
+#  trial_title      :string
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  nct_id           :string           not null
+#  user_id          :bigint           not null
+#
+# Indexes
+#
+#  index_saved_trials_on_created_at    (created_at)
+#  index_saved_trials_on_status        (status)
+#  index_saved_trials_on_user_and_nct  (user_id,nct_id) UNIQUE
+#  index_saved_trials_on_user_id       (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (user_id => users.id)
+#
 FactoryBot.define do
   factory :saved_trial do
     user

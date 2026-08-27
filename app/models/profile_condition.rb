@@ -6,8 +6,8 @@
 #  is_primary   :boolean          default(FALSE)
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
-#  condition_id :integer          not null
-#  profile_id   :integer          not null
+#  condition_id :bigint           not null
+#  profile_id   :bigint           not null
 #
 # Indexes
 #

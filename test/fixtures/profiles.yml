@@ -27,9 +27,9 @@
 #  zip_code                :string
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
-#  gender_id               :integer
-#  race_id                 :integer
-#  user_id                 :integer          not null
+#  gender_id               :bigint
+#  race_id                 :bigint
+#  user_id                 :bigint           not null
 #
 # Indexes
 #
