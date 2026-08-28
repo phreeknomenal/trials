@@ -545,5 +545,8 @@ DEPENDENCIES
   view_component
   web-console
 
+RUBY VERSION
+   ruby 3.4.10p104
+
 BUNDLED WITH
    2.6.2
