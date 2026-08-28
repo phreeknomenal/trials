@@ -8,7 +8,11 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  # The pool must cover Puma's threads AND Solid Queue's own connections, since
+  # SOLID_QUEUE_IN_PUMA runs the supervisor inside the web process. Deriving the
+  # pool from RAILS_MAX_THREADS alone starves Solid Queue and it exits on boot,
+  # taking Puma down with it. DB_POOL overrides if the two ever need decoupling.
+  pool: <%= ENV.fetch("DB_POOL") { ENV.fetch("RAILS_MAX_THREADS", 5).to_i + 7 } %>
 
 development:
   <<: *default
