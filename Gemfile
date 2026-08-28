@@ -1,5 +1,11 @@
 source "https://rubygems.org"
 
+# Heroku's buildpack reads this directive to pick the runtime. Without it, it
+# ignores .ruby-version and silently falls back to its own default series --
+# the first deploy ran 3.3.9 while CI and local were on 3.4.x. Keep in sync
+# with .ruby-version and .tool-versions.
+ruby "3.4.10"
+
 gem "activerecord-import"
 gem "aws-sdk-s3", require: false
 gem "anthropic"
