@@ -1,6 +1,7 @@
 source "https://rubygems.org"
 
 gem "activerecord-import"
+gem "aws-sdk-s3", require: false
 gem "anthropic"
 gem "bootsnap", require: false
 gem "cocoon"
@@ -19,7 +20,7 @@ gem "rails", "~> 8.1.1"
 gem "solid_cable"
 gem "solid_cache"
 gem "solid_queue"
-gem "sqlite3", ">= 2.1"
+gem "pg", "~> 1.5"
 gem "stimulus-rails"
 gem "tailwindcss-rails", "~> 4.4"
 gem "tailwindcss-ruby", "~> 4.1"

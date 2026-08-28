@@ -1,5 +1,3 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 # == Schema Information
 #
 # Table name: saved_trials
@@ -35,20 +33,11 @@
 #
 #  fk_rails_...  (user_id => users.id)
 #
-one:
-  user: one
-  nct_id: MyString
-  trial_title: MyString
-  notes: MyText
-  tags: MyString
-  status: MyString
-  match_score: 9.99
-
-two:
-  user: two
-  nct_id: MyString
-  trial_title: MyString
-  notes: MyText
-  tags: MyString
-  status: MyString
-  match_score: 9.99
+FactoryBot.define do
+  factory :saved_trial do
+    user
+    sequence(:nct_id) { |n| "NCT#{n.to_s.rjust(8, "0")}" }
+    trial_title { "A clinical trial" }
+    status { SavedTrial::INTERESTED }
+  end
+end

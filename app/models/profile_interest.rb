@@ -2,11 +2,11 @@
 #
 # Table name: profile_interests
 #
-#  id          :integer          not null, primary key
+#  id          :bigint           not null, primary key
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
-#  interest_id :integer          not null
-#  profile_id  :integer          not null
+#  interest_id :bigint           not null
+#  profile_id  :bigint           not null
 #
 # Indexes
 #
@@ -16,8 +16,8 @@
 #
 # Foreign Keys
 #
-#  interest_id  (interest_id => interests.id)
-#  profile_id   (profile_id => profiles.id)
+#  fk_rails_...  (interest_id => interests.id)
+#  fk_rails_...  (profile_id => profiles.id)
 #
 class ProfileInterest < ApplicationRecord
   belongs_to :profile

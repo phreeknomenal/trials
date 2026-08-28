@@ -2,7 +2,7 @@
 #
 # Table name: readable_study_summaries
 #
-#  id            :integer          not null, primary key
+#  id            :bigint           not null, primary key
 #  content       :text
 #  error_message :text
 #  generated_at  :datetime

@@ -2,7 +2,7 @@
 #
 # Table name: profiles
 #
-#  id                      :integer          not null, primary key
+#  id                      :bigint           not null, primary key
 #  birth_year              :integer
 #  city                    :string
 #  contact_preference      :string
@@ -27,9 +27,9 @@
 #  zip_code                :string
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
-#  gender_id               :integer
-#  race_id                 :integer
-#  user_id                 :integer          not null
+#  gender_id               :bigint
+#  race_id                 :bigint
+#  user_id                 :bigint           not null
 #
 # Indexes
 #
@@ -39,9 +39,9 @@
 #
 # Foreign Keys
 #
-#  gender_id  (gender_id => genders.id)
-#  race_id    (race_id => races.id)
-#  user_id    (user_id => users.id)
+#  fk_rails_...  (gender_id => genders.id)
+#  fk_rails_...  (race_id => races.id)
+#  fk_rails_...  (user_id => users.id)
 #
 
 class Profile < ApplicationRecord
@@ -155,11 +155,14 @@ class Profile < ApplicationRecord
   belongs_to :race, optional: true
 
   has_many :profile_identities, dependent: :destroy
-  has_many :identities, through: :profile_identities
+  # Ordered explicitly: SQLite happened to return these in rowid order, so the
+  # profile page looked stable without an ORDER BY. Postgres makes no such
+  # guarantee and the display order can shuffle between requests.
+  has_many :identities, -> { order(:name) }, through: :profile_identities
   has_many :profile_interests, dependent: :destroy
-  has_many :interests, through: :profile_interests
+  has_many :interests, -> { order(:name) }, through: :profile_interests
   has_many :profile_conditions, dependent: :destroy
-  has_many :conditions, through: :profile_conditions
+  has_many :conditions, -> { order(:name) }, through: :profile_conditions
 
   accepts_nested_attributes_for :profile_conditions, allow_destroy: true,
     reject_if: proc { |attrs| attrs["condition_id"].blank? }

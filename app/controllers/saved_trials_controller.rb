@@ -13,14 +13,18 @@ class SavedTrialsController < ApplicationController
     # Filtering
     @saved_trials = @saved_trials.where(status: params[:status]) if params[:status].present?
 
-    # Search in title and notes
+    # Search in title and notes. `notes` is an ActionText rich text, not a column
+    # on saved_trials, so it has to be reached through a join on its body.
+    # sanitize_sql_like escapes % and _ so searching "100%" matches the literal
+    # string rather than acting as a wildcard.
     if params[:search].present?
-      search_term = "%#{params[:search]}%"
-      @saved_trials = @saved_trials.where(
-        "trial_title ILIKE ? OR notes ILIKE ?",
-        search_term,
-        search_term
-      )
+      search_term = "%#{SavedTrial.sanitize_sql_like(params[:search])}%"
+      @saved_trials = @saved_trials
+        .left_joins(:rich_text_notes)
+        .where(
+          "saved_trials.trial_title ILIKE :term OR action_text_rich_texts.body ILIKE :term",
+          term: search_term
+        )
     end
 
     # Sorting

@@ -2,12 +2,12 @@
 #
 # Table name: saved_trials
 #
-#  id               :integer          not null, primary key
+#  id               :bigint           not null, primary key
 #  completion_date  :date
 #  enrollment_count :integer
 #  match_score      :decimal(5, 2)
 #  max_age          :integer
-#  min_age          :string
+#  min_age          :integer
 #  phase            :string
 #  sponsor          :string
 #  start_date       :date
@@ -20,7 +20,7 @@
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  nct_id           :string           not null
-#  user_id          :integer          not null
+#  user_id          :bigint           not null
 #
 # Indexes
 #
@@ -31,7 +31,7 @@
 #
 # Foreign Keys
 #
-#  user_id  (user_id => users.id)
+#  fk_rails_...  (user_id => users.id)
 #
 class SavedTrial < ApplicationRecord
   # In-memory attributes (not persisted to DB)
