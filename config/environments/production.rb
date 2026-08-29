@@ -50,8 +50,20 @@ Rails.application.configure do
   # Replace the default in-process memory cache store with a durable alternative.
   config.cache_store = :solid_cache_store
 
-  # Replace the default in-process and non-durable queuing backend for Active Job.
-  config.active_job.queue_adapter = :solid_queue
+  # :async, not :solid_queue. Solid Queue's supervisor forks a full process tree
+  # -- supervisor, worker, dispatcher, and scheduler, each a complete Rails
+  # process -- which measured ~665MB on top of Puma's 231MB. That is 175% of a
+  # 512MB Basic dyno, and it does not fit on a dedicated worker dyno either.
+  #
+  # :async runs jobs in Puma's existing thread pool with no extra processes.
+  # The tradeoff is durability: queued jobs are lost on dyno restart and do not
+  # persist across deploys. Acceptable here because the only background work is
+  # GenerateReadableStudySummaryJob, which a user triggers and then watches for
+  # ~10 seconds; if it is lost they can click again.
+  #
+  # Solid Cache and Solid Cable are unaffected -- both are database-backed with
+  # no forked processes, so they stay.
+  config.active_job.queue_adapter = :async
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
