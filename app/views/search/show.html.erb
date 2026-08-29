@@ -36,7 +36,7 @@
         <%= render Page::Trials::KeyDetailsComponent.new(study: @study) %>
 
         <!-- Overview -->
-        <%= render Page::Trials::OverviewComponent.new(study: @study) %>
+        <%= render Page::Trials::OverviewComponent.new(study: @study, nct_id: @nct_id) %>
 
         <!-- Eligibility Criteria -->
         <div id="eligibility" class="mb-8">
