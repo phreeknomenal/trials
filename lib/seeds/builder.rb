@@ -23,6 +23,7 @@ class Seeds::Builder
       Seeds::Record::Identity.seed
       Seeds::Record::Interest.seed
       Seeds::Record::Condition.seed
+      Seeds::Record::Testimonial.seed
       # Seeds::Record::Tag.seed
       # Seeds::Record::Article.seed
       # Seeds::Record::Event.seed
