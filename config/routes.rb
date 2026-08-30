@@ -31,6 +31,7 @@ Rails.application.routes.draw do
     root to: "dashboard#index"
     resources :testimonials
     get "operations", to: "operations#index"
+    resources :users, only: [:index]
   end
 
   resources :profiles, only: [:new, :create, :show, :edit, :update]
