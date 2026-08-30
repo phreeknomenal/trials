@@ -11,7 +11,7 @@ RSpec.describe "GET /", type: :request do
     it "omits the testimonial section entirely" do
       get root_path
 
-      expect(response.body).not_to include("Patient Stories")
+      expect(response.body).not_to include("Community Stories")
     end
 
     it "omits it even when unpublished testimonials exist" do
@@ -19,7 +19,7 @@ RSpec.describe "GET /", type: :request do
 
       get root_path
 
-      expect(response.body).not_to include("Patient Stories")
+      expect(response.body).not_to include("Community Stories")
       expect(response.body).not_to include("Hidden quote")
     end
   end
@@ -30,7 +30,7 @@ RSpec.describe "GET /", type: :request do
 
       get root_path
 
-      expect(response.body).to include("Patient Stories")
+      expect(response.body).to include("Community Stories")
     end
 
     it "renders the quote, author name, and role" do
