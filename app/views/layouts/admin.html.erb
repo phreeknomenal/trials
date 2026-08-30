@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Admin — Trials" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  </head>
+
+  <%# Deliberately distinct chrome from the public app. Admin actions affect
+      live data, so the page should never be mistaken for the member-facing UI. %>
+  <body class="dark:bg-zinc-900">
+    <%= render Admin::NavComponent.new %>
+
+    <%= render "shared/utilities/flash_messages" %>
+
+    <main>
+      <%= yield %>
+    </main>
+  </body>
+</html>

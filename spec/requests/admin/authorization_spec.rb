@@ -54,6 +54,13 @@ RSpec.describe "Admin access", type: :request do
           expect(response).to have_http_status(:ok)
           expect(response.body).to include("Signed in as")
         end
+
+        it "uses the admin layout rather than the public one" do
+          get admin_root_path
+
+          expect(response.body).to include("Admin — Trials")
+          expect(response.body).to include("Back to site")
+        end
       end
     end
   end
