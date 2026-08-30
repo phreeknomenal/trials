@@ -14,7 +14,7 @@ class Layout::Navigation::HeaderComponent < ApplicationComponent
           <% if user_signed_in? %>
             <div class="w-10 h-10 rounded-full overflow-hidden">
               <%= link_to profile_path(current_profile), class: "block w-full h-full" do %>
-                <%= render Utilities::AvatarComponent.new(current_profile) %>
+                <%= render Utilities::AvatarComponent.new(avatar: current_profile.avatar, initials: current_profile.initials) %>
               <% end %>
             </div>
           <% else %>

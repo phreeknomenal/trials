@@ -108,7 +108,7 @@
     <div class="mt-auto">
       <div class="flex items-center gap-2">
         <div class="w-10 h-10">
-          <%= render Utilities::AvatarComponent.new(User.find(1).profile) %>
+          <%= render Utilities::AvatarComponent.new(avatar: User.find(1).profile.avatar, initials: User.find(1).profile.initials) %>
         </div>
         <div class="flex flex-col">
           <h3 class="text-base font-bold"><%= User.find(1).profile.full_name %></h3>

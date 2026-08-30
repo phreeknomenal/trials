@@ -14,7 +14,7 @@ class Page::Cards::QuoteComponent < ApplicationComponent
       <div class="mt-auto">
         <div class="flex items-center gap-2">
           <div class="w-10 h-10">
-            <%= render Utilities::AvatarComponent.new(profile) %>
+            <%= render Utilities::AvatarComponent.new(avatar: profile.avatar, initials: profile.initials) %>
           </div>
           <div class="flex flex-col">
             <h3 class="text-base font-bold text-zinc-900 dark:text-zinc-300"><%= profile.full_name %></h3>
