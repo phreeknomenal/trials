@@ -29,6 +29,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root to: "dashboard#index"
+    resources :testimonials
   end
 
   resources :profiles, only: [:new, :create, :show, :edit, :update]

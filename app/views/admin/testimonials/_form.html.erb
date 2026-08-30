@@ -1,0 +1,56 @@
+<%= form_with model: [:admin, testimonial], class: "space-y-5 max-w-2xl" do |f| %>
+  <% if testimonial.errors.any? %>
+    <div class="rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-4">
+      <ul class="list-disc list-inside text-sm text-red-800 dark:text-red-200">
+        <% testimonial.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :quote, class: "block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1" %>
+    <%= f.text_area :quote, rows: 4,
+          class: "w-full rounded-lg border border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 px-3 py-2 text-sm" %>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div>
+      <%= f.label :author_name, "Author name", class: "block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1" %>
+      <%= f.text_field :author_name, class: "w-full rounded-lg border border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 px-3 py-2 text-sm" %>
+    </div>
+    <div>
+      <%= f.label :author_role, "Author role", class: "block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1" %>
+      <%= f.text_field :author_role, class: "w-full rounded-lg border border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 px-3 py-2 text-sm" %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
+    <div>
+      <%= f.label :position, class: "block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1" %>
+      <%= f.number_field :position, class: "w-full rounded-lg border border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 px-3 py-2 text-sm" %>
+      <p class="mt-1 text-xs text-zinc-500">Lower numbers appear first. The landing page shows the first three.</p>
+    </div>
+    <div class="flex items-center gap-2 pb-2">
+      <%= f.check_box :published, class: "rounded border-zinc-300" %>
+      <%= f.label :published, class: "text-sm font-medium text-zinc-700 dark:text-zinc-300" %>
+    </div>
+  </div>
+
+  <div>
+    <%= f.label :avatar, class: "block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1" %>
+    <% if testimonial.avatar.attached? %>
+      <div class="w-12 h-12 mb-2">
+        <%= render Utilities::AvatarComponent.new(avatar: testimonial.avatar, initials: testimonial.initials) %>
+      </div>
+    <% end %>
+    <%= f.file_field :avatar, accept: "image/*", class: "text-sm" %>
+    <p class="mt-1 text-xs text-zinc-500">Optional. Without one, the author's initials are shown.</p>
+  </div>
+
+  <div class="flex items-center gap-3 pt-2">
+    <%= f.submit class: "inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-lavender-600 text-white hover:bg-lavender-700 cursor-pointer" %>
+    <%= link_to "Cancel", admin_testimonials_path, class: "text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900" %>
+  </div>
+<% end %>
