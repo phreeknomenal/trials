@@ -23,6 +23,25 @@ RSpec.describe "Admin testimonials", type: :request do
       expect(response.body).to include("Seeded")
     end
 
+    # Icon-only controls: IconComponent renders its svg aria-hidden, so the
+    # accessible name must come from the link and button themselves.
+    it "renders labelled edit and delete controls" do
+      create(:testimonial, author_name: "Dana Whitfield")
+
+      get admin_testimonials_path
+
+      expect(response.body).to include("Edit testimonial from Dana Whitfield")
+      expect(response.body).to include("Delete testimonial from Dana Whitfield")
+    end
+
+    it "renders the pencil and trash icons" do
+      create(:testimonial)
+
+      get admin_testimonials_path
+
+      expect(response.body.scan("<svg").length).to be >= 2
+    end
+
     it "renders an empty state with no testimonials" do
       get admin_testimonials_path
 

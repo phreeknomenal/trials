@@ -43,10 +43,22 @@
                 <% end %>
               </td>
               <td class="px-4 py-3 text-right whitespace-nowrap">
-                <%= link_to "Edit", edit_admin_testimonial_path(testimonial), class: "text-lavender-600 hover:text-lavender-700 font-medium" %>
-                <%= button_to "Delete", admin_testimonial_path(testimonial), method: :delete,
-                      form: {data: {turbo_confirm: testimonial.placeholder? ? "This is seeded placeholder content. Deleting it is temporary — the next deploy will recreate it. Continue?" : "Delete this testimonial?"}},
-                      class: "ml-3 text-red-600 hover:text-red-700 font-medium inline" %>
+                <%# IconComponent renders its svg aria-hidden, so the accessible name
+                    has to live on the control itself. %>
+                <div class="flex items-center justify-end gap-1">
+                  <%= link_to edit_admin_testimonial_path(testimonial),
+                        class: "p-2 rounded text-zinc-500 hover:text-lavender-600 hover:bg-zinc-100 dark:hover:bg-zinc-800",
+                        title: "Edit", "aria-label": "Edit testimonial from #{testimonial.author_name}" do %>
+                    <%= render Utilities::IconComponent.new("pencil", size: 5) %>
+                  <% end %>
+
+                  <%= button_to admin_testimonial_path(testimonial), method: :delete,
+                        form: {data: {turbo_confirm: testimonial.placeholder? ? "This is seeded placeholder content. Deleting it is temporary — the next deploy will recreate it. Continue?" : "Delete this testimonial?"}, class: "inline"},
+                        class: "p-2 rounded text-zinc-500 hover:text-red-600 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer",
+                        title: "Delete", "aria-label": "Delete testimonial from #{testimonial.author_name}" do %>
+                    <%= render Utilities::IconComponent.new("trash", size: 5) %>
+                  <% end %>
+                </div>
               </td>
             </tr>
           <% end %>
