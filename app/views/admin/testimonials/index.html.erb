@@ -1,0 +1,71 @@
+<div class="px-5 lg:px-12 py-10">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Testimonials</h1>
+      <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+        <%= pluralize(@testimonials.size, "testimonial") %> &middot;
+        <%= @testimonials.count(&:published?) %> published &middot;
+        <%= @testimonials.count(&:placeholder?) %> seeded placeholder
+      </p>
+    </div>
+    <%= link_to "New testimonial", new_admin_testimonial_path,
+          class: "inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-lavender-600 text-white hover:bg-lavender-700" %>
+  </div>
+
+  <% if @testimonials.any? %>
+    <div class="overflow-x-auto border border-zinc-200 dark:border-zinc-700 rounded-lg">
+      <table class="w-full text-sm">
+        <thead class="bg-zinc-50 dark:bg-zinc-800/50 text-left">
+          <tr>
+            <th class="px-4 py-3 font-semibold text-zinc-700 dark:text-zinc-300">#</th>
+            <th class="px-4 py-3 font-semibold text-zinc-700 dark:text-zinc-300">Author</th>
+            <th class="px-4 py-3 font-semibold text-zinc-700 dark:text-zinc-300">Quote</th>
+            <th class="px-4 py-3 font-semibold text-zinc-700 dark:text-zinc-300">Status</th>
+            <th class="px-4 py-3"></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+          <% @testimonials.each do |testimonial| %>
+            <tr>
+              <td class="px-4 py-3 text-zinc-500 dark:text-zinc-500"><%= testimonial.position %></td>
+              <td class="px-4 py-3">
+                <div class="font-medium text-zinc-900 dark:text-zinc-100"><%= testimonial.author_name %></div>
+                <div class="text-zinc-500 dark:text-zinc-500"><%= testimonial.author_role %></div>
+              </td>
+              <td class="px-4 py-3 text-zinc-700 dark:text-zinc-300 max-w-md"><%= truncate(testimonial.quote, length: 90) %></td>
+              <td class="px-4 py-3">
+                <span class="inline-block px-2 py-0.5 rounded text-xs font-medium <%= testimonial.published? ? "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300" : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400" %>">
+                  <%= testimonial.published? ? "Published" : "Draft" %>
+                </span>
+                <% if testimonial.placeholder? %>
+                  <span class="ml-1 inline-block px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300"
+                        title="Seeded content. Deleting it is temporary — the next deploy recreates it.">Seeded</span>
+                <% end %>
+              </td>
+              <td class="px-4 py-3 text-right whitespace-nowrap">
+                <%# IconComponent renders its svg aria-hidden, so the accessible name
+                    has to live on the control itself. %>
+                <div class="flex items-center justify-end gap-1">
+                  <%= link_to edit_admin_testimonial_path(testimonial),
+                        class: "p-2 rounded text-orange-500 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors",
+                        title: "Edit", "aria-label": "Edit testimonial from #{testimonial.author_name}" do %>
+                    <%= render Utilities::IconComponent.new("pencil", size: 5) %>
+                  <% end %>
+
+                  <%= button_to admin_testimonial_path(testimonial), method: :delete,
+                        form: {data: {turbo_confirm: testimonial.placeholder? ? "This is seeded placeholder content. Deleting it is temporary — the next deploy will recreate it. Continue?" : "Delete this testimonial?"}, class: "inline"},
+                        class: "p-2 rounded text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer transition-colors",
+                        title: "Delete", "aria-label": "Delete testimonial from #{testimonial.author_name}" do %>
+                    <%= render Utilities::IconComponent.new("trash", size: 5) %>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p class="text-zinc-600 dark:text-zinc-400">No testimonials yet.</p>
+  <% end %>
+</div>

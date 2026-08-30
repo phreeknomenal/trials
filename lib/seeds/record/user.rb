@@ -3,6 +3,8 @@ require "faker"
 class Seeds::Record::User
   class << self
     def seed
+      reset_lookup_cache
+
       ActiveRecord::Base.transaction do
         user_params.each do |params|
           profile_attrs = params.delete(:profile_attributes)
@@ -38,10 +40,15 @@ class Seeds::Record::User
       Rails.env.development? ? "password" : SecureRandom.hex(12)
     end
 
+    # Deterministic emails, not Faker. The seed skips users that already exist by
+    # email, so random addresses meant every run created 25 more members --
+    # development reached 79 users from repeated seeding, which distorts every
+    # count on the admin dashboard. Profile attributes stay randomised; only the
+    # identity key needs to be stable.
     def member_user_params
-      25.times.map do
+      25.times.map do |index|
         {
-          email: Faker::Internet.email,
+          email: "member#{index + 1}@trials.test",
           password: SecureRandom.hex(12),
           role: User::COMMUNITY_ROLES.sample,
           profile_attributes: profile_params
@@ -76,6 +83,14 @@ class Seeds::Record::User
         language_preference: Faker::Nation.language,
         about: Faker::Lorem.paragraph(sentence_count: 5)
       }
+    end
+
+    # These are memoised per seed run, not for the life of the process. The
+    # cached records outlive a rolled-back transaction, so without this a second
+    # call reuses gender and race ids that no longer exist and the insert fails
+    # with a foreign key violation.
+    def reset_lookup_cache
+      @genders = @races = @conditions = @identities = @interests = nil
     end
 
     def genders

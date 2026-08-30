@@ -19,8 +19,8 @@
 #
 class User < ApplicationRecord
   COMMUNITY_ROLES = %w[member].freeze
-  ACCLINATE_ROLES = %w[employee admin super_admin].freeze
-  ROLES = COMMUNITY_ROLES + ACCLINATE_ROLES
+  STAFF_ROLES = %w[employee admin super_admin].freeze
+  ROLES = COMMUNITY_ROLES + STAFF_ROLES
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable, :omniauthable
@@ -35,7 +35,7 @@ class User < ApplicationRecord
 
   before_create :add_default_profile
 
-  scope :acclinate, -> { where(role: ACCLINATE_ROLES) }
+  scope :staff, -> { where(role: STAFF_ROLES) }
   scope :community, -> { where(role: COMMUNITY_ROLES) }
   scope :members, -> { where(role: "member") }
   scope :employees, -> { where(role: "employee") }
@@ -58,7 +58,9 @@ class User < ApplicationRecord
     role.eql?("member")
   end
 
-  def acclinate?
+  # Any non-member role. This is the gate for the admin namespace -- admin? and
+  # super_admin? are exact role matches, so neither covers staff on its own.
+  def staff?
     super_admin? || admin? || employee?
   end
 

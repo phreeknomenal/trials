@@ -8,9 +8,18 @@ class ApplicationController < ActionController::Base
 
   before_action :ensure_profile_completed, if: :user_signed_in?
 
+  # Without this, any failed `authorize` call raises and surfaces as a 500.
+  # That gap predates the admin namespace -- SavedTrialsController and
+  # ProfilesController already call authorize.
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+
   layout :layout
 
   private
+
+  def user_not_authorized
+    redirect_to root_path, alert: "You are not authorized to access that page."
+  end
 
   def layout
     user_validated? ? "application" : "unauthenticated"

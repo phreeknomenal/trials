@@ -27,6 +27,13 @@ Rails.application.routes.draw do
     get "/users/sign_out" => "devise/sessions#destroy"
   end
 
+  namespace :admin do
+    root to: "dashboard#index"
+    resources :testimonials
+    get "operations", to: "operations#index"
+    resources :users, only: [:index]
+  end
+
   resources :profiles, only: [:new, :create, :show, :edit, :update]
   resources :search, only: [:index, :show]
 
