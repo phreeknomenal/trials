@@ -8,7 +8,7 @@ module Admin
       # includes(:profile) matters -- the table reads profile data per row, so
       # without it this is one query per user.
       scope = User.includes(:profile).order(created_at: :desc)
-      @pagy, @users = pagy(scope, items: page_size)
+      @pagy, @users = pagy(scope, limit: page_size)
     end
 
     private

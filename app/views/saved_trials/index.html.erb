@@ -98,12 +98,11 @@
       <% end %>
     </div>
 
-    <!-- Pagination Info -->
-    <% if @pagy %>
-      <div class="mt-8 text-center text-sm text-gray-600">
-        <p>Page <%= @pagy.page %> of <%= @pagy.pages %> (<%= @pagy.count %> total trials)</p>
-      </div>
-    <% end %>
+    <%= render Shared::PaginationComponent.new(
+          pagy: @pagy,
+          path_for: ->(page) { saved_trials_path(request.query_parameters.merge(page: page)) },
+          unit: "trial"
+        ) %>
   <% else %>
     <div class="flex flex-col justify-center items-center text-center py-12">
       <div class="text-lavender-600">

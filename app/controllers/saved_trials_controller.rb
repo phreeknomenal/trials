@@ -39,7 +39,9 @@ class SavedTrialsController < ApplicationController
     end
 
     # Pagination with Pagy
-    @pagy, @saved_trials = pagy(@saved_trials, items: 20)
+    # `limit:`, not `items:` -- Pagy 43 renamed it and ignores the old key,
+    # so this paginated at Pagy's default rather than the value passed.
+    @pagy, @saved_trials = pagy(@saved_trials, limit: page_size)
   end
 
   def show
@@ -92,6 +94,10 @@ class SavedTrialsController < ApplicationController
   end
 
   private
+
+  def default_page_size
+    20
+  end
 
   def set_saved_trial
     @saved_trial = SavedTrial.find(params[:id])
