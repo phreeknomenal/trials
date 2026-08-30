@@ -1,0 +1,64 @@
+<div class="px-5 lg:px-12 py-10 space-y-8">
+  <div>
+    <h1 class="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Operations</h1>
+    <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">Health of readable summary generation.</p>
+  </div>
+
+  <% if @failed.none? && @stale.none? %>
+    <div class="rounded-lg border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-4">
+      <p class="text-sm text-green-800 dark:text-green-200">
+        No failed or stuck summaries. <%= pluralize(@completed_count, "summary") %> completed,
+        <%= @pending.size %> currently generating.
+      </p>
+    </div>
+  <% end %>
+
+  <% if @stale.any? %>
+    <section>
+      <h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-1">Stuck</h2>
+      <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-3">
+        Pending for more than <%= distance_of_time_in_words(ReadableStudySummary::STALE_AFTER) %>.
+        The job that owned these is gone, most likely a dyno restart.
+      </p>
+      <div class="border border-amber-300 dark:border-amber-800 rounded-lg divide-y divide-amber-200 dark:divide-amber-900">
+        <% @stale.each do |summary| %>
+          <div class="p-4 flex items-center justify-between gap-4">
+            <span class="font-mono text-sm text-zinc-900 dark:text-zinc-100"><%= summary.nct_id %></span>
+            <span class="text-xs text-zinc-500">last updated <%= time_ago_in_words(summary.updated_at) %> ago</span>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
+  <% if @failed.any? %>
+    <section>
+      <h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-3">Failed</h2>
+      <div class="border border-red-200 dark:border-red-800 rounded-lg divide-y divide-red-200 dark:divide-red-900">
+        <% @failed.each do |summary| %>
+          <div class="p-4">
+            <div class="flex items-center justify-between gap-4 mb-1">
+              <span class="font-mono text-sm text-zinc-900 dark:text-zinc-100"><%= summary.nct_id %></span>
+              <span class="text-xs text-zinc-500"><%= time_ago_in_words(summary.updated_at) %> ago</span>
+            </div>
+            <p class="text-sm text-red-700 dark:text-red-300"><%= summary.error_message.presence || "No error message recorded." %></p>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
+  <% if @pending.any? %>
+    <section>
+      <h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-3">In progress</h2>
+      <div class="border border-zinc-200 dark:border-zinc-700 rounded-lg divide-y divide-zinc-200 dark:divide-zinc-700">
+        <% @pending.each do |summary| %>
+          <div class="p-4 flex items-center justify-between gap-4">
+            <span class="font-mono text-sm text-zinc-900 dark:text-zinc-100"><%= summary.nct_id %></span>
+            <span class="text-xs text-zinc-500">started <%= time_ago_in_words(summary.created_at) %> ago</span>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+</div>

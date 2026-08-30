@@ -30,6 +30,7 @@ Rails.application.routes.draw do
   namespace :admin do
     root to: "dashboard#index"
     resources :testimonials
+    get "operations", to: "operations#index"
   end
 
   resources :profiles, only: [:new, :create, :show, :edit, :update]

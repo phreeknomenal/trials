@@ -19,7 +19,7 @@ module Admin
     ERB
 
     def links
-      {"Overview" => admin_root_path, "Testimonials" => admin_testimonials_path}
+      {"Overview" => admin_root_path, "Operations" => admin_operations_path, "Testimonials" => admin_testimonials_path}
     end
 
     def current?(path)
