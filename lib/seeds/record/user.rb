@@ -38,10 +38,15 @@ class Seeds::Record::User
       Rails.env.development? ? "password" : SecureRandom.hex(12)
     end
 
+    # Deterministic emails, not Faker. The seed skips users that already exist by
+    # email, so random addresses meant every run created 25 more members --
+    # development reached 79 users from repeated seeding, which distorts every
+    # count on the admin dashboard. Profile attributes stay randomised; only the
+    # identity key needs to be stable.
     def member_user_params
-      25.times.map do
+      25.times.map do |index|
         {
-          email: Faker::Internet.email,
+          email: "member#{index + 1}@trials.test",
           password: SecureRandom.hex(12),
           role: User::COMMUNITY_ROLES.sample,
           profile_attributes: profile_params
