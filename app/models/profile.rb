@@ -190,6 +190,11 @@ class Profile < ApplicationRecord
     "#{first_name} #{last_name}"
   end
 
+  # Used by Utilities::AvatarComponent for the no-avatar fallback.
+  def initials
+    (first_name&.first&.upcase.to_s + last_name&.first&.upcase.to_s)
+  end
+
   def age
     return nil unless birth_year.present?
     Time.current.year - birth_year

@@ -29,6 +29,8 @@ end
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
+
+  config.include ViewComponent::TestHelpers, type: :component
   config.include FactoryBot::Syntax::Methods
   config.filter_rails_from_backtrace!
 end
