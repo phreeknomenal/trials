@@ -41,19 +41,9 @@
     </table>
   </div>
 
-  <% if @pagy.pages > 1 %>
-    <div class="mt-6 flex items-center justify-between text-sm">
-      <div>
-        <% if @pagy.previous %>
-          <%= link_to "← Previous", admin_users_path(page: @pagy.previous), class: "text-lavender-600 hover:text-lavender-700 font-medium" %>
-        <% end %>
-      </div>
-      <span class="text-zinc-500">Page <%= @pagy.page %> of <%= @pagy.pages %></span>
-      <div>
-        <% if @pagy.next %>
-          <%= link_to "Next →", admin_users_path(page: @pagy.next), class: "text-lavender-600 hover:text-lavender-700 font-medium" %>
-        <% end %>
-      </div>
-    </div>
-  <% end %>
+  <%= render Shared::PaginationComponent.new(
+        pagy: @pagy,
+        path_for: ->(page) { admin_users_path(page: page) },
+        unit: "user"
+      ) %>
 </div>
