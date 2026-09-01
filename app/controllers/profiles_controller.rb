@@ -31,28 +31,16 @@ class ProfilesController < ApplicationController
     authorize @profile
   end
 
+  # The turbo_stream branches here existed only to dismiss the onboarding modal
+  # and re-render its form. The wizard owns onboarding now, so this is an
+  # ordinary edit form again.
   def update
     authorize @profile
 
-    respond_to do |format|
-      if @profile.update(profile_params)
-        format.turbo_stream do
-          flash.now[:notice] = "Your profile was successfully completed!"
-          render turbo_stream: [
-            turbo_stream.replace("main-flash-messages", partial: "shared/utilities/flash_messages"),
-            turbo_stream.remove("profile-onboarding-modal")
-          ]
-        end
-        format.html { redirect_to profile_path(@profile), notice: "Profile was successfully updated." }
-      else
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(
-            "profile-onboarding-form",
-            Profiles::OnboardingFormComponent.new(profile: @profile)
-          ), status: :unprocessable_entity
-        end
-        format.html { render :edit, status: :unprocessable_entity }
-      end
+    if @profile.update(profile_params)
+      redirect_to profile_path(@profile), notice: "Profile was successfully updated."
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 

@@ -36,7 +36,6 @@
     <%= render Layout::Navigation::FooterComponent.new %>
     
     <% if user_signed_in? && current_profile %>
-      <%= render Profiles::OnboardingModalComponent.new(profile: current_profile) %>
     <% end %>
   </body>
 </html>
