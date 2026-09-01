@@ -24,6 +24,13 @@ class TrialScorer
     }
   }.freeze
 
+  AGE_UNITS_IN_YEARS = {
+    "year" => 1.0,
+    "month" => 1.0 / 12,
+    "week" => 1.0 / 52.1775,
+    "day" => 1.0 / 365.25
+  }.freeze
+
   def initialize(profile, trial_data, config: DEFAULT_CONFIG)
     @profile = profile
     @trial = trial_data
@@ -91,10 +98,9 @@ class TrialScorer
 
     return 50 if trial_conditions.empty?
 
-    # Calculate overlap percentage from user's perspective
     # Score = what percentage of MY conditions does this trial address?
     matching_conditions = profile_conditions.count do |pc|
-      trial_conditions.any? { |tc| tc.include?(pc) || pc.include?(tc) }
+      trial_conditions.any? { |tc| conditions_match?(pc, tc) }
     end
 
     # At least one condition must match to score above 0
@@ -111,9 +117,8 @@ class TrialScorer
     trial_locations = @trial[:locations]
     return 50 if trial_locations.nil? || trial_locations.empty?
 
-    # Check if any location matches user's state or city
-    state_match = trial_locations.any? { |loc| loc.to_s.include?(@profile.state) }
-    city_match = trial_locations.any? { |loc| loc.to_s.include?(@profile.city) }
+    state_match = trial_locations.any? { |loc| location_component?(loc, @profile.state) }
+    city_match = trial_locations.any? { |loc| location_component?(loc, @profile.city) }
 
     return 100 if city_match
     return 75 if state_match
@@ -153,11 +158,54 @@ class TrialScorer
     end
   end
 
+  # Trial locations arrive as comma-separated components: "Kansas City,
+  # Missouri, United States". A raw `include?` matched across those boundaries,
+  # so a profile in Kansas matched a trial in Kansas City, MISSOURI, and one in
+  # Virginia matched West Virginia. Comparing whole components instead means a
+  # place name only matches the field it actually occupies.
+  def location_component?(location, value)
+    return false if value.blank?
+
+    components = location.to_s.split(",").map { |part| part.strip.downcase }
+
+    components.include?(value.to_s.strip.downcase)
+  end
+
+  # Compares conditions by whole words rather than raw substrings. A bare
+  # `include?` matched any abbreviation appearing inside a longer word: "ms"
+  # matched "symptoms" and "als" matched "false positives", both of which are
+  # real conditions in the seeded list.
+  #
+  # One condition matches another when its words are a subset of the other's, so
+  # a profile listing "lung cancer" still matches a trial studying "cancer", and
+  # "breast cancer" still does not match "lung cancer".
+  def conditions_match?(profile_condition, trial_condition)
+    profile_words = condition_words(profile_condition)
+    trial_words = condition_words(trial_condition)
+
+    return false if profile_words.empty? || trial_words.empty?
+
+    profile_words.subset?(trial_words) || trial_words.subset?(profile_words)
+  end
+
+  def condition_words(text)
+    text.to_s.downcase.scan(/[a-z0-9]+/).to_set
+  end
+
+  # ClinicalTrials.gov expresses age limits with a unit: "18 Years", "6 Months",
+  # "30 Days". Reading the number alone treated all three as years, so a trial
+  # open from 6 months of age was scored as requiring a minimum of 6 years.
+  # Everything normalises to years so one comparison works for all of them.
   def parse_age(age_string)
     return nil if age_string.nil?
 
-    # Extract first number from strings like "18 Years", "65 Years", etc.
-    age_string.to_s.scan(/\d+/).first&.to_i
+    text = age_string.to_s.downcase
+    number = text[/\d+(?:\.\d+)?/]
+    return nil if number.nil?
+
+    unit = AGE_UNITS_IN_YEARS.keys.find { |name| text.include?(name) }
+
+    number.to_f * AGE_UNITS_IN_YEARS.fetch(unit, 1.0)
   end
 
   def match_level(score)

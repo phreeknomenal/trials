@@ -1,0 +1,214 @@
+require "rails_helper"
+
+RSpec.describe TrialScorer do
+  let(:profile) { create(:profile) }
+
+  def scorer(trial, for_profile: profile)
+    described_class.new(for_profile, trial)
+  end
+
+  describe "#parse_age" do
+    subject(:parse) { ->(value) { scorer({}).send(:parse_age, value) } }
+
+    it "reads a value in years" do
+      expect(parse.call("18 Years")).to eq(18.0)
+    end
+
+    it "treats a bare number as years" do
+      expect(parse.call("21")).to eq(21.0)
+    end
+
+    it "returns nil for nil" do
+      expect(parse.call(nil)).to be_nil
+    end
+
+    it "returns nil when there is no number" do
+      expect(parse.call("N/A")).to be_nil
+    end
+
+    # ClinicalTrials.gov uses "6 Months" and "30 Days" for paediatric and
+    # neonatal limits. Reading the number alone made these 6 and 30 YEARS.
+    it "converts months to years" do
+      expect(parse.call("6 Months")).to be_within(0.001).of(0.5)
+    end
+
+    it "converts days to years" do
+      expect(parse.call("30 Days")).to be_within(0.001).of(30 / 365.25)
+    end
+
+    it "converts weeks to years" do
+      expect(parse.call("52 Weeks")).to be_within(0.01).of(1.0)
+    end
+
+    it "does not treat 6 Months as 6 years" do
+      expect(parse.call("6 Months")).to be < 1
+    end
+  end
+
+  describe "#score_age" do
+    def age_score(min:, max:, birth_year:)
+      p = create(:profile, birth_year: birth_year)
+      scorer({min_age: min, max_age: max}, for_profile: p).send(:score_age)
+    end
+
+    it "scores 100 with no age limits" do
+      expect(age_score(min: nil, max: nil, birth_year: 40.years.ago.year)).to eq(100)
+    end
+
+    it "scores 100 inside the range" do
+      expect(age_score(min: "18 Years", max: "65 Years", birth_year: 40.years.ago.year)).to eq(100)
+    end
+
+    it "scores 0 below the minimum" do
+      expect(age_score(min: "18 Years", max: nil, birth_year: 10.years.ago.year)).to eq(0)
+    end
+
+    it "scores 0 above the maximum" do
+      expect(age_score(min: nil, max: "65 Years", birth_year: 80.years.ago.year)).to eq(0)
+    end
+
+    # Regression: with the old parser this trial required a minimum of 6 YEARS,
+    # so a 2-year-old was excluded from a study open from 6 months of age.
+    it "includes a toddler in a trial open from 6 months" do
+      expect(age_score(min: "6 Months", max: "17 Years", birth_year: 2.years.ago.year)).to eq(100)
+    end
+
+    it "scores neutral when the profile has no age" do
+      p = create(:profile, birth_year: nil)
+      expect(scorer({min_age: "18 Years"}, for_profile: p).send(:score_age)).to eq(50)
+    end
+  end
+
+  describe "#conditions_match?" do
+    subject(:matches) { ->(pc, tc) { scorer({}).send(:conditions_match?, pc, tc) } }
+
+    it "matches an identical condition" do
+      expect(matches.call("asthma", "asthma")).to be(true)
+    end
+
+    it "matches a specific profile condition against a broader trial condition" do
+      expect(matches.call("lung cancer", "cancer")).to be(true)
+    end
+
+    it "matches a broad profile condition against a specific trial condition" do
+      expect(matches.call("cancer", "lung cancer")).to be(true)
+    end
+
+    it "matches across extra qualifiers" do
+      expect(matches.call("type 2 diabetes", "diabetes")).to be(true)
+    end
+
+    it "does not match two different cancers" do
+      expect(matches.call("breast cancer", "lung cancer")).to be(false)
+    end
+
+    # Regression: a bare substring check matched any abbreviation appearing
+    # inside a longer word. Both MS and ALS are in the seeded condition list.
+    it "does not match ms against symptoms" do
+      expect(matches.call("ms", "symptoms")).to be(false)
+    end
+
+    it "does not match als against false positives" do
+      expect(matches.call("als", "false positives")).to be(false)
+    end
+
+    it "returns false for blank input" do
+      expect(matches.call("", "cancer")).to be(false)
+      expect(matches.call("cancer", "")).to be(false)
+    end
+  end
+
+  describe "#score_conditions" do
+    def condition_score(profile_conditions, trial_conditions)
+      p = create(:profile)
+      profile_conditions.each { |name| p.conditions << Condition.find_or_create_by!(name: name) }
+      scorer({conditions: trial_conditions}, for_profile: p.reload).send(:score_conditions)
+    end
+
+    it "scores 100 when every profile condition matches" do
+      expect(condition_score(["asthma"], ["Asthma"])).to eq(100)
+    end
+
+    it "scores 0 when none match" do
+      expect(condition_score(["asthma"], ["Diabetes"])).to eq(0)
+    end
+
+    it "scores partially when some match" do
+      expect(condition_score(["asthma", "diabetes"], ["Asthma"])).to eq(50)
+    end
+
+    it "scores neutral when the profile has no conditions" do
+      expect(condition_score([], ["Asthma"])).to eq(50)
+    end
+
+    # Regression at the scoring level, not just the helper.
+    it "does not credit a symptoms trial for a profile listing ms" do
+      expect(condition_score(["ms"], ["Symptoms"])).to eq(0)
+    end
+  end
+
+  describe "#location_component?" do
+    subject(:matches) { ->(loc, value) { scorer({}).send(:location_component?, loc, value) } }
+
+    it "matches a city component" do
+      expect(matches.call("Birmingham, Alabama, United States", "Birmingham")).to be(true)
+    end
+
+    it "matches a state component" do
+      expect(matches.call("Birmingham, Alabama, United States", "Alabama")).to be(true)
+    end
+
+    it "ignores case and surrounding whitespace" do
+      expect(matches.call("New York, New York, United States", " new york ")).to be(true)
+    end
+
+    # Regression: a raw include? matched across component boundaries.
+    it "does not match Kansas against Kansas City, Missouri" do
+      expect(matches.call("Kansas City, Missouri, United States", "Kansas")).to be(false)
+    end
+
+    it "does not match Virginia against West Virginia" do
+      expect(matches.call("West Virginia, United States", "Virginia")).to be(false)
+    end
+
+    it "does not match York against New York" do
+      expect(matches.call("New York, New York, United States", "York")).to be(false)
+    end
+
+    it "returns false for a blank value" do
+      expect(matches.call("Birmingham, Alabama, United States", "")).to be(false)
+    end
+  end
+
+  describe "#score_location" do
+    def location_score(city:, state:, locations:)
+      p = create(:profile, city: city, state: state)
+      scorer({locations: locations}, for_profile: p).send(:score_location)
+    end
+
+    it "scores 100 for a city match" do
+      expect(location_score(city: "Birmingham", state: "Alabama",
+        locations: ["Birmingham, Alabama, United States"])).to eq(100)
+    end
+
+    it "scores 75 for a state match without a city match" do
+      expect(location_score(city: "Mobile", state: "Alabama",
+        locations: ["Birmingham, Alabama, United States"])).to eq(75)
+    end
+
+    it "scores 25 for no match" do
+      expect(location_score(city: "Mobile", state: "Alabama",
+        locations: ["Denver, Colorado, United States"])).to eq(25)
+    end
+
+    # A Kansas resident should not get a state match for a Missouri trial.
+    it "does not award a state match for Kansas City, Missouri" do
+      expect(location_score(city: "Topeka", state: "Kansas",
+        locations: ["Kansas City, Missouri, United States"])).to eq(25)
+    end
+
+    it "scores neutral when the trial has no locations" do
+      expect(location_score(city: "Mobile", state: "Alabama", locations: [])).to eq(50)
+    end
+  end
+end
