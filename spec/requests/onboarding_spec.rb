@@ -6,6 +6,26 @@ RSpec.describe "Onboarding wizard", type: :request do
 
   def step_path(slug) = onboarding_step_path(step: slug)
 
+  # One valid submission per step, so a spec can walk the wizard without
+  # restating the fields each screen wants.
+  def payload_for(slug)
+    {
+      "identity" => {first_name: "M", last_name: "B"},
+      "basics" => {birth_year: 1986},
+      "location" => {zip_code: "44106"},
+      "conditions" => {no_conditions: "1"},
+      "logistics" => {willing_travel_miles: Profile::FIFTY_MILES},
+      "preferences" => {risk_tolerance: Profile::TESTED},
+      "about_you" => {pronouns: Profile::HE_HIM}
+    }.fetch(slug)
+  end
+
+  def submit(slug) = patch(step_path(slug), params: {profile: payload_for(slug)})
+
+  def complete_required_steps
+    %w[identity basics location conditions].each { |slug| submit(slug) }
+  end
+
   before { sign_in user }
 
   describe "the gate" do
@@ -146,15 +166,8 @@ RSpec.describe "Onboarding wizard", type: :request do
 
   describe "each step" do
     def complete_through(slug)
-      payloads = {
-        "identity" => {first_name: "Marques", last_name: "Bradley"},
-        "basics" => {birth_year: 1986},
-        "location" => {zip_code: "44106"},
-        "conditions" => {no_conditions: "1"}
-      }
-
       Onboarding.steps.each do |step|
-        patch step_path(step.slug), params: {profile: payloads.fetch(step.slug)}
+        submit(step.slug)
         break if step.slug == slug
       end
     end
@@ -203,7 +216,7 @@ RSpec.describe "Onboarding wizard", type: :request do
 
       patch step_path("conditions"), params: {profile: {no_conditions: "1"}}
 
-      expect(response).to redirect_to(root_path)
+      expect(response).to redirect_to(step_path("logistics"))
     end
 
     it "accepts a listed condition" do
@@ -214,23 +227,132 @@ RSpec.describe "Onboarding wizard", type: :request do
         profile: {profile_conditions_attributes: {"0" => {condition_id: condition.id, is_primary: "1"}}}
       }
 
-      expect(response).to redirect_to(root_path)
+      expect(response).to redirect_to(step_path("logistics"))
       expect(profile.reload.conditions).to include(condition)
     end
   end
 
-  describe "finishing" do
-    it "unlocks the app and lands on the root path" do
-      Onboarding.steps.each do |step|
-        payload = {
-          "identity" => {first_name: "M", last_name: "B"},
-          "basics" => {birth_year: 1986},
-          "location" => {zip_code: "44106"},
-          "conditions" => {no_conditions: "1"}
-        }.fetch(step.slug)
+  # Everything below is about the optional half of the wizard.
+  describe "unlocking" do
+    # Required steps decide access. Adding optional ones must not move it, which
+    # is why Onboarding.unlocked_number derives from required_count rather than
+    # from the total.
+    it "opens the app after the last required step, not the last step" do
+      complete_required_steps
 
-        patch step_path(step.slug), params: {profile: payload}
-      end
+      expect(profile.reload).to have_attributes(onboarded: true)
+      expect(profile).not_to be_profile_completed
+
+      get saved_trials_path
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "carries on into the optional steps rather than stopping" do
+      complete_required_steps
+
+      expect(response).to redirect_to(step_path("logistics"))
+    end
+  end
+
+  describe "skipping" do
+    before { complete_required_steps }
+
+    # Progress is the source of truth. Leaving a skipped step unfilled and
+    # inferring "not done" would nag the user about it forever.
+    it "advances past an optional step without saving anything" do
+      expect {
+        post skip_onboarding_step_path(step: "logistics")
+      }.to change { profile.reload.onboarding_step }.by(1)
+
+      expect(response).to redirect_to(step_path("preferences"))
+      expect(profile.willing_travel_miles).to be_nil
+    end
+
+    it "refuses to skip a required step" do
+      profile.update_column(:onboarding_step, 2)
+
+      expect {
+        post skip_onboarding_step_path(step: "basics")
+      }.not_to change { profile.reload.onboarding_step }
+
+      expect(response).to redirect_to(step_path("basics"))
+    end
+
+    it "completes the wizard when the last step is skipped" do
+      %w[logistics preferences about_you].each { |slug| post skip_onboarding_step_path(step: slug) }
+
+      expect(response).to redirect_to(root_path)
+      expect(profile.reload).to be_profile_completed
+    end
+  end
+
+  describe "the completion banner" do
+    def banner_shown?
+      get saved_trials_path
+      response.body.include?("Your profile is not finished")
+    end
+
+    it "appears once the app is unlocked but steps remain" do
+      profile.update_columns(onboarding_step: Onboarding.unlocked_number, onboarded: true)
+
+      expect(banner_shown?).to be(true)
+    end
+
+    it "does not appear before the app is unlocked" do
+      # Still gated, so the banner has nowhere to render anyway.
+      expect(banner_shown?).to be(false)
+    end
+
+    it "does not appear once every step is done" do
+      profile.update_columns(onboarding_step: Onboarding.complete_number, onboarded: true)
+
+      expect(banner_shown?).to be(false)
+    end
+
+    it "stays gone after it is dismissed" do
+      profile.update_columns(onboarding_step: Onboarding.unlocked_number, onboarded: true)
+
+      delete onboarding_banner_path
+
+      expect(banner_shown?).to be(false)
+    end
+
+    it "links to the step the user stopped at" do
+      profile.update_columns(onboarding_step: 6, onboarded: true)
+
+      get saved_trials_path
+
+      expect(response.body).to include(step_path("preferences"))
+    end
+  end
+
+  # #99 shipped with four steps, so profiles finished under it sit at step 5.
+  # Growing STEPS to seven must find them mid-wizard rather than locked out.
+  describe "a profile finished under the four-step wizard" do
+    before { profile.update_columns(onboarding_step: 5, onboarded: true) }
+
+    it "keeps its access to the app" do
+      get saved_trials_path
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "is invited to finish the optional steps" do
+      get saved_trials_path
+
+      expect(response.body).to include("Your profile is not finished")
+    end
+
+    it "resumes at the first optional step" do
+      get onboarding_path
+
+      expect(response).to redirect_to(step_path("logistics"))
+    end
+  end
+
+  describe "finishing" do
+    it "completes the wizard and lands on the root path" do
+      Onboarding.steps.each { |step| submit(step.slug) }
 
       expect(response).to redirect_to(root_path)
       expect(profile.reload).to have_attributes(onboarded: true, onboarding_step: Onboarding.complete_number)
@@ -238,6 +360,7 @@ RSpec.describe "Onboarding wizard", type: :request do
 
       get saved_trials_path
       expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include("Your profile is not finished")
     end
   end
 end
