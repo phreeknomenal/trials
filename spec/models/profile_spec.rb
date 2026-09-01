@@ -16,6 +16,7 @@ require "rails_helper"
 #  language_preference     :string
 #  last_name               :string
 #  onboarded               :boolean          default(FALSE), not null
+#  onboarding_step         :integer          default(1), not null
 #  phone_number            :string
 #  prior_treatment         :boolean          default(FALSE)
 #  pronouns                :string
@@ -147,6 +148,31 @@ RSpec.describe Profile do
 
       expect { profile.valid? }.not_to raise_error
       expect(profile.city).to be_nil
+    end
+  end
+
+  # A select rendered with include_blank submits "", not nil, and score_sex
+  # reads a present-but-empty value as an answer: it returned 0 rather than the
+  # neutral 50, so declining to answer cost 20 points of weight.
+  describe "blank optional fields" do
+    it "stores a declined select as nil, not an empty string" do
+      profile = create(:profile)
+      profile.update!(sex_assigned_at_birth: "", risk_tolerance: "", trial_type_preference: "")
+
+      expect(profile.reload).to have_attributes(
+        sex_assigned_at_birth: nil, risk_tolerance: nil, trial_type_preference: nil
+      )
+    end
+
+    it "scores a declined sex as neutral rather than as a mismatch" do
+      profile = create(:profile)
+      profile.update!(sex_assigned_at_birth: "")
+      trial = {sex: "FEMALE", conditions: [], locations: [], phase: nil, status: "RECRUITING"}
+
+      result = TrialScorer.new(profile.reload, trial)
+
+      expect(result.send(:score_sex)).to eq(50)
+      expect(result.calculate_score[:disqualifiers]).not_to include(:sex)
     end
   end
 end

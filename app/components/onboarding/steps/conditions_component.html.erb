@@ -1,0 +1,29 @@
+<div class="space-y-5">
+  <div id="onboarding-conditions" class="space-y-3">
+    <%= form.fields_for :profile_conditions do |condition_form| %>
+      <%= render "profiles/profile_condition_fields", f: condition_form %>
+    <% end %>
+  </div>
+
+  <%= helpers.link_to_add_association "Add another condition", form, :profile_conditions,
+        partial: "profiles/profile_condition_fields",
+        association_insertion_node: "#onboarding-conditions",
+        association_insertion_method: :append,
+        data: {association_insertion_node: "#onboarding-conditions"},
+        class: "inline-block text-sm font-medium text-lavender-600 hover:text-lavender-700 cursor-pointer" %>
+
+  <%# Requiring a condition is right for matching but wrong for someone still
+      seeking a diagnosis, and the app should not be a dead end for them. This
+      records nothing; it only tells the step's validation the empty list was
+      deliberate. %>
+  <div class="pt-4 border-t border-zinc-200 dark:border-zinc-700">
+    <label class="flex items-start gap-3 cursor-pointer">
+      <%= form.check_box :no_conditions,
+            {class: "mt-1 rounded border-zinc-300 dark:border-zinc-600 text-lavender-600 focus:ring-lavender-500",
+             checked: profile.no_conditions == "1"}, "1", "0" %>
+      <span class="text-sm text-zinc-600 dark:text-zinc-400">
+        I do not have a diagnosis yet. Show me studies and I will add conditions later.
+      </span>
+    </label>
+  </div>
+</div>

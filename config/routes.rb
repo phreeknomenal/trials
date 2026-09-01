@@ -34,6 +34,13 @@ Rails.application.routes.draw do
     resources :users, only: [:index]
   end
 
+  # The onboarding wizard. One step per URL so a refresh resumes where the user
+  # was and the back button behaves, neither of which the modal could do.
+  get "onboarding", to: "onboarding#show", as: :onboarding
+  get "onboarding/:step", to: "onboarding#show", as: :onboarding_step,
+    constraints: {step: /[a-z_]+/}
+  patch "onboarding/:step", to: "onboarding#update", constraints: {step: /[a-z_]+/}
+
   resources :profiles, only: [:new, :create, :show, :edit, :update]
   resources :search, only: [:index, :show]
 

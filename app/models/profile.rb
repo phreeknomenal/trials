@@ -14,6 +14,7 @@
 #  language_preference     :string
 #  last_name               :string
 #  onboarded               :boolean          default(FALSE), not null
+#  onboarding_step         :integer          default(1), not null
 #  phone_number            :string
 #  prior_treatment         :boolean          default(FALSE)
 #  pronouns                :string
@@ -176,13 +177,36 @@ class Profile < ApplicationRecord
   accepts_nested_attributes_for :profile_conditions, allow_destroy: true,
     reject_if: proc { |attrs| attrs["condition_id"].blank? }
 
+  # A select rendered with include_blank submits an empty string, not nil, and
+  # the scorer reads these as "the user told us something". An empty
+  # sex_assigned_at_birth scored 0 rather than the neutral 50, so declining to
+  # answer in the wizard cost 20 points of weight. Same shape as the bugs fixed
+  # in #96 and #97: answering, or declining to, was worse than never being asked.
+  normalizes :sex_assigned_at_birth, :risk_tolerance, :trial_type_preference,
+    :pronouns, :ethnicity, :diagnosis_timing, :current_treatment,
+    :remote_visit_preference, :contact_preference, :language_preference,
+    :city, :state, :zip_code,
+    with: ->(value) { value.presence }
+
+  # Set by the conditions step when someone has no diagnosis yet. Not stored:
+  # it only tells the step's validation that an empty list was deliberate.
+  attr_accessor :no_conditions
+
   has_one_attached :avatar
   has_rich_text :about
 
   validates :user_id, uniqueness: true
-  validates :first_name, presence: true, on: :update
-  validates :last_name, presence: true, on: :update
-  validates :zip_code, presence: true, on: :update
+  # Each wizard step saves under its own context so a partial submission is not
+  # rejected for fields the user has not reached yet. The :update context is
+  # kept alongside so the full edit form behaves exactly as it did.
+  validates :first_name, presence: true, on: [:update, :onboarding_identity]
+  validates :last_name, presence: true, on: [:update, :onboarding_identity]
+  validates :zip_code, presence: true, on: [:update, :onboarding_location]
+  validates :birth_year, presence: true, on: :onboarding_basics
+  validates :birth_year,
+    numericality: {only_integer: true, greater_than_or_equal_to: 1900, less_than_or_equal_to: ->(_) { Time.current.year }},
+    allow_blank: true
+  validate :must_list_a_condition, on: :onboarding_conditions
   validates :pronouns, inclusion: {in: PRONOUN_OPTIONS}, allow_blank: true
   validates :sex_assigned_at_birth, inclusion: {in: SEX_ASSIGNED_AT_BIRTH_OPTIONS}, allow_blank: true
   validates :ethnicity, inclusion: {in: ETHNICITY_OPTIONS}, allow_blank: true
@@ -205,6 +229,12 @@ class Profile < ApplicationRecord
   # updates only their zip should not keep their old city.
   before_validation :resolve_city_and_state_from_zip
 
+  # `onboarded` predates the wizard and is still read by the admin user list and
+  # the user_onboarded? helper. Deriving it from progress keeps the two from
+  # disagreeing without the controller having to remember to set it. Only ever
+  # set true, so an admin toggling it off is not fought on the next save.
+  before_save :flag_onboarded_once_required_steps_are_done
+
   def full_name
     "#{first_name} #{last_name}"
   end
@@ -219,14 +249,34 @@ class Profile < ApplicationRecord
     Time.current.year - birth_year
   end
 
-  def profile_completed?
-    return false unless onboarded?
+  # The step the wizard should show, or nil once every step is behind them.
+  def current_onboarding_step
+    Onboarding.at(onboarding_step)
+  end
 
-    required_fields = %i[first_name last_name zip_code]
-    required_fields.all? { |field| send(field).present? }
+  # Every required step is done, so the app is unlocked. Optional steps may
+  # still be outstanding.
+  def onboarding_unlocked?
+    onboarding_step >= Onboarding.unlocked_number
+  end
+
+  # Every step is done, required or not. Controls the finish-your-profile nudge.
+  def profile_completed?
+    onboarding_step >= Onboarding.complete_number
   end
 
   private
+
+  def flag_onboarded_once_required_steps_are_done
+    self.onboarded = true if onboarding_unlocked?
+  end
+
+  def must_list_a_condition
+    return if no_conditions == "1"
+    return if profile_conditions.reject(&:marked_for_destruction?).any?
+
+    errors.add(:base, "Add at least one condition, or tell us you do not have a diagnosis yet.")
+  end
 
   def resolve_city_and_state_from_zip
     return if zip_code.blank?

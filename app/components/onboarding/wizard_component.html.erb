@@ -1,0 +1,52 @@
+<div class="min-h-screen flex flex-col items-center justify-center px-4 py-10"
+     data-controller="onboarding"
+     data-action="keydown->onboarding#submitOnEnter">
+  <div class="w-full max-w-xl">
+
+    <div class="mb-8">
+      <div class="flex items-center justify-between mb-2 text-sm font-medium text-zinc-500 dark:text-zinc-400">
+        <span>Step <%= step.number %> of <%= total %></span>
+        <span><%= percent_complete %>%</span>
+      </div>
+      <div class="h-2 w-full rounded-full bg-zinc-200 dark:bg-zinc-700 overflow-hidden">
+        <div class="h-full rounded-full bg-lavender-600 transition-all duration-300"
+             style="width: <%= percent_complete %>%"></div>
+      </div>
+    </div>
+
+    <h1 class="text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-2"><%= step.heading %></h1>
+    <p class="text-zinc-600 dark:text-zinc-400 mb-8"><%= step.prompt %></p>
+
+    <% if errors.any? %>
+      <div class="mb-6 rounded-lg border border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/30 p-4">
+        <ul class="text-sm text-red-700 dark:text-red-300 space-y-1">
+          <% errors.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <%= form_with model: profile,
+                  url: onboarding_step_path(step: step.slug),
+                  method: :patch,
+                  data: {turbo_action: "advance"} do |form| %>
+      <div class="bg-white dark:bg-zinc-800 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-700 p-6 mb-6">
+        <%= render step.component.new(form: form, profile: profile) %>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <% if previous_step %>
+          <%= link_to "Back",
+                onboarding_step_path(step: previous_step.slug),
+                class: "text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200" %>
+        <% else %>
+          <span></span>
+        <% end %>
+
+        <%= form.submit button_label,
+              class: "px-8 py-3 bg-lavender-600 hover:bg-lavender-700 text-white font-bold rounded-lg cursor-pointer transition-colors shadow-lg" %>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+<div class="space-y-5">
+  <%= render Forms::FieldComponent.new(
+    form: form, attribute: :zip_code, field_type: :text, label: "Zip code",
+    options: {inputmode: "numeric", autocomplete: "postal-code", placeholder: "e.g. 44106",
+              autofocus: true, data: {onboarding_target: "firstField"}}
+  ) %>
+
+  <% if profile.city.present? && profile.state.present? %>
+    <p class="text-sm text-zinc-600 dark:text-zinc-400">
+      We have you in <span class="font-semibold"><%= profile.city %>, <%= profile.state %></span>.
+      You can change this later in your profile.
+    </p>
+  <% end %>
+</div>

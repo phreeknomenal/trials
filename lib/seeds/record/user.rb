@@ -58,6 +58,11 @@ class Seeds::Record::User
 
     def profile_params
       {
+        # Seeded users are demo accounts meant to be usable straight away.
+        # Without these they sit at wizard step 1 and the onboarding gate
+        # redirects every one of them out of the app.
+        onboarded: true,
+        onboarding_step: Onboarding.complete_number,
         first_name: Faker::Name.first_name,
         last_name: Faker::Name.last_name,
         birth_year: Faker::Date.between(from: 80.years.ago, to: 18.years.ago).year,
@@ -66,10 +71,11 @@ class Seeds::Record::User
         pronouns: Profile::PRONOUN_OPTIONS.sample,
         sex_assigned_at_birth: Profile::SEX_ASSIGNED_AT_BIRTH_OPTIONS.sample,
         ethnicity: Profile::ETHNICITY_OPTIONS.sample,
-        city: Faker::Address.city,
-        state: Faker::Address.state,
+        # Drawn together from the real lookup so a seeded profile's zip, city and
+        # state agree. Faker invents all three independently, which produced
+        # profiles whose zip pointed somewhere their city did not.
+        **seed_location,
         country: "US",
-        zip_code: Faker::Address.zip_code,
         phone_number: Faker::PhoneNumber.cell_phone,
         diagnosis_timing: Profile::DIAGNOSIS_TIMING_OPTIONS.sample,
         current_treatment: Profile::TREATMENT_OPTIONS.sample,
@@ -83,6 +89,13 @@ class Seeds::Record::User
         language_preference: Faker::Nation.language,
         about: Faker::Lorem.paragraph(sentence_count: 5)
       }
+    end
+
+    def seed_location
+      zip = ZipCode.order("RANDOM()").first
+      return {city: Faker::Address.city, state: Faker::Address.state, zip_code: Faker::Address.zip_code} if zip.nil?
+
+      {city: zip.city, state: zip.state, zip_code: zip.zip}
     end
 
     # These are memoised per seed run, not for the life of the process. The

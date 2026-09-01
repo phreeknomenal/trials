@@ -1,0 +1,11 @@
+<div class="space-y-5">
+  <%= render Forms::FieldComponent.new(
+    form: form, attribute: :first_name, field_type: :text, label: "First name",
+    options: {autofocus: true, autocomplete: "given-name", data: {onboarding_target: "firstField"}}
+  ) %>
+
+  <%= render Forms::FieldComponent.new(
+    form: form, attribute: :last_name, field_type: :text, label: "Last name",
+    options: {autocomplete: "family-name"}
+  ) %>
+</div>

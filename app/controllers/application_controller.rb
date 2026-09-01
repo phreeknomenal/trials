@@ -29,8 +29,18 @@ class ApplicationController < ActionController::Base
     user_signed_in? && current_profile.present? && current_profile.persisted?
   end
 
+  # Was an empty stub while a CSS overlay did the blocking, which meant the app
+  # was gated in appearance only. The wizard makes this a real redirect.
+  #
+  # Devise controllers are exempt or a half-onboarded user could not sign out.
+  # Non-HTML requests are exempt so redirects never land in a Turbo Stream or
+  # JSON response.
   def ensure_profile_completed
-    # Modal will be shown automatically if profile is incomplete
-    # This allows users to navigate while still showing the modal
+    return if devise_controller?
+    return unless request.format.html?
+    return if current_profile.blank?
+    return if current_profile.onboarding_unlocked?
+
+    redirect_to onboarding_step_path(step: current_profile.current_onboarding_step.slug)
   end
 end

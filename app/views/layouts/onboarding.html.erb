@@ -1,23 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Trials" %></title>
+    <title><%= content_for(:title) || "Complete your profile" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
+    <%# Opts Turbo into cross-document view transitions between wizard steps. %>
+    <meta name="view-transition" content="same-origin">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <%= yield :head %>
-
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
 
@@ -26,16 +21,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   </head>
 
-  <body class=" dark:bg-zinc-900">
-    <%= render Layout::Navigation::HeaderComponent.new %>
-
-    <%= render "shared/utilities/flash_messages" %>
-    
+  <%# No navigation. The wizard is the only thing on screen until it is done. %>
+  <body class="bg-zinc-50 dark:bg-zinc-900 min-h-screen">
     <%= yield %>
-
-    <%= render Layout::Navigation::FooterComponent.new %>
-    
-    <% if user_signed_in? && current_profile %>
-    <% end %>
   </body>
 </html>
