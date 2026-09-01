@@ -188,8 +188,39 @@ class TrialScorer
     profile_words.subset?(trial_words) || trial_words.subset?(profile_words)
   end
 
+  # Phrase-level equivalences applied before tokenising, for cases a per-word map
+  # cannot reach: "human immunodeficiency virus" has to collapse to one token to
+  # match a profile holding "HIV/AIDS".
+  CONDITION_PHRASES = {
+    /human immunodeficiency virus/ => "hiv",
+    /acquired immunodeficiency syndrome/ => "aids"
+  }.freeze
+
+  # Word-level equivalences. The cancer group matters most: the registry uses
+  # carcinoma, neoplasm, and tumour interchangeably with cancer, and oncology is
+  # a large share of it. Roman numerals cover "Type II" against "type 2"; bare
+  # "i" is deliberately excluded as too ambiguous to fold.
+  CONDITION_SYNONYMS = {
+    "carcinoma" => "cancer",
+    "neoplasm" => "cancer",
+    "neoplasms" => "cancer",
+    "tumor" => "cancer",
+    "tumour" => "cancer",
+    "ii" => "2",
+    "iii" => "3",
+    "iv" => "4"
+  }.freeze
+
   def condition_words(text)
-    text.to_s.downcase.scan(/[a-z0-9]+/).to_set
+    normalised = text.to_s.downcase
+    CONDITION_PHRASES.each { |pattern, replacement| normalised = normalised.gsub(pattern, replacement) }
+
+    # "Type2" arrives as one token in real payloads, so split letter/digit runs.
+    normalised = normalised.gsub(/([a-z])(\d)/, '\1 \2').gsub(/(\d)([a-z])/, '\1 \2')
+
+    normalised.scan(/[a-z0-9]+/)
+      .map { |word| CONDITION_SYNONYMS.fetch(word, word) }
+      .to_set
   end
 
   # ClinicalTrials.gov expresses age limits with a unit: "18 Years", "6 Months",

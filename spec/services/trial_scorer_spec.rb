@@ -211,4 +211,42 @@ RSpec.describe TrialScorer do
       expect(location_score(city: "Mobile", state: "Alabama", locations: [])).to eq(50)
     end
   end
+
+  describe "condition matching recall" do
+    subject(:matches) { ->(pc, tc) { scorer({}).send(:conditions_match?, pc, tc) } }
+
+    it "splits a letter-digit run so Type2 tokenises as type and 2" do
+      expect(matches.call("type 2 diabetes", "Type2 Diabetes Mellitus")).to be(true)
+    end
+
+    it "treats Roman numerals as their Arabic equivalents" do
+      expect(matches.call("type 2 diabetes", "Type II Diabetes")).to be(true)
+    end
+
+    it "collapses an expansion to its abbreviation" do
+      expect(matches.call("HIV/AIDS", "Human Immunodeficiency Virus")).to be(true)
+    end
+
+    it "treats carcinoma as cancer" do
+      expect(matches.call("breast cancer", "Early-Stage Breast Carcinoma")).to be(true)
+    end
+
+    it "treats neoplasm as cancer" do
+      expect(matches.call("breast cancer", "Breast Neoplasms")).to be(true)
+    end
+
+    # Every recall improvement is a loosening, and loosening is how the original
+    # false-positive bug happened. These guarantees must survive it.
+    it "still does not match breast cancer against lung cancer" do
+      expect(matches.call("breast cancer", "lung cancer")).to be(false)
+    end
+
+    it "still does not match ms against symptoms" do
+      expect(matches.call("ms", "symptoms")).to be(false)
+    end
+
+    it "does not match an unrelated co-condition" do
+      expect(matches.call("breast cancer", "Brain Metastasis")).to be(false)
+    end
+  end
 end
