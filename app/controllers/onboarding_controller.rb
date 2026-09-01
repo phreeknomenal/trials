@@ -13,8 +13,8 @@ class OnboardingController < ApplicationController
 
   before_action :authenticate_user!
   before_action :set_profile
-  before_action :redirect_completed_wizard
-  before_action :set_step
+  before_action :redirect_completed_wizard, except: :dismiss_banner
+  before_action :set_step, except: :dismiss_banner
 
   def show
   end
@@ -28,6 +28,25 @@ class OnboardingController < ApplicationController
     else
       render :show, status: :unprocessable_entity
     end
+  end
+
+  # Optional steps can be passed over. Skipping advances progress exactly like a
+  # submit, because progress is the source of truth: leaving the step unfilled
+  # and inferring "not done" would nag the user about it forever.
+  def skip
+    return redirect_to onboarding_step_path(step: @step.slug) if @step.required?
+
+    advance_past(@step)
+    redirect_to destination_after(@step)
+  end
+
+  # The finish-your-profile nudge is a suggestion, not a task. Dismissal lives in
+  # a cookie rather than on the profile: it is a per-device display preference,
+  # not something about the person.
+  def dismiss_banner
+    cookies.permanent[:onboarding_banner_dismissed] = "1"
+
+    redirect_back fallback_location: root_path
   end
 
   private

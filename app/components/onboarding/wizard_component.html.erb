@@ -30,6 +30,7 @@
     <%= form_with model: profile,
                   url: onboarding_step_path(step: step.slug),
                   method: :patch,
+                  html: {multipart: true},
                   data: {turbo_action: "advance"} do |form| %>
       <div class="bg-white dark:bg-zinc-800 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-700 p-6 mb-6">
         <%= render step.component.new(form: form, profile: profile) %>
@@ -46,6 +47,17 @@
 
         <%= form.submit button_label,
               class: "px-8 py-3 bg-lavender-600 hover:bg-lavender-700 text-white font-bold rounded-lg cursor-pointer transition-colors shadow-lg" %>
+      </div>
+    <% end %>
+
+    <%# Outside the step form on purpose: a nested form is invalid HTML, and this
+        must not carry the step's fields. %>
+    <% if skippable? %>
+      <div class="mt-4 text-center">
+        <%= button_to "Skip this step",
+              skip_onboarding_step_path(step: step.slug),
+              method: :post,
+              class: "text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 underline cursor-pointer" %>
       </div>
     <% end %>
   </div>
