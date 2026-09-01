@@ -1,6 +1,33 @@
 require "rails_helper"
 
 RSpec.describe "GET /", type: :request do
+  # The controller used to read params[:query], call the ClinicalTrials.gov API,
+  # and assign @studies -- none of which this view renders, and no form on the
+  # page submits `query`. Anonymous search lives at SearchController, which uses
+  # `condition` and `location`. The dead branch cost a real external request per
+  # hit and displayed nothing.
+  context "with a stray query param" do
+    it "renders successfully" do
+      get root_path(query: "diabetes")
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "does not call the trials API" do
+      expect(ClinicalTrialClient).not_to receive(:search)
+
+      get root_path(query: "diabetes")
+    end
+
+    it "still renders the testimonial section" do
+      create(:testimonial)
+
+      get root_path(query: "diabetes")
+
+      expect(response.body).to include("Community Stories")
+    end
+  end
+
   context "with no published testimonials" do
     it "renders successfully" do
       get root_path
