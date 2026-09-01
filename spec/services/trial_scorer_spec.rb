@@ -507,4 +507,60 @@ RSpec.describe TrialScorer do
       end
     end
   end
+
+  # The gap this closed: onboarding collects a zip code and score_location reads
+  # city and state. Nothing joined them, so location returned a flat neutral 50
+  # for anyone who never opened the full edit form, and distant_location_score
+  # never ran at all.
+  describe "location from a zip code alone" do
+    let(:cleveland) do
+      {min_age: nil, max_age: nil, sex: "ALL", conditions: [], phase: nil, study_type: nil,
+       status: "RECRUITING", locations: ["Cleveland, Ohio, United States"]}
+    end
+
+    before { create(:zip_code, zip: "44106", city: "Cleveland", state: "Ohio") }
+
+    it "scores a city match for a profile that only supplied a zip" do
+      profile = create(:profile)
+      profile.update!(zip_code: "44106", city: nil, state: nil)
+
+      expect(described_class.new(profile, cleveland).send(:score_location)).to eq(100)
+    end
+
+    it "scores a state match from a zip elsewhere in the state" do
+      create(:zip_code, zip: "43004", city: "Blacklick", state: "Ohio")
+      profile = create(:profile)
+      profile.update!(zip_code: "43004", city: nil, state: nil)
+
+      expect(described_class.new(profile, cleveland).send(:score_location)).to eq(75)
+    end
+
+    # Without a resolved state there is nothing to compare, so this returned the
+    # neutral 50 regardless of where the trial was.
+    it "no longer returns the neutral score for a resolvable zip" do
+      profile = create(:profile)
+      profile.update!(zip_code: "44106", city: nil, state: nil)
+
+      expect(described_class.new(profile, cleveland).send(:score_location)).not_to eq(50)
+    end
+
+    it "still returns the neutral score when the zip cannot be resolved" do
+      profile = create(:profile)
+      profile.update!(zip_code: "99999", city: nil, state: nil)
+
+      expect(described_class.new(profile, cleveland).send(:score_location)).to eq(50)
+    end
+
+    # willing_travel_miles shipped in #94 and could never fire, because reaching
+    # distant_location_score requires a resolved city and state.
+    it "lets travel tolerance affect a distant trial" do
+      create(:zip_code, zip: "35203", city: "Birmingham", state: "Alabama")
+      near = create(:profile, willing_travel_miles: Profile::TEN_MILES)
+      far = create(:profile, willing_travel_miles: Profile::HUNDRED_MILES)
+      [near, far].each { |p| p.update!(zip_code: "35203", city: nil, state: nil) }
+
+      expect(described_class.new(near, cleveland).send(:score_location))
+        .to be < described_class.new(far, cleveland).send(:score_location)
+    end
+  end
 end

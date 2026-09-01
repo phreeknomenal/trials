@@ -126,6 +126,12 @@ v2](https://clinicaltrials.gov/data-api/api), a public source maintained by the
 U.S. National Library of Medicine. The app stores no trial data of its own
 beyond saved references and cached plain-language summaries.
 
+The US zip code lookup in `db/seeds/zip_codes.csv` comes from
+[GeoNames](https://download.geonames.org/export/zip/), licensed CC BY 4.0. It
+maps a zip to a city and full state name so location scoring has something to
+compare against a trial's site list. Military APO/FPO rows carry no state and
+were dropped.
+
 Testimonials on the landing page are placeholder content for demo purposes.
 
 ## License

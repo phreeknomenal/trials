@@ -18,6 +18,7 @@ class Seeds::Builder
 
   def seed_production
     ActiveRecord::Base.transaction do
+      Seeds::Record::ZipCode.seed
       Seeds::Record::Gender.seed
       Seeds::Record::Race.seed
       Seeds::Record::Identity.seed

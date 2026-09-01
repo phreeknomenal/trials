@@ -195,6 +195,16 @@ class Profile < ApplicationRecord
   validates :contact_preference, inclusion: {in: CONTACT_PREFERENCE_OPTIONS}, allow_blank: true
   validates :onboarded, inclusion: [true, false]
 
+  # Onboarding asks for a zip code and TrialScorer#score_location needs city and
+  # state. Nothing connected the two, so location scored a flat neutral 50 for
+  # anyone who never opened the full edit form, and the willing_travel_miles
+  # tiebreak never executed at all.
+  #
+  # Fills only what is blank, so a hand-typed city on the edit form wins. When
+  # the zip changes on its own, both are re-resolved: someone who moves and
+  # updates only their zip should not keep their old city.
+  before_validation :resolve_city_and_state_from_zip
+
   def full_name
     "#{first_name} #{last_name}"
   end
@@ -214,5 +224,22 @@ class Profile < ApplicationRecord
 
     required_fields = %i[first_name last_name zip_code]
     required_fields.all? { |field| send(field).present? }
+  end
+
+  private
+
+  def resolve_city_and_state_from_zip
+    return if zip_code.blank?
+
+    incomplete = city.blank? || state.blank?
+    # A zip edited without touching city or state reads as a move.
+    moved = zip_code_changed? && !city_changed? && !state_changed?
+    return unless incomplete || moved
+
+    match = ZipCode.lookup(zip_code)
+    return if match.nil?
+
+    self.city = match.city if city.blank? || moved
+    self.state = match.state if state.blank? || moved
   end
 end
