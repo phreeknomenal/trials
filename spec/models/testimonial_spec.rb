@@ -1,5 +1,23 @@
 require "rails_helper"
 
+# == Schema Information
+#
+# Table name: testimonials
+#
+#  id          :bigint           not null, primary key
+#  author_name :string           not null
+#  author_role :string
+#  placeholder :boolean          default(FALSE), not null
+#  position    :integer          default(0), not null
+#  published   :boolean          default(FALSE), not null
+#  quote       :text             not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+# Indexes
+#
+#  index_testimonials_on_published_and_position  (published,position)
+#
 RSpec.describe Testimonial, type: :model do
   subject { build(:testimonial) }
 
