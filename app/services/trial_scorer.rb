@@ -117,9 +117,8 @@ class TrialScorer
     trial_locations = @trial[:locations]
     return 50 if trial_locations.nil? || trial_locations.empty?
 
-    # Check if any location matches user's state or city
-    state_match = trial_locations.any? { |loc| loc.to_s.include?(@profile.state) }
-    city_match = trial_locations.any? { |loc| loc.to_s.include?(@profile.city) }
+    state_match = trial_locations.any? { |loc| location_component?(loc, @profile.state) }
+    city_match = trial_locations.any? { |loc| location_component?(loc, @profile.city) }
 
     return 100 if city_match
     return 75 if state_match
@@ -157,6 +156,19 @@ class TrialScorer
     else
       100
     end
+  end
+
+  # Trial locations arrive as comma-separated components: "Kansas City,
+  # Missouri, United States". A raw `include?` matched across those boundaries,
+  # so a profile in Kansas matched a trial in Kansas City, MISSOURI, and one in
+  # Virginia matched West Virginia. Comparing whole components instead means a
+  # place name only matches the field it actually occupies.
+  def location_component?(location, value)
+    return false if value.blank?
+
+    components = location.to_s.split(",").map { |part| part.strip.downcase }
+
+    components.include?(value.to_s.strip.downcase)
   end
 
   # Compares conditions by whole words rather than raw substrings. A bare

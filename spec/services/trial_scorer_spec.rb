@@ -146,4 +146,69 @@ RSpec.describe TrialScorer do
       expect(condition_score(["ms"], ["Symptoms"])).to eq(0)
     end
   end
+
+  describe "#location_component?" do
+    subject(:matches) { ->(loc, value) { scorer({}).send(:location_component?, loc, value) } }
+
+    it "matches a city component" do
+      expect(matches.call("Birmingham, Alabama, United States", "Birmingham")).to be(true)
+    end
+
+    it "matches a state component" do
+      expect(matches.call("Birmingham, Alabama, United States", "Alabama")).to be(true)
+    end
+
+    it "ignores case and surrounding whitespace" do
+      expect(matches.call("New York, New York, United States", " new york ")).to be(true)
+    end
+
+    # Regression: a raw include? matched across component boundaries.
+    it "does not match Kansas against Kansas City, Missouri" do
+      expect(matches.call("Kansas City, Missouri, United States", "Kansas")).to be(false)
+    end
+
+    it "does not match Virginia against West Virginia" do
+      expect(matches.call("West Virginia, United States", "Virginia")).to be(false)
+    end
+
+    it "does not match York against New York" do
+      expect(matches.call("New York, New York, United States", "York")).to be(false)
+    end
+
+    it "returns false for a blank value" do
+      expect(matches.call("Birmingham, Alabama, United States", "")).to be(false)
+    end
+  end
+
+  describe "#score_location" do
+    def location_score(city:, state:, locations:)
+      p = create(:profile, city: city, state: state)
+      scorer({locations: locations}, for_profile: p).send(:score_location)
+    end
+
+    it "scores 100 for a city match" do
+      expect(location_score(city: "Birmingham", state: "Alabama",
+        locations: ["Birmingham, Alabama, United States"])).to eq(100)
+    end
+
+    it "scores 75 for a state match without a city match" do
+      expect(location_score(city: "Mobile", state: "Alabama",
+        locations: ["Birmingham, Alabama, United States"])).to eq(75)
+    end
+
+    it "scores 25 for no match" do
+      expect(location_score(city: "Mobile", state: "Alabama",
+        locations: ["Denver, Colorado, United States"])).to eq(25)
+    end
+
+    # A Kansas resident should not get a state match for a Missouri trial.
+    it "does not award a state match for Kansas City, Missouri" do
+      expect(location_score(city: "Topeka", state: "Kansas",
+        locations: ["Kansas City, Missouri, United States"])).to eq(25)
+    end
+
+    it "scores neutral when the trial has no locations" do
+      expect(location_score(city: "Mobile", state: "Alabama", locations: [])).to eq(50)
+    end
+  end
 end
