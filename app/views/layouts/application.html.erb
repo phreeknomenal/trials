@@ -29,13 +29,17 @@
   <body class=" dark:bg-zinc-900">
     <%= render Layout::Navigation::HeaderComponent.new %>
 
+    <% if current_profile %>
+      <%= render Onboarding::CompletionBannerComponent.new(
+        profile: current_profile,
+        dismissed: cookies[:onboarding_banner_dismissed].present?
+      ) %>
+    <% end %>
+
     <%= render "shared/utilities/flash_messages" %>
     
     <%= yield %>
 
     <%= render Layout::Navigation::FooterComponent.new %>
-    
-    <% if user_signed_in? && current_profile %>
-    <% end %>
   </body>
 </html>
