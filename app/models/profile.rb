@@ -54,12 +54,21 @@ class Profile < ApplicationRecord
   PRONOUN_OPTIONS = [HE_HIM, SHE_HER, THEY_THEM, OTHER].freeze
 
   # Sexes
+  #
+  # Only the two values ClinicalTrials.gov filters on. The registry expresses a
+  # study's eligibility as ALL, FEMALE, or MALE, so anything else here cannot be
+  # compared against a trial and gets read as a mismatch instead of a non-answer.
+  #
+  # "intersex" and "prefer not to say" used to be options and both disqualified
+  # the user from every sex-restricted trial, while leaving the field blank did
+  # not. Blank already means what "prefer not to say" was meant to mean: unknown,
+  # scored neutral, never a gate. The field is optional, so declining is still
+  # available and now actually works.
   FEMALE = "female"
   MALE = "male"
-  INTERSEX = "intersex"
   PREFER_NOT_TO_SAY = "prefer not to say"
 
-  SEX_ASSIGNED_AT_BIRTH_OPTIONS = [FEMALE, MALE, INTERSEX, PREFER_NOT_TO_SAY].freeze
+  SEX_ASSIGNED_AT_BIRTH_OPTIONS = [FEMALE, MALE].freeze
 
   # Ethnicity
   HISPANIC_OR_LATINO = "hispanic or latino"
