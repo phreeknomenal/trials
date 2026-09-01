@@ -142,33 +142,47 @@ class Page::Trials::KeyDetails::MatchScoreCardComponent < ApplicationComponent
     end
   end
 
+  # Explains the phase_risk number to the user, so it has to agree with
+  # TrialScorer#score_phase_risk. Both used to carry their own idea of the
+  # registry's format and both were wrong: this one tested include?("Phase 4")
+  # against "PHASE4", so a risk-averse user reading a genuine Phase 4 trial was
+  # told it did not match their preference. TrialPhase is the shared vocabulary.
+  #
+  # It also interpolated the raw value, rendering "This Phase PHASE4 trial".
+  # TrialPhase.label produces the display form.
   def generate_phase_risk_explanation
-    return "Risk information not available." unless @profile.risk_tolerance && @trial[:phase]
+    return "Risk information not available." unless @profile.risk_tolerance
+    return "Risk information not available." if TrialPhase.blank?(@trial[:phase])
 
     phase = @trial[:phase]
+    label = TrialPhase.label(phase)
     tolerance = @profile.risk_tolerance
 
+    # A study with no FDA phase administers no investigational drug, so there is
+    # no phase risk to weigh against any tolerance.
+    return "✓ This study has no trial phase, so there is no phase risk to weigh." if TrialPhase.not_applicable?(phase)
+
     case tolerance
-    when "approved treatments only"
-      if phase.include?("Phase 4") || phase.include?("Not Applicable")
-        "✓ This Phase #{phase} trial fits your preference for approved treatments."
-      elsif phase.include?("Phase 3")
-        "This Phase 3 trial is somewhat tested, but you prefer Phase 4 or approved treatments."
+    when Profile::APPROVED_ONLY
+      if TrialPhase.at_least?(phase, TrialPhase::PHASE4)
+        "✓ This #{label} trial fits your preference for approved treatments."
+      elsif TrialPhase.at_least?(phase, TrialPhase::PHASE3)
+        "This #{label} trial is somewhat tested, but you prefer Phase 4 or approved treatments."
       else
-        "✗ This early-phase trial doesn't match your preference for approved treatments only."
+        "✗ This #{label} trial doesn't match your preference for approved treatments only."
       end
-    when "tested in other patients"
-      if phase.include?("Phase 2") || phase.include?("Phase 3") || phase.include?("Phase 4")
-        "✓ This Phase #{phase} trial has been tested. Matches your risk tolerance."
-      elsif phase.include?("Phase 1")
-        "This Phase 1 trial has minimal testing. You prefer Phase 2+ trials."
+    when Profile::TESTED
+      if TrialPhase.at_least?(phase, TrialPhase::PHASE2)
+        "✓ This #{label} trial has been tested. Matches your risk tolerance."
+      elsif TrialPhase.at_least?(phase, TrialPhase::PHASE1)
+        "This #{label} trial has minimal testing. You prefer Phase 2+ trials."
       else
-        "Phase information unclear."
+        "✗ This #{label} trial is the earliest stage of human testing. You prefer Phase 2+ trials."
       end
-    when "early-stage is okay"
-      "✓ You're open to any phase. This trial is Phase #{phase}."
+    when Profile::EARLY_STAGE_OKAY
+      "✓ You're open to any phase. This trial is #{label}."
     else
-      "Your risk tolerance: #{tolerance}. This trial is Phase #{phase}."
+      "Your risk tolerance: #{tolerance}. This trial is #{label}."
     end
   end
 

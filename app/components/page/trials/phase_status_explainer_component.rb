@@ -1,12 +1,17 @@
 # frozen_string_literal: true
 
 class Page::Trials::PhaseStatusExplainerComponent < ApplicationComponent
+  # Keyed by TrialPhase's normalised vocabulary rather than this component's own,
+  # so the explanation cannot disagree with the score. EARLY_PHASE1 previously
+  # had no entry and fell through to the "not applicable" text, which described
+  # the earliest stage of human testing as not being a trial phase at all.
   PHASE_EXPLANATIONS = {
-    "PHASE1" => "Phase 1 trials test safety and dosage in a small group (often 20–80 people).",
-    "PHASE2" => "Phase 2 trials test efficacy and side effects in a larger group (100–300 people).",
-    "PHASE3" => "Phase 3 trials compare the treatment to standard care in large groups (300–3,000+ people).",
-    "PHASE4" => "Phase 4 trials happen after approval to monitor long-term safety in the general population.",
-    "NA" => "Not applicable (e.g., behavioral or device studies may not use phase labels)."
+    TrialPhase::EARLY_PHASE1 => "Early Phase 1 trials are the first human testing, usually in a very small group, to observe how the body responds.",
+    TrialPhase::PHASE1 => "Phase 1 trials test safety and dosage in a small group (often 20–80 people).",
+    TrialPhase::PHASE2 => "Phase 2 trials test efficacy and side effects in a larger group (100–300 people).",
+    TrialPhase::PHASE3 => "Phase 3 trials compare the treatment to standard care in large groups (300–3,000+ people).",
+    TrialPhase::PHASE4 => "Phase 4 trials happen after approval to monitor long-term safety in the general population.",
+    TrialPhase::NOT_APPLICABLE => "Not applicable (e.g., behavioral or device studies may not use phase labels)."
   }.freeze
 
   STATUS_EXPLANATIONS = {
@@ -25,15 +30,14 @@ class Page::Trials::PhaseStatusExplainerComponent < ApplicationComponent
     @status = status
   end
 
+  # Explains the least-tested phase a trial names, matching how TrialScorer
+  # weighs it. A PHASE1, PHASE2 study is described as phase 1 because that is
+  # the risk the participant actually takes on.
   def phase_key
-    return nil if @phase.blank?
+    return nil if TrialPhase.blank?(@phase)
+    return TrialPhase::NOT_APPLICABLE if TrialPhase.not_applicable?(@phase)
 
-    # Handle "Phase 1", "Phase 1, Phase 2", "PHASE 1" etc.
-    first_phase = @phase.to_s.split(",").first&.strip&.upcase
-    return "NA" if first_phase.blank?
-
-    normalized = first_phase.gsub(/\s+/, "")
-    PHASE_EXPLANATIONS.key?(normalized) ? normalized : "NA"
+    TrialPhase.lowest(@phase) || TrialPhase::NOT_APPLICABLE
   end
 
   def phase_explanation
