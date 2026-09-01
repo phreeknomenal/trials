@@ -14,6 +14,7 @@
 #  language_preference     :string
 #  last_name               :string
 #  onboarded               :boolean          default(FALSE), not null
+#  onboarding_step         :integer          default(1), not null
 #  phone_number            :string
 #  prior_treatment         :boolean          default(FALSE)
 #  pronouns                :string
