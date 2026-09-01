@@ -32,3 +32,37 @@
   background-color: #6248ff;
 }
 
+
+/*
+ * Wizard step transitions.
+ *
+ * Turbo starts a view transition only on pages carrying
+ * <meta name="view-transition" content="same-origin">, which is the onboarding
+ * layout and nothing else. These pseudo-elements therefore only ever apply to
+ * the wizard, even though the rules are global. Browsers without view
+ * transition support ignore them and the wizard simply cuts between steps.
+ */
+@keyframes onboarding-step-out {
+  to { opacity: 0; transform: translateX(-2rem); }
+}
+
+@keyframes onboarding-step-in {
+  from { opacity: 0; transform: translateX(2rem); }
+}
+
+::view-transition-old(root) {
+  animation: onboarding-step-out 180ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+::view-transition-new(root) {
+  animation: onboarding-step-in 220ms cubic-bezier(0, 0, 0.2, 1) both;
+}
+
+/* Movement is the point of the effect, so drop it entirely rather than
+   shortening it when the user has asked for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
