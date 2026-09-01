@@ -1,0 +1,164 @@
+{
+  "_fixture": {
+    "captured_at": "2026-09-01",
+    "nct_id": "NCT05444699",
+    "covers": "sub-year minimum age (6 Months to 24 Months), RECRUITING, two locations",
+    "source": "https://clinicaltrials.gov/api/v2/studies/NCT05444699"
+  },
+  "study": {
+    "nct_id": "NCT05444699",
+    "title": "Oral Prednisolone for Acute Rhinovirus Induced Wheezing in Children Less Than 2 Years of Age",
+    "status": "RECRUITING",
+    "summary": "The aim of the trial is to evaluate whether the use of oral prednisolone directed by point-of-care testing is useful in acute wheezing caused by rhinovirus in children aged 6-24 months.",
+    "detailed_description": null,
+    "conditions": [
+      "Bronchiolitis Acute Viral"
+    ],
+    "phase": "PHASE4",
+    "start_date": "2022-10-11",
+    "primary_completion_date": "2026-12",
+    "completion_date": "2027-09",
+    "sponsor": "University of Oulu",
+    "min_age": "6 Months",
+    "max_age": "24 Months",
+    "sex": "ALL",
+    "inclusion_criteria": "Inclusion Criteria:\n\n* Wheezing bronchitis diagnosed by a physician\n* Need for salbutamol treatment at the emergency department\n* Positive nasopharyngeal rhinovirus or picornavirus finding in point-of-care testing",
+    "exclusion_criteria": "* Need for immediate resuscitation\n* Immediate transfer to ICU\n* Suspected pneumonia based on the auscultation finding\n* Suspected serious bacterial infection\n* Other respiratory virus finding in the absence of rhinovirus or picornavirus\n* Positive respiratory syncytial virus finding\n* Positive SARS-coronavirus-2 finding\n* Positive Mycoplasma pneumoniae finding\n* Positive Bordetella pertussis finding\n* Contact with a person with chickenpox within 14 days\n* Active chickenpox\n* Suspected foreign body of the respiratory tract\n* Immunosuppressive treatment\n* Systemic corticosteroid treatment within 14 days\n* Allergy to corticosteroids",
+    "enrollment_count": 210,
+    "enrollment_type": "ESTIMATED",
+    "interventions": [
+      {
+        "type": "DRUG",
+        "name": "Prednisolone Sodium Phosphate",
+        "description": "Oral suspension administered 1 mg/kg once a day for three days"
+      },
+      {
+        "type": "DRUG",
+        "name": "Sugar syrup",
+        "description": "Oral suspension administered the same amount in milliliters as experimental product once a day for three days"
+      }
+    ],
+    "locations": [
+      "Kokkola, Finland",
+      "Oulu, Finland"
+    ],
+    "locations_detailed": [
+      {
+        "city": "Kokkola",
+        "state": null,
+        "country": "Finland",
+        "display": "Kokkola, Finland"
+      },
+      {
+        "city": "Oulu",
+        "state": null,
+        "country": "Finland",
+        "display": "Oulu, Finland"
+      }
+    ],
+    "study_type": "INTERVENTIONAL",
+    "design_allocation": "RANDOMIZED",
+    "design_intervention_model": "PARALLEL",
+    "design_masking": "TRIPLE",
+    "design_primary_purpose": "TREATMENT",
+    "primary_outcomes": [
+      {
+        "measure": "Length of hospital stay",
+        "description": "The difference (in minutes) between the study entry and the time that the patient is deemed to be fit for discharge (sign off for discharge)\n\nSubgroup analyses for the primary outcome are performed in following subgroups:\n\n* Children presenting with first episode of wheezing\n* Children with at least one previous episode of wheezing diagnosed by a physician\n* Children with a cycle threshold number of \\< 30 for detected picornavirus\n* Children with a cycle threshold number of 30-37 for detected picornavirus\n* Children with a cycle threshold number of 38-40 for detected picornavirus",
+        "time_frame": "Within 7 days of study entry"
+      }
+    ],
+    "secondary_outcomes": [
+      {
+        "measure": "Total length of hospital stay",
+        "description": "The difference (in minutes) between the study entry and the actual time of discharge from the hospital",
+        "time_frame": "Within 7 days of study entry"
+      },
+      {
+        "measure": "Intensive care unit (ICU) admissions",
+        "description": "Proportion of children admitted to ICU",
+        "time_frame": "Within 7 days of study entry"
+      },
+      {
+        "measure": "Supplemental oxygen",
+        "description": "The total duration (in minutes) of the need for supplemental oxygen",
+        "time_frame": "Within 7 days of study entry"
+      },
+      {
+        "measure": "Pediatric Early Warning Signs (PEWS) score",
+        "description": "Maximum decrease in PEWS score within 12 hours after study entry. PEWS scores range from 0 to 32 depending on the child's respiratory rate, work of breathing, saturation of peripheral oxygen, need for supplemental oxygen, blood pressure, heart rate, capillary refill and level of consciousness. 0 refers to low and \\> 7 to high risk of deterioration.",
+        "time_frame": "Within 7 days of study entry"
+      },
+      {
+        "measure": "Recurrence of wheezing",
+        "description": "Proportion of patients with recurrence of wheezing after initial episode",
+        "time_frame": "Within 56 days of study entry"
+      },
+      {
+        "measure": "Hospital re-admission",
+        "description": "Proportion of patients with re-admission to hospital or visit to emergency department after discharge from the hospital",
+        "time_frame": "Within 14 days of study entry"
+      },
+      {
+        "measure": "Proportion of patients with cough at 14 days of study entry",
+        "description": "Proportion of patients with cough at 14 days of study entry",
+        "time_frame": "At 14 days of study entry"
+      },
+      {
+        "measure": "Duration of cough",
+        "description": "Mean duration (in days) of cough without relapse for 3 days",
+        "time_frame": "Within 28 days of study entry"
+      },
+      {
+        "measure": "Duration of cough",
+        "description": "Mean duration (in days) of cough without relapse for 3 days",
+        "time_frame": "Within 14 days of study entry"
+      },
+      {
+        "measure": "Duration of salbutamol use",
+        "description": "Mean number of days in which salbutamol is used",
+        "time_frame": "Within 14 days of study entry"
+      },
+      {
+        "measure": "Duration of respiratory distress",
+        "description": "Mean duration (in days) of respiratory distress without relapse for 3 days",
+        "time_frame": "Within 14 days of study entry"
+      },
+      {
+        "measure": "Deaths",
+        "description": "Proportion of patients who died of any cause",
+        "time_frame": "Within 30 of study entry"
+      },
+      {
+        "measure": "Recurrence of wheezing (proportion)",
+        "description": "Proportion of patients with recurrence of wheezing diagnosed by a physician at 2 and 12 months of study entry",
+        "time_frame": "Within 12 months of study entry"
+      },
+      {
+        "measure": "Recurrence of wheezing (time)",
+        "description": "Time (in days) to recurrence of wheezing diagnosed by a physician",
+        "time_frame": "Within 12 months of study entry"
+      },
+      {
+        "measure": "Daily administrated asthma medication",
+        "description": "Time (in days) to prescription of daily administrated asthma medication",
+        "time_frame": "Within 24 months of study entry"
+      },
+      {
+        "measure": "Antibiotics and asthma medications",
+        "description": "Purchases of antibiotics and asthma medications",
+        "time_frame": "Within 24 months of study entry"
+      }
+    ],
+    "central_contacts": [
+      {
+        "name": "Ville Lindholm, MD",
+        "role": "CONTACT",
+        "phone": "+35883155283",
+        "email": "Ville.a.lindholm@oulu.fi"
+      }
+    ],
+    "overall_officials": [],
+    "why_stopped": null
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "_fixture": {
+    "captured_at": "2026-09-01",
+    "nct_id": "NCT02657837",
+    "covers": "four conditions, UNKNOWN status, month-based minimum (30 Months)",
+    "source": "https://clinicaltrials.gov/api/v2/studies/NCT02657837"
+  },
+  "study": {
+    "nct_id": "NCT02657837",
+    "title": "Measures of Respiratory Health (MRH)",
+    "status": "UNKNOWN",
+    "summary": "The Lung Clearance Index, measured by multiple breath washout, is a measure of lung function that is considered a research tool in Canada as the device used to measure it is not approved by Health Canada. The study will assess lung function in patients undergoing routine lung function testing for clinical indications (Cystic Fibrosis and Other Respiratory Diseases). In addition, healthy controls of different ages will be asked to perform this lung function test to gain reference data that can be used to interpret LCI in patients with lung disease.",
+    "detailed_description": "Functional abnormalities associated with lung disease such as cystic fibrosis (CF) occur in early childhood, but have historically gone undetected until the onset of clinical symptoms, at which point irreversible lung damage may have already occurred (1-3). Consequently, over the last ten years the focus of clinical care has shifted to early intervention and prevention of these structural changes. To facilitate early intervention there is a pressing need for surrogate markers of early obstructive lung disease that are also sensitive enough to detect treatment effects (4).\n\nThe Lung Clearance Index (LCI) is a promising marker for detecting early lung disease. The LCI is measured by multiple breath washout (MBW) and is an indicator of ventilation inhomogeneity. MBW is performed during quiet tidal breathing and requires minimal effort from patients. It is feasible in all age groups when adaptions are made for younger children.\n\nWhile there are Health Canada licensed washout systems available that can determine LCI; these devices have not been adequately validated; thus their use in routine lung function testing is controversial. As part of an international effort to validate multiple breath washout testing to measure LCI, the specific device is licensed in Europe, but as of yet is not Health Canada approved. Thus, testing with this device is considered research. This study will utilize technology to assess lung function in patients undergoing routine lung function testing for clinical indications. In addition, healthy controls of different ages will be asked to perform this lung function test to gain reference data that can be used to interpret LCI in patients with lung disease.",
+    "conditions": [
+      "Cystic Fibrosis",
+      "Asthma",
+      "Sickle Cell Anemia",
+      "Bronchiolitis Obliterans"
+    ],
+    "phase": null,
+    "start_date": "2016-01",
+    "primary_completion_date": "2024-12-01",
+    "completion_date": "2024-12-01",
+    "sponsor": "The Hospital for Sick Children",
+    "min_age": "30 Months",
+    "max_age": "30 Years",
+    "sex": "ALL",
+    "inclusion_criteria": "Participants with CF\n\nInclusion criteria:\n\n1. 2.5 - 18 years of age at enrolment\n2. Diagnosis of CF as evidenced by one or more clinical feature consistent with the CF phenotype or positive CF newborn screen AND one or more of the following criteria:\n\n   1. A documented sweat chloride ≥ 60 mEq/L by quantitative pilocarpine iontophoresis (QPIT)\n   2. A documented genotype with two disease-causing mutations in the CFTR gene\n3. Informed consent by participant, parent, or legal guardian\n4. Ability to perform technically acceptable MBW measurements",
+    "exclusion_criteria": "1. Physical findings at screening that would compromise the safety of the participant as judged by the patient's most responsible physician\n2. Requirement of supplementary oxygen to maintain an oxygen saturation above 95%\n\nParticipants with other respiratory disease\n\nInclusion criteria:\n\n1. MD diagnosed lung disease and/or attending the Pulmonary Function Laboratory\n2. 2.5 - 18 years of age at enrollment\n3. Informed consent by participant, parent, or legal guardian\n4. Ability to perform technically acceptable MBW measurements",
+    "enrollment_count": 300,
+    "enrollment_type": "ESTIMATED",
+    "interventions": [],
+    "locations": [
+      "Toronto, Ontario, Canada"
+    ],
+    "locations_detailed": [
+      {
+        "city": "Toronto",
+        "state": "Ontario",
+        "country": "Canada",
+        "display": "Toronto, Ontario, Canada"
+      }
+    ],
+    "study_type": "OBSERVATIONAL",
+    "design_allocation": null,
+    "design_intervention_model": null,
+    "design_masking": null,
+    "design_primary_purpose": null,
+    "primary_outcomes": [
+      {
+        "measure": "Proportion of patients with an abnormal Lung Clearance Index (>7.5).",
+        "description": "Single time point measurements obtained in enrolled subjects",
+        "time_frame": "Day 1"
+      }
+    ],
+    "secondary_outcomes": [
+      {
+        "measure": ". Proportion of patients with an abnormal pulmonary function tests based on spirometry.",
+        "description": "Single time point measurements obtained in enrolled subjects",
+        "time_frame": "Day 1"
+      }
+    ],
+    "central_contacts": [
+      {
+        "name": "Felix Ratjen, MD PhD",
+        "role": "CONTACT",
+        "phone": "416-813-7654",
+        "email": "felix.ratjen@sickkids.ca"
+      },
+      {
+        "name": "Sanja Stanojevic, PhD",
+        "role": "CONTACT",
+        "phone": "416-813-7654",
+        "email": "sanja.stanojevic@sickkids.ca"
+      }
+    ],
+    "overall_officials": [
+      {
+        "name": "Felix Ratjen, MD PhD",
+        "role": "PRINCIPAL_INVESTIGATOR",
+        "affiliation": "The Hospital for Sick Children"
+      }
+    ],
+    "why_stopped": null
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "_fixture": {
+    "captured_at": "2026-09-01",
+    "nct_id": "NCT07102836",
+    "covers": "neonatal age range in days (0 Days to 28 Days), RECRUITING, two conditions",
+    "source": "https://clinicaltrials.gov/api/v2/studies/NCT07102836"
+  },
+  "study": {
+    "nct_id": "NCT07102836",
+    "title": "COMPARISON OF ZINC AND PROBIOTICS ON NEONATES WITH INDIRECT HYPERBILIRUBINEMIA UNDERGOING PHOTOTHERAPY",
+    "status": "RECRUITING",
+    "summary": "Study will evaluate effects of oral zinc and probiotics supplementation in neonates who have indirect hyperbilirubinemia and are receiving phototherapy. Aim is to compare efficacy of these two drugs in clearing bilirubin and reducing duration of phototherapy. Neonates will be randomly assigned to receive either drug alongside phototherapy.",
+    "detailed_description": null,
+    "conditions": [
+      "Indirect Hyperbilirubinemia",
+      "Neonatal"
+    ],
+    "phase": "PHASE2",
+    "start_date": "2025-08-07",
+    "primary_completion_date": "2026-02-07",
+    "completion_date": "2026-05-07",
+    "sponsor": "Quaid-e-Azam Medical College",
+    "min_age": "0 Days",
+    "max_age": "28 Days",
+    "sex": "ALL",
+    "inclusion_criteria": "Inclusion Criteria:\n\n* 1\\. Term or Near term neonates 2. Age \\<7 days at enrollment 3. Bilirubin levels within phototherapy range according to NICE bilirubin threshold charts 4. No identifiable pathology 5. Tolerating oral feeds 6. Parental or Guardian written informed consent taken.",
+    "exclusion_criteria": "* 1\\. Positive sepsis screen or clinical signs of infection 2. Direct hyperbilirubinemia 3. Gastrointestinal malformations 4. Oral intolerance 5. Requiring mechanical ventilation 6. Congenital anomalies 7. Parental or Guardian refusal to participate in study",
+    "enrollment_count": 110,
+    "enrollment_type": "ESTIMATED",
+    "interventions": [
+      {
+        "type": "DRUG",
+        "name": "Zinc sulfate",
+        "description": "Oral zinc sulfate syrup in a dose providing 5mg elemental zinc daily as adjuvant to phototherapy."
+      },
+      {
+        "type": "DRUG",
+        "name": "Probiotic lactobacillus rhamnosus GG",
+        "description": "Oral Probiotic Lactobacillus rhamnosus GG drops daily as adjuvant to phototherapy."
+      }
+    ],
+    "locations": [
+      "Bahawalpur, Punjab Province, Pakistan"
+    ],
+    "locations_detailed": [
+      {
+        "city": "Bahawalpur",
+        "state": "Punjab Province",
+        "country": "Pakistan",
+        "display": "Bahawalpur, Punjab Province, Pakistan"
+      }
+    ],
+    "study_type": "INTERVENTIONAL",
+    "design_allocation": "RANDOMIZED",
+    "design_intervention_model": "PARALLEL",
+    "design_masking": "DOUBLE",
+    "design_primary_purpose": "TREATMENT",
+    "primary_outcomes": [
+      {
+        "measure": "Rate of decline in Bilirubin levels during phototherapy with this adjuvant therapy",
+        "description": "Primary outcome measures the rate at which total serum bilirubin decreases in mg/dL per day in neonates undergoing phototherapy while receiving supplementation with either zinc or probiotics. Bilirubin levels will be recorded at baseline and at regular intervals until phototherapy is discontinued and hence rate of decline will be calculated.",
+        "time_frame": "From initiation of supplementation with phototherapy to its completion (typically 3-7 days)."
+      }
+    ],
+    "secondary_outcomes": [],
+    "central_contacts": [
+      {
+        "name": "Malik M. Umair Fazal, MBBS, FCPS Paediatrics",
+        "role": "CONTACT",
+        "phone": "+923318682681",
+        "email": "umair.malik1622@gmail.com"
+      },
+      {
+        "name": "Dr. Muhammad Anwar, MBBS, FCPS Neonatology",
+        "role": "CONTACT",
+        "phone": "+923216820943",
+        "email": "hmanwar157@yahoo.com"
+      }
+    ],
+    "overall_officials": [
+      {
+        "name": "Malik M. Umair Fazal, MBBS, FCPS Paediatrics",
+        "role": "PRINCIPAL_INVESTIGATOR",
+        "affiliation": "Quaid-e-Azam Medical College"
+      }
+    ],
+    "why_stopped": null
+  }
+}
