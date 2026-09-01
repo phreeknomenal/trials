@@ -1,0 +1,23 @@
+<div class="space-y-5">
+  <%= render Forms::FieldComponent.new(
+    form: form, attribute: :trial_type_preference, field_type: :select,
+    label: "Interventional, observational, or either?",
+    select_options: trial_type_options,
+    options: {include_blank: "No preference", autofocus: true, data: {onboarding_target: "firstField"}}
+  ) %>
+
+  <div>
+    <%= render Forms::FieldComponent.new(
+      form: form, attribute: :risk_tolerance, field_type: :select,
+      label: "How established should the treatment be?",
+      select_options: risk_options,
+      options: {include_blank: "No preference"}
+    ) %>
+    <%# Answering this used to score 0 against every real trial, because the
+        scorer compared "phase 4" against the registry's "PHASE4". Fixed in #97;
+        without that this screen would have made every user's matches worse. %>
+    <p class="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
+      Leaving this blank does not hide anything from you. It only stops us ranking by phase.
+    </p>
+  </div>
+</div>

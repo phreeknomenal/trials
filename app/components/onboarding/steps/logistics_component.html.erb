@@ -1,0 +1,20 @@
+<div class="space-y-5">
+  <%= render Forms::FieldComponent.new(
+    form: form, attribute: :willing_travel_miles, field_type: :select,
+    label: "How far are you willing to travel?",
+    select_options: travel_options,
+    options: {include_blank: "No preference", autofocus: true, data: {onboarding_target: "firstField"}}
+  ) %>
+
+  <%= render Forms::FieldComponent.new(
+    form: form, attribute: :remote_visit_preference, field_type: :select,
+    label: "Do you prefer in-person or virtual visits?",
+    select_options: remote_visit_options,
+    options: {include_blank: "No preference"}
+  ) %>
+
+  <%= render Forms::FieldComponent.new(
+    form: form, attribute: :transportation_reliable, field_type: :checkbox,
+    label: "I have reliable transportation to study visits"
+  ) %>
+</div>
