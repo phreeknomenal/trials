@@ -37,6 +37,8 @@ class TrialScorer
     @config = config
   end
 
+  INELIGIBLE = "ineligible".freeze
+
   def calculate_score
     return nil unless @profile && @trial
 
@@ -49,15 +51,44 @@ class TrialScorer
       phase_risk: score_phase_risk
     }
 
-    # Calculate weighted total
     total = scores.sum { |criteria, score| score * WEIGHTS[criteria] / 100.0 }
+    failures = disqualifiers
 
     {
-      total: total.round,
+      eligible: failures.empty?,
+      disqualifiers: failures,
+      total: failures.empty? ? total.round : 0,
       breakdown: scores,
-      match_level: match_level(total)
+      match_level: failures.empty? ? match_level(total) : INELIGIBLE
     }
   end
+
+  private
+
+  # Age and sex are eligibility gates, not preferences. Folding them into the
+  # weighted sum let a hard exclusion be outvoted: a 40-year-old scored 51 and
+  # "fair" on a trial recruiting infants aged 0 to 28 days, because age scored 0
+  # while sex, phase, and study type all returned neutral or full marks.
+  #
+  # A gate only fires on a definite mismatch. Unknown data is not a
+  # disqualifier, so an incomplete profile stays eligible everywhere.
+  def disqualifiers
+    reasons = []
+    reasons << :age if @profile.age.present? && score_age.zero?
+    reasons << :sex if definite_sex_mismatch?
+    reasons << :not_recruiting if TrialStatus.closed?(trial_status)
+    reasons
+  end
+
+  def trial_status
+    @trial[:status] || @trial[:trial_status]
+  end
+
+  def definite_sex_mismatch?
+    @profile.sex_assigned_at_birth.present? && score_sex.zero?
+  end
+
+  public
 
   private
 
@@ -122,7 +153,28 @@ class TrialScorer
 
     return 100 if city_match
     return 75 if state_match
-    25 # Different state but user might be willing to travel
+
+    distant_location_score
+  end
+
+  # No geocoding yet, so this is a willingness proxy rather than a distance
+  # calculation. Someone who will travel 100 miles should not be penalised as
+  # hard for an out-of-state trial as someone who will travel 10. The profile
+  # has collected willing_travel_miles since onboarding and nothing read it.
+  #
+  # Falls back to the previous flat score when travel tolerance is unset, so an
+  # incomplete profile scores exactly as it did before.
+  DISTANT_LOCATION_SCORES = {
+    Profile::TEN_MILES => 10,
+    Profile::TWENTYFIVE_MILES => 20,
+    Profile::FIFTY_MILES => 35,
+    Profile::HUNDRED_MILES => 50
+  }.freeze
+
+  DEFAULT_DISTANT_SCORE = 25
+
+  def distant_location_score
+    DISTANT_LOCATION_SCORES.fetch(@profile.willing_travel_miles, DEFAULT_DISTANT_SCORE)
   end
 
   def score_study_type
@@ -188,8 +240,39 @@ class TrialScorer
     profile_words.subset?(trial_words) || trial_words.subset?(profile_words)
   end
 
+  # Phrase-level equivalences applied before tokenising, for cases a per-word map
+  # cannot reach: "human immunodeficiency virus" has to collapse to one token to
+  # match a profile holding "HIV/AIDS".
+  CONDITION_PHRASES = {
+    /human immunodeficiency virus/ => "hiv",
+    /acquired immunodeficiency syndrome/ => "aids"
+  }.freeze
+
+  # Word-level equivalences. The cancer group matters most: the registry uses
+  # carcinoma, neoplasm, and tumour interchangeably with cancer, and oncology is
+  # a large share of it. Roman numerals cover "Type II" against "type 2"; bare
+  # "i" is deliberately excluded as too ambiguous to fold.
+  CONDITION_SYNONYMS = {
+    "carcinoma" => "cancer",
+    "neoplasm" => "cancer",
+    "neoplasms" => "cancer",
+    "tumor" => "cancer",
+    "tumour" => "cancer",
+    "ii" => "2",
+    "iii" => "3",
+    "iv" => "4"
+  }.freeze
+
   def condition_words(text)
-    text.to_s.downcase.scan(/[a-z0-9]+/).to_set
+    normalised = text.to_s.downcase
+    CONDITION_PHRASES.each { |pattern, replacement| normalised = normalised.gsub(pattern, replacement) }
+
+    # "Type2" arrives as one token in real payloads, so split letter/digit runs.
+    normalised = normalised.gsub(/([a-z])(\d)/, '\1 \2').gsub(/(\d)([a-z])/, '\1 \2')
+
+    normalised.scan(/[a-z0-9]+/)
+      .map { |word| CONDITION_SYNONYMS.fetch(word, word) }
+      .to_set
   end
 
   # ClinicalTrials.gov expresses age limits with a unit: "18 Years", "6 Months",

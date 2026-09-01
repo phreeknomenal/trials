@@ -211,4 +211,185 @@ RSpec.describe TrialScorer do
       expect(location_score(city: "Mobile", state: "Alabama", locations: [])).to eq(50)
     end
   end
+
+  describe "condition matching recall" do
+    subject(:matches) { ->(pc, tc) { scorer({}).send(:conditions_match?, pc, tc) } }
+
+    it "splits a letter-digit run so Type2 tokenises as type and 2" do
+      expect(matches.call("type 2 diabetes", "Type2 Diabetes Mellitus")).to be(true)
+    end
+
+    it "treats Roman numerals as their Arabic equivalents" do
+      expect(matches.call("type 2 diabetes", "Type II Diabetes")).to be(true)
+    end
+
+    it "collapses an expansion to its abbreviation" do
+      expect(matches.call("HIV/AIDS", "Human Immunodeficiency Virus")).to be(true)
+    end
+
+    it "treats carcinoma as cancer" do
+      expect(matches.call("breast cancer", "Early-Stage Breast Carcinoma")).to be(true)
+    end
+
+    it "treats neoplasm as cancer" do
+      expect(matches.call("breast cancer", "Breast Neoplasms")).to be(true)
+    end
+
+    # Every recall improvement is a loosening, and loosening is how the original
+    # false-positive bug happened. These guarantees must survive it.
+    it "still does not match breast cancer against lung cancer" do
+      expect(matches.call("breast cancer", "lung cancer")).to be(false)
+    end
+
+    it "still does not match ms against symptoms" do
+      expect(matches.call("ms", "symptoms")).to be(false)
+    end
+
+    it "does not match an unrelated co-condition" do
+      expect(matches.call("breast cancer", "Brain Metastasis")).to be(false)
+    end
+  end
+
+  describe "eligibility gates" do
+    let(:neonatal) do
+      {min_age: "0 Days", max_age: "28 Days", sex: "ALL",
+       conditions: [], locations: [], phase: nil, study_type: nil}
+    end
+
+    def result_for(p, trial = neonatal) = described_class.new(p, trial).calculate_score
+
+    # The defect this exists to fix. Measured before the change: a 40-year-old
+    # scored 51 and "fair" on a trial recruiting infants aged 0 to 28 days.
+    it "reports an adult as ineligible for a neonatal trial" do
+      result = result_for(create(:profile, birth_year: 40.years.ago.year))
+
+      expect(result[:eligible]).to be(false)
+      expect(result[:match_level]).to eq(described_class::INELIGIBLE)
+      expect(result[:total]).to eq(0)
+    end
+
+    it "names the failing gate" do
+      result = result_for(create(:profile, birth_year: 40.years.ago.year))
+
+      expect(result[:disqualifiers]).to include(:age)
+    end
+
+    it "still reports the full breakdown so the UI can explain why" do
+      result = result_for(create(:profile, birth_year: 40.years.ago.year))
+
+      expect(result[:breakdown].keys).to match_array(described_class::WEIGHTS.keys)
+      expect(result[:breakdown][:age]).to eq(0)
+    end
+
+    it "reports an eligible profile as eligible" do
+      result = result_for(create(:profile, birth_year: Time.current.year))
+
+      expect(result[:eligible]).to be(true)
+      expect(result[:disqualifiers]).to be_empty
+      expect(result[:total]).to be > 0
+    end
+
+    # An incomplete profile must not be disqualified for what it has not filled
+    # in. Only a definite mismatch is a gate.
+    it "does not disqualify a profile with no age" do
+      result = result_for(create(:profile, birth_year: nil))
+
+      expect(result[:eligible]).to be(true)
+    end
+
+    it "does not disqualify a profile with no recorded sex" do
+      trial = neonatal.merge(sex: "FEMALE", min_age: nil, max_age: nil)
+      result = result_for(create(:profile, sex_assigned_at_birth: nil), trial)
+
+      expect(result[:eligible]).to be(true)
+    end
+
+    it "disqualifies a definite sex mismatch" do
+      trial = neonatal.merge(sex: "FEMALE", min_age: nil, max_age: nil)
+      result = result_for(create(:profile, sex_assigned_at_birth: "male"), trial)
+
+      expect(result[:disqualifiers]).to include(:sex)
+    end
+
+    it "an ineligible trial can never outrank an eligible one" do
+      adult = create(:profile, birth_year: 40.years.ago.year)
+      infant = create(:profile, birth_year: Time.current.year)
+
+      expect(result_for(adult)[:total]).to be < result_for(infant)[:total]
+    end
+  end
+
+  describe "recruiting status gate" do
+    let(:base) do
+      {min_age: nil, max_age: nil, sex: "ALL", conditions: [], locations: [], phase: nil, study_type: nil}
+    end
+
+    def result_with(status)
+      described_class.new(create(:profile), base.merge(status: status)).calculate_score
+    end
+
+    %w[COMPLETED TERMINATED WITHDRAWN].each do |status|
+      it "disqualifies a #{status} trial" do
+        result = result_with(status)
+
+        expect(result[:eligible]).to be(false)
+        expect(result[:disqualifiers]).to include(:not_recruiting)
+      end
+    end
+
+    # A trial that has not opened yet is a legitimate future option, and one
+    # that is active but closed to new enrolment can reopen.
+    %w[RECRUITING NOT_YET_RECRUITING ACTIVE_NOT_RECRUITING ENROLLING_BY_INVITATION].each do |status|
+      it "does not disqualify a #{status} trial" do
+        expect(result_with(status)[:eligible]).to be(true)
+      end
+    end
+
+    it "does not disqualify an UNKNOWN status" do
+      expect(result_with("UNKNOWN")[:eligible]).to be(true)
+    end
+
+    it "does not disqualify a missing status" do
+      result = described_class.new(create(:profile), base).calculate_score
+
+      expect(result[:eligible]).to be(true)
+    end
+  end
+
+  describe "travel tolerance" do
+    let(:distant) { {locations: ["Denver, Colorado, United States"]} }
+
+    def location_score(miles)
+      p = create(:profile, city: "Birmingham", state: "Alabama", willing_travel_miles: miles)
+      described_class.new(p, distant).send(:score_location)
+    end
+
+    it "penalises a distant trial least for someone willing to travel far" do
+      expect(location_score(Profile::HUNDRED_MILES)).to be > location_score(Profile::TEN_MILES)
+    end
+
+    it "scales monotonically with stated willingness" do
+      scores = [Profile::TEN_MILES, Profile::TWENTYFIVE_MILES, Profile::FIFTY_MILES, Profile::HUNDRED_MILES]
+        .map { |miles| location_score(miles) }
+
+      expect(scores).to eq(scores.sort)
+    end
+
+    # An incomplete profile must score exactly as it did before this change.
+    it "falls back to the previous flat score when travel tolerance is unset" do
+      expect(location_score(nil)).to eq(described_class::DEFAULT_DISTANT_SCORE)
+    end
+
+    it "does not affect a city match" do
+      p = create(:profile, city: "Denver", state: "Colorado", willing_travel_miles: Profile::TEN_MILES)
+
+      expect(described_class.new(p, distant).send(:score_location)).to eq(100)
+    end
+
+    it "does not affect a state match" do
+      p = create(:profile, city: "Boulder", state: "Colorado", willing_travel_miles: Profile::TEN_MILES)
+
+      expect(described_class.new(p, distant).send(:score_location)).to eq(75)
+    end
+  end
 end
