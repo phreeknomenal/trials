@@ -37,6 +37,8 @@ class TrialScorer
     @config = config
   end
 
+  INELIGIBLE = "ineligible".freeze
+
   def calculate_score
     return nil unless @profile && @trial
 
@@ -49,15 +51,39 @@ class TrialScorer
       phase_risk: score_phase_risk
     }
 
-    # Calculate weighted total
     total = scores.sum { |criteria, score| score * WEIGHTS[criteria] / 100.0 }
+    failures = disqualifiers
 
     {
-      total: total.round,
+      eligible: failures.empty?,
+      disqualifiers: failures,
+      total: failures.empty? ? total.round : 0,
       breakdown: scores,
-      match_level: match_level(total)
+      match_level: failures.empty? ? match_level(total) : INELIGIBLE
     }
   end
+
+  private
+
+  # Age and sex are eligibility gates, not preferences. Folding them into the
+  # weighted sum let a hard exclusion be outvoted: a 40-year-old scored 51 and
+  # "fair" on a trial recruiting infants aged 0 to 28 days, because age scored 0
+  # while sex, phase, and study type all returned neutral or full marks.
+  #
+  # A gate only fires on a definite mismatch. Unknown data is not a
+  # disqualifier, so an incomplete profile stays eligible everywhere.
+  def disqualifiers
+    reasons = []
+    reasons << :age if @profile.age.present? && score_age.zero?
+    reasons << :sex if definite_sex_mismatch?
+    reasons
+  end
+
+  def definite_sex_mismatch?
+    @profile.sex_assigned_at_birth.present? && score_sex.zero?
+  end
+
+  public
 
   private
 

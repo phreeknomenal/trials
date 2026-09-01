@@ -249,4 +249,73 @@ RSpec.describe TrialScorer do
       expect(matches.call("breast cancer", "Brain Metastasis")).to be(false)
     end
   end
+
+  describe "eligibility gates" do
+    let(:neonatal) do
+      {min_age: "0 Days", max_age: "28 Days", sex: "ALL",
+       conditions: [], locations: [], phase: nil, study_type: nil}
+    end
+
+    def result_for(p, trial = neonatal) = described_class.new(p, trial).calculate_score
+
+    # The defect this exists to fix. Measured before the change: a 40-year-old
+    # scored 51 and "fair" on a trial recruiting infants aged 0 to 28 days.
+    it "reports an adult as ineligible for a neonatal trial" do
+      result = result_for(create(:profile, birth_year: 40.years.ago.year))
+
+      expect(result[:eligible]).to be(false)
+      expect(result[:match_level]).to eq(described_class::INELIGIBLE)
+      expect(result[:total]).to eq(0)
+    end
+
+    it "names the failing gate" do
+      result = result_for(create(:profile, birth_year: 40.years.ago.year))
+
+      expect(result[:disqualifiers]).to include(:age)
+    end
+
+    it "still reports the full breakdown so the UI can explain why" do
+      result = result_for(create(:profile, birth_year: 40.years.ago.year))
+
+      expect(result[:breakdown].keys).to match_array(described_class::WEIGHTS.keys)
+      expect(result[:breakdown][:age]).to eq(0)
+    end
+
+    it "reports an eligible profile as eligible" do
+      result = result_for(create(:profile, birth_year: Time.current.year))
+
+      expect(result[:eligible]).to be(true)
+      expect(result[:disqualifiers]).to be_empty
+      expect(result[:total]).to be > 0
+    end
+
+    # An incomplete profile must not be disqualified for what it has not filled
+    # in. Only a definite mismatch is a gate.
+    it "does not disqualify a profile with no age" do
+      result = result_for(create(:profile, birth_year: nil))
+
+      expect(result[:eligible]).to be(true)
+    end
+
+    it "does not disqualify a profile with no recorded sex" do
+      trial = neonatal.merge(sex: "FEMALE", min_age: nil, max_age: nil)
+      result = result_for(create(:profile, sex_assigned_at_birth: nil), trial)
+
+      expect(result[:eligible]).to be(true)
+    end
+
+    it "disqualifies a definite sex mismatch" do
+      trial = neonatal.merge(sex: "FEMALE", min_age: nil, max_age: nil)
+      result = result_for(create(:profile, sex_assigned_at_birth: "male"), trial)
+
+      expect(result[:disqualifiers]).to include(:sex)
+    end
+
+    it "an ineligible trial can never outrank an eligible one" do
+      adult = create(:profile, birth_year: 40.years.ago.year)
+      infant = create(:profile, birth_year: Time.current.year)
+
+      expect(result_for(adult)[:total]).to be < result_for(infant)[:total]
+    end
+  end
 end
