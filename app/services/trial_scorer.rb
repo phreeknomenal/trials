@@ -24,6 +24,13 @@ class TrialScorer
     }
   }.freeze
 
+  AGE_UNITS_IN_YEARS = {
+    "year" => 1.0,
+    "month" => 1.0 / 12,
+    "week" => 1.0 / 52.1775,
+    "day" => 1.0 / 365.25
+  }.freeze
+
   def initialize(profile, trial_data, config: DEFAULT_CONFIG)
     @profile = profile
     @trial = trial_data
@@ -153,11 +160,20 @@ class TrialScorer
     end
   end
 
+  # ClinicalTrials.gov expresses age limits with a unit: "18 Years", "6 Months",
+  # "30 Days". Reading the number alone treated all three as years, so a trial
+  # open from 6 months of age was scored as requiring a minimum of 6 years.
+  # Everything normalises to years so one comparison works for all of them.
   def parse_age(age_string)
     return nil if age_string.nil?
 
-    # Extract first number from strings like "18 Years", "65 Years", etc.
-    age_string.to_s.scan(/\d+/).first&.to_i
+    text = age_string.to_s.downcase
+    number = text[/\d+(?:\.\d+)?/]
+    return nil if number.nil?
+
+    unit = AGE_UNITS_IN_YEARS.keys.find { |name| text.include?(name) }
+
+    number.to_f * AGE_UNITS_IN_YEARS.fetch(unit, 1.0)
   end
 
   def match_level(score)
