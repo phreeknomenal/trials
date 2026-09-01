@@ -311,6 +311,26 @@ RSpec.describe TrialScorer do
       expect(result[:disqualifiers]).to include(:sex)
     end
 
+    # The gate treats any recorded sex as a definite answer, so every value the
+    # profile form offers has to be one the registry can actually match. It
+    # publishes ALL, FEMALE, or MALE and nothing else.
+    #
+    # "intersex" and "prefer not to say" were both offered and neither matched a
+    # sex-restricted trial, so choosing them disqualified the user everywhere
+    # while leaving the field blank did not. This fails if either comes back.
+    it "offers only sexes that can match a sex-restricted trial" do
+      Profile::SEX_ASSIGNED_AT_BIRTH_OPTIONS.each do |sex|
+        eligible_somewhere = %w[FEMALE MALE].any? do |trial_sex|
+          trial = neonatal.merge(sex: trial_sex, min_age: nil, max_age: nil)
+          result_for(create(:profile, sex_assigned_at_birth: sex), trial)[:eligible]
+        end
+
+        expect(eligible_somewhere).to be(true),
+          "#{sex.inspect} is offered but is disqualified from every sex-restricted " \
+          "trial. Leave the field blank to decline instead of adding an option."
+      end
+    end
+
     it "an ineligible trial can never outrank an eligible one" do
       adult = create(:profile, birth_year: 40.years.ago.year)
       infant = create(:profile, birth_year: Time.current.year)
