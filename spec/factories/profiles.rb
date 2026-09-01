@@ -14,6 +14,7 @@
 #  language_preference     :string
 #  last_name               :string
 #  onboarded               :boolean          default(FALSE), not null
+#  onboarding_step         :integer          default(1), not null
 #  phone_number            :string
 #  prior_treatment         :boolean          default(FALSE)
 #  pronouns                :string
@@ -52,9 +53,45 @@ FactoryBot.define do
     state { "Alabama" }
     birth_year { 40.years.ago.year }
 
+    # Most specs want someone who can actually use the app. ApplicationController
+    # redirects anyone mid-wizard, so an un-onboarded default would send every
+    # request spec to /onboarding.
+    onboarded { true }
+    onboarding_step { Onboarding.complete_number }
+
     # User#add_default_profile builds a profile on create, and Profile validates
     # uniqueness of :user. Associating a fresh user here would give that user two
     # profiles and fail validation, so reuse the one it already has.
     initialize_with { create(:user).profile }
+
+    # A profile as it exists the moment someone signs up: persisted by the User
+    # callback and otherwise empty. Saved without validation because the record
+    # is already persisted, so FactoryBot's save! would run the :update context
+    # and reject exactly the blank fields this trait exists to represent.
+    trait :onboarding do
+      onboarded { false }
+      onboarding_step { 1 }
+      first_name { nil }
+      last_name { nil }
+      zip_code { nil }
+      city { nil }
+      state { nil }
+      birth_year { nil }
+
+      to_create { |profile| profile.save!(validate: false) }
+    end
+
+    # Part-way through the wizard. Pass the step number you want to land on.
+    trait :mid_onboarding do
+      transient { step { 3 } }
+
+      onboarded { false }
+      onboarding_step { step }
+      zip_code { nil }
+      city { nil }
+      state { nil }
+
+      to_create { |profile| profile.save!(validate: false) }
+    end
   end
 end
