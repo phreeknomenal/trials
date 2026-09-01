@@ -412,4 +412,99 @@ RSpec.describe TrialScorer do
       expect(described_class.new(p, distant).send(:score_location)).to eq(75)
     end
   end
+
+  describe "phase risk" do
+    def phase_score(tolerance, phase)
+      profile = create(:profile, risk_tolerance: tolerance)
+      described_class.new(profile, {phase: phase}).send(:score_phase_risk)
+    end
+
+    # Every string here is a shape ClinicalTrialClient actually emits. Before
+    # TrialPhase, score_phase_risk tested include?("phase 4") against "PHASE4"
+    # and returned 0 for every one of them.
+    describe "approved treatments only" do
+      let(:tolerance) { Profile::APPROVED_ONLY }
+
+      it "gives full marks to a phase 4 trial" do
+        expect(phase_score(tolerance, "PHASE4")).to eq(100)
+      end
+
+      it "gives partial credit to a phase 3 trial" do
+        expect(phase_score(tolerance, "PHASE3")).to eq(50)
+      end
+
+      it "gives no credit to an early-phase trial" do
+        expect(phase_score(tolerance, "PHASE1")).to eq(0)
+        expect(phase_score(tolerance, "EARLY_PHASE1")).to eq(0)
+      end
+    end
+
+    describe "tested in other patients" do
+      let(:tolerance) { Profile::TESTED }
+
+      it "gives full marks from phase 2 upward" do
+        expect(phase_score(tolerance, "PHASE2")).to eq(100)
+        expect(phase_score(tolerance, "PHASE3")).to eq(100)
+        expect(phase_score(tolerance, "PHASE4")).to eq(100)
+      end
+
+      it "gives partial credit to a phase 1 trial" do
+        expect(phase_score(tolerance, "PHASE1")).to eq(50)
+      end
+
+      it "gives no credit to an early phase 1 trial" do
+        expect(phase_score(tolerance, "EARLY_PHASE1")).to eq(0)
+      end
+    end
+
+    it "gives full marks to any phase when early stage is okay" do
+      expect(phase_score(Profile::EARLY_STAGE_OKAY, "EARLY_PHASE1")).to eq(100)
+      expect(phase_score(Profile::EARLY_STAGE_OKAY, "PHASE1")).to eq(100)
+    end
+
+    # A seamless PHASE1/PHASE2 study exposes the participant to phase 1 risk,
+    # so it is scored as phase 1 rather than as phase 2.
+    it "scores a multi-phase trial by its least-tested phase" do
+      expect(phase_score(Profile::TESTED, "PHASE1, PHASE2")).to eq(50)
+      expect(phase_score(Profile::TESTED, "PHASE2, PHASE3")).to eq(100)
+      expect(phase_score(Profile::APPROVED_ONLY, "PHASE2, PHASE3")).to eq(0)
+    end
+
+    # The old code scored NA full marks under approved_only and zero under
+    # tested, which cannot both be right. A study with no FDA phase administers
+    # no investigational drug, so there is no phase risk either way.
+    it "gives full marks to a trial with no FDA phase, whatever the tolerance" do
+      Profile::RISK_TOLERANCE_OPTIONS.each do |tolerance|
+        expect(phase_score(tolerance, "NA")).to eq(100),
+          "NA scored #{phase_score(tolerance, "NA")} for #{tolerance.inspect}"
+      end
+    end
+
+    it "does not penalise a trial that names no phase" do
+      Profile::RISK_TOLERANCE_OPTIONS.each do |tolerance|
+        expect(phase_score(tolerance, nil)).to eq(100)
+      end
+    end
+
+    it "does not penalise a profile that has not stated a tolerance" do
+      expect(phase_score(nil, "EARLY_PHASE1")).to eq(100)
+    end
+
+    # The bug this replaced meant answering was worse than staying silent:
+    # approved_only and tested scored 0 on every phase the registry emits.
+    #
+    # Iterate tolerances, not phases. Taking the best score across tolerances
+    # would pass vacuously, because early_stage_okay returns 100 unconditionally.
+    it "leaves every stated tolerance satisfiable by some real trial" do
+      registry_phases = %w[EARLY_PHASE1 PHASE1 PHASE2 PHASE3 PHASE4 NA]
+
+      Profile::RISK_TOLERANCE_OPTIONS.each do |tolerance|
+        scores = registry_phases.index_with { |phase| phase_score(tolerance, phase) }
+
+        expect(scores.values.max).to eq(100),
+          "#{tolerance.inspect} never scores full marks on any phase the registry " \
+          "emits, so stating it is worse than leaving the field blank: #{scores.inspect}"
+      end
+    end
+  end
 end
