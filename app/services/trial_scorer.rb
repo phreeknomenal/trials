@@ -188,20 +188,30 @@ class TrialScorer
     50 # Doesn't match preference but not a dealbreaker
   end
 
+  # Reads normalised phase levels rather than substrings. The registry sends
+  # "PHASE4", never "Phase 4", so every include? test here failed and returned
+  # 0 for every real trial. Stating a risk tolerance scored worse than leaving
+  # it blank, which inverts the point of asking.
+  #
+  # NA now scores 100 for every tolerance. The old code gave it full marks under
+  # "approved treatments only" and zero under "tested in other patients", which
+  # cannot both be right. A study with no FDA phase administers no
+  # investigational drug, so there is no phase risk to be cautious about.
   def score_phase_risk
     return 100 unless @profile.risk_tolerance
-    return 100 unless @trial[:phase]
 
-    phase = @trial[:phase]&.downcase
+    phase = @trial[:phase]
+    return 100 if TrialPhase.blank?(phase)
+    return 100 if TrialPhase.not_applicable?(phase)
 
     case @profile.risk_tolerance
     when @config[:risk_tolerance_levels][:approved_only]
-      return 100 if phase.include?("phase 4") || phase.include?("not applicable")
-      return 50 if phase.include?("phase 3")
+      return 100 if TrialPhase.at_least?(phase, TrialPhase::PHASE4)
+      return 50 if TrialPhase.at_least?(phase, TrialPhase::PHASE3)
       0
     when @config[:risk_tolerance_levels][:tested]
-      return 100 if phase.include?("phase 2") || phase.include?("phase 3") || phase.include?("phase 4")
-      return 50 if phase.include?("phase 1")
+      return 100 if TrialPhase.at_least?(phase, TrialPhase::PHASE2)
+      return 50 if TrialPhase.at_least?(phase, TrialPhase::PHASE1)
       0
     when @config[:risk_tolerance_levels][:early_stage_okay]
       100 # Willing to try any phase
