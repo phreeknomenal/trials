@@ -1,0 +1,23 @@
+<div class="space-y-5">
+  <%= render Forms::FieldComponent.new(
+    form: form, attribute: :birth_year, field_type: :number, label: "Birth year",
+    options: {min: 1900, max: Time.current.year, placeholder: "e.g. 1986",
+              autofocus: true, data: {onboarding_target: "firstField"}}
+  ) %>
+
+  <div>
+    <%= render Forms::FieldComponent.new(
+      form: form, attribute: :sex_assigned_at_birth, field_type: :select,
+      label: "Sex assigned at birth",
+      select_options: sex_options,
+      options: {include_blank: "Prefer not to answer"}
+    ) %>
+    <%# Blank is the decline path. It scores neutral and disqualifies nobody,
+        which is why the two non-binary options were removed in #96: they were
+        read as definite answers and ruled the user out of every sex-restricted
+        study. %>
+    <p class="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
+      Studies list eligibility as all, female, or male. Leaving this blank keeps you eligible everywhere.
+    </p>
+  </div>
+</div>
