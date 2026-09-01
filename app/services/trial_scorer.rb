@@ -98,10 +98,9 @@ class TrialScorer
 
     return 50 if trial_conditions.empty?
 
-    # Calculate overlap percentage from user's perspective
     # Score = what percentage of MY conditions does this trial address?
     matching_conditions = profile_conditions.count do |pc|
-      trial_conditions.any? { |tc| tc.include?(pc) || pc.include?(tc) }
+      trial_conditions.any? { |tc| conditions_match?(pc, tc) }
     end
 
     # At least one condition must match to score above 0
@@ -158,6 +157,27 @@ class TrialScorer
     else
       100
     end
+  end
+
+  # Compares conditions by whole words rather than raw substrings. A bare
+  # `include?` matched any abbreviation appearing inside a longer word: "ms"
+  # matched "symptoms" and "als" matched "false positives", both of which are
+  # real conditions in the seeded list.
+  #
+  # One condition matches another when its words are a subset of the other's, so
+  # a profile listing "lung cancer" still matches a trial studying "cancer", and
+  # "breast cancer" still does not match "lung cancer".
+  def conditions_match?(profile_condition, trial_condition)
+    profile_words = condition_words(profile_condition)
+    trial_words = condition_words(trial_condition)
+
+    return false if profile_words.empty? || trial_words.empty?
+
+    profile_words.subset?(trial_words) || trial_words.subset?(profile_words)
+  end
+
+  def condition_words(text)
+    text.to_s.downcase.scan(/[a-z0-9]+/).to_set
   end
 
   # ClinicalTrials.gov expresses age limits with a unit: "18 Years", "6 Months",

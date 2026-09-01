@@ -78,4 +78,72 @@ RSpec.describe TrialScorer do
       expect(scorer({min_age: "18 Years"}, for_profile: p).send(:score_age)).to eq(50)
     end
   end
+
+  describe "#conditions_match?" do
+    subject(:matches) { ->(pc, tc) { scorer({}).send(:conditions_match?, pc, tc) } }
+
+    it "matches an identical condition" do
+      expect(matches.call("asthma", "asthma")).to be(true)
+    end
+
+    it "matches a specific profile condition against a broader trial condition" do
+      expect(matches.call("lung cancer", "cancer")).to be(true)
+    end
+
+    it "matches a broad profile condition against a specific trial condition" do
+      expect(matches.call("cancer", "lung cancer")).to be(true)
+    end
+
+    it "matches across extra qualifiers" do
+      expect(matches.call("type 2 diabetes", "diabetes")).to be(true)
+    end
+
+    it "does not match two different cancers" do
+      expect(matches.call("breast cancer", "lung cancer")).to be(false)
+    end
+
+    # Regression: a bare substring check matched any abbreviation appearing
+    # inside a longer word. Both MS and ALS are in the seeded condition list.
+    it "does not match ms against symptoms" do
+      expect(matches.call("ms", "symptoms")).to be(false)
+    end
+
+    it "does not match als against false positives" do
+      expect(matches.call("als", "false positives")).to be(false)
+    end
+
+    it "returns false for blank input" do
+      expect(matches.call("", "cancer")).to be(false)
+      expect(matches.call("cancer", "")).to be(false)
+    end
+  end
+
+  describe "#score_conditions" do
+    def condition_score(profile_conditions, trial_conditions)
+      p = create(:profile)
+      profile_conditions.each { |name| p.conditions << Condition.find_or_create_by!(name: name) }
+      scorer({conditions: trial_conditions}, for_profile: p.reload).send(:score_conditions)
+    end
+
+    it "scores 100 when every profile condition matches" do
+      expect(condition_score(["asthma"], ["Asthma"])).to eq(100)
+    end
+
+    it "scores 0 when none match" do
+      expect(condition_score(["asthma"], ["Diabetes"])).to eq(0)
+    end
+
+    it "scores partially when some match" do
+      expect(condition_score(["asthma", "diabetes"], ["Asthma"])).to eq(50)
+    end
+
+    it "scores neutral when the profile has no conditions" do
+      expect(condition_score([], ["Asthma"])).to eq(50)
+    end
+
+    # Regression at the scoring level, not just the helper.
+    it "does not credit a symptoms trial for a profile listing ms" do
+      expect(condition_score(["ms"], ["Symptoms"])).to eq(0)
+    end
+  end
 end
