@@ -355,4 +355,41 @@ RSpec.describe TrialScorer do
       expect(result[:eligible]).to be(true)
     end
   end
+
+  describe "travel tolerance" do
+    let(:distant) { {locations: ["Denver, Colorado, United States"]} }
+
+    def location_score(miles)
+      p = create(:profile, city: "Birmingham", state: "Alabama", willing_travel_miles: miles)
+      described_class.new(p, distant).send(:score_location)
+    end
+
+    it "penalises a distant trial least for someone willing to travel far" do
+      expect(location_score(Profile::HUNDRED_MILES)).to be > location_score(Profile::TEN_MILES)
+    end
+
+    it "scales monotonically with stated willingness" do
+      scores = [Profile::TEN_MILES, Profile::TWENTYFIVE_MILES, Profile::FIFTY_MILES, Profile::HUNDRED_MILES]
+        .map { |miles| location_score(miles) }
+
+      expect(scores).to eq(scores.sort)
+    end
+
+    # An incomplete profile must score exactly as it did before this change.
+    it "falls back to the previous flat score when travel tolerance is unset" do
+      expect(location_score(nil)).to eq(described_class::DEFAULT_DISTANT_SCORE)
+    end
+
+    it "does not affect a city match" do
+      p = create(:profile, city: "Denver", state: "Colorado", willing_travel_miles: Profile::TEN_MILES)
+
+      expect(described_class.new(p, distant).send(:score_location)).to eq(100)
+    end
+
+    it "does not affect a state match" do
+      p = create(:profile, city: "Boulder", state: "Colorado", willing_travel_miles: Profile::TEN_MILES)
+
+      expect(described_class.new(p, distant).send(:score_location)).to eq(75)
+    end
+  end
 end

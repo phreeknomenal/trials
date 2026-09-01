@@ -153,7 +153,28 @@ class TrialScorer
 
     return 100 if city_match
     return 75 if state_match
-    25 # Different state but user might be willing to travel
+
+    distant_location_score
+  end
+
+  # No geocoding yet, so this is a willingness proxy rather than a distance
+  # calculation. Someone who will travel 100 miles should not be penalised as
+  # hard for an out-of-state trial as someone who will travel 10. The profile
+  # has collected willing_travel_miles since onboarding and nothing read it.
+  #
+  # Falls back to the previous flat score when travel tolerance is unset, so an
+  # incomplete profile scores exactly as it did before.
+  DISTANT_LOCATION_SCORES = {
+    Profile::TEN_MILES => 10,
+    Profile::TWENTYFIVE_MILES => 20,
+    Profile::FIFTY_MILES => 35,
+    Profile::HUNDRED_MILES => 50
+  }.freeze
+
+  DEFAULT_DISTANT_SCORE = 25
+
+  def distant_location_score
+    DISTANT_LOCATION_SCORES.fetch(@profile.willing_travel_miles, DEFAULT_DISTANT_SCORE)
   end
 
   def score_study_type
