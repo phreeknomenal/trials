@@ -1,5 +1,20 @@
 require "rails_helper"
 
+# == Schema Information
+#
+# Table name: zip_codes
+#
+#  id         :bigint           not null, primary key
+#  city       :string           not null
+#  state      :string           not null
+#  zip        :string           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_zip_codes_on_zip  (zip) UNIQUE
+#
 RSpec.describe ZipCode do
   describe ".canonical" do
     it "accepts a plain five-digit zip" do
