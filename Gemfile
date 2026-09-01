@@ -14,7 +14,7 @@ gem "cocoon"
 gem "devise"
 gem "faker"
 gem "httparty"
-gem "image_processing", "~> 1.2"
+gem "image_processing", "~> 2.0"
 gem "importmap-rails"
 gem "jbuilder"
 gem "kamal", require: false
