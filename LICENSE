@@ -22,3 +22,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 This project queries the ClinicalTrials.gov API (https://clinicaltrials.gov),
 a public data source maintained by the U.S. National Library of Medicine. Trial
 data returned by that API is not covered by this license.
+
+The US zip code data in db/seeds/zip_codes.csv comes from GeoNames
+(https://www.geonames.org), licensed under Creative Commons Attribution 4.0
+(https://creativecommons.org/licenses/by/4.0/). It is not covered by this
+license.
