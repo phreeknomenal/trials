@@ -318,4 +318,41 @@ RSpec.describe TrialScorer do
       expect(result_for(adult)[:total]).to be < result_for(infant)[:total]
     end
   end
+
+  describe "recruiting status gate" do
+    let(:base) do
+      {min_age: nil, max_age: nil, sex: "ALL", conditions: [], locations: [], phase: nil, study_type: nil}
+    end
+
+    def result_with(status)
+      described_class.new(create(:profile), base.merge(status: status)).calculate_score
+    end
+
+    %w[COMPLETED TERMINATED WITHDRAWN].each do |status|
+      it "disqualifies a #{status} trial" do
+        result = result_with(status)
+
+        expect(result[:eligible]).to be(false)
+        expect(result[:disqualifiers]).to include(:not_recruiting)
+      end
+    end
+
+    # A trial that has not opened yet is a legitimate future option, and one
+    # that is active but closed to new enrolment can reopen.
+    %w[RECRUITING NOT_YET_RECRUITING ACTIVE_NOT_RECRUITING ENROLLING_BY_INVITATION].each do |status|
+      it "does not disqualify a #{status} trial" do
+        expect(result_with(status)[:eligible]).to be(true)
+      end
+    end
+
+    it "does not disqualify an UNKNOWN status" do
+      expect(result_with("UNKNOWN")[:eligible]).to be(true)
+    end
+
+    it "does not disqualify a missing status" do
+      result = described_class.new(create(:profile), base).calculate_score
+
+      expect(result[:eligible]).to be(true)
+    end
+  end
 end

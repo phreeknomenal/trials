@@ -75,10 +75,11 @@ class EligibilityChecker
   def check_status
     trial_status = @trial[:status]&.downcase || @trial[:trial_status]&.downcase
 
-    recruiting_statuses = ["recruiting", "active, not recruiting", "enrolling by invitation"]
-    is_recruiting = recruiting_statuses.any? { |status| trial_status&.include?(status) }
-
     return nil unless trial_status
+
+    # Shared with TrialScorer via TrialStatus so the checklist and the score
+    # cannot disagree about whether a trial is open.
+    is_recruiting = TrialStatus.open?(trial_status)
 
     status = is_recruiting ? "met" : "warning"
     explanation = if is_recruiting

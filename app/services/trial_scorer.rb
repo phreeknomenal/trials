@@ -76,7 +76,12 @@ class TrialScorer
     reasons = []
     reasons << :age if @profile.age.present? && score_age.zero?
     reasons << :sex if definite_sex_mismatch?
+    reasons << :not_recruiting if TrialStatus.closed?(trial_status)
     reasons
+  end
+
+  def trial_status
+    @trial[:status] || @trial[:trial_status]
   end
 
   def definite_sex_mismatch?
