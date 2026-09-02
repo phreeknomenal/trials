@@ -207,6 +207,7 @@ class Profile < ApplicationRecord
     numericality: {only_integer: true, greater_than_or_equal_to: 1900, less_than_or_equal_to: ->(_) { Time.current.year }},
     allow_blank: true
   validate :must_list_a_condition, on: :onboarding_conditions
+  validates :onboarding_step, numericality: {only_integer: true, greater_than_or_equal_to: 1}
   validates :pronouns, inclusion: {in: PRONOUN_OPTIONS}, allow_blank: true
   validates :sex_assigned_at_birth, inclusion: {in: SEX_ASSIGNED_AT_BIRTH_OPTIONS}, allow_blank: true
   validates :ethnicity, inclusion: {in: ETHNICITY_OPTIONS}, allow_blank: true
@@ -249,20 +250,33 @@ class Profile < ApplicationRecord
     Time.current.year - birth_year
   end
 
+  # onboarding_step is an integer column, and ActiveRecord casts any non-numeric
+  # assignment to 0 rather than rejecting it ("abc" becomes 0). A row that lands
+  # below 1 used to make current_onboarding_step return nil, which crashed
+  # ensure_profile_completed on every page the user visited, with no way out
+  # because the wizard is reached through that same redirect.
+  #
+  # Reading through a clamp means an out-of-range row resumes at step one instead
+  # of locking its owner out of the whole app. The upper bound is left alone:
+  # anything past the last step legitimately means finished.
+  def onboarding_progress
+    onboarding_step.to_i.clamp(1, Onboarding.complete_number)
+  end
+
   # The step the wizard should show, or nil once every step is behind them.
   def current_onboarding_step
-    Onboarding.at(onboarding_step)
+    Onboarding.at(onboarding_progress)
   end
 
   # Every required step is done, so the app is unlocked. Optional steps may
   # still be outstanding.
   def onboarding_unlocked?
-    onboarding_step >= Onboarding.unlocked_number
+    onboarding_progress >= Onboarding.unlocked_number
   end
 
   # Every step is done, required or not. Controls the finish-your-profile nudge.
   def profile_completed?
-    onboarding_step >= Onboarding.complete_number
+    onboarding_progress >= Onboarding.complete_number
   end
 
   private

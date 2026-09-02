@@ -175,4 +175,65 @@ RSpec.describe Profile do
       expect(result.calculate_score[:disqualifiers]).not_to include(:sex)
     end
   end
+
+  describe "onboarding progress" do
+    # The bug: a profile whose step fell below 1 made current_onboarding_step
+    # return nil, and ensure_profile_completed called .slug on it. That crashed
+    # every page, and the wizard was unreachable because it is reached through
+    # that same redirect.
+    #
+    # This is the exact property the gate depends on: for any integer the column
+    # can hold, either the app is unlocked or there is a step to send them to.
+    # Never both false.
+    it "always yields a step to redirect to when the app is still locked" do
+      (-5..Onboarding.complete_number + 3).each do |value|
+        profile = build(:profile, onboarding_step: value)
+
+        has_somewhere_to_go = profile.onboarding_unlocked? || profile.current_onboarding_step.present?
+
+        expect(has_somewhere_to_go).to be(true),
+          "onboarding_step #{value} leaves the gate with nowhere to redirect, which crashes every page"
+      end
+    end
+
+    it "clamps a step below the wizard range back to the first step" do
+      expect(build(:profile, onboarding_step: 0).current_onboarding_step).to eq(Onboarding.first)
+      expect(build(:profile, onboarding_step: -3).current_onboarding_step).to eq(Onboarding.first)
+    end
+
+    it "treats a step past the last one as finished" do
+      profile = build(:profile, onboarding_step: Onboarding.complete_number + 5)
+
+      expect(profile).to be_profile_completed
+      expect(profile.current_onboarding_step).to be_nil
+    end
+
+    it "does not report a locked profile as unlocked" do
+      expect(build(:profile, onboarding_step: 0)).not_to be_onboarding_unlocked
+    end
+
+    # ActiveRecord casts a non-numeric assignment to 0 rather than rejecting it,
+    # which is how a value below the wizard range becomes storable at all.
+    it "rejects a non-numeric step that would silently cast to zero" do
+      profile = build(:profile, onboarding_step: "abc")
+
+      expect(profile.onboarding_step).to eq(0)
+      expect(profile).not_to be_valid
+      expect(profile.errors[:onboarding_step]).to be_present
+    end
+
+    it "rejects a step below one" do
+      expect(build(:profile, onboarding_step: 0)).not_to be_valid
+    end
+
+    # update_column and raw SQL skip validations, and the wizard advances
+    # progress with update_column, so the database has to enforce this too.
+    it "refuses a below-range write that bypasses validations" do
+      profile = create(:profile)
+
+      expect {
+        profile.update_column(:onboarding_step, 0)
+      }.to raise_error(ActiveRecord::StatementInvalid, /check constraint/i)
+    end
+  end
 end
