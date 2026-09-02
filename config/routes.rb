@@ -40,6 +40,9 @@ Rails.application.routes.draw do
   get "onboarding/:step", to: "onboarding#show", as: :onboarding_step,
     constraints: {step: /[a-z_]+/}
   patch "onboarding/:step", to: "onboarding#update", constraints: {step: /[a-z_]+/}
+  post "onboarding/:step/skip", to: "onboarding#skip", as: :skip_onboarding_step,
+    constraints: {step: /[a-z_]+/}
+  delete "onboarding/banner", to: "onboarding#dismiss_banner", as: :onboarding_banner
 
   resources :profiles, only: [:new, :create, :show, :edit, :update]
   resources :search, only: [:index, :show]

@@ -58,6 +58,29 @@ module Onboarding
       prompt: "This matters more than anything else here. It is the largest single factor in how studies are ranked for you.",
       required: true,
       permitted: [:no_conditions, {profile_conditions_attributes: [:id, :condition_id, :is_primary, :_destroy]}]
+    ),
+    # Everything past here is optional. The app is already usable by this point,
+    # so these refine matching rather than enable it, and each can be skipped.
+    Step.new(
+      slug: "logistics",
+      heading: "How far would you travel?",
+      prompt: "Most studies need you on site. This decides how much weight a study far from you loses.",
+      required: false,
+      permitted: [:willing_travel_miles, :remote_visit_preference, :transportation_reliable]
+    ),
+    Step.new(
+      slug: "preferences",
+      heading: "What kind of study suits you?",
+      prompt: "Trial phase describes how much human testing has already happened. Answer only if you have a view.",
+      required: false,
+      permitted: [:trial_type_preference, :risk_tolerance]
+    ),
+    Step.new(
+      slug: "about_you",
+      heading: "Anything else you would like to share?",
+      prompt: "None of this affects matching. It personalises the app and helps studies report who takes part.",
+      required: false,
+      permitted: [:avatar, :pronouns, :gender_id, :race_id, :ethnicity, {identity_ids: [], interest_ids: []}]
     )
   ].freeze
 
@@ -92,6 +115,10 @@ module Onboarding
 
   def first
     STEPS.first
+  end
+
+  def optional
+    STEPS.reject(&:required?)
   end
 
   # The value Profile#onboarding_step holds once every step is behind you.

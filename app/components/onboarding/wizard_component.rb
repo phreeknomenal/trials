@@ -28,6 +28,10 @@ class Onboarding::WizardComponent < ApplicationComponent
     last_step? ? "Finish" : "Continue"
   end
 
+  def skippable?
+    !step.required?
+  end
+
   def errors
     profile.errors.full_messages
   end

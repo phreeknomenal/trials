@@ -1,0 +1,59 @@
+<div class="space-y-5">
+  <div class="flex justify-center">
+    <%= render Forms::ImageUploadComponent.new(form: form, attribute: :avatar) %>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+    <%= render Forms::FieldComponent.new(
+      form: form, attribute: :pronouns, field_type: :select, label: "Pronouns",
+      select_options: pronoun_options,
+      options: {include_blank: "Prefer not to say", autofocus: true, data: {onboarding_target: "firstField"}}
+    ) %>
+
+    <%= render Forms::FieldComponent.new(
+      form: form, attribute: :gender_id, field_type: :select, label: "Gender",
+      select_options: Gender.all.map { |gender| [gender.name.titleize, gender.id] },
+      options: {include_blank: "Prefer not to say"}
+    ) %>
+
+    <%= render Forms::FieldComponent.new(
+      form: form, attribute: :race_id, field_type: :select, label: "Race",
+      select_options: Race.all.map { |race| [race.name.titleize, race.id] },
+      options: {include_blank: "Prefer not to say"}
+    ) %>
+
+    <%= render Forms::FieldComponent.new(
+      form: form, attribute: :ethnicity, field_type: :select, label: "Ethnicity",
+      select_options: ethnicity_options,
+      options: {include_blank: "Prefer not to say"}
+    ) %>
+  </div>
+
+  <% if Identity.any? %>
+    <div>
+      <label class="block text-sm font-bold text-zinc-900 dark:text-zinc-300 mb-3">I am a...</label>
+      <div class="flex flex-wrap gap-2">
+        <%= form.collection_check_boxes :identity_ids, Identity.all, :id, :name do |builder| %>
+          <label class="inline-flex items-center px-4 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-lavender-100 dark:hover:bg-lavender-900 rounded-full cursor-pointer transition-colors border-2 border-transparent has-[:checked]:border-lavender-500 has-[:checked]:bg-lavender-50 dark:has-[:checked]:bg-lavender-900/50">
+            <%= builder.check_box(class: "sr-only") %>
+            <span class="text-sm font-medium text-zinc-700 dark:text-zinc-300"><%= builder.text.titleize %></span>
+          </label>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <% if Interest.any? %>
+    <div>
+      <label class="block text-sm font-bold text-zinc-900 dark:text-zinc-300 mb-3">Looking for...</label>
+      <div class="flex flex-wrap gap-2">
+        <%= form.collection_check_boxes :interest_ids, Interest.all, :id, :name do |builder| %>
+          <label class="inline-flex items-center px-4 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-lavender-100 dark:hover:bg-lavender-900 rounded-full cursor-pointer transition-colors border-2 border-transparent has-[:checked]:border-lavender-500 has-[:checked]:bg-lavender-50 dark:has-[:checked]:bg-lavender-900/50">
+            <%= builder.check_box(class: "sr-only") %>
+            <span class="text-sm font-medium text-zinc-700 dark:text-zinc-300"><%= builder.text.titleize %></span>
+          </label>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
