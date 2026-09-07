@@ -9,7 +9,7 @@
     <% choices.each do |option| %>
       <li data-sortable-id-param="<%= option[0] %>" class="flex items-center justify-between px-2 py-1 cursor-move border border-secondary-200 rounded-md my-2" data-sortable-target="item">
         <span class="handle mr-2 cursor-move handle">
-          <%= render Utilities::IconComponent.new("bars_4", options: {class: "h-6 w-6 text-gray-400"}) %>
+          <%= render Utilities::IconComponent.new("bars", options: {class: "h-6 w-6 text-gray-400"}) %>
         </span>
         <%= form.hidden_field name, name: form.field_name(name, multiple: true), value: option[0] %>
         <%= form.label name, option[1], class: "ml-2 text-md" %>
