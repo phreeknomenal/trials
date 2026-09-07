@@ -6,8 +6,9 @@ class Layout::Navigation::HeaderComponent < ApplicationComponent
 
       <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 py-4">
         <div>
-          <%= link_to root_path, class: "font-primary text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-300 rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lavender-600" do %>
-            Lumen
+          <%= link_to root_path, class: "flex items-center gap-2 rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lavender-600" do %>
+            <%= render Utilities::MarkComponent.new(height: 8) %>
+            <span class="font-primary text-2xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-300">Dira<span class="font-light text-zinc-500 dark:text-zinc-400"> Health</span></span>
           <% end %>
         </div>
 

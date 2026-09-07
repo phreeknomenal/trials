@@ -58,7 +58,7 @@ RSpec.describe "Admin access", type: :request do
         it "uses the admin layout rather than the public one" do
           get admin_root_path
 
-          expect(response.body).to include("Admin — Trials")
+          expect(response.body).to include("Dira Health Admin")
           expect(response.body).to include("Back to site")
         end
       end
