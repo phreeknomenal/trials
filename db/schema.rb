@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_01_182726) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_02_014934) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -143,6 +143,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_01_182726) do
     t.index ["gender_id"], name: "index_profiles_on_gender_id"
     t.index ["race_id"], name: "index_profiles_on_race_id"
     t.index ["user_id"], name: "index_profiles_on_user_id"
+    t.check_constraint "onboarding_step >= 1", name: "profiles_onboarding_step_positive"
   end
 
   create_table "races", force: :cascade do |t|

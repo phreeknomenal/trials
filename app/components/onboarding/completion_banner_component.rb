@@ -19,6 +19,6 @@ class Onboarding::CompletionBannerComponent < ApplicationComponent
   end
 
   def remaining
-    Onboarding.count - @profile.onboarding_step + 1
+    Onboarding.count - @profile.onboarding_progress + 1
   end
 end
