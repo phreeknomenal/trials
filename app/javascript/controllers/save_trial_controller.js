@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["button", "form"]
+  static targets = ["button", "form", "outlineIcon", "solidIcon", "label"]
   static values = {
     nctId: String,
     trialTitle: String,
@@ -111,23 +111,27 @@ export default class extends Controller {
     return this.savedTrialIdValue ?? null
   }
 
+  // Toggles visibility and attributes rather than rewriting innerHTML. The old
+  // version pasted in a hardcoded SVG, which meant the icon existed in three
+  // places and any change had to be made in all of them.
   updateButtonState() {
     if (!this.hasButtonTarget) return
 
     const button = this.buttonTarget
     const isSaved = this.isSavedValue
 
-    if (isSaved) {
-      button.classList.add("saved")
-      button.innerHTML = '<svg class="w-5 h-5 inline mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path></svg>Saved'
-      button.classList.remove("border-gray-300", "text-gray-700", "hover:bg-gray-50")
-      button.classList.add("border-blue-500", "bg-blue-50", "text-blue-700")
-    } else {
-      button.classList.remove("saved")
-      button.innerHTML = '<svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 19V5z"></path></svg>Save Trial'
-      button.classList.add("border-gray-300", "text-gray-700", "hover:bg-gray-50")
-      button.classList.remove("border-blue-500", "bg-blue-50", "text-blue-700")
-    }
+    button.setAttribute("aria-pressed", String(isSaved))
+    button.classList.toggle("saved", isSaved)
+
+    if (this.hasOutlineIconTarget) this.outlineIconTarget.classList.toggle("hidden", isSaved)
+    if (this.hasSolidIconTarget) this.solidIconTarget.classList.toggle("hidden", !isSaved)
+    if (this.hasLabelTarget) this.labelTarget.textContent = isSaved ? "Saved" : "Save Trial"
+
+    const saved = ["border-blue-500", "bg-blue-50", "text-blue-700", "hover:bg-blue-100"]
+    const unsaved = ["border-gray-300", "bg-white", "text-gray-700", "hover:bg-gray-50"]
+
+    button.classList.remove(...(isSaved ? unsaved : saved))
+    button.classList.add(...(isSaved ? saved : unsaved))
   }
 
   showNotification(message, type) {
