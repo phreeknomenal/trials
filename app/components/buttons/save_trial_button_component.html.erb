@@ -8,17 +8,14 @@
   <button type="button"
           data-save-trial-target="button"
           class="<%= button_classes %>"
+          aria-pressed="<%= is_saved? %>"
           data-action="save-trial#toggleSave">
-    <% if is_saved? %>
-      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-        <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path>
-      </svg>
-    <% else %>
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 19V5z"></path>
-      </svg>
-    <% end %>
-    <%= button_text %>
+    <span data-save-trial-target="outlineIcon" class="<%= "hidden" if is_saved? %>">
+      <%= render Utilities::IconComponent.new("bookmark", size: 5) %>
+    </span>
+    <span data-save-trial-target="solidIcon" class="<%= "hidden" unless is_saved? %>">
+      <%= render Utilities::IconComponent.new("bookmark", size: 5, options: {fill: "currentColor", stroke: "none"}) %>
+    </span>
+    <span data-save-trial-target="label"><%= button_text %></span>
   </button>
 </div>
-
