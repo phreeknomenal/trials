@@ -24,7 +24,7 @@
   <body class="dark:bg-zinc-900">
     <%= render Admin::NavComponent.new %>
 
-    <%= render "shared/utilities/flash_messages" %>
+    <%= render Shared::FlashMessagesComponent.new(flash: flash) %>
 
     <main>
       <%= yield %>

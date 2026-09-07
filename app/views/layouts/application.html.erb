@@ -36,7 +36,7 @@
       ) %>
     <% end %>
 
-    <%= render "shared/utilities/flash_messages" %>
+    <%= render Shared::FlashMessagesComponent.new(flash: flash) %>
     
     <%= yield %>
 
