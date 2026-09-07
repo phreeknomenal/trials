@@ -3,11 +3,107 @@
 @variant dark (&:is(.dark *));
 
 @theme {
-  /* --font-primary: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif; */
   --font-body: "Montserrat", ui-sans-serif, system-ui, sans-serif;
   --font-accent: "Caveat", cursive;
 
-  --color-coral: oklch(0.7151 0.1785 27.97);  
+  /* ------------------------------------------------------------------
+   * Dira Health
+   *
+   * Navy and sky are taken from the two faces of the mark, so nothing in
+   * the palette is invented next to it. Full spec, including the dark mode
+   * steps and the reasoning, lives in the vault at
+   * Projects/trials-brand-identity.md
+   *
+   * Migration note: lavender and coral are still live, 132 and 16 usages,
+   * and are swept in a later pass. Nothing below is referenced yet.
+   * ------------------------------------------------------------------ */
+
+  /* Primary. navy-600 is the mark's left face. */
+  --color-navy-50: #F1F4FB;
+  --color-navy-100: #DEE5F5;
+  --color-navy-200: #BCC8E8;
+  --color-navy-300: #92A4D6;
+  --color-navy-400: #6C81C0;
+  --color-navy-500: #4C60A3;
+  --color-navy-600: #2E4386;
+  --color-navy-700: #26376D;
+  --color-navy-800: #1D2B54;
+  --color-navy-900: #16203E;
+
+  /* Emphasis. sky-400 is the mark's right face. */
+  --color-sky-50: #EDF6FC;
+  --color-sky-100: #D6EBF8;
+  --color-sky-200: #ADD6F0;
+  --color-sky-300: #7FBEE6;
+  --color-sky-400: #489AD9;
+  --color-sky-500: #2F82C4;
+  --color-sky-600: #2269A4;
+  --color-sky-700: #1B5182;
+  --color-sky-800: #163F64;
+
+  /* Neutrals, biased toward the navy so grey never reads as unconsidered.
+   * Each has an -on-dark companion for use inside the dark: variant. */
+  --color-paper: #FAFBFD;
+  --color-paper-on-dark: #0C1017;
+  --color-surface: #FFFFFF;
+  --color-surface-on-dark: #141A26;
+  --color-surface-2: #F2F5F9;
+  --color-surface-2-on-dark: #1D2534;
+  --color-line: #E1E7F0;
+  --color-line-on-dark: #2A3345;
+  --color-line-2: #C7D0DF;
+  --color-line-2-on-dark: #3A4559;
+
+  --color-ink: #141A26;
+  --color-ink-on-dark: #EDF1F7;
+  --color-ink-2: #3F4859;
+  --color-ink-2-on-dark: #BFC8D6;
+  --color-ink-3: #68738A;
+  --color-ink-3-on-dark: #8B96AB;
+  --color-ink-4: #8B96AB;
+  --color-ink-4-on-dark: #68738A;
+
+  /* Status. Both sets pass the six colourblindness and contrast checks, but
+   * only because status always ships with an icon and a word beside it.
+   * Green against amber is delta E 6.9 for protanopia, which is legal with
+   * that second encoding and not without it. */
+  --color-good: #0F8A5F;
+  --color-good-on-dark: #35AC7C;
+  --color-warn: #B4791F;
+  --color-warn-on-dark: #B58A22;
+  --color-crit: #B03A48;
+  --color-crit-on-dark: #D45283;
+  --color-info: #2F82C4;
+  --color-info-on-dark: #3D9AE0;
+  --color-focus: #2F82C4;
+  --color-focus-on-dark: #7FBEE6;
+
+  /* Match tiers. TrialScorer returns 0-100, which is sequential data, so this
+   * is one hue running dark to light rather than four unrelated colours.
+   * match-none is deliberately outside the ramp: ineligible is a hard stop
+   * from a failed criterion, not a low score. */
+  --color-match-excellent: #1B5182;
+  --color-match-excellent-on-dark: #ADD6F0;
+  --color-match-good: #2F82C4;
+  --color-match-good-on-dark: #489AD9;
+  --color-match-fair: #7FBEE6;
+  --color-match-fair-on-dark: #2F82C4;
+  --color-match-poor: #C5E2F5;
+  --color-match-poor-on-dark: #1B5182;
+  --color-match-none: #8B96AB;
+  --color-match-none-on-dark: #68738A;
+
+  /* ------------------------------------------------------------------
+   * Superseded. Still referenced, so still defined.
+   * ------------------------------------------------------------------ */
+
+  /* bg-primary, focus:ring-primary and focus:border-primary across the form
+   * components. Note the same files also reach for primary-300, primary-500,
+   * primary-600, primary-800 and a whole secondary-* ramp, none of which are
+   * defined, so those classes currently do nothing. */
+  --color-primary: oklch(0.2077 0.0398 265.75);
+
+  --color-coral: oklch(0.7151 0.1785 27.97);
   --color-coral-50: oklch(0.975 0.012 23.84);
   --color-coral-100: oklch(0.951 0.024 20.79);
   --color-coral-200: oklch(0.902 0.051 21.16);
@@ -31,28 +127,4 @@
   --color-lavender-800: oklch(0.356 0.223 275.47);
   --color-lavender-900: oklch(0.252 0.158 275.64);
   --color-lavender-950: oklch(0.204 0.128 275.47);
-
-  --color-navy-50: oklch(0.932 0.018 272.34);
-  --color-navy-100: oklch(0.872 0.035 273.24);
-  --color-navy-200: oklch(0.734 0.077 270.16);
-  --color-navy-300: oklch(0.606 0.117 266.08);
-  --color-navy-400: oklch(0.478 0.09 265.35);
-  --color-navy-500: oklch(0.338 0.065 265.49);
-  --color-navy-600: oklch(0.208 0.04 265.76);
-  --color-navy-700: oklch(0.19 0.036 266.07);
-  --color-navy-800: oklch(0.166 0.031 265.24);
-  --color-navy-900: oklch(0.13 0.024 265.94);
-  --color-navy-950: oklch(0.107 0.019 262.03);
-
-  --color-deepblue: #4E46DC;    /* link / hover */
-  --color-storm-600: oklch(0.2077 0.0398 265.75);    /* headings */
-  
-  --color-slategray: #475569;   /* body text */
-  --color-seagreen: #2EAE97;    /* success / trust */
-  --color-sunset: #F7A35C;      /* warning / accent */
-  --color-cloud: #FAFAFB;       /* background */
-  --color-porcelain: #FFFFFF;   /* cards / surfaces */
-  --color-stone: #E5E7EB;  
-
-  --color-primary: oklch(0.2077 0.0398 265.75);
 }
