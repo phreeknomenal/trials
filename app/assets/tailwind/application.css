@@ -3,6 +3,9 @@
 @variant dark (&:is(.dark *));
 
 @theme {
+  /* The wordmark has been rendering in the browser default: font-primary was
+   * applied in the header while the token sat commented out. */
+  --font-primary: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-body: "Montserrat", ui-sans-serif, system-ui, sans-serif;
   --font-accent: "Caveat", cursive;
 

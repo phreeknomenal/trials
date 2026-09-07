@@ -54,6 +54,19 @@ RSpec.describe Layout::Navigation::HeaderComponent, type: :component do
       expect(html).not_to include("w-[80%]")
     end
 
+    it "renders the wordmark, not the old name" do
+      render_inline(described_class.new)
+
+      expect(page).to have_text("Dira Health")
+      expect(page).to have_no_text("Lumen")
+    end
+
+    it "sets the mark beside the wordmark" do
+      render_inline(described_class.new)
+
+      expect(page).to have_css("svg.h-8", visible: :all)
+    end
+
     it "gives the wordmark link a visible focus ring" do
       render_inline(described_class.new)
 
