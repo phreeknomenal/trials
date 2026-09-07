@@ -1,14 +1,67 @@
+# The same links in both the desktop bar and the mobile panel, so nothing is
+# reachable on one and not the other. Orientation only changes layout classes.
 class Layout::Navigation::Menu::HeaderMenuComponent < ApplicationComponent
   erb_template <<-ERB
-    <div class="text-base font-medium tracking-tight flex items-center gap-4 text-zinc-900 dark:text-zinc-300">
-      <% if user_signed_in? %>
-        <%= link_to "My Trials", my_trials_root_path, class: "hover:text-lavender-600" %>
-        <%= link_to "My Trial Search", my_trials_search_path, class: "hover:text-lavender-600" %>
-        <%= link_to "Browse All Trials", search_index_path, class: "hover:text-lavender-600" %>
-      <% else %>
-        <%= link_to "Search Trials", search_index_path, class: "hover:text-lavender-600" %>
+    <nav class="<%= container_class %>" aria-label="Main">
+      <% links.each do |name, path| %>
+        <%= link_to name, path,
+              class: link_class(path),
+              aria: {current: ("page" if current?(path))} %>
       <% end %>
-      <%= link_to "Community", "#", class: "hover:text-lavender-600" %>
-    </div>
+    </nav>
   ERB
+
+  BASE_LINK_CLASS = "rounded-md px-3 py-2 font-medium transition-colors " \
+    "hover:bg-zinc-100 hover:text-zinc-900 " \
+    "dark:hover:bg-zinc-800 dark:hover:text-zinc-100 " \
+    "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lavender-600"
+
+  CURRENT_LINK_CLASS = "bg-lavender-50 text-lavender-700 dark:bg-lavender-900/30 dark:text-lavender-300"
+
+  RESTING_LINK_CLASS = "text-zinc-700 dark:text-zinc-300"
+
+  def initialize(orientation: :horizontal)
+    @orientation = orientation
+  end
+
+  def links
+    if user_signed_in?
+      {
+        "My Trials" => helpers.my_trials_root_path,
+        "My Trial Search" => helpers.my_trials_search_path,
+        "Browse All Trials" => helpers.search_index_path
+      }
+    else
+      {"Search Trials" => helpers.search_index_path}
+    end
+  end
+
+  def container_class
+    if vertical?
+      "flex flex-col gap-1 text-base tracking-tight"
+    else
+      "flex items-center gap-1 text-base tracking-tight"
+    end
+  end
+
+  def link_class(path)
+    state = current?(path) ? CURRENT_LINK_CLASS : RESTING_LINK_CLASS
+    width = vertical? ? "block" : ""
+
+    [BASE_LINK_CLASS, state, width].reject(&:blank?).join(" ")
+  end
+
+  # Guarded because a component spec can render without a request, and a nav
+  # that raises in test is worse than one that renders nothing as current.
+  def current?(path)
+    helpers.current_page?(path)
+  rescue ActionController::UrlGenerationError, ArgumentError
+    false
+  end
+
+  private
+
+  def vertical?
+    @orientation == :vertical
+  end
 end
