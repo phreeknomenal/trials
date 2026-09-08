@@ -14,7 +14,16 @@ gem "cocoon"
 gem "devise"
 gem "faker"
 gem "httparty"
-gem "image_processing", "~> 1.2"
+gem "image_processing", "~> 2.1"
+# image_processing 2 dropped its backend dependencies, so the processor is now
+# declared here. Rails defaults active_storage.variant_processor to :vips.
+#
+# Note this makes the native libvips library a boot dependency, not just a
+# processing one: ActiveStorage requires the vips backend while loading, so any
+# environment without libvips fails to boot even if it never touches an image.
+# require: false does not avoid it. The Dockerfile and every CI job that loads
+# Rails install it.
+gem "ruby-vips", "~> 2.0"
 gem "importmap-rails"
 gem "jbuilder"
 gem "kamal", require: false
