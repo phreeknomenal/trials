@@ -1,8 +1,21 @@
 require "rails_helper"
 
 RSpec.describe Utilities::AvatarComponent, type: :component do
-  def render_with(avatar: nil, initials: "DW")
-    render_inline(described_class.new(avatar: avatar, initials: initials))
+  def render_with(avatar: nil, initials: "DW", size: nil)
+    args = {avatar: avatar, initials: initials}
+    args[:size] = size if size
+
+    render_inline(described_class.new(**args))
+  end
+
+  def profile_with_avatar
+    create(:profile).tap do |profile|
+      profile.avatar.attach(
+        io: Rails.root.join("spec/fixtures/files/avatar.png").open,
+        filename: "avatar.png",
+        content_type: "image/png"
+      )
+    end
   end
 
   describe "without an avatar" do
@@ -60,6 +73,54 @@ RSpec.describe Utilities::AvatarComponent, type: :component do
 
         expect(described_class::AVATAR_COLORS).to include(color)
       end
+    end
+  end
+
+  # Uploads were served at full size and scaled down by CSS, so a multi-megabyte
+  # phone photo was downloaded to fill a 40px circle.
+  describe "with an avatar" do
+    let(:avatar) { profile_with_avatar.avatar }
+
+    it "renders an image" do
+      expect(render_with(avatar: avatar).css("img")).not_to be_empty
+    end
+
+    it "serves a resized variant rather than the original upload" do
+      src = render_with(avatar: avatar).css("img").first["src"]
+
+      expect(src).to include("representations")
+    end
+
+    it "cuts the variant at twice the display size, for retina" do
+      component = described_class.new(avatar: avatar, initials: "DW", size: 96)
+
+      expect(component.variant_size).to eq(192)
+    end
+
+    it "reports width and height so the box is reserved before the image lands" do
+      img = render_with(avatar: avatar, size: 96).css("img").first
+
+      expect(img["width"]).to eq("96")
+      expect(img["height"]).to eq("96")
+    end
+
+    it "loads lazily" do
+      expect(render_with(avatar: avatar).css("img").first["loading"]).to eq("lazy")
+    end
+
+    it "is decorative, since every call site has adjacent text or a label" do
+      expect(render_with(avatar: avatar).css("img").first["alt"]).to eq("")
+    end
+
+    it "defaults to 40, the size three of the six call sites use" do
+      expect(described_class.new(avatar: avatar, initials: "DW").size).to eq(40)
+    end
+
+    # A PDF or SVG attachment has no variant. Falling back beats raising.
+    it "serves the original when the attachment cannot be varied" do
+      allow(avatar).to receive(:variable?).and_return(false)
+
+      expect(described_class.new(avatar: avatar, initials: "DW").image).to eq(avatar)
     end
   end
 end

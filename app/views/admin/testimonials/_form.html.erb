@@ -42,7 +42,7 @@
     <%= f.label :avatar, class: "block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1" %>
     <% if testimonial.avatar.attached? %>
       <div class="w-12 h-12 mb-2">
-        <%= render Utilities::AvatarComponent.new(avatar: testimonial.avatar, initials: testimonial.initials) %>
+        <%= render Utilities::AvatarComponent.new(avatar: testimonial.avatar, initials: testimonial.initials, size: 48) %>
       </div>
     <% end %>
     <%= f.file_field :avatar, accept: "image/*", class: "text-sm" %>

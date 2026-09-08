@@ -57,7 +57,7 @@ class Layout::Navigation::HeaderComponent < ApplicationComponent
       link_to helpers.profile_path(current_profile),
         class: "block w-10 h-10 rounded-full overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500",
         aria: {label: "Your profile"} do
-        render Utilities::AvatarComponent.new(avatar: current_profile.avatar, initials: current_profile.initials)
+        render Utilities::AvatarComponent.new(avatar: current_profile.avatar, initials: current_profile.initials, size: 40)
       end
     else
       link_to "Login", helpers.new_user_session_path,
