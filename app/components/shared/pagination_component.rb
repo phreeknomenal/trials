@@ -9,7 +9,7 @@ module Shared
         <div class="w-24">
           <% if previous_page %>
             <%= link_to "← Previous", path_for.call(previous_page),
-                  class: "text-lavender-600 hover:text-lavender-700 font-medium",
+                  class: "text-sky-600 hover:text-sky-700 font-medium",
                   rel: "prev" %>
           <% end %>
         </div>
@@ -21,7 +21,7 @@ module Shared
         <div class="w-24 text-right">
           <% if next_page %>
             <%= link_to "Next →", path_for.call(next_page),
-                  class: "text-lavender-600 hover:text-lavender-700 font-medium",
+                  class: "text-sky-600 hover:text-sky-700 font-medium",
                   rel: "next" %>
           <% end %>
         </div>

@@ -1,6 +1,6 @@
 class Page::Trials::Sidebar::AnchorLinkComponent < ApplicationComponent
   erb_template <<-ERB
-    <a href="<%= path %>" class="hover:text-lavender-600"><%= text %></a>
+    <a href="<%= path %>" class="hover:text-sky-600"><%= text %></a>
   ERB
 
   attr_reader :path, :text

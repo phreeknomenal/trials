@@ -67,7 +67,7 @@ class Forms::FieldComponent < ApplicationComponent
   end
 
   def checkbox_field_class
-    "h-4 w-4 rounded border-zinc-200 dark:border-zinc-700 text-white focus:ring-lavender-600 form-check-input accent-lavender-600"
+    "h-4 w-4 rounded border-zinc-200 dark:border-zinc-700 text-white focus:ring-sky-500 form-check-input accent-sky-500"
   end
 
   def checkbox_label_class
@@ -87,14 +87,14 @@ class Forms::FieldComponent < ApplicationComponent
   end
 
   def select_field_class
-    "block p-2 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-lavender-600 focus:border-lavender-600 disabled:bg-lavender-50 disabled:text-lavender-500 disabled:border-lavender-200 disabled:shadow-none"
+    "block p-2 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-sky-500 focus:border-navy-600 disabled:bg-sky-50 disabled:text-sky-500 disabled:border-sky-200 disabled:shadow-none"
   end
 
   def text_field_class
-    "block w-full form-control bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-300 text-base rounded focus:ring-lavender-600 focus:border-lavender-600 p-2 disabled:bg-lavender-50 disabled:text-lavender-500 disabled:border-lavender-200 disabled:shadow-none"
+    "block w-full form-control bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-300 text-base rounded focus:ring-sky-500 focus:border-navy-600 p-2 disabled:bg-sky-50 disabled:text-sky-500 disabled:border-sky-200 disabled:shadow-none"
   end
 
   def text_area_class
-    "block w-full h-36 form-control bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-300 text-base rounded focus:ring-lavender-600 focus:border-lavender-600 p-2"
+    "block w-full h-36 form-control bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-300 text-base rounded focus:ring-sky-500 focus:border-navy-600 p-2"
   end
 end

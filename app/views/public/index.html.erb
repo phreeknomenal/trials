@@ -5,7 +5,7 @@
         <h1 class="text-5xl lg:text-7xl tracking-tight font-bold text-left text-zinc-900 dark:text-zinc-300 mb-4">Find clinical trials that match your journey</h1>
         <p class="font-body text-base lg:text-lg text-zinc-600 dark:text-zinc-400 mb-6">Connect with medical research that understands your unique health needs. Our platform helps patients discover personalized clinical trials with precision and hope.</p>
         <div class="flex gap-4">
-          <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Search Trials", color: "lavender") %>
+          <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Search Trials", color: "primary") %>
           <%= render Buttons::ButtonComponent.new(path: new_user_registration_path, text: "Sign Up") %>
         </div>
       </div>
@@ -80,7 +80,7 @@
       <div class="w-full grid grid-cols-2 gap-12 mb-10">
         <div class="col-span-2 lg:col-span-1">
           <div class="w-full h-full flex gap-x-4">
-            <div class="w-24 text-lavender-600">
+            <div class="w-24 text-sky-600">
               <%= render Utilities::IconComponent.new("map", size: 24) %>
             </div>
             <div class="space-y-3">
@@ -91,7 +91,7 @@
         </div>
         <div class="col-span-2 lg:col-span-1">
           <div class="w-full h-full flex gap-x-4">
-            <div class="w-24 text-lavender-600">
+            <div class="w-24 text-sky-600">
               <%= render Utilities::IconComponent.new("grid", size: 24) %>
             </div>
             <div class="space-y-3">
@@ -177,7 +177,7 @@
 <% end %>
 
 <section id="" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-zinc-300 dark:border-zinc-700">
-  <div class="w-full mx-auto text-center bg-lavender-600 text-white flex flex-col items-center justify-center p-10 rounded-2xl">
+  <div class="w-full mx-auto text-center bg-navy-600 text-white flex flex-col items-center justify-center p-10 rounded-2xl">
     <div class="w-4/5 mb-8 gap-5">
       <h3 class="text-7xl font-bold mb-5">Join the medical research community</h3>
       <p class="text-lg font-body text-white">Become part of a network transforming healthcare through collaborative research.</p>

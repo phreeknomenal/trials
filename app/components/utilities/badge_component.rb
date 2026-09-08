@@ -48,7 +48,7 @@ class Utilities::BadgeComponent < ApplicationComponent
   def variant_classes
     case computed_variant
     when :nct_id
-      "text-lavender-100 bg-lavender-600 font-bold"
+      "text-sky-100 bg-navy-600 font-bold"
     when :recruiting
       "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300 font-bold"
     when :active
@@ -62,7 +62,7 @@ class Utilities::BadgeComponent < ApplicationComponent
     when :tag
       "bg-zinc-200 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-300"
     else
-      "bg-lavender-100 text-lavender-800 dark:bg-lavender-900/20 dark:text-lavender-300"
+      "bg-sky-100 text-sky-800 dark:bg-navy-900/20 dark:text-sky-300"
     end
   end
 

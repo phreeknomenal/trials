@@ -1,12 +1,12 @@
 <div class="col-span-2 lg:col-span-1 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg p-6 relative" id="saved-trial-<%= saved_trial.id %>">
   <div class="absolute top-4 right-4">
     <label class="flex items-center gap-2 cursor-pointer text-sm text-zinc-600 dark:text-zinc-400" title="Select for comparison">
-      <input type="checkbox" name="ids[]" value="<%= saved_trial.id %>" form="compare-trials-form" class="w-4 h-4 rounded border-zinc-300 text-lavender-600 focus:ring-lavender-500">
+      <input type="checkbox" name="ids[]" value="<%= saved_trial.id %>" form="compare-trials-form" class="w-4 h-4 rounded border-zinc-300 text-sky-600 focus:ring-sky-500">
       <span>Compare</span>
     </label>
   </div>
   <h3 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-2 truncate pr-24" title="<%= saved_trial.trial_title %>">
-    <%= link_to truncate(saved_trial.trial_title, length: 300), saved_trial_path(id: saved_trial), class: "text-zinc-600 dark:text-zinc-400 hover:text-lavender-500 hover:underline" %>
+    <%= link_to truncate(saved_trial.trial_title, length: 300), saved_trial_path(id: saved_trial), class: "text-zinc-600 dark:text-zinc-400 hover:text-sky-500 hover:underline" %>
   </h3>
   
   <div class="flex flex-wrap gap-4 mb-3 text-sm items-center justify-between text-gray-600">

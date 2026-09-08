@@ -1,7 +1,7 @@
 class Page::Cards::QuoteComponent < ApplicationComponent
   erb_template <<-ERB
     <div class="w-full h-full flex flex-col gap-x-4 border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 space-y-3">
-      <div class="w-auto h-4 flex gap-1 mb-5 text-lavender-600">
+      <div class="w-auto h-4 flex gap-1 mb-5 text-sky-600">
         <%= render Utilities::IconComponent.new("star_solid", size: 6) %>
         <%= render Utilities::IconComponent.new("star_solid", size: 6) %>
         <%= render Utilities::IconComponent.new("star_solid", size: 6) %>

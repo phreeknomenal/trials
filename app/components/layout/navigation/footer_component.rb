@@ -14,7 +14,7 @@ class Layout::Navigation::FooterComponent < ApplicationComponent
         <div class="mt-5">
           <div class="w-1/2 flex gap-2">
             <input type="email" placeholder="Enter your email" class="flex-1 px-4 py-2 rounded-lg border border-zinc-200 dark:border-zinc-700 focus:outline-none focus:border-zinc-200 dark:focus:border-zinc-700 text-zinc-600 dark:text-zinc-600 transition-all duration-300">
-            <button class="bg-lavender-600 text-white px-6 py-2 rounded-lg hover:bg-zinc-800 dark:hover:bg-zinc-400 transition-all duration-300 font-medium">
+            <button class="bg-navy-600 text-white px-6 py-2 rounded-lg hover:bg-zinc-800 dark:hover:bg-zinc-400 transition-all duration-300 font-medium">
               Subscribe
             </button>
           </div>

@@ -16,9 +16,9 @@
           <%= f.text_field :search, 
               placeholder: "Search by trial title or notes...", 
               value: params[:search],
-              class: "block p-2 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-lavender-600 focus:border-lavender-600" %>
+              class: "block p-2 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-sky-500 focus:border-navy-600" %>
         </div>
-        <%= f.submit "Search", class: "cursor-pointer inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-md text-white bg-lavender-600 hover:bg-lavender-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lavender-500" %>
+        <%= f.submit "Search", class: "cursor-pointer inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-md text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500" %>
       </div>
 
       <!-- Filters -->
@@ -31,7 +31,7 @@
                 params[:status]
               ),
               { include_blank: false },
-              class: "block p-2 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-lavender-600 focus:border-lavender-600" %>
+              class: "block p-2 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-sky-500 focus:border-navy-600" %>
         </div>
 
         <!-- Sort By -->
@@ -42,7 +42,7 @@
                 params[:sort_by] || "date"
               ),
               { include_blank: false },
-              class: "block p-2 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-lavender-600 focus:border-lavender-600" %>
+              class: "block p-2 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-sky-500 focus:border-navy-600" %>
         </div>
 
         <!-- Sort Order -->
@@ -53,7 +53,7 @@
                 params[:sort] || "newest"
               ),
               { include_blank: false },
-              class: "block p-2 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-lavender-600 focus:border-lavender-600" %>
+              class: "block p-2 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-sky-500 focus:border-navy-600" %>
         </div>
       </div>
 
@@ -87,7 +87,7 @@
     <% if @saved_trials.any? && @saved_trials.count >= 2 %>
       <%= form_with url: my_trials_trial_comparison_path, method: :get, id: "compare-trials-form", local: true, class: "flex items-center gap-2" do |f| %>
         <span class="text-sm text-zinc-600 dark:text-zinc-400">Select 2–3 trials above, then</span>
-        <%= f.submit "Compare selected", class: "cursor-pointer inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-lavender-600 hover:bg-lavender-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lavender-500" %>
+        <%= f.submit "Compare selected", class: "cursor-pointer inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500" %>
       <% end %>
     <% end %>
   </div>
@@ -105,12 +105,12 @@
         ) %>
   <% else %>
     <div class="flex flex-col justify-center items-center text-center py-12">
-      <div class="text-lavender-600">
+      <div class="text-sky-600">
         <%= render Utilities::IconComponent.new("bookmark", size: 12) %>
       </div>
       <h3 class="mt-2 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">No saved trials yet</h3>
       <p class="mt-1 text-gray-500">Start saving trials to keep track of ones you're interested in</p>
-      <%= link_to "Search Trials", my_trials_root_path, class: "mt-4 inline-block px-6 py-3 bg-lavender-600 text-white rounded-lg hover:bg-lavender-700 transition-colors" %>
+      <%= link_to "Search Trials", my_trials_root_path, class: "mt-4 inline-block px-6 py-3 bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors" %>
     </div>
   <% end %>
 </div>

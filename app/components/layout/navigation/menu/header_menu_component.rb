@@ -14,9 +14,9 @@ class Layout::Navigation::Menu::HeaderMenuComponent < ApplicationComponent
   BASE_LINK_CLASS = "rounded-md px-3 py-2 font-medium transition-colors " \
     "hover:bg-zinc-100 hover:text-zinc-900 " \
     "dark:hover:bg-zinc-800 dark:hover:text-zinc-100 " \
-    "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lavender-600"
+    "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
 
-  CURRENT_LINK_CLASS = "bg-lavender-50 text-lavender-700 dark:bg-lavender-900/30 dark:text-lavender-300"
+  CURRENT_LINK_CLASS = "bg-sky-50 text-sky-700 dark:bg-navy-900/30 dark:text-sky-300"
 
   RESTING_LINK_CLASS = "text-zinc-700 dark:text-zinc-300"
 

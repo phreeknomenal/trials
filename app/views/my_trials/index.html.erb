@@ -12,7 +12,7 @@
 <section class="px-5 lg:px-44 py-16">
   <div class="grid grid-cols-4 gap-6 mb-10">
     <div class="col-span-2 lg:col-span-1 bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 p-8">
-      <p class="text-4xl font-bold text-lavender-600 dark:text-lavender-400"><%= @saved_trials_count %></p>
+      <p class="text-4xl font-bold text-sky-600 dark:text-sky-400"><%= @saved_trials_count %></p>
       <p class="text-sm text-zinc-600 dark:text-zinc-400 mt-2">Saved Trials</p>
     </div>
     <div class="col-span-2 lg:col-span-1 bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 p-8">
@@ -44,7 +44,7 @@
       </div>
       <div class="mt-6 pt-6 border-t border-zinc-200 dark:border-zinc-700">
         <%= link_to "View All Saved Trials", my_trials_saved_trials_path, 
-            class: "inline-block px-6 py-2 bg-lavender-600 text-white rounded-lg hover:bg-lavender-700 transition-colors font-medium" %>
+            class: "inline-block px-6 py-2 bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors font-medium" %>
       </div>
     </div>
 
@@ -62,7 +62,7 @@
       <div class="mt-6 pt-6 border-t border-zinc-200 dark:border-zinc-700">
         <% if @saved_trials_count >= 2 %>
           <%= link_to "Start Comparing", my_trials_trial_comparison_path, 
-              class: "inline-block px-6 py-2 bg-lavender-600 text-white rounded-lg hover:bg-lavender-700 transition-colors font-medium" %>
+              class: "inline-block px-6 py-2 bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors font-medium" %>
         <% else %>
           <p class="text-sm text-zinc-500 dark:text-zinc-400">
             Save at least 2 trials to compare them
