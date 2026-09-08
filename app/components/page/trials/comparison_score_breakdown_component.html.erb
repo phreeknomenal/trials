@@ -33,7 +33,7 @@
           <tr class="border-b border-zinc-200 dark:border-zinc-700 <%= idx.even? ? 'bg-white dark:bg-zinc-800' : 'bg-zinc-50 dark:bg-zinc-700/20' %>">
             <td class="py-4 px-4 text-sm font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
               <div class="w-4 h-4 text-zinc-600 dark:text-zinc-400 flex-shrink-0">
-                <%= render Utilities::IconComponent.new(get_icon_for_criteria(criteria), size: 16) %>
+                <%= render Utilities::IconComponent.new(get_icon_for_criteria(criteria), size: 4) %>
               </div>
               <%= criteria %>
             </td>

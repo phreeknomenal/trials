@@ -3,7 +3,7 @@ class Page::Cards::IconCardComponent < ApplicationComponent
     <% if style == :default %>
       <div class="w-full h-full flex gap-x-4 border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 space-y-3">
         <div class="w-24 text-lavender-600">
-          <%= render Utilities::IconComponent.new(icon, size: 14) %>
+          <%= render Utilities::IconComponent.new(icon, size: 24) %>
         </div>
         <div class="space-y-3">
           <%= render Typography::HeadingComponent.new(size: :h3, text: title) %>
