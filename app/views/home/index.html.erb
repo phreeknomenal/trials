@@ -4,7 +4,7 @@
     <p class="text-lg text-center text-zinc-600 dark:text-zinc-600 mb-6">Discover personalized clinical trials tailored to your unique medical profile and needs.<br> Our advanced matching system connects you with research opportunities that matter.</p>
     <div class="flex justify-center gap-4">
       <%= render Buttons::ButtonComponent.new(path: new_user_registration_path, text: "Get Started", color: "primary") %>
-      <%= render Buttons::ButtonComponent.new(path: "#", text: "Learn More", color: "blue") %>
+      <%= render Buttons::ButtonComponent.new(path: "#", text: "Learn More", color: "secondary") %>
     </div>
   </div>
 </section>
@@ -129,8 +129,8 @@
   </div>
 
   <div class="flex justify-center gap-2">
-    <%= render Buttons::ButtonComponent.new(path: "#", text: "Find my match", color: "clear_navy") %>
-    <%= render Buttons::ButtonComponent.new(path: "#", text: "Explore", color: "clear_navy") %>
+    <%= render Buttons::ButtonComponent.new(path: "#", text: "Find my match", color: "secondary") %>
+    <%= render Buttons::ButtonComponent.new(path: "#", text: "Explore", color: "secondary") %>
   </div>
 
   <div class="w-full px-5 lg:px-24 mt-10">

@@ -63,7 +63,7 @@
 
   <div class="flex gap-2">
     <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Start Searching") %>
-    <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Explore Trials", color: "clear", icon: "arrow_right", icon_position: "right") %>
+    <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Explore Trials", color: "quiet", icon: "arrow_right", icon_position: "right") %>
   </div>
 </section>
 
@@ -103,8 +103,8 @@
       </div>
 
       <div class="flex gap-2">
-        <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Start Searching", color: "clear_navy") %>
-        <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Explore Trials", color: "clear", icon: "arrow_right", icon_position: "right") %>
+        <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Start Searching", color: "secondary") %>
+        <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Explore Trials", color: "quiet", icon: "arrow_right", icon_position: "right") %>
       </div>
     </div>
     <div class="col-span-2 lg:col-span-1 order-1 lg:order-2 mb-8 lg:mb-0">
@@ -184,8 +184,8 @@
     </div>
 
     <div class="flex justify-center gap-2">
-      <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Search Trials", color: "white") %>
-      <%= render Buttons::ButtonComponent.new(path: new_user_registration_path, text: "Sign Up Free", color: "white", icon: "arrow_right", icon_position: "right") %>
+      <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Search Trials", color: "secondary") %>
+      <%= render Buttons::ButtonComponent.new(path: new_user_registration_path, text: "Sign Up Free", color: "secondary", icon: "arrow_right", icon_position: "right") %>
     </div>
   </div>
 </section>
