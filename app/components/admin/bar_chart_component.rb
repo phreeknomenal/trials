@@ -8,7 +8,7 @@ module Admin
           <div class="flex items-center gap-3">
             <div class="w-28 shrink-0 text-xs text-zinc-500 dark:text-zinc-400 truncate" title="<%= label %>"><%= label %></div>
             <div class="flex-1 h-5 rounded bg-zinc-100 dark:bg-zinc-800 overflow-hidden">
-              <div class="h-full rounded bg-lavender-500" style="width: <%= percent_for(value) %>%"></div>
+              <div class="h-full rounded bg-navy-500" style="width: <%= percent_for(value) %>%"></div>
             </div>
             <div class="w-10 shrink-0 text-right text-xs font-medium text-zinc-700 dark:text-zinc-300"><%= value %></div>
           </div>

@@ -17,8 +17,9 @@
    * steps and the reasoning, lives in the vault at
    * Projects/trials-brand-identity.md
    *
-   * Migration note: lavender and coral are still live, 132 and 16 usages,
-   * and are swept in a later pass. Nothing below is referenced yet.
+   * The lavender and coral ramps they replaced are gone. Their 296 usages were
+   * swept onto these: navy for fills and solid edges, sky for text, tints and
+   * focus.
    * ------------------------------------------------------------------ */
 
   /* Primary. navy-600 is the mark's left face. */
@@ -96,38 +97,9 @@
   --color-match-none: #8B96AB;
   --color-match-none-on-dark: #68738A;
 
-  /* ------------------------------------------------------------------
-   * Superseded. Still referenced, so still defined.
-   * ------------------------------------------------------------------ */
-
   /* bg-primary, focus:ring-primary and focus:border-primary across the form
    * components. Note the same files also reach for primary-300, primary-500,
    * primary-600, primary-800 and a whole secondary-* ramp, none of which are
    * defined, so those classes currently do nothing. */
   --color-primary: oklch(0.2077 0.0398 265.75);
-
-  --color-coral: oklch(0.7151 0.1785 27.97);
-  --color-coral-50: oklch(0.975 0.012 23.84);
-  --color-coral-100: oklch(0.951 0.024 20.79);
-  --color-coral-200: oklch(0.902 0.051 21.16);
-  --color-coral-300: oklch(0.854 0.079 22.69);
-  --color-coral-400: oklch(0.806 0.11 23.87);
-  --color-coral-500: oklch(0.758 0.145 25.59);
-  --color-coral-600: oklch(0.715 0.178 27.97);
-  --color-coral-700: oklch(0.576 0.208 33.83);
-  --color-coral-800: oklch(0.431 0.155 33.88);
-  --color-coral-900: oklch(0.288 0.105 33.6);
-  --color-coral-950: oklch(0.214 0.078 33.61);
-
-  --color-lavender-50: oklch(0.958 0.021 288.93);
-  --color-lavender-100: oklch(0.925 0.038 287.31);
-  --color-lavender-200: oklch(0.849 0.079 287.82);
-  --color-lavender-300: oklch(0.768 0.125 286.73);
-  --color-lavender-400: oklch(0.693 0.169 285.34);
-  --color-lavender-500: oklch(0.621 0.212 283.25);
-  --color-lavender-600: oklch(0.551 0.255 280.43);
-  --color-lavender-700: oklch(0.468 0.293 275.55);
-  --color-lavender-800: oklch(0.356 0.223 275.47);
-  --color-lavender-900: oklch(0.252 0.158 275.64);
-  --color-lavender-950: oklch(0.204 0.128 275.47);
 }

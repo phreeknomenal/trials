@@ -2,7 +2,7 @@ class Page::HeaderComponent < ApplicationComponent
   erb_template <<-ERB
   <div class="w-full flex flex-col <%= position_classes %> justify-center gap-3 mb-10">
     <% if pretext.present? %>
-      <%= render Typography::PretextComponent.new(text: pretext, color: "text-lavender-600") %>
+      <%= render Typography::PretextComponent.new(text: pretext, color: "text-sky-600") %>
     <% end %>
     <%= render Typography::HeadingComponent.new(size: :heading, text: heading) %>
     <% if subheading.present? %>

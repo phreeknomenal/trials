@@ -7,7 +7,7 @@
       </p>
     </div>
     <%= link_to "← Back to Saved Trials", my_trials_saved_trials_path, 
-        class: "text-lavender-600 dark:text-lavender-400 hover:underline font-medium" %>
+        class: "text-sky-600 dark:text-sky-400 hover:underline font-medium" %>
   </div>
 </section>
 
@@ -142,9 +142,9 @@
           <% @saved_trials.each do |trial| %>
             <td class="py-4 px-5 border-l border-zinc-200 dark:border-zinc-700 space-y-2">
               <%= link_to "View Full Trial", my_trial_path(trial.nct_id), 
-                  class: "block w-full px-4 py-2 bg-lavender-600 text-white rounded-lg hover:bg-lavender-700 transition-colors text-center font-medium text-sm" %>
+                  class: "block w-full px-4 py-2 bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors text-center font-medium text-sm" %>
               <%= link_to "Edit Entry", edit_saved_trial_path(trial), 
-                  class: "block w-full px-4 py-2 bg-white dark:bg-zinc-800 border-2 border-lavender-600 text-lavender-600 dark:text-lavender-400 rounded-lg hover:bg-lavender-50 dark:hover:bg-lavender-900/20 transition-colors text-center font-medium text-sm" %>
+                  class: "block w-full px-4 py-2 bg-white dark:bg-zinc-800 border-2 border-navy-600 text-sky-600 dark:text-sky-400 rounded-lg hover:bg-sky-50 dark:hover:bg-navy-900/20 transition-colors text-center font-medium text-sm" %>
             </td>
           <% end %>
         </tr>

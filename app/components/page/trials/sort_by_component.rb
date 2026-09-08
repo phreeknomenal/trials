@@ -32,7 +32,7 @@ class Page::Trials::SortByComponent < ApplicationComponent
   def button_classes(active)
     base = "px-3 py-2 text-sm rounded"
     if active
-      "#{base} bg-lavender-100 dark:bg-lavender-900/30 text-lavender-700 dark:text-lavender-300"
+      "#{base} bg-sky-100 dark:bg-navy-900/30 text-sky-700 dark:text-sky-300"
     else
       "#{base} text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
     end

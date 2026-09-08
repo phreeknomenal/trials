@@ -2,7 +2,7 @@ class Page::Trials::TileComponent < ApplicationComponent
   erb_template <<-ERB
     <div class="flex gap-2 items-start">
       <% if icon.present? %>
-        <div class="w-5 h-5 mt-[3px] text-lavender-600">
+        <div class="w-5 h-5 mt-[3px] text-sky-600">
           <%= render Utilities::IconComponent.new(icon, size: 5) %>
         </div>
       <% end %>

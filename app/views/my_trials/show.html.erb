@@ -7,7 +7,7 @@
       </div>
       <h2 class="text-2xl font-bold text-red-900 dark:text-red-100 mb-2">Error Loading Trial</h2>
       <p class="text-red-800 dark:text-red-200 mb-6"><%= @error %></p>
-      <%= link_to "Back to My Trials", my_trials_path, class: "inline-flex items-center text-lavender-600 hover:text-lavender-700 font-medium" %>
+      <%= link_to "Back to My Trials", my_trials_path, class: "inline-flex items-center text-sky-600 hover:text-sky-700 font-medium" %>
     </div>
   </div>
 <% elsif @study.present? %>
@@ -39,11 +39,11 @@
 
           <!-- Profile Match Info -->
           <% if @profile %>
-            <div class="mt-6 p-4 bg-lavender-50 dark:bg-lavender-900/20 border border-lavender-200 dark:border-lavender-800 rounded-lg">
-              <h3 class="text-sm font-semibold text-lavender-900 dark:text-lavender-100 mb-2">
+            <div class="mt-6 p-4 bg-sky-50 dark:bg-navy-900/20 border border-sky-200 dark:border-sky-800 rounded-lg">
+              <h3 class="text-sm font-semibold text-navy-900 dark:text-sky-100 mb-2">
                 Your Profile
               </h3>
-              <div class="text-xs text-lavender-800 dark:text-lavender-200 space-y-1">
+              <div class="text-xs text-sky-800 dark:text-sky-200 space-y-1">
                 <% if @profile.age.present? %>
                   <p><strong>Age:</strong> <%= @profile.age %></p>
                 <% end %>
@@ -171,13 +171,13 @@
           <% if locations_to_show.any? %>
             <div class="grid grid-cols-2 mt-4 gap-6">
               <% locations_to_show.each do |loc| %>
-                <div class="col-span-1 flex items-start gap-1 p-3 border border-zinc-300 dark:border-zinc-700 rounded-lg <%= "ring-2 ring-lavender-500 bg-lavender-50 dark:bg-lavender-900/20" if loc[:near_you] %>">
+                <div class="col-span-1 flex items-start gap-1 p-3 border border-zinc-300 dark:border-zinc-700 rounded-lg <%= "ring-2 ring-sky-500 bg-sky-50 dark:bg-navy-900/20" if loc[:near_you] %>">
                   <div class="mt-0.5">
-                    <%= render Utilities::IconComponent.new("map_pin", size: 5, options: { class: "text-lavender-600" }) %>
+                    <%= render Utilities::IconComponent.new("map_pin", size: 5, options: { class: "text-sky-600" }) %>
                   </div>
                   <span class="text-zinc-900 dark:text-zinc-100"><%= loc[:display] %></span>
                   <% if loc[:near_you] %>
-                    <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-lavender-100 text-lavender-800 dark:bg-lavender-900/40 dark:text-lavender-200">Near you</span>
+                    <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-sky-100 text-sky-800 dark:bg-navy-900/40 dark:text-sky-200">Near you</span>
                   <% end %>
                 </div>
               <% end %>
@@ -187,7 +187,7 @@
               <% @study[:locations].each do |location| %>
                 <div class="col-span-1 flex items-start gap-1 p-3 border border-zinc-300 dark:border-zinc-700 rounded-lg">
                   <div class="mt-0.5">
-                    <%= render Utilities::IconComponent.new("map_pin", size: 5, options: { class: "text-lavender-600" }) %>
+                    <%= render Utilities::IconComponent.new("map_pin", size: 5, options: { class: "text-sky-600" }) %>
                   </div>
                   <span class="text-zinc-900 dark:text-zinc-100"><%= location %></span>
                 </div>
@@ -270,25 +270,25 @@
         <% end %>
 
         <!-- CTA Section -->
-        <div class="bg-lavender-50 dark:bg-lavender-900/20 border border-lavender-200 dark:border-lavender-800 rounded-lg p-6">
-          <h3 class="text-lg font-semibold text-lavender-900 dark:text-lavender-100 mb-2">
+        <div class="bg-sky-50 dark:bg-navy-900/20 border border-sky-200 dark:border-sky-800 rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-navy-900 dark:text-sky-100 mb-2">
             Interested in this trial?
           </h3>
-          <p class="text-lavender-800 dark:text-lavender-200 mb-4">
+          <p class="text-sky-800 dark:text-sky-200 mb-4">
             Visit ClinicalTrials.gov for contact information and to learn more about participating.
           </p>
           <div class="flex flex-wrap gap-3">
             <%= link_to "View on ClinicalTrials.gov", "https://clinicaltrials.gov/study/#{@study[:nct_id]}",
                 target: "_blank",
                 rel: "noopener noreferrer",
-                class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-lavender-600 hover:bg-lavender-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lavender-500" %>
+                class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500" %>
             <% if @saved_trial.present? %>
               <%= link_to "Edit status & notes", edit_saved_trial_path(@saved_trial),
-                  class: "inline-flex items-center px-4 py-2 border border-lavender-600 dark:border-lavender-500 text-sm font-medium rounded-md text-lavender-700 dark:text-lavender-300 bg-white dark:bg-zinc-800 hover:bg-lavender-50 dark:hover:bg-lavender-900/20" %>
+                  class: "inline-flex items-center px-4 py-2 border border-navy-600 dark:border-sky-500 text-sm font-medium rounded-md text-sky-700 dark:text-sky-300 bg-white dark:bg-zinc-800 hover:bg-sky-50 dark:hover:bg-navy-900/20" %>
               <% other_saved_count = current_user.saved_trials.where.not(id: @saved_trial.id).count %>
               <% if other_saved_count >= 1 %>
                 <%= link_to "Add to comparison", my_trials_trial_comparison_path(ids: [ @saved_trial.id, current_user.saved_trials.where.not(id: @saved_trial.id).limit(2).pluck(:id) ].flatten.uniq.take(3)),
-                    class: "inline-flex items-center px-4 py-2 border border-lavender-600 dark:border-lavender-500 text-sm font-medium rounded-md text-lavender-700 dark:text-lavender-300 bg-white dark:bg-zinc-800 hover:bg-lavender-50 dark:hover:bg-lavender-900/20" %>
+                    class: "inline-flex items-center px-4 py-2 border border-navy-600 dark:border-sky-500 text-sm font-medium rounded-md text-sky-700 dark:text-sky-300 bg-white dark:bg-zinc-800 hover:bg-sky-50 dark:hover:bg-navy-900/20" %>
               <% end %>
             <% end %>
           </div>
@@ -309,7 +309,7 @@
       <p class="text-zinc-600 dark:text-zinc-400 mb-4">
         The clinical trial you're looking for could not be found.
       </p>
-      <%= link_to "Back to Search", search_index_path, class: "text-lavender-600 hover:text-lavender-700 font-medium" %>
+      <%= link_to "Back to Search", search_index_path, class: "text-sky-600 hover:text-sky-700 font-medium" %>
     </div>
   </section>
 <% end %>

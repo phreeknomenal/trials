@@ -25,7 +25,7 @@
       <%= render Admin::StatCardComponent.new(label: "Pending", value: @summaries_by_status.fetch("pending", 0)) %>
     </div>
     <% if @summaries_failed.positive? || @summaries_stale.positive? %>
-      <p class="mt-3 text-sm"><%= link_to "View details on the operations page →", admin_operations_path, class: "text-lavender-600 hover:text-lavender-700 font-medium" %></p>
+      <p class="mt-3 text-sm"><%= link_to "View details on the operations page →", admin_operations_path, class: "text-sky-600 hover:text-sky-700 font-medium" %></p>
     <% end %>
   </section>
 

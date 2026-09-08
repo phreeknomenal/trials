@@ -45,7 +45,7 @@
           <% if trial[:conditions].present? && trial[:conditions].any? %>
             <div class="mb-3 flex flex-wrap gap-1">
               <% trial[:conditions].take(2).each do |condition| %>
-                <span class="inline-block text-xs px-2 py-1 rounded-full bg-lavender-100 dark:bg-lavender-900/30 text-lavender-700 dark:text-lavender-300">
+                <span class="inline-block text-xs px-2 py-1 rounded-full bg-sky-100 dark:bg-navy-900/30 text-sky-700 dark:text-sky-300">
                   <%= truncate(condition, length: 20) %>
                 </span>
               <% end %>
@@ -76,7 +76,7 @@
           <!-- CTA -->
           <div class="mt-auto pt-4 border-t border-zinc-200 dark:border-zinc-700">
             <%= link_to "View Details", my_trial_path(trial[:nct_id]), 
-                class: "inline-block w-full text-center px-4 py-2 bg-lavender-600 hover:bg-lavender-700 text-white rounded-lg transition-colors font-medium text-sm" %>
+                class: "inline-block w-full text-center px-4 py-2 bg-navy-600 hover:bg-navy-700 text-white rounded-lg transition-colors font-medium text-sm" %>
           </div>
         </div>
       <% end %>

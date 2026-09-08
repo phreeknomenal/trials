@@ -18,7 +18,7 @@
             <%= f.select :condition, 
                 options_for_select(@conditions.pluck(:name, :name), params[:condition]),
                 { include_blank: "Select a condition" },
-                { class: "block p-2 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-lavender-600 focus:border-lavender-600" } 
+                { class: "block p-2 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-sky-500 focus:border-navy-600" } 
             %>
           </div>
 
@@ -28,14 +28,14 @@
             <%= f.text_field :location, 
                 value: params[:location],
                 placeholder: "e.g., Boston, MA",
-                class: "block w-full form-control bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-300 text-base rounded focus:ring-lavender-600 focus:border-lavender-600 p-2" 
+                class: "block w-full form-control bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-300 text-base rounded focus:ring-sky-500 focus:border-navy-600 p-2" 
             %>
           </div>
         </div>
 
         <!-- Submit Button -->
         <div class="flex gap-4">
-          <%= f.submit "Search", class: "cursor-pointer inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-md text-white bg-lavender-600 hover:bg-lavender-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lavender-500" %>
+          <%= f.submit "Search", class: "cursor-pointer inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-md text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500" %>
         </div>
       <% end %>
     </div>
@@ -63,8 +63,8 @@
                 params[:sort_by] || "score_desc"
               ),
               { include_blank: false },
-              class: "block p-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-lavender-600 focus:border-lavender-600" %>
-          <%= f.submit "Update", class: "cursor-pointer px-4 py-2 text-sm font-medium bg-lavender-600 text-white rounded hover:bg-lavender-700" %>
+              class: "block p-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-sky-500 focus:border-navy-600" %>
+          <%= f.submit "Update", class: "cursor-pointer px-4 py-2 text-sm font-medium bg-navy-600 text-white rounded hover:bg-navy-700" %>
         <% end %>
       </div>
 
@@ -105,7 +105,7 @@
 
     <% else %>
       <!-- Initial State -->
-      <div class="bg-gradient-to-r from-lavender-50 to-blue-50 dark:from-lavender-900/20 dark:to-blue-900/20 border border-lavender-200 dark:border-lavender-800 rounded-lg p-8 text-center">
+      <div class="bg-gradient-to-r from-sky-50 to-blue-50 dark:from-navy-900/20 dark:to-blue-900/20 border border-sky-200 dark:border-sky-800 rounded-lg p-8 text-center">
         <h3 class="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">Ready to search?</h3>
         <p class="text-zinc-600 dark:text-zinc-400">
           Select a condition and location above to see personalized trial matches based on your health profile.

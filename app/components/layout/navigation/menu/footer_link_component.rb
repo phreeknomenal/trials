@@ -7,8 +7,8 @@ class Layout::Navigation::Menu::FooterLinkComponent < ApplicationComponent
       <% if user_signed_in? %>
         <li><%= link_to "Sign Out", destroy_user_session_path, method: :delete, class: "text-red-500"  %></li>
       <% else %>
-        <li><%= link_to "Sign In", new_user_session_path, class: "text-lavender-600" %></li>
-        <li><%= link_to "Sign Up", new_user_registration_path, class: "text-lavender-600" %></li>
+        <li><%= link_to "Sign In", new_user_session_path, class: "text-sky-600" %></li>
+        <li><%= link_to "Sign Up", new_user_registration_path, class: "text-sky-600" %></li>
       <% end %>
     </ul>
     <ul class="space-y-2 text-zinc-600">

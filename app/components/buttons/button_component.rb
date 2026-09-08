@@ -11,18 +11,16 @@ class Buttons::ButtonComponent < ApplicationComponent
 
   def color_styles
     case color
-    when "coral"
-      "border border-coral-600 text-white bg-coral-600 hover:border-lavender-600 hover:bg-lavender-600 transition-all"
-    when "lavender"
-      "border border-lavender-600 text-white bg-lavender-600 hover:border-coral-600 hover:bg-coral-600 transition-all"
+    when "primary"
+      "border border-navy-600 text-white bg-navy-600 hover:border-navy-700 hover:bg-navy-700 transition-all"
     when "white"
-      "border border-zinc-200 text-zinc-600 bg-white hover:border-coral-600 hover:text-white hover:bg-coral-600 transition-all"
+      "border border-zinc-200 text-zinc-600 bg-white hover:border-navy-700 hover:text-white hover:bg-navy-700 transition-all"
     when "clear"
-      "border border-transparent text-zinc-600 dark:text-zinc-300 bg-transparent hover:border-coral-600 hover:text-white hover:bg-coral-600 transition-all"
+      "border border-transparent text-zinc-600 dark:text-zinc-300 bg-transparent hover:border-navy-700 hover:text-white hover:bg-navy-700 transition-all"
     when "clear_zinc"
-      "border border-zinc-600 dark:border-zinc-300 text-zinc-600 dark:text-zinc-300 bg-transparent hover:border-coral-600 hover:text-white hover:bg-coral-600 transition-all"
+      "border border-zinc-600 dark:border-zinc-300 text-zinc-600 dark:text-zinc-300 bg-transparent hover:border-navy-700 hover:text-white hover:bg-navy-700 transition-all"
     else
-      "border border-zinc-600 dark:border-zinc-300 text-zinc-900 dark:text-zinc-300 bg-transparent hover:border-coral-600 hover:text-white hover:bg-coral-600 transition-all"
+      "border border-zinc-600 dark:border-zinc-300 text-zinc-900 dark:text-zinc-300 bg-transparent hover:border-navy-700 hover:text-white hover:bg-navy-700 transition-all"
     end
   end
 end

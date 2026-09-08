@@ -8,7 +8,7 @@
   <section class="px-5 lg:px-44 pt-8 flex flex-row justify-between items-center">
     <%= render Page::Navigation::BreadcrumbComponent.new %>
 
-    <%= link_to search_index_path, class: "inline-flex items-center text-lavender-600 hover:text-lavender-700 font-medium" do %>
+    <%= link_to search_index_path, class: "inline-flex items-center text-sky-600 hover:text-sky-700 font-medium" do %>
       <%= render Utilities::IconComponent.new("arrow_left", size: 5) %>
       <span class="ml-2">Back to Search Results</span>
     <% end %>
@@ -109,7 +109,7 @@
               <% @study[:locations].each do |location| %>
                 <div class="col-span-1 flex items-start gap-1 p-3 border border-zinc-300 dark:border-zinc-700 rounded-lg">
                   <div class="mt-0.5">
-                    <%= render Utilities::IconComponent.new("map_pin", size: 5, options: { class: "text-lavender-600" }) %>
+                    <%= render Utilities::IconComponent.new("map_pin", size: 5, options: { class: "text-sky-600" }) %>
                   </div>
                   <span class="text-zinc-900 dark:text-zinc-100"><%= location %></span>
                 </div>
@@ -121,17 +121,17 @@
         </div>
 
         <!-- CTA Section -->
-        <div class="bg-lavender-50 dark:bg-lavender-900/20 border border-lavender-200 dark:border-lavender-800 rounded-lg p-6">
-          <h3 class="text-lg font-semibold text-lavender-900 dark:text-lavender-100 mb-2">
+        <div class="bg-sky-50 dark:bg-navy-900/20 border border-sky-200 dark:border-sky-800 rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-navy-900 dark:text-sky-100 mb-2">
             Interested in this trial?
           </h3>
-          <p class="text-lavender-800 dark:text-lavender-200 mb-4">
+          <p class="text-sky-800 dark:text-sky-200 mb-4">
             Visit ClinicalTrials.gov for contact information and to learn more about participating.
           </p>
           <%= link_to "View on ClinicalTrials.gov", "https://clinicaltrials.gov/study/#{@study[:nct_id]}", 
               target: "_blank", 
               rel: "noopener noreferrer",
-              class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-lavender-600 hover:bg-lavender-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lavender-500" %>
+              class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500" %>
         </div>
 
         <!-- Contact Information -->
@@ -215,7 +215,7 @@
       <p class="text-zinc-600 dark:text-zinc-400 mb-4">
         The clinical trial you're looking for could not be found.
       </p>
-      <%= link_to "Back to Search", search_index_path, class: "text-lavender-600 hover:text-lavender-700 font-medium" %>
+      <%= link_to "Back to Search", search_index_path, class: "text-sky-600 hover:text-sky-700 font-medium" %>
     </div>
   </section>
 <% end %>
