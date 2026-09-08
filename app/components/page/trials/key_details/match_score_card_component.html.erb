@@ -22,7 +22,7 @@
       <% breakdown_items.each_with_index do |item, index| %>
         <div class="flex gap-3 items-start" data-controller="expandable-explanation">
           <div class="w-5 h-5 mt-1 flex-shrink-0 <%= match_score_text_class(@match_level) %>">
-            <%= render Utilities::IconComponent.new(item[:icon], size: 16) %>
+            <%= render Utilities::IconComponent.new(item[:icon], size: 5) %>
           </div>
           <div class="w-full min-w-0 flex-1">
             <%= render Utilities::ScoreProgressBarComponent.new(
