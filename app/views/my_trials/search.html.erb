@@ -1,4 +1,4 @@
-<section class="px-5 lg:px-24 py-16 border-b border-zinc-200 dark:border-zinc-700">
+<section class="px-5 lg:px-24 py-16 border-b border-line dark:border-line-on-dark">
   <%= render Page::HeaderComponent.new(
     heading: "Find Your Trials",
     subheading: "Personalized clinical trial matches based on your health profile",
@@ -9,26 +9,26 @@
 <div class="min-h-screen">
   <div class="px-5 lg:px-24 py-10 lg:py-18">
     <!-- Search Form -->
-    <div class="border border-zinc-200 dark:border-zinc-700 rounded-lg p-6 mb-8">
+    <div class="border border-line dark:border-line-on-dark rounded-lg p-6 mb-8">
       <%= form_with url: my_trials_search_path, method: :get, class: "space-y-6" do |f| %>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <!-- Condition -->
           <div class="form-group">
-            <%= f.label :condition, "Condition", class: "block text-sm font-medium text-zinc-900 dark:text-zinc-300 mb-2" %>
+            <%= f.label :condition, "Condition", class: "block text-sm font-medium text-ink dark:text-ink-2-on-dark mb-2" %>
             <%= f.select :condition, 
                 options_for_select(@conditions.pluck(:name, :name), params[:condition]),
                 { include_blank: "Select a condition" },
-                { class: "block p-2 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-sky-500 focus:border-navy-600" } 
+                { class: "block p-2 w-full bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark placeholder:text-ink-3 dark:placeholder:text-ink-3-on-dark text-base text-ink dark:text-ink-2-on-dark rounded focus:ring-sky-500 focus:border-navy-600" } 
             %>
           </div>
 
           <!-- Location -->
           <div class="form-group">
-            <%= f.label :location, "Location (City, State)", class: "block text-sm font-medium text-zinc-900 dark:text-zinc-300 mb-2" %>
+            <%= f.label :location, "Location (City, State)", class: "block text-sm font-medium text-ink dark:text-ink-2-on-dark mb-2" %>
             <%= f.text_field :location, 
                 value: params[:location],
                 placeholder: "e.g., Boston, MA",
-                class: "block w-full form-control bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-300 text-base rounded focus:ring-sky-500 focus:border-navy-600 p-2" 
+                class: "block w-full form-control bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark text-ink dark:text-ink-2-on-dark text-base rounded focus:ring-sky-500 focus:border-navy-600 p-2" 
             %>
           </div>
         </div>
@@ -43,10 +43,10 @@
     <!-- Search Results -->
     <% if @studies_with_scores.present? %>
       <div class="mb-6">
-        <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-300 mb-2">
+        <h2 class="text-2xl font-bold text-ink dark:text-ink-2-on-dark mb-2">
           Search Results
         </h2>
-        <p class="text-zinc-600 dark:text-zinc-400">
+        <p class="text-ink-3 dark:text-ink-3-on-dark">
           Found <%= number_with_delimiter(@total_count) %> clinical trials matched to your profile
         </p>
       </div>
@@ -56,14 +56,14 @@
         <%= form_with url: my_trials_search_path, method: :get, class: "flex gap-2" do |f| %>
           <%= f.hidden_field :condition, value: params[:condition] %>
           <%= f.hidden_field :location, value: params[:location] %>
-          <%= f.label :sort_by, "Sort by:", class: "text-sm font-medium text-zinc-700 dark:text-zinc-300" %>
+          <%= f.label :sort_by, "Sort by:", class: "text-sm font-medium text-ink-2 dark:text-ink-2-on-dark" %>
           <%= f.select :sort_by,
               options_for_select(
                 [["Match Score (High to Low)", "score_desc"], ["Match Score (Low to High)", "score_asc"], ["Newest First", "newest"]],
                 params[:sort_by] || "score_desc"
               ),
               { include_blank: false },
-              class: "block p-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-sky-500 focus:border-navy-600" %>
+              class: "block p-2 bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark text-base text-ink dark:text-ink-2-on-dark rounded focus:ring-sky-500 focus:border-navy-600" %>
           <%= f.submit "Update", class: "cursor-pointer px-4 py-2 text-sm font-medium bg-navy-600 text-white rounded hover:bg-navy-700" %>
         <% end %>
       </div>
@@ -80,34 +80,34 @@
         <div class="flex justify-center gap-4 items-center">
           <% if @current_page > 1 %>
             <%= link_to "Previous", my_trials_search_path(pagination_params.merge(page: @current_page - 1, page_token: @prev_page_token).compact),
-                class: "px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded hover:bg-zinc-50 dark:hover:bg-zinc-700" %>
+                class: "px-4 py-2 text-sm font-medium text-ink-2 dark:text-ink-2-on-dark bg-surface dark:bg-surface-on-dark border border-line dark:border-line-on-dark rounded hover:bg-surface-2 dark:hover:bg-surface-2-on-dark" %>
           <% end %>
 
-          <span class="text-sm text-zinc-600 dark:text-zinc-400">
+          <span class="text-sm text-ink-3 dark:text-ink-3-on-dark">
             Page <%= @current_page %>
           </span>
 
           <% if @has_next_page %>
             <%= link_to "Next", my_trials_search_path(pagination_params.merge(page: @current_page + 1, page_token: @next_page_token).compact),
-                class: "px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded hover:bg-zinc-50 dark:hover:bg-zinc-700" %>
+                class: "px-4 py-2 text-sm font-medium text-ink-2 dark:text-ink-2-on-dark bg-surface dark:bg-surface-on-dark border border-line dark:border-line-on-dark rounded hover:bg-surface-2 dark:hover:bg-surface-2-on-dark" %>
           <% end %>
         </div>
       <% end %>
 
     <% elsif params[:condition].present? || params[:location].present? %>
       <!-- No Results -->
-      <div class="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-8 text-center">
-        <h3 class="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">No trials found</h3>
-        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+      <div class="bg-surface-2 dark:bg-surface-on-dark rounded-lg p-8 text-center">
+        <h3 class="text-lg font-medium text-ink dark:text-ink-on-dark mb-2">No trials found</h3>
+        <p class="text-ink-3 dark:text-ink-3-on-dark mb-4">
           Try adjusting your search criteria or selecting a different condition or location.
         </p>
       </div>
 
     <% else %>
       <!-- Initial State -->
-      <div class="bg-gradient-to-r from-sky-50 to-blue-50 dark:from-navy-900/20 dark:to-blue-900/20 border border-sky-200 dark:border-sky-800 rounded-lg p-8 text-center">
-        <h3 class="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">Ready to search?</h3>
-        <p class="text-zinc-600 dark:text-zinc-400">
+      <div class="bg-gradient-to-r from-sky-50 to-info/10 dark:from-navy-900/20 dark:to-info-on-dark/20 border border-sky-200 dark:border-sky-800 rounded-lg p-8 text-center">
+        <h3 class="text-lg font-medium text-ink dark:text-ink-on-dark mb-2">Ready to search?</h3>
+        <p class="text-ink-3 dark:text-ink-3-on-dark">
           Select a condition and location above to see personalized trial matches based on your health profile.
         </p>
       </div>

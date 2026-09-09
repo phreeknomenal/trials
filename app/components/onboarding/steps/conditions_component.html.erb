@@ -16,12 +16,12 @@
       seeking a diagnosis, and the app should not be a dead end for them. This
       records nothing; it only tells the step's validation the empty list was
       deliberate. %>
-  <div class="pt-4 border-t border-zinc-200 dark:border-zinc-700">
+  <div class="pt-4 border-t border-line dark:border-line-on-dark">
     <label class="flex items-start gap-3 cursor-pointer">
       <%= form.check_box :no_conditions,
-            {class: "mt-1 rounded border-zinc-300 dark:border-zinc-600 text-sky-600 focus:ring-sky-500",
+            {class: "mt-1 rounded border-line-2 dark:border-line-2-on-dark text-sky-600 focus:ring-sky-500",
              checked: profile.no_conditions == "1"}, "1", "0" %>
-      <span class="text-sm text-zinc-600 dark:text-zinc-400">
+      <span class="text-sm text-ink-3 dark:text-ink-3-on-dark">
         I do not have a diagnosis yet. Show me studies and I will add conditions later.
       </span>
     </label>

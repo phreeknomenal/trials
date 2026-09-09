@@ -11,7 +11,7 @@
         <%= input_field %>
         <%= form.label(attribute, field_label, class: "text-sm font-medium text-secondary-800 mr-1") %>
       </div>
-      <p class="text-sm text-gray-500"><%= options[:description] %></p>
+      <p class="text-sm text-ink-3"><%= options[:description] %></p>
     </div>
   <% when :collection_checkbox %>
     <div class="flex items-center form-check">
@@ -29,7 +29,7 @@
       <% end %>
     </div>
   <% else %>
-    <%= form.label(attribute, field_label, class: "block text-sm font-medium text-zinc-900 dark:text-zinc-300 mb-0.5") if label.present? %>
+    <%= form.label(attribute, field_label, class: "block text-sm font-medium text-ink dark:text-ink-2-on-dark mb-0.5") if label.present? %>
     <%= input_field %>
   <% end %>
 </div>

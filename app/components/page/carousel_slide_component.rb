@@ -2,7 +2,7 @@ class Page::CarouselSlideComponent < ApplicationComponent
   erb_template <<-ERB
     <%= image_tag image, class: "w-full h-124 object-cover object-center mx-auto mb-8 rounded-full", alt: image_alt %>
     <h1 class="text-2xl lg:text-3xl text-center font-bold tracking-tight text-sky-600 mb-2"><%= title %></h1>
-    <p class="font-normal text-base text-zinc-600 dark:text-zinc-400 text-center">
+    <p class="font-normal text-base text-ink-3 dark:text-ink-3-on-dark text-center">
       <%= description %>
     </p>
   ERB

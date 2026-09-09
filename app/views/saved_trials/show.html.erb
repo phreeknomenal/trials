@@ -1,10 +1,10 @@
-<section class="px-5 lg:px-44 py-12 border-b border-zinc-200 dark:border-zinc-700">
+<section class="px-5 lg:px-44 py-12 border-b border-line dark:border-line-on-dark">
   <div class="flex flex-col gap-4">
-    <h1 class="text-3xl lg:text-4xl font-bold text-zinc-900 dark:text-zinc-100">
+    <h1 class="text-3xl lg:text-4xl font-bold text-ink dark:text-ink-on-dark">
       <%= @saved_trial.trial_title %>
     </h1>
 
-    <div class="flex flex-wrap gap-4 text-sm text-zinc-600 dark:text-zinc-400">
+    <div class="flex flex-wrap gap-4 text-sm text-ink-3 dark:text-ink-3-on-dark">
       <div class="flex items-center gap-1">
         <%= render Utilities::IconComponent.new("profile_card", size: 6) %>
         <span><strong>NCT-ID:</strong> <%= @saved_trial.nct_id %></span>
@@ -27,7 +27,7 @@
   <div class="grid grid-cols-5 gap-8">
     <!-- Left Sidebar -->
     <div class="col-span-5 lg:col-span-1">
-      <div class="w-full rounded-lg border border-zinc-200 dark:border-zinc-700 p-6 space-y-4">
+      <div class="w-full rounded-lg border border-line dark:border-line-on-dark p-6 space-y-4">
         <div class="flex items-center justify-between mb-3">
           <%= render Typography::HeadingComponent.new(size: :h5, text: "Status") %>
         </div>
@@ -46,33 +46,33 @@
     <div class="col-span-5 lg:col-span-3 space-y-6">
       <!-- Summary Card -->
       <% if @saved_trial.summary.present? %>
-        <div class="rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
+        <div class="rounded-lg border border-line dark:border-line-on-dark p-6">
           <%= render Typography::HeadingComponent.new(size: :h5, text: "Trial Summary") %>
-          <p class="text-zinc-600 dark:text-zinc-400 font-body leading-relaxed"><%= @saved_trial.summary %></p>
+          <p class="text-ink-3 dark:text-ink-3-on-dark font-body leading-relaxed"><%= @saved_trial.summary %></p>
         </div>
       <% end %>
 
       <!-- Notes Card -->
-      <div class="rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
+      <div class="rounded-lg border border-line dark:border-line-on-dark p-6">
         <div class="flex items-center justify-between mb-3">
           <%= render Typography::HeadingComponent.new(size: :h5, text: "Notes") %>
-          <%= link_to saved_trial_path(@saved_trial), class: "flex items-center gap-1 text-amber-600 hover:text-amber-700 font-medium" do %>
+          <%= link_to saved_trial_path(@saved_trial), class: "flex items-center gap-1 text-warn hover:text-warn font-medium" do %>
             <%= render Utilities::IconComponent.new("pencil", size: 4) %>
             <span>Edit</span>
           <% end %>
         </div>
         <% if @saved_trial.notes.present? %>
-          <p class="text-gray-700 whitespace-pre-wrap"><%= @saved_trial.notes %></p>
+          <p class="text-ink-2 whitespace-pre-wrap"><%= @saved_trial.notes %></p>
         <% else %>
-          <p class="text-gray-500 font-body italic">No notes added yet. Add notes to help you remember why you saved this trial.</p>
+          <p class="text-ink-3 font-body italic">No notes added yet. Add notes to help you remember why you saved this trial.</p>
         <% end %>
       </div>
 
       <!-- Tags Card -->
-      <div class="rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
+      <div class="rounded-lg border border-line dark:border-line-on-dark p-6">
         <div class="flex items-center justify-between mb-4">
           <%= render Typography::HeadingComponent.new(size: :h5, text: "Tags") %>
-          <%= link_to saved_trial_path(@saved_trial), class: "flex items-center gap-1 text-amber-600 hover:text-amber-700 font-medium" do %>
+          <%= link_to saved_trial_path(@saved_trial), class: "flex items-center gap-1 text-warn hover:text-warn font-medium" do %>
             <%= render Utilities::IconComponent.new("pencil", size: 4) %>
             <span>Edit</span>
           <% end %>
@@ -80,20 +80,20 @@
         <% if @saved_trial.tags_array.any? %>
           <div class="flex flex-wrap gap-2">
             <% @saved_trial.tags_array.each do |tag| %>
-              <span class="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+              <span class="inline-block bg-info/10 text-info px-3 py-1 rounded-full text-sm font-medium">
                 <%= tag %>
               </span>
             <% end %>
           </div>
         <% else %>
-          <p class="text-gray-500 font-body italic">No tags added yet.</p>
+          <p class="text-ink-3 font-body italic">No tags added yet.</p>
         <% end %>
       </div>
     </div>
 
     <!-- Right Sidebar -->
     <div class="col-span-5 lg:col-span-1">
-      <div class="rounded-lg border border-zinc-200 dark:border-zinc-700 p-6 sticky top-6 space-y-6">
+      <div class="rounded-lg border border-line dark:border-line-on-dark p-6 sticky top-6 space-y-6">
         <!-- Key Details -->
         <div>
           <%= render Typography::HeadingComponent.new(size: :h5, text: "Key Details") %>
@@ -127,39 +127,39 @@
         <!-- Trial Dates -->
         <% if @saved_trial.start_date.present? || @saved_trial.completion_date.present? %>
           <div>
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Trial Timeline</h3>
+            <h3 class="text-lg font-semibold text-ink mb-4">Trial Timeline</h3>
             <div class="space-y-3">
               <% if @saved_trial.start_date.present? %>
                 <div>
-                  <p class="text-xs text-gray-600 uppercase tracking-wide">Start Date</p>
-                  <p class="text-sm font-medium text-gray-900"><%= @saved_trial.start_date.strftime("%B %d, %Y") %></p>
+                  <p class="text-xs text-ink-3 uppercase tracking-wide">Start Date</p>
+                  <p class="text-sm font-medium text-ink"><%= @saved_trial.start_date.strftime("%B %d, %Y") %></p>
                 </div>
               <% end %>
               <% if @saved_trial.completion_date.present? %>
                 <div>
-                  <p class="text-xs text-gray-600 uppercase tracking-wide">Completion Date</p>
-                  <p class="text-sm font-medium text-gray-900"><%= @saved_trial.completion_date.strftime("%B %d, %Y") %></p>
+                  <p class="text-xs text-ink-3 uppercase tracking-wide">Completion Date</p>
+                  <p class="text-sm font-medium text-ink"><%= @saved_trial.completion_date.strftime("%B %d, %Y") %></p>
                 </div>
               <% end %>
             </div>
           </div>
         <% end %>
 
-        <div class="pt-4 border-t border-zinc-200 dark:border-zinc-700">
+        <div class="pt-4 border-t border-line dark:border-line-on-dark">
           <%= render Page::Trials::TileComponent.new(title: "Saved Date", record: @saved_trial.created_at.strftime("%b %d, %Y"), icon: "calendar_month") %>
         </div>
 
-        <div class="pt-4 border-t border-zinc-200 dark:border-zinc-700 space-y-2">
+        <div class="pt-4 border-t border-line dark:border-line-on-dark space-y-2">
           <%= link_to "View Full Trial", my_trial_path(@saved_trial.nct_id),
               class: "block w-full text-center px-4 py-2 bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors font-medium" %>
           
           <%= link_to "Edit Trial", edit_saved_trial_path(@saved_trial),
-              class: "block w-full text-center px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors font-medium" %>
+              class: "block w-full text-center px-4 py-2 bg-warn text-white rounded-lg hover:bg-warn transition-colors font-medium" %>
           
           <%= link_to "Remove from Saved", saved_trial_path(@saved_trial),
               method: :delete,
               data: { turbo_confirm: "Are you sure you want to remove this trial?" },
-              class: "block w-full text-center px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors font-medium" %>
+              class: "block w-full text-center px-4 py-2 text-crit hover:bg-crit/10 rounded-lg transition-colors font-medium" %>
         </div>
       </div>
     </div>

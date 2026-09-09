@@ -19,26 +19,26 @@ class Page::SavedTrials::MatchScoreCardComponent < ApplicationComponent
   def score_color_classes
     case match_level
     when "excellent"
-      "text-green-600"
+      "text-good"
     when "good"
-      "text-blue-600"
+      "text-info"
     when "fair"
-      "text-amber-600"
+      "text-warn"
     when "poor"
-      "text-red-600"
+      "text-crit"
     end
   end
 
   def score_badge_classes
     case match_level
     when "excellent"
-      "bg-green-600 text-white"
+      "bg-good text-white"
     when "good"
-      "bg-blue-600 text-white"
+      "bg-info text-white"
     when "fair"
-      "bg-amber-500 text-white"
+      "bg-warn text-white"
     when "poor"
-      "bg-red-600 text-white"
+      "bg-crit text-white"
     end
   end
 

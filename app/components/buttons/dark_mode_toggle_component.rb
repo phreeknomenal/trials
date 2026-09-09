@@ -4,13 +4,13 @@ class Buttons::DarkModeToggleComponent < ApplicationComponent
       <button
         type="button"
         data-action="click->dark-mode#toggle"
-        class="relative inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors duration-200"
+        class="relative inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface-2 dark:hover:bg-surface-on-dark transition-colors duration-200"
         aria-label="Toggle dark mode"
       >
         <!-- Moon Icon (visible in light mode) -->
         <svg
           data-dark-mode-target="moonIcon"
-          class="w-5 h-5 text-zinc-700 dark:text-zinc-300"
+          class="w-5 h-5 text-ink-2 dark:text-ink-2-on-dark"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -27,7 +27,7 @@ class Buttons::DarkModeToggleComponent < ApplicationComponent
         <!-- Sun Icon (visible in dark mode) -->
         <svg
           data-dark-mode-target="sunIcon"
-          class="w-5 h-5 text-zinc-700 dark:text-zinc-300 hidden"
+          class="w-5 h-5 text-ink-2 dark:text-ink-2-on-dark hidden"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

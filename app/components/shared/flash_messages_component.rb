@@ -23,30 +23,30 @@ module Shared
         # role=status is polite: it waits for a pause rather than cutting off
         # whatever a screen reader is already saying.
         role: "status",
-        classes: "border-green-600 bg-green-50 text-green-900 " \
-                 "dark:border-green-500 dark:bg-green-950 dark:text-green-100"
+        classes: "border-good bg-good/10 text-good " \
+                 "dark:border-good-on-dark dark:bg-good-on-dark dark:text-good-on-dark"
       },
       info: {
         icon: "info_circle",
         prefix: "Information",
         role: "status",
-        classes: "border-blue-600 bg-blue-50 text-blue-900 " \
-                 "dark:border-blue-500 dark:bg-blue-950 dark:text-blue-100"
+        classes: "border-info bg-info/10 text-info " \
+                 "dark:border-info-on-dark dark:bg-info-on-dark dark:text-info-on-dark"
       },
       warn: {
         icon: "exclamation_triangle",
         prefix: "Warning",
         role: "status",
-        classes: "border-amber-600 bg-amber-50 text-amber-900 " \
-                 "dark:border-amber-500 dark:bg-amber-950 dark:text-amber-100"
+        classes: "border-warn bg-warn/10 text-warn " \
+                 "dark:border-warn-on-dark dark:bg-warn-on-dark dark:text-warn-on-dark"
       },
       crit: {
         icon: "close_circle",
         prefix: "Error",
         # The only tone that earns assertive interruption.
         role: "alert",
-        classes: "border-red-600 bg-red-50 text-red-900 " \
-                 "dark:border-red-500 dark:bg-red-950 dark:text-red-100"
+        classes: "border-crit bg-crit/10 text-crit " \
+                 "dark:border-crit-on-dark dark:bg-crit-on-dark dark:text-crit-on-dark"
       }
     }.freeze
 

@@ -74,11 +74,11 @@ class Page::Trials::StatusMessageComponent < ApplicationComponent
     base_classes = "flex items-start gap-3 pl-3 py-2 rounded border-l-4 border "
 
     if score >= 75
-      base_classes + "border-green-600 dark:border-green-500 bg-green-50 dark:bg-green-900/10"
+      base_classes + "border-good dark:border-good-on-dark bg-good/10 dark:bg-good-on-dark/10"
     elsif score >= 50
-      base_classes + "border-amber-600 dark:border-amber-500 bg-amber-50 dark:bg-amber-900/10"
+      base_classes + "border-warn dark:border-warn-on-dark bg-warn/10 dark:bg-warn-on-dark/10"
     else
-      base_classes + "border-red-600 dark:border-red-500 bg-red-50 dark:bg-red-900/10"
+      base_classes + "border-crit dark:border-crit-on-dark bg-crit/10 dark:bg-crit-on-dark/10"
     end
   end
 

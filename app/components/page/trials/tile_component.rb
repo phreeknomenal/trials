@@ -7,8 +7,8 @@ class Page::Trials::TileComponent < ApplicationComponent
         </div>
       <% end %>
       <div>
-        <h3 class="text-base font-semibold text-zinc-900 dark:text-zinc-300"><%= title %></h3>
-        <p class="text-sm font-body text-zinc-600 dark:text-zinc-400">
+        <h3 class="text-base font-semibold text-ink dark:text-ink-2-on-dark"><%= title %></h3>
+        <p class="text-sm font-body text-ink-3 dark:text-ink-3-on-dark">
           <%= record %>
         </p>
       </div>

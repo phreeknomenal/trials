@@ -31,12 +31,12 @@
 
   <% if Identity.any? %>
     <div>
-      <label class="block text-sm font-bold text-zinc-900 dark:text-zinc-300 mb-3">I am a...</label>
+      <label class="block text-sm font-bold text-ink dark:text-ink-2-on-dark mb-3">I am a...</label>
       <div class="flex flex-wrap gap-2">
         <%= form.collection_check_boxes :identity_ids, Identity.all, :id, :name do |builder| %>
-          <label class="inline-flex items-center px-4 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-sky-100 dark:hover:bg-navy-900 rounded-full cursor-pointer transition-colors border-2 border-transparent has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50 dark:has-[:checked]:bg-navy-900/50">
+          <label class="inline-flex items-center px-4 py-2 bg-surface-2 dark:bg-surface-on-dark hover:bg-sky-100 dark:hover:bg-navy-900 rounded-full cursor-pointer transition-colors border-2 border-transparent has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50 dark:has-[:checked]:bg-navy-900/50">
             <%= builder.check_box(class: "sr-only") %>
-            <span class="text-sm font-medium text-zinc-700 dark:text-zinc-300"><%= builder.text.titleize %></span>
+            <span class="text-sm font-medium text-ink-2 dark:text-ink-2-on-dark"><%= builder.text.titleize %></span>
           </label>
         <% end %>
       </div>
@@ -45,12 +45,12 @@
 
   <% if Interest.any? %>
     <div>
-      <label class="block text-sm font-bold text-zinc-900 dark:text-zinc-300 mb-3">Looking for...</label>
+      <label class="block text-sm font-bold text-ink dark:text-ink-2-on-dark mb-3">Looking for...</label>
       <div class="flex flex-wrap gap-2">
         <%= form.collection_check_boxes :interest_ids, Interest.all, :id, :name do |builder| %>
-          <label class="inline-flex items-center px-4 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-sky-100 dark:hover:bg-navy-900 rounded-full cursor-pointer transition-colors border-2 border-transparent has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50 dark:has-[:checked]:bg-navy-900/50">
+          <label class="inline-flex items-center px-4 py-2 bg-surface-2 dark:bg-surface-on-dark hover:bg-sky-100 dark:hover:bg-navy-900 rounded-full cursor-pointer transition-colors border-2 border-transparent has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50 dark:has-[:checked]:bg-navy-900/50">
             <%= builder.check_box(class: "sr-only") %>
-            <span class="text-sm font-medium text-zinc-700 dark:text-zinc-300"><%= builder.text.titleize %></span>
+            <span class="text-sm font-medium text-ink-2 dark:text-ink-2-on-dark"><%= builder.text.titleize %></span>
           </label>
         <% end %>
       </div>

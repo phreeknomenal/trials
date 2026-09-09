@@ -44,22 +44,22 @@
           <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
             <% if @study[:min_age].present? %>
               <div>
-                <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Minimum Age</p>
-                <p class="text-base text-zinc-900 dark:text-zinc-100"><%= @study[:min_age] %></p>
+                <p class="text-sm font-medium text-ink-3 dark:text-ink-3-on-dark">Minimum Age</p>
+                <p class="text-base text-ink dark:text-ink-on-dark"><%= @study[:min_age] %></p>
               </div>
             <% end %>
             
             <% if @study[:max_age].present? %>
               <div>
-                <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Maximum Age</p>
-                <p class="text-base text-zinc-900 dark:text-zinc-100"><%= @study[:max_age] %></p>
+                <p class="text-sm font-medium text-ink-3 dark:text-ink-3-on-dark">Maximum Age</p>
+                <p class="text-base text-ink dark:text-ink-on-dark"><%= @study[:max_age] %></p>
               </div>
             <% end %>
             
             <% if @study[:sex].present? %>
               <div>
-                <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Sex</p>
-                <p class="text-base text-zinc-900 dark:text-zinc-100"><%= @study[:sex] %></p>
+                <p class="text-sm font-medium text-ink-3 dark:text-ink-3-on-dark">Sex</p>
+                <p class="text-base text-ink dark:text-ink-on-dark"><%= @study[:sex] %></p>
               </div>
             <% end %>
           </div>
@@ -79,19 +79,19 @@
             </div>
             <div class="space-y-4">
               <% @study[:interventions].each do |intervention| %>
-                <div class="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-4">
+                <div class="bg-surface-2 dark:bg-surface-on-dark rounded-lg p-4">
                   <div class="flex items-start gap-2 mb-2">
                     <%= render Utilities::BadgeComponent.new(
                       text: intervention[:type],
                       variant: :tag,
                       size: :sm
                     ) %>
-                    <h3 class="text-base font-semibold text-zinc-900 dark:text-zinc-300">
+                    <h3 class="text-base font-semibold text-ink dark:text-ink-2-on-dark">
                       <%= intervention[:name] %>
                     </h3>
                   </div>
                   <% if intervention[:description].present? %>
-                    <p class="text-sm text-zinc-600 dark:text-zinc-400">
+                    <p class="text-sm text-ink-3 dark:text-ink-3-on-dark">
                       <%= intervention[:description] %>
                     </p>
                   <% end %>
@@ -107,16 +107,16 @@
           <% if @study[:locations].present? %>
             <div class="grid grid-cols-2 mt-4 gap-6">
               <% @study[:locations].each do |location| %>
-                <div class="col-span-1 flex items-start gap-1 p-3 border border-zinc-300 dark:border-zinc-700 rounded-lg">
+                <div class="col-span-1 flex items-start gap-1 p-3 border border-line-2 dark:border-line-on-dark rounded-lg">
                   <div class="mt-0.5">
                     <%= render Utilities::IconComponent.new("map_pin", size: 5, options: { class: "text-sky-600" }) %>
                   </div>
-                  <span class="text-zinc-900 dark:text-zinc-100"><%= location %></span>
+                  <span class="text-ink dark:text-ink-on-dark"><%= location %></span>
                 </div>
               <% end %>
             </div>
           <% else %>
-            <p class="text-zinc-500 dark:text-zinc-400 mt-4">No location information available.</p>
+            <p class="text-ink-3 dark:text-ink-3-on-dark mt-4">No location information available.</p>
           <% end %>
         </div>
 
@@ -146,23 +146,23 @@
                 <%= render Typography::HeadingComponent.new(size: :h6, text: "Study Contacts") %>
                 <div class="mt-3 space-y-3">
                   <% @study[:central_contacts].each do |contact| %>
-                    <div class="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-4">
-                      <h4 class="font-semibold text-zinc-900 dark:text-zinc-300">
+                    <div class="bg-surface-2 dark:bg-surface-on-dark rounded-lg p-4">
+                      <h4 class="font-semibold text-ink dark:text-ink-2-on-dark">
                         <%= contact[:name] %>
                       </h4>
                       <% if contact[:role].present? %>
-                        <p class="text-sm text-zinc-500 dark:text-zinc-400">
+                        <p class="text-sm text-ink-3 dark:text-ink-3-on-dark">
                           <%= contact[:role] %>
                         </p>
                       <% end %>
                       <div class="mt-2 space-y-1">
                         <% if contact[:phone].present? %>
-                          <p class="text-sm text-zinc-600 dark:text-zinc-400">
+                          <p class="text-sm text-ink-3 dark:text-ink-3-on-dark">
                             <strong>Phone:</strong> <%= contact[:phone] %>
                           </p>
                         <% end %>
                         <% if contact[:email].present? %>
-                          <p class="text-sm text-zinc-600 dark:text-zinc-400">
+                          <p class="text-sm text-ink-3 dark:text-ink-3-on-dark">
                             <strong>Email:</strong> <%= contact[:email] %>
                           </p>
                         <% end %>
@@ -178,17 +178,17 @@
                 <%= render Typography::HeadingComponent.new(size: :h6, text: "Principal Investigators") %>
                 <div class="mt-3 space-y-3">
                   <% @study[:overall_officials].each do |official| %>
-                    <div class="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-4">
-                      <h4 class="font-semibold text-zinc-900 dark:text-zinc-300">
+                    <div class="bg-surface-2 dark:bg-surface-on-dark rounded-lg p-4">
+                      <h4 class="font-semibold text-ink dark:text-ink-2-on-dark">
                         <%= official[:name] %>
                       </h4>
                       <% if official[:role].present? %>
-                        <p class="text-sm text-zinc-500 dark:text-zinc-400">
+                        <p class="text-sm text-ink-3 dark:text-ink-3-on-dark">
                           <%= official[:role] %>
                         </p>
                       <% end %>
                       <% if official[:affiliation].present? %>
-                        <p class="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                        <p class="text-sm text-ink-3 dark:text-ink-3-on-dark mt-1">
                           <%= official[:affiliation] %>
                         </p>
                       <% end %>
@@ -205,14 +205,14 @@
 <% else %>
   <!-- Not Found State -->
   <section class="px-5 lg:px-24 py-16">
-    <div class="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-8 text-center">
-      <div class="text-zinc-400 dark:text-zinc-500 mb-4">
+    <div class="bg-surface-2 dark:bg-surface-on-dark rounded-lg p-8 text-center">
+      <div class="text-ink-4 dark:text-ink-4-on-dark mb-4">
         <%= render Utilities::IconComponent.new("search", size: 12) %>
       </div>
-      <h3 class="text-xl font-semibold text-zinc-900 dark:text-zinc-300 mb-2">
+      <h3 class="text-xl font-semibold text-ink dark:text-ink-2-on-dark mb-2">
         Trial Not Found
       </h3>
-      <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+      <p class="text-ink-3 dark:text-ink-3-on-dark mb-4">
         The clinical trial you're looking for could not be found.
       </p>
       <%= link_to "Back to Search", search_index_path, class: "text-sky-600 hover:text-sky-700 font-medium" %>

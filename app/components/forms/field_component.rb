@@ -60,22 +60,22 @@ class Forms::FieldComponent < ApplicationComponent
 
   def field_label
     if label.present? && options[:required]
-      "#{label} <span class='text-red-500'>*</span>".html_safe
+      "#{label} <span class='text-crit'>*</span>".html_safe
     else
       label
     end
   end
 
   def checkbox_field_class
-    "h-4 w-4 rounded border-zinc-200 dark:border-zinc-700 text-white focus:ring-sky-500 form-check-input accent-sky-500"
+    "h-4 w-4 rounded border-line dark:border-line-on-dark text-white focus:ring-sky-500 form-check-input accent-sky-500"
   end
 
   def checkbox_label_class
-    "ms-1 text-base font-medium text-zinc-900 dark:text-zinc-300 form-check-label"
+    "ms-1 text-base font-medium text-ink dark:text-ink-2-on-dark form-check-label"
   end
 
   def date_field_class
-    "block w-full form-control bg-white border border-secondary-300 text-gray-900 text-base rounded-lg focus:ring-primary-500 focus:border-primary-500"
+    "block w-full form-control bg-surface border border-secondary-300 text-ink text-base rounded-lg focus:ring-primary-500 focus:border-primary-500"
   end
 
   def file_field_class
@@ -83,18 +83,18 @@ class Forms::FieldComponent < ApplicationComponent
   end
 
   def rich_text_field_class
-    "prose p-2 max-w-none w-full rounded-lg text-zinc-900 dark:text-zinc-300 border-secondary-200 dark:border-zinc-700 focus:border-primary focus:ring-primary text-base"
+    "prose p-2 max-w-none w-full rounded-lg text-ink dark:text-ink-2-on-dark border-secondary-200 dark:border-line-on-dark focus:border-primary focus:ring-primary text-base"
   end
 
   def select_field_class
-    "block p-2 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 text-base text-zinc-900 dark:text-zinc-300 rounded focus:ring-sky-500 focus:border-navy-600 disabled:bg-sky-50 disabled:text-sky-500 disabled:border-sky-200 disabled:shadow-none"
+    "block p-2 w-full bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark placeholder:text-ink-3 dark:placeholder:text-ink-3-on-dark text-base text-ink dark:text-ink-2-on-dark rounded focus:ring-sky-500 focus:border-navy-600 disabled:bg-sky-50 disabled:text-sky-500 disabled:border-sky-200 disabled:shadow-none"
   end
 
   def text_field_class
-    "block w-full form-control bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-300 text-base rounded focus:ring-sky-500 focus:border-navy-600 p-2 disabled:bg-sky-50 disabled:text-sky-500 disabled:border-sky-200 disabled:shadow-none"
+    "block w-full form-control bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark text-ink dark:text-ink-2-on-dark text-base rounded focus:ring-sky-500 focus:border-navy-600 p-2 disabled:bg-sky-50 disabled:text-sky-500 disabled:border-sky-200 disabled:shadow-none"
   end
 
   def text_area_class
-    "block w-full h-36 form-control bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-300 text-base rounded focus:ring-sky-500 focus:border-navy-600 p-2"
+    "block w-full h-36 form-control bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark text-ink dark:text-ink-2-on-dark text-base rounded focus:ring-sky-500 focus:border-navy-600 p-2"
   end
 end

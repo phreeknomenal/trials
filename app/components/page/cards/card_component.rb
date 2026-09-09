@@ -14,7 +14,7 @@ class Page::Cards::CardComponent < ApplicationComponent
           <%= render Typography::ParagraphComponent.new(text: subtitle) %>
         </div>
         <div class="mt-4">
-          <%= link_to "#", class: "flex items-center gap-1 font-semibold text-lg text-zinc-600 hover:text-blue-600 transition group" do %>
+          <%= link_to "#", class: "flex items-center gap-1 font-semibold text-lg text-ink-3 hover:text-info transition group" do %>
             <span><%= link_text %></span>
             <%= render Utilities::IconComponent.new("arrow_right", size: 6) %>
           <% end %>
@@ -55,7 +55,7 @@ class Page::Cards::CardComponent < ApplicationComponent
   end
 
   def container_classes
-    base = "w-full h-full border border-zinc-300 dark:border-zinc-700 rounded-lg overflow-hidden bg-white dark:bg-zinc-900"
+    base = "w-full h-full border border-line-2 dark:border-line-on-dark rounded-lg overflow-hidden bg-surface dark:bg-paper-on-dark"
     if horizontal?
       "#{base} flex"
     else
@@ -64,7 +64,7 @@ class Page::Cards::CardComponent < ApplicationComponent
   end
 
   def image_wrapper_classes
-    horizontal? ? "w-1/2 border-x border-zinc-300 dark:border-zinc-700" : "border-y border-zinc-300 dark:border-zinc-700"
+    horizontal? ? "w-1/2 border-x border-line-2 dark:border-line-on-dark" : "border-y border-line-2 dark:border-line-on-dark"
   end
 
   def image_classes
