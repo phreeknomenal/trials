@@ -28,8 +28,17 @@ jobs:
     steps:
       # bin/importmap audit loads config/application.rb, and ActiveStorage
       # requires the vips backend on the way up.
+      #
+      # The runner image ships Google's Chrome apt source and nothing here
+      # installs from it. When that repo serves a Packages.gz whose hash
+      # disagrees with its Release file, `apt-get update` exits 100 and takes
+      # this job with it, having never reached libvips. Dropping the source we
+      # do not use removes the dependency entirely.
       - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libvips
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/google-chrome*.list
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y libvips
 
       - name: Checkout code
         uses: actions/checkout@v6
@@ -76,8 +85,16 @@ jobs:
           --health-retries 5
 
     steps:
+      # google-chrome-stable used to be installed here. There is no spec/system
+      # directory, no spec declares type: :system, and nothing uses Capybara or
+      # js: true, so no spec ever launched it. See the scan_js job for why its
+      # apt source is removed rather than just left unused.
       - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git libpq-dev libvips libyaml-dev pkg-config google-chrome-stable
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/google-chrome*.list
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y \
+            build-essential git libpq-dev libvips libyaml-dev pkg-config
 
       - name: Checkout code
         uses: actions/checkout@v6
