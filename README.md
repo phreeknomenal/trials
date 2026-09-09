@@ -1,12 +1,19 @@
-# Trials
+# Dira Health
 
 A clinical trial matching app. It searches ClinicalTrials.gov, scores each study
 against a patient profile, and rewrites dense study text into plain language.
 
-**Live:** https://trials-app-784f3851a3ac.herokuapp.com/
+**Live:** https://dirahealth-d7ebf98a2caa.herokuapp.com/
 
 You can search without an account. Try
-[`/search?condition=diabetes`](https://trials-app-784f3851a3ac.herokuapp.com/search?condition=diabetes).
+[`/search?condition=diabetes`](https://dirahealth-d7ebf98a2caa.herokuapp.com/search?condition=diabetes).
+Saving trials, the onboarding wizard, and the plain-language rewrite need a
+signed-in profile, because the rewrite costs a model call per study and the
+other two write to one.
+
+![Search results scored against a profile](docs/screenshots/search-results.jpg)
+
+More screenshots in [`docs/screenshots/`](docs/screenshots), taken September 2026.
 
 ## The problem
 
@@ -47,24 +54,34 @@ the result over a Turbo Stream broadcast, so a slow model call never blocks a
 request. Results are cached per study rather than per user, since the rewrite is
 a pure function of public text.
 
+The onboarding wizard collects the profile that all of this reads from. Age,
+sex, conditions, and location are required, because a profile missing them
+cannot be scored against anything. Each step saves under its own validation
+context, so a partial save is not rejected for fields the user has not reached.
+
 ## Architecture
 
 ```
 app/services/
-  clinical_trial_client.rb          ClinicalTrials.gov API v2 client
-  trial_scorer.rb                   weighted multi-criteria scoring
-  eligibility_checker.rb            per-study eligibility checklist
-  trial_search_service.rb           search plus scoring
-  trial_recommendation_service.rb   profile-driven recommendations
+  clinical_trial_client.rb              ClinicalTrials.gov API v2 client
+  trial_scorer.rb                       weighted multi-criteria scoring
+  eligibility_checker.rb                per-study eligibility checklist
+  trial_search_service.rb               search plus scoring
+  trial_recommendation_service.rb       profile-driven recommendations
   readable_study_summary_generator.rb   Claude rewrite
+  saved_trial_rescorer.rb               batch rescore after a scoring change
+  onboarding.rb                         wizard step vocabulary and ordering
+  trial_phase.rb                        shared phase vocabulary
+  trial_status.rb                       shared recruiting-status vocabulary
 ```
 
 Notes on a few decisions:
 
 - **Service objects over fat models.** Every external call and every scoring
   rule lives in `app/services`, so the models stay about persistence.
-- **ViewComponent for anything reused.** Cards, icons, avatars, pagination, and
-  the admin stat tiles are components with their own specs.
+- **ViewComponent for anything reused.** Around 65 components. Cards, icons,
+  avatars, pagination, the wizard steps, and the admin stat tiles each have
+  their own specs.
 - **Background work runs in Puma.** Solid Queue forks a supervisor, worker,
   dispatcher, and scheduler, which measured about 665MB on top of Puma's 231MB
   and does not fit a 512MB dyno. Production uses the `:async` adapter instead.
@@ -73,9 +90,33 @@ Notes on a few decisions:
 - **Solid Cache and Solid Cable share the primary database.** Heroku provisions
   one database, so the four-database Rails 8 default collapses to one.
 
+## Three things that were harder than they looked
+
+**Every phase score was silently zero.** The v2 API returns phase as an enum,
+so a study comes back as `"PHASE4"` or `"PHASE2, PHASE3"` or `"EARLY_PHASE1"`.
+`TrialScorer` tested `include?("phase 4")` and `MatchScoreCardComponent` tested
+`include?("Phase 4")`. Neither can ever match `"PHASE4"`. Every real phase
+string scored 0, which made stating a risk tolerance strictly worse than
+leaving it blank. The fix was `TrialPhase`, one shared vocabulary both callers
+read from.
+
+**Substring matching on recruiting status is wrong in a way that reads fine.**
+`"ACTIVE_NOT_RECRUITING"` contains `"RECRUITING"`. So does
+`"NOT_YET_RECRUITING"`. Two closed trials matched an open-trial check. Matching
+is now exact against a normalised form in `TrialStatus`, which both the scorer
+and the eligibility checker read, so the score and the checklist cannot drift
+into disagreeing about whether a trial is open.
+
+**An upgrade broke at load time because nothing exercised it.** `image_processing`
+2 dropped `ruby-vips` and `mini_magick` as dependencies, so the backend has to be
+declared in the Gemfile rather than arriving for free. Nothing in the app called
+`.variant`, so no spec touched the processor and the upgrade failed in CI instead
+of locally. The regression spec resizes a real attachment, which means the gem,
+the binding, and the native libvips library all have to be present for it to pass.
+
 ## Stack
 
-Ruby 3.4.10, Rails 8.1, PostgreSQL. Hotwire with Turbo and Stimulus over
+Ruby 3.4.10, Rails 8.1.3, PostgreSQL. Hotwire with Turbo and Stimulus over
 importmap, no build step. Tailwind CSS 4 and ViewComponent for the views. Devise
 for authentication, Pundit for authorization. Solid Cache and Solid Cable.
 Active Storage backed by Cloudflare R2. RSpec and FactoryBot for tests.
@@ -97,27 +138,33 @@ bin/rails db:prepare   # creates, loads schema, seeds lookup data
 bin/dev                # http://localhost:3000
 ```
 
-`db:prepare` seeds conditions, genders, races, identities, interests, and ten
-placeholder testimonials. In development it also creates 29 sample users. Admin
-accounts use the password `password` in development only.
+`db:prepare` seeds conditions, genders, races, identities, interests, around
+41,000 US zip codes, and ten placeholder testimonials. In development it also
+creates 29 sample users. Admin accounts use the password `password` in
+development only.
 
 Every seed is idempotent, because `seed_production` runs on each Heroku release.
 
 ```bash
-bundle exec rspec       # 192 examples
+bundle exec rspec       # 585 examples
 bundle exec standardrb  # lint
 ```
 
 ## Test coverage
 
-192 examples. Coverage is uneven and worth stating plainly. Request specs cover
-authentication, authorization, the admin namespace, search, pagination, and the
-landing page. The seed idempotency and pagination edge cases are well covered.
+585 examples as of September 2026. Coverage is uneven and worth stating plainly.
 
-`TrialScorer` has no specs. Three of fourteen models have them. Building a
-fixture set of real trial payloads is the next piece of work, because the
-scoring weights cannot be tuned safely without a way to measure whether a change
-helped.
+`TrialScorer` is the best covered piece of the app, which is deliberate. It
+carries about 700 lines of specs across two files. One covers the six scoring
+criteria directly. The other runs the scorer against saved ClinicalTrials.gov
+payloads, so a change to the weights shows up as a diff in real scores rather
+than as a still-passing unit test.
+
+Request specs cover authentication, authorization, the admin namespace, search,
+pagination, the onboarding wizard, and the landing page. Thirteen component
+specs cover the buttons, the header and menu, pagination, flash messages, icons,
+avatars, and the match score card. Five of fourteen models have specs. That is
+the thinnest area and the next thing worth doing.
 
 ## Data
 
