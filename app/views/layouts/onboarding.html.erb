@@ -23,6 +23,11 @@
 
   <%# No navigation. The wizard is the only thing on screen until it is done. %>
   <body class="bg-surface-2 dark:bg-paper-on-dark min-h-screen">
+    <%# ensure_profile_completed redirects an incomplete profile here from any
+        HTML request, so a flash set before that redirect lands on this layout
+        and nowhere else. Without this it is dropped silently. %>
+    <%= render Shared::FlashMessagesComponent.new(flash: flash) %>
+
     <%= yield %>
   </body>
 </html>
