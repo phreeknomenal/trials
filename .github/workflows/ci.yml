@@ -36,7 +36,7 @@ jobs:
       # do not use removes the dependency entirely.
       - name: Install packages
         run: |
-          sudo rm -f /etc/apt/sources.list.d/google-chrome*.list
+          sudo bash -c 'grep -rlZ "dl\.google\.com" /etc/apt/sources.list.d 2>/dev/null | xargs -0 -r rm -v'
           sudo apt-get update
           sudo apt-get install --no-install-recommends -y libvips
 
@@ -88,10 +88,11 @@ jobs:
       # google-chrome-stable used to be installed here. There is no spec/system
       # directory, no spec declares type: :system, and nothing uses Capybara or
       # js: true, so no spec ever launched it. See the scan_js job for why its
-      # apt source is removed rather than just left unused.
+      # apt source is removed rather than just left unused. Matched by content
+      # because the runner image declares it in deb822 (.sources) format.
       - name: Install packages
         run: |
-          sudo rm -f /etc/apt/sources.list.d/google-chrome*.list
+          sudo bash -c 'grep -rlZ "dl\.google\.com" /etc/apt/sources.list.d 2>/dev/null | xargs -0 -r rm -v'
           sudo apt-get update
           sudo apt-get install --no-install-recommends -y \
             build-essential git libpq-dev libvips libyaml-dev pkg-config
