@@ -146,13 +146,13 @@ development only.
 Every seed is idempotent, because `seed_production` runs on each Heroku release.
 
 ```bash
-bundle exec rspec       # 585 examples
+bundle exec rspec       # 590 examples
 bundle exec standardrb  # lint
 ```
 
 ## Test coverage
 
-585 examples as of September 2026. Coverage is uneven and worth stating plainly.
+590 examples as of September 2026. Coverage is uneven and worth stating plainly.
 
 `TrialScorer` is the best covered piece of the app, which is deliberate. It
 carries about 700 lines of specs across two files. One covers the six scoring

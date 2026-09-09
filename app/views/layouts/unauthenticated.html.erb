@@ -28,10 +28,9 @@
 
   <body class="bg-surface dark:bg-surface-on-dark">
     <%= render Layout::Navigation::HeaderComponent.new %>
-    
-    <p class="notice"><%= notice %></p>
-    <p class="alert"><%= alert %></p>
-    
+
+    <%= render Shared::FlashMessagesComponent.new(flash: flash) %>
+
     <%= yield %>
 
     <%= render Layout::Navigation::FooterComponent.new %>
