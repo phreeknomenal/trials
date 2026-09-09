@@ -1,6 +1,6 @@
 <%= form_with(model: @profile, local: true) do |form| %>
-  <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-300 mb-5">Personal Information</h2>
-  <div class="w-full p-6 border border-zinc-200 dark:border-zinc-700 rounded-lg mb-8">
+  <h2 class="text-2xl font-bold text-ink dark:text-ink-2-on-dark mb-5">Personal Information</h2>
+  <div class="w-full p-6 border border-line dark:border-line-on-dark rounded-lg mb-8">
     <div class="mb-6">
       <%= render Forms::FieldComponent.new(
         form: form, 
@@ -136,24 +136,24 @@
       </div>
 
       <div class="col-span-2">
-        <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Identities</label>
+        <label class="block text-base font-bold text-ink dark:text-ink-2-on-dark mb-2">Identities</label>
         <div class="grid grid-cols-2 lg:grid-cols-3 gap-2 mt-2">
           <%= form.collection_check_boxes :identity_ids, Identity.all, :id, :name do |b| %>
-            <label class="inline-flex items-center px-3 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-full cursor-pointer transition-colors">
+            <label class="inline-flex items-center px-3 py-2 bg-surface-2 dark:bg-surface-on-dark hover:bg-line dark:hover:bg-surface-2-on-dark rounded-full cursor-pointer transition-colors">
               <%= b.check_box(class: "mr-2") %>
-              <span class="text-sm font-body font-medium text-zinc-700 dark:text-zinc-300"><%= b.text.titleize %></span>
+              <span class="text-sm font-body font-medium text-ink-2 dark:text-ink-2-on-dark"><%= b.text.titleize %></span>
             </label>
           <% end %>
         </div>
       </div>
 
       <div class="col-span-2">
-        <label class="block text-base font-bold text-zinc-900 dark:text-zinc-300 mb-2">Interests</label>
+        <label class="block text-base font-bold text-ink dark:text-ink-2-on-dark mb-2">Interests</label>
         <div class="grid grid-cols-2 lg:grid-cols-3 gap-2 mt-2">
           <%= form.collection_check_boxes :interest_ids, Interest.all, :id, :name do |b| %>
-            <label class="inline-flex items-center px-3 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-full cursor-pointer transition-colors">
+            <label class="inline-flex items-center px-3 py-2 bg-surface-2 dark:bg-surface-on-dark hover:bg-line dark:hover:bg-surface-2-on-dark rounded-full cursor-pointer transition-colors">
               <%= b.check_box(class: "mr-2") %>
-              <span class="text-sm font-body font-medium text-zinc-700 dark:text-zinc-300"><%= b.text.titleize %></span>
+              <span class="text-sm font-body font-medium text-ink-2 dark:text-ink-2-on-dark"><%= b.text.titleize %></span>
             </label>
           <% end %>
         </div>
@@ -161,8 +161,8 @@
     </div>
   </div>
 
-  <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-300 mb-5">Patient Information</h2>
-  <div class="w-full grid grid-cols-2 gap-6 p-6 border border-zinc-200 dark:border-zinc-700 rounded-lg mb-8">
+  <h2 class="text-2xl font-bold text-ink dark:text-ink-2-on-dark mb-5">Patient Information</h2>
+  <div class="w-full grid grid-cols-2 gap-6 p-6 border border-line dark:border-line-on-dark rounded-lg mb-8">
     <div class="w-full col-span-2">
       <div class="grid grid-cols-3 gap-6 mb-8" id="conditions">
         <%= form.fields_for :profile_conditions do |profile_condition_form| %>
@@ -213,8 +213,8 @@
     </div>
   </div>
 
-  <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-300 mb-5">Preferences</h2>
-  <div class="w-full grid grid-cols-2 gap-6 p-6 border border-zinc-200 dark:border-zinc-700 rounded-lg mb-8">
+  <h2 class="text-2xl font-bold text-ink dark:text-ink-2-on-dark mb-5">Preferences</h2>
+  <div class="w-full grid grid-cols-2 gap-6 p-6 border border-line dark:border-line-on-dark rounded-lg mb-8">
     <div class="col-span-2">
       <%= render Forms::FieldComponent.new(
         form: form, 
@@ -290,6 +290,6 @@
 
   <div class="flex gap-4">
     <%= form.submit "Save Profile", class: "px-6 py-3 bg-navy-600 hover:bg-navy-500 text-white font-bold rounded-lg cursor-pointer transition-colors" %>
-    <%= link_to "Cancel", path, class: "px-6 py-3 bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 dark:hover:bg-zinc-600 text-zinc-900 dark:text-zinc-300 font-bold rounded-lg transition-colors" %>
+    <%= link_to "Cancel", path, class: "px-6 py-3 bg-line hover:bg-line-2 dark:bg-surface-2-on-dark dark:hover:bg-line-2-on-dark text-ink dark:text-ink-2-on-dark font-bold rounded-lg transition-colors" %>
   </div>
 <% end %>

@@ -1,16 +1,16 @@
-<div class="mb-8 p-8 border border-zinc-300 dark:border-zinc-700 rounded-lg">
+<div class="mb-8 p-8 border border-line-2 dark:border-line-on-dark rounded-lg">
   <%= render Typography::HeadingComponent.new(size: :h5, text: "Eligibility Checklist") %>
   
   <% if @checklist_items.empty? %>
-    <div class="mt-4 p-4 bg-zinc-50 dark:bg-zinc-800 rounded-lg text-center">
-      <p class="text-zinc-600 dark:text-zinc-400 text-sm">
+    <div class="mt-4 p-4 bg-surface-2 dark:bg-surface-on-dark rounded-lg text-center">
+      <p class="text-ink-3 dark:text-ink-3-on-dark text-sm">
         No eligibility information available for this trial.
       </p>
     </div>
   <% else %>
     <div class="mt-4 space-y-3">
       <% @checklist_items.each do |item| %>
-        <div class="flex gap-4 p-4 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 rounded-lg">
+        <div class="flex gap-4 p-4 bg-surface-2 dark:bg-surface-on-dark/50 border border-line dark:border-line-on-dark rounded-lg">
           <!-- Icon Column -->
           <div class="flex-shrink-0 w-6 h-6 mt-0.5 <%= status_icon_color(item[:status]) %>">
             <%= render Utilities::IconComponent.new(item[:icon], size: 6) %>
@@ -19,7 +19,7 @@
           <!-- Content Column -->
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 mb-1">
-              <h4 class="font-semibold text-zinc-900 dark:text-zinc-100">
+              <h4 class="font-semibold text-ink dark:text-ink-on-dark">
                 <%= item[:label] %>
               </h4>
               <span class="inline-block text-xs font-medium px-2 py-0.5 rounded-full <%= status_badge_class(item[:status]) %>">
@@ -27,7 +27,7 @@
               </span>
             </div>
 
-            <p class="text-sm text-zinc-700 dark:text-zinc-300">
+            <p class="text-sm text-ink-2 dark:text-ink-2-on-dark">
               <%= item[:explanation] %>
             </p>
 
@@ -37,7 +37,7 @@
                 <summary class="text-sm text-sky-600 dark:text-sky-400 cursor-pointer hover:underline font-medium">
                   View full eligibility criteria
                 </summary>
-                <div class="mt-2 p-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded text-sm text-zinc-700 dark:text-zinc-300 max-h-48 overflow-y-auto">
+                <div class="mt-2 p-3 bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark rounded text-sm text-ink-2 dark:text-ink-2-on-dark max-h-48 overflow-y-auto">
                   <%= simple_format(item[:full_text]) %>
                 </div>
               </details>
@@ -48,8 +48,8 @@
     </div>
 
     <!-- Disclaimer -->
-    <div class="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-      <p class="text-xs text-blue-800 dark:text-blue-200">
+    <div class="mt-4 p-3 bg-info/10 dark:bg-info-on-dark/20 border border-info/30 dark:border-info-on-dark rounded-lg">
+      <p class="text-xs text-info dark:text-info-on-dark">
         <strong>Note:</strong> This checklist is a quick reference based on publicly available trial information. Always verify eligibility requirements directly with the trial contact before applying.
       </p>
     </div>

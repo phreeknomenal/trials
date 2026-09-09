@@ -6,30 +6,30 @@ class Page::Trials::EligibilityChecklistComponent < ApplicationComponent
   def status_badge_class(status)
     case status
     when "met"
-      "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800"
+      "bg-good/10 text-good dark:text-good-on-dark border border-good/30"
     when "not_met"
-      "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800"
+      "bg-crit/10 text-crit dark:text-crit-on-dark border border-crit/30"
     when "warning"
-      "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800"
+      "bg-warn/10 text-warn dark:text-warn-on-dark border border-warn/30"
     when "unknown"
-      "bg-gray-100 dark:bg-gray-700/30 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700"
+      "bg-surface-2 dark:bg-surface-2-on-dark text-ink-3 dark:text-ink-3-on-dark border border-line dark:border-line-on-dark"
     else
-      "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800"
+      "bg-info/10 text-info dark:text-info-on-dark border border-info/30"
     end
   end
 
   def status_icon_color(status)
     case status
     when "met"
-      "text-green-600 dark:text-green-400"
+      "text-good dark:text-good-on-dark"
     when "not_met"
-      "text-red-600 dark:text-red-400"
+      "text-crit dark:text-crit-on-dark"
     when "warning"
-      "text-amber-600 dark:text-amber-400"
+      "text-warn dark:text-warn-on-dark"
     when "unknown"
-      "text-gray-600 dark:text-gray-400"
+      "text-ink-3 dark:text-ink-3-on-dark"
     else
-      "text-blue-600 dark:text-blue-400"
+      "text-info dark:text-info-on-dark"
     end
   end
 

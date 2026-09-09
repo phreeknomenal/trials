@@ -1,11 +1,11 @@
 <div class="px-5 lg:px-12 py-10 space-y-10">
   <div>
-    <h1 class="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Overview</h1>
-    <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">Signed in as <%= current_user.email %> (<%= current_user.role %>).</p>
+    <h1 class="text-2xl font-bold text-ink dark:text-ink-on-dark">Overview</h1>
+    <p class="mt-1 text-sm text-ink-3 dark:text-ink-3-on-dark">Signed in as <%= current_user.email %> (<%= current_user.role %>).</p>
   </div>
 
   <section>
-    <h2 class="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 mb-3">People</h2>
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark mb-3">People</h2>
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
       <%= render Admin::StatCardComponent.new(label: "Users", value: @users_total, hint: "#{@staff_count} staff") %>
       <%= render Admin::StatCardComponent.new(label: "New in 30 days", value: @users_recent) %>
@@ -16,7 +16,7 @@
   </section>
 
   <section>
-    <h2 class="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 mb-3">Summary generation</h2>
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark mb-3">Summary generation</h2>
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
       <%= render Admin::StatCardComponent.new(label: "Completed", value: @summaries_by_status.fetch("completed", 0)) %>
       <%= render Admin::StatCardComponent.new(label: "Failed", value: @summaries_failed, tone: :alert) %>
@@ -30,7 +30,7 @@
   </section>
 
   <section>
-    <h2 class="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 mb-3">Content</h2>
+    <h2 class="text-sm font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark mb-3">Content</h2>
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
       <%= render Admin::StatCardComponent.new(label: "Testimonials", value: @testimonials_total,
             hint: "#{@testimonials_published} published") %>
@@ -42,13 +42,13 @@
 
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
     <section>
-      <h2 class="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 mb-1">Signups, last <%= Admin::DashboardController::SIGNUP_WINDOW %> days</h2>
-      <p class="text-xs text-zinc-500 mb-3">Grouped by UTC date.</p>
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark mb-1">Signups, last <%= Admin::DashboardController::SIGNUP_WINDOW %> days</h2>
+      <p class="text-xs text-ink-3 mb-3">Grouped by UTC date.</p>
       <%= render Admin::BarChartComponent.new(series: @signups_by_day, empty_message: "No signups in this window.") %>
     </section>
 
     <section>
-      <h2 class="text-sm font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 mb-3">Saved trials by status</h2>
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark mb-3">Saved trials by status</h2>
       <%= render Admin::BarChartComponent.new(series: @saved_trials_by_status, empty_message: "No saved trials yet.") %>
     </section>
   </div>

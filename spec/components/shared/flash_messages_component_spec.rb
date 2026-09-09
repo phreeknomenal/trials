@@ -50,25 +50,25 @@ RSpec.describe Shared::FlashMessagesComponent, type: :component do
       with_flash({"warning" => "This study stopped recruiting."})
 
       expect(page).to have_text("This study stopped recruiting.")
-      expect(page.find("[role]")[:class]).to include("border-amber-600")
+      expect(page.find("[role]")[:class]).to include("border-warn")
     end
 
     it "supports an informational message" do
       with_flash({"info" => "Scores were recalculated."})
 
-      expect(page.find("[role]")[:class]).to include("border-blue-600")
+      expect(page.find("[role]")[:class]).to include("border-info")
     end
 
     it "treats success and notice the same" do
       with_flash({"success" => "Saved."})
 
-      expect(page.find("[role]")[:class]).to include("border-green-600")
+      expect(page.find("[role]")[:class]).to include("border-good")
     end
 
     it "treats error and alert the same" do
       with_flash({"error" => "Could not save."})
 
-      expect(page.find("[role]")[:class]).to include("border-red-600")
+      expect(page.find("[role]")[:class]).to include("border-crit")
     end
   end
 

@@ -69,21 +69,21 @@ module ApplicationHelper
   def status_badge_classes(status)
     case status
     when "interested"
-      "bg-blue-100 text-blue-800"
+      "bg-info/10 text-info"
     when "applying"
-      "bg-yellow-100 text-yellow-800"
+      "bg-warn/10 text-warn"
     when "contacted"
-      "bg-purple-100 text-purple-800"
+      "bg-info/10 text-info"
     when "enrolled"
-      "bg-green-100 text-green-800"
+      "bg-good/10 text-good"
     when "rejected"
-      "bg-red-100 text-red-800"
+      "bg-crit/10 text-crit"
     when "completed"
-      "bg-gray-100 text-gray-800"
+      "bg-surface-2 text-ink-2"
     when "not_eligible"
-      "bg-orange-100 text-orange-800"
+      "bg-warn/10 text-warn"
     else
-      "bg-gray-100 text-gray-800"
+      "bg-surface-2 text-ink-2"
     end
   end
 end

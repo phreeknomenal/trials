@@ -59,10 +59,10 @@ RSpec.describe Buttons::SaveTrialButtonComponent, type: :component do
   it "carries the state classes the Stimulus controller toggles between" do
     render_button
 
-    expect(page.find("button")[:class]).to include("border-gray-300")
+    expect(page.find("button")[:class]).to include("border-line-2")
 
     render_button(saved_trial: create(:saved_trial))
 
-    expect(page.find("button")[:class]).to include("border-blue-500")
+    expect(page.find("button")[:class]).to include("border-sky-500")
   end
 end

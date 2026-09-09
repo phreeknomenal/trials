@@ -1,6 +1,6 @@
 <div id="match-score-card" class="grid grid-cols-4 gap-8 p-8 <%= match_score_bg_class(@match_level) %> border <%= match_score_border_class(@match_level) %> rounded-lg mb-6">
   <div class="col-span-1">
-    <h3 class="text-lg font-bold text-center text-zinc-900 dark:text-zinc-200">
+    <h3 class="text-lg font-bold text-center text-ink dark:text-ink-on-dark">
       Your Match Score
     </h3>
     
@@ -8,14 +8,14 @@
       <div class="text-6xl <%= match_score_text_class(@match_level) %> font-bold mt-2 mb-3">
         <%= @trial_score %>%
       </div>
-      <div class="text-sm text-zinc-900 dark:text-zinc-200 font-semibold mt-1 leading-none">
+      <div class="text-sm text-ink dark:text-ink-on-dark font-semibold mt-1 leading-none">
         <%= match_phrase(@match_level) %>
       </div>
     </div>
   </div>
 
   <div class="col-span-3">
-    <h3 class="text-lg font-bold text-zinc-900 dark:text-zinc-200 mb-4">
+    <h3 class="text-lg font-bold text-ink dark:text-ink-on-dark mb-4">
       Match Score Details
     </h3>
     <div class="grid grid-cols-2 gap-x-8 gap-y-6">
@@ -34,7 +34,7 @@
             <% if explanation.present? %>
               <button
                 type="button"
-                class="mt-2 text-xs text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300 flex items-center gap-1 transition-colors"
+                class="mt-2 text-xs text-ink-3 dark:text-ink-3-on-dark hover:text-ink-2 dark:hover:text-ink-2-on-dark flex items-center gap-1 transition-colors"
                 data-action="expandable-explanation#toggle"
                 aria-expanded="false"
                 aria-controls="explanation-<%= index %>"
@@ -46,10 +46,10 @@
               </button>
               <div
                 id="explanation-<%= index %>"
-                class="hidden mt-2 p-3 bg-zinc-100 dark:bg-zinc-700/50 rounded-md"
+                class="hidden mt-2 p-3 bg-surface-2 dark:bg-surface-2-on-dark/50 rounded-md"
                 data-expandable-explanation-target="explanation"
               >
-                <p class="text-xs leading-relaxed text-zinc-700 dark:text-zinc-300">
+                <p class="text-xs leading-relaxed text-ink-2 dark:text-ink-2-on-dark">
                   <%= explanation %>
                 </p>
               </div>

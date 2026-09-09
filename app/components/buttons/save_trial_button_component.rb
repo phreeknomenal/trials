@@ -2,8 +2,11 @@ class Buttons::SaveTrialButtonComponent < ApplicationComponent
   # Class lists are exposed as constants because the Stimulus controller swaps
   # between them on toggle. Keeping both sides reading from one definition is
   # what stops the rendered button and the toggled button from drifting apart.
-  SAVED_CLASSES = "border-blue-500 bg-blue-50 text-blue-700 hover:bg-blue-100".freeze
-  UNSAVED_CLASSES = "border-gray-300 bg-white text-gray-700 hover:bg-gray-50".freeze
+  SAVED_CLASSES = "border-sky-500 bg-sky-50 text-sky-700 hover:bg-sky-100 " \
+    "dark:border-sky-500 dark:bg-navy-900/30 dark:text-sky-300 dark:hover:bg-navy-900/40".freeze
+  UNSAVED_CLASSES = "border-line-2 bg-surface text-ink-2 hover:border-ink-4 hover:bg-surface-2 " \
+    "dark:border-line-2-on-dark dark:bg-surface-on-dark dark:text-ink-2-on-dark " \
+    "dark:hover:bg-surface-2-on-dark".freeze
 
   SAVED_LABEL = "Saved".freeze
   UNSAVED_LABEL = "Save Trial".freeze
@@ -47,7 +50,7 @@ class Buttons::SaveTrialButtonComponent < ApplicationComponent
   end
 
   def button_classes
-    base = "inline-flex items-center gap-2 rounded-lg border font-medium transition-colors duration-200 #{button_size_classes}"
+    base = "inline-flex items-center gap-2 rounded-lg border font-semibold transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 #{button_size_classes}"
     state = is_saved? ? SAVED_CLASSES : UNSAVED_CLASSES
 
     "#{base} #{state}"

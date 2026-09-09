@@ -50,17 +50,17 @@ class Utilities::BadgeComponent < ApplicationComponent
     when :nct_id
       "text-sky-100 bg-navy-600 font-bold"
     when :recruiting
-      "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300 font-bold"
+      "bg-good/10 text-good dark:text-good-on-dark font-bold"
     when :active
-      "bg-lime-100 text-lime-800 dark:bg-lime-900/20 dark:text-lime-300 font-bold"
+      "bg-good/10 text-good dark:text-good-on-dark font-bold"
     when :completed
-      "bg-teal-100 text-teal-800 dark:bg-teal-900/20 dark:text-teal-300 font-bold"
+      "bg-ink-4/15 text-ink-2 dark:text-ink-2-on-dark font-bold"
     when :suspended, :terminated, :withdrawn
-      "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300 font-bold font-bold"
+      "bg-crit/10 text-crit dark:text-crit-on-dark font-bold"
     when :not_yet_recruiting
-      "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300 font-bold"
+      "bg-warn/10 text-warn dark:text-warn-on-dark font-bold"
     when :tag
-      "bg-zinc-200 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-300"
+      "bg-surface-2 text-ink-2 dark:bg-surface-2-on-dark dark:text-ink-2-on-dark"
     else
       "bg-sky-100 text-sky-800 dark:bg-navy-900/20 dark:text-sky-300"
     end

@@ -6,15 +6,15 @@ module Admin
       <div class="space-y-2">
         <% series.each do |label, value| %>
           <div class="flex items-center gap-3">
-            <div class="w-28 shrink-0 text-xs text-zinc-500 dark:text-zinc-400 truncate" title="<%= label %>"><%= label %></div>
-            <div class="flex-1 h-5 rounded bg-zinc-100 dark:bg-zinc-800 overflow-hidden">
+            <div class="w-28 shrink-0 text-xs text-ink-3 dark:text-ink-3-on-dark truncate" title="<%= label %>"><%= label %></div>
+            <div class="flex-1 h-5 rounded bg-surface-2 dark:bg-surface-on-dark overflow-hidden">
               <div class="h-full rounded bg-navy-500" style="width: <%= percent_for(value) %>%"></div>
             </div>
-            <div class="w-10 shrink-0 text-right text-xs font-medium text-zinc-700 dark:text-zinc-300"><%= value %></div>
+            <div class="w-10 shrink-0 text-right text-xs font-medium text-ink-2 dark:text-ink-2-on-dark"><%= value %></div>
           </div>
         <% end %>
         <% if series.empty? %>
-          <p class="text-sm text-zinc-500 dark:text-zinc-500"><%= empty_message %></p>
+          <p class="text-sm text-ink-3 dark:text-ink-4-on-dark"><%= empty_message %></p>
         <% end %>
       </div>
     ERB

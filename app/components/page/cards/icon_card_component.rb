@@ -1,7 +1,7 @@
 class Page::Cards::IconCardComponent < ApplicationComponent
   erb_template <<-ERB
     <% if style == :default %>
-      <div class="w-full h-full flex gap-x-4 border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 space-y-3">
+      <div class="w-full h-full flex gap-x-4 border border-line-2 dark:border-line-on-dark rounded-lg p-6 space-y-3">
         <div class="w-24 text-sky-600">
           <%= render Utilities::IconComponent.new(icon, size: 24) %>
         </div>
@@ -11,7 +11,7 @@ class Page::Cards::IconCardComponent < ApplicationComponent
         </div>
       </div>
     <% elsif style == :top %>
-      <div class="w-full h-full flex flex-col gap-x-4 border border-zinc-300 dark:border-zinc-700 rounded-lg p-6 space-y-3">
+      <div class="w-full h-full flex flex-col gap-x-4 border border-line-2 dark:border-line-on-dark rounded-lg p-6 space-y-3">
         <div class="w-14 h-14 text-sky-600">
           <%= render Utilities::IconComponent.new(icon, size: 14) %>
         </div>

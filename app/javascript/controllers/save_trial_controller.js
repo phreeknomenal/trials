@@ -127,8 +127,8 @@ export default class extends Controller {
     if (this.hasSolidIconTarget) this.solidIconTarget.classList.toggle("hidden", !isSaved)
     if (this.hasLabelTarget) this.labelTarget.textContent = isSaved ? "Saved" : "Save Trial"
 
-    const saved = ["border-blue-500", "bg-blue-50", "text-blue-700", "hover:bg-blue-100"]
-    const unsaved = ["border-gray-300", "bg-white", "text-gray-700", "hover:bg-gray-50"]
+    const saved = ["border-sky-500", "bg-sky-50", "text-sky-700", "hover:bg-sky-100"]
+    const unsaved = ["border-line-2", "bg-surface", "text-ink-2", "hover:bg-surface-2"]
 
     button.classList.remove(...(isSaved ? unsaved : saved))
     button.classList.add(...(isSaved ? saved : unsaved))

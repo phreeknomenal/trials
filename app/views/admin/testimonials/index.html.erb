@@ -1,8 +1,8 @@
 <div class="px-5 lg:px-12 py-10">
   <div class="flex items-center justify-between mb-6">
     <div>
-      <h1 class="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Testimonials</h1>
-      <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+      <h1 class="text-2xl font-bold text-ink dark:text-ink-on-dark">Testimonials</h1>
+      <p class="mt-1 text-sm text-ink-3 dark:text-ink-3-on-dark">
         <%= pluralize(@testimonials.size, "testimonial") %> &middot;
         <%= @testimonials.count(&:published?) %> published &middot;
         <%= @testimonials.count(&:placeholder?) %> seeded placeholder
@@ -13,32 +13,32 @@
   </div>
 
   <% if @testimonials.any? %>
-    <div class="overflow-x-auto border border-zinc-200 dark:border-zinc-700 rounded-lg">
+    <div class="overflow-x-auto border border-line dark:border-line-on-dark rounded-lg">
       <table class="w-full text-sm">
-        <thead class="bg-zinc-50 dark:bg-zinc-800/50 text-left">
+        <thead class="bg-surface-2 dark:bg-surface-on-dark/50 text-left">
           <tr>
-            <th class="px-4 py-3 font-semibold text-zinc-700 dark:text-zinc-300">#</th>
-            <th class="px-4 py-3 font-semibold text-zinc-700 dark:text-zinc-300">Author</th>
-            <th class="px-4 py-3 font-semibold text-zinc-700 dark:text-zinc-300">Quote</th>
-            <th class="px-4 py-3 font-semibold text-zinc-700 dark:text-zinc-300">Status</th>
+            <th class="px-4 py-3 font-semibold text-ink-2 dark:text-ink-2-on-dark">#</th>
+            <th class="px-4 py-3 font-semibold text-ink-2 dark:text-ink-2-on-dark">Author</th>
+            <th class="px-4 py-3 font-semibold text-ink-2 dark:text-ink-2-on-dark">Quote</th>
+            <th class="px-4 py-3 font-semibold text-ink-2 dark:text-ink-2-on-dark">Status</th>
             <th class="px-4 py-3"></th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+        <tbody class="divide-y divide-line dark:divide-line-on-dark">
           <% @testimonials.each do |testimonial| %>
             <tr>
-              <td class="px-4 py-3 text-zinc-500 dark:text-zinc-500"><%= testimonial.position %></td>
+              <td class="px-4 py-3 text-ink-3 dark:text-ink-4-on-dark"><%= testimonial.position %></td>
               <td class="px-4 py-3">
-                <div class="font-medium text-zinc-900 dark:text-zinc-100"><%= testimonial.author_name %></div>
-                <div class="text-zinc-500 dark:text-zinc-500"><%= testimonial.author_role %></div>
+                <div class="font-medium text-ink dark:text-ink-on-dark"><%= testimonial.author_name %></div>
+                <div class="text-ink-3 dark:text-ink-4-on-dark"><%= testimonial.author_role %></div>
               </td>
-              <td class="px-4 py-3 text-zinc-700 dark:text-zinc-300 max-w-md"><%= truncate(testimonial.quote, length: 90) %></td>
+              <td class="px-4 py-3 text-ink-2 dark:text-ink-2-on-dark max-w-md"><%= truncate(testimonial.quote, length: 90) %></td>
               <td class="px-4 py-3">
-                <span class="inline-block px-2 py-0.5 rounded text-xs font-medium <%= testimonial.published? ? "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300" : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400" %>">
+                <span class="inline-block px-2 py-0.5 rounded text-xs font-medium <%= testimonial.published? ? "bg-good/10 text-good dark:bg-good-on-dark/40 dark:text-good-on-dark" : "bg-surface-2 text-ink-3 dark:bg-surface-on-dark dark:text-ink-3-on-dark" %>">
                   <%= testimonial.published? ? "Published" : "Draft" %>
                 </span>
                 <% if testimonial.placeholder? %>
-                  <span class="ml-1 inline-block px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300"
+                  <span class="ml-1 inline-block px-2 py-0.5 rounded text-xs font-medium bg-warn/10 text-warn dark:bg-warn-on-dark/40 dark:text-warn-on-dark"
                         title="Seeded content. Deleting it is temporary — the next deploy recreates it.">Seeded</span>
                 <% end %>
               </td>
@@ -47,14 +47,14 @@
                     has to live on the control itself. %>
                 <div class="flex items-center justify-end gap-1">
                   <%= link_to edit_admin_testimonial_path(testimonial),
-                        class: "p-2 rounded text-orange-500 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors",
+                        class: "p-2 rounded text-warn hover:text-warn dark:text-warn-on-dark dark:hover:text-warn-on-dark hover:bg-surface-2 dark:hover:bg-surface-on-dark transition-colors",
                         title: "Edit", "aria-label": "Edit testimonial from #{testimonial.author_name}" do %>
                     <%= render Utilities::IconComponent.new("pencil", size: 5) %>
                   <% end %>
 
                   <%= button_to admin_testimonial_path(testimonial), method: :delete,
                         form: {data: {turbo_confirm: testimonial.placeholder? ? "This is seeded placeholder content. Deleting it is temporary — the next deploy will recreate it. Continue?" : "Delete this testimonial?"}, class: "inline"},
-                        class: "p-2 rounded text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer transition-colors",
+                        class: "p-2 rounded text-crit hover:text-crit dark:text-crit-on-dark dark:hover:text-crit-on-dark hover:bg-surface-2 dark:hover:bg-surface-on-dark cursor-pointer transition-colors",
                         title: "Delete", "aria-label": "Delete testimonial from #{testimonial.author_name}" do %>
                     <%= render Utilities::IconComponent.new("trash", size: 5) %>
                   <% end %>
@@ -66,6 +66,6 @@
       </table>
     </div>
   <% else %>
-    <p class="text-zinc-600 dark:text-zinc-400">No testimonials yet.</p>
+    <p class="text-ink-3 dark:text-ink-3-on-dark">No testimonials yet.</p>
   <% end %>
 </div>

@@ -22,11 +22,14 @@ RSpec.describe Shared::PaginationComponent, type: :component do
   end
 
   describe "on the first page" do
-    it "renders next but not previous" do
-      html = render_for(page: 1).to_html
+    # Both ends always render, disabled rather than absent, so the page
+    # indicator stays centred instead of sliding as you reach either end.
+    it "links next and disables previous" do
+      page_html = render_for(page: 1)
 
-      expect(html).to include("Next")
-      expect(html).not_to include("Previous")
+      expect(page_html.css("a[rel='next']")).not_to be_empty
+      expect(page_html.css("a[rel='prev']")).to be_empty
+      expect(page_html.css("[aria-disabled='true']").text).to include("Previous")
     end
 
     it "links next to page 2" do
@@ -35,11 +38,12 @@ RSpec.describe Shared::PaginationComponent, type: :component do
   end
 
   describe "on the last page" do
-    it "renders previous but not next" do
-      html = render_for(page: 10).to_html
+    it "links previous and disables next" do
+      page_html = render_for(page: 10)
 
-      expect(html).to include("Previous")
-      expect(html).not_to include("Next")
+      expect(page_html.css("a[rel='prev']")).not_to be_empty
+      expect(page_html.css("a[rel='next']")).to be_empty
+      expect(page_html.css("[aria-disabled='true']").text).to include("Next")
     end
   end
 

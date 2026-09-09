@@ -1,21 +1,21 @@
 <% if render? %>
-  <div class="mt-4 p-5 lg:p-10 bg-white dark:bg-zinc-800/900 border border-zinc-200 dark:border-zinc-700 rounded-lg">
+  <div class="mt-4 p-5 lg:p-10 bg-surface dark:bg-surface-on-dark border border-line dark:border-line-on-dark rounded-lg">
     <%= render Typography::HeadingComponent.new(size: :h5, text: "Study Phase and Status") %>
-    <p class="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-4">What does they mean?</p>
+    <p class="text-sm font-medium text-ink-2 dark:text-ink-2-on-dark mb-4">What does they mean?</p>
 
-    <ul class="space-y-2 text-base text-zinc-600 dark:text-zinc-400">
+    <ul class="space-y-2 text-base text-ink-3 dark:text-ink-3-on-dark">
       <% if phase_explanation.present? %>
         <li class="flex items-center gap-1">
           <%= render Utilities::IconComponent.new("swatch", size: 6, options: { class: "text-sky-500" }) %>
-          <strong class="text-zinc-800 dark:text-zinc-200">Phase:</strong>
-          <p class="font-body leading-relaxed text-base text-zinc-600 dark:text-zinc-400"><%= phase_explanation %></p>
+          <strong class="text-ink-2 dark:text-ink-on-dark">Phase:</strong>
+          <p class="font-body leading-relaxed text-base text-ink-3 dark:text-ink-3-on-dark"><%= phase_explanation %></p>
         </li>
       <% end %>
       <% if status_explanation.present? %>
         <li class="flex items-center gap-1">
-          <%= render Utilities::IconComponent.new("exclamation_triangle", size: 6, options: { class: "text-green-500" }) %>
-          <strong class="text-zinc-800 dark:text-zinc-200">Status:</strong>
-          <p class="font-body leading-relaxed text-base text-zinc-600 dark:text-zinc-400"><%= status_explanation %></p>
+          <%= render Utilities::IconComponent.new("exclamation_triangle", size: 6, options: { class: "text-good" }) %>
+          <strong class="text-ink-2 dark:text-ink-on-dark">Status:</strong>
+          <p class="font-body leading-relaxed text-base text-ink-3 dark:text-ink-3-on-dark"><%= status_explanation %></p>
         </li>
       <% end %>
     </ul>

@@ -34,7 +34,7 @@ class Page::Trials::SortByComponent < ApplicationComponent
     if active
       "#{base} bg-sky-100 dark:bg-navy-900/30 text-sky-700 dark:text-sky-300"
     else
-      "#{base} text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+      "#{base} text-ink-3 dark:text-ink-3-on-dark hover:bg-surface-2 dark:hover:bg-surface-on-dark"
     end
   end
 end

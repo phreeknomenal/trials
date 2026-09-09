@@ -38,10 +38,14 @@ RSpec.describe "Saved trials pagination", type: :request do
       expect(response.body).to include("25 trials")
     end
 
-    it "does not render a previous link on the first page" do
+    # Previous still renders on page one, disabled rather than absent, so the
+    # page indicator stays centred instead of sliding.
+    it "disables rather than removes previous on the first page" do
       get saved_trials_path
 
-      expect(response.body).not_to include("Previous")
+      expect(response.body).to include("Previous")
+      expect(response.body).not_to include('rel="prev"')
+      expect(response.body).to include('aria-disabled="true"')
     end
 
     it "serves page 2 with different records" do

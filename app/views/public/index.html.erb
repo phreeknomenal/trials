@@ -1,9 +1,9 @@
-<section id="hero" class="border-b border-zinc-300 dark:border-zinc-700 px-0 lg:px-24 bg-[url('landing-bg.png')] bg-cover bg-center">
+<section id="hero" class="border-b border-line-2 dark:border-line-on-dark px-0 lg:px-24 bg-[url('landing-bg.png')] bg-cover bg-center">
   <div class="w-full h-auto lg:h-172 grid grid-cols-2 gap-10">
     <div class="col-span-2 lg:col-span-1 flex flex-col justify-center">
       <div class="w-[90%] mx-auto lg:mx-0 pt-5 lg:pt-0">
-        <h1 class="text-5xl lg:text-7xl tracking-tight font-bold text-left text-zinc-900 dark:text-zinc-300 mb-4">Find clinical trials that match your journey</h1>
-        <p class="font-body text-base lg:text-lg text-zinc-600 dark:text-zinc-400 mb-6">Connect with medical research that understands your unique health needs. Our platform helps patients discover personalized clinical trials with precision and hope.</p>
+        <h1 class="text-5xl lg:text-7xl tracking-tight font-bold text-left text-ink dark:text-ink-2-on-dark mb-4">Find clinical trials that match your journey</h1>
+        <p class="font-body text-base lg:text-lg text-ink-3 dark:text-ink-3-on-dark mb-6">Connect with medical research that understands your unique health needs. Our platform helps patients discover personalized clinical trials with precision and hope.</p>
         <div class="flex gap-4">
           <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Search Trials", color: "primary") %>
           <%= render Buttons::ButtonComponent.new(path: new_user_registration_path, text: "Sign Up") %>
@@ -27,7 +27,7 @@
   </div>
 </section>
 
-<section id="intro" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-zinc-300 dark:border-zinc-700">
+<section id="intro" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-line-2 dark:border-line-on-dark">
   <div class="w-full lg:w-1/2">
     <%= render Page::HeaderComponent.new(
       pretext: "Journey", 
@@ -67,7 +67,7 @@
   </div>
 </section>
 
-<section id="how-it-works" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-zinc-300 dark:border-zinc-700">
+<section id="how-it-works" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-line-2 dark:border-line-on-dark">
   <div class="w-full grid grid-cols-2 gap-6 lg:gap-12">
     <div class="col-span-2 lg:col-span-1 order-2 lg:order-1">
       <%= render Page::HeaderComponent.new(
@@ -115,7 +115,7 @@
   </div>
 </section>
 
-<section id="testimonials" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-zinc-300 dark:border-zinc-700">
+<section id="testimonials" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-line-2 dark:border-line-on-dark">
   <div class="w-full lg:w-1/2 mx-auto text-center">
     <%= render Page::HeaderComponent.new(
       pretext: "Mission", 
@@ -157,7 +157,7 @@
 </section>
 
 <% if @testimonials.any? %>
-<section id="intro" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-zinc-300 dark:border-zinc-700">
+<section id="intro" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-line-2 dark:border-line-on-dark">
   <div class="w-full lg:w-1/2 mx-auto text-center">
     <%= render Page::HeaderComponent.new(
       heading: "Community Stories", 
@@ -176,7 +176,7 @@
 </section>
 <% end %>
 
-<section id="" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-zinc-300 dark:border-zinc-700">
+<section id="" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-line-2 dark:border-line-on-dark">
   <div class="w-full mx-auto text-center bg-navy-600 text-white flex flex-col items-center justify-center p-10 rounded-2xl">
     <div class="w-4/5 mb-8 gap-5">
       <h3 class="text-7xl font-bold mb-5">Join the medical research community</h3>

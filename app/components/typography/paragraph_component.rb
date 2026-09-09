@@ -1,6 +1,6 @@
 class Typography::ParagraphComponent < ApplicationComponent
   erb_template <<-ERB
-    <p class="font-body text-sm lg:text-base text-zinc-600 dark:text-zinc-400">
+    <p class="font-body text-sm lg:text-base text-ink-3 dark:text-ink-3-on-dark">
       <%= text %>
     </p>
   ERB

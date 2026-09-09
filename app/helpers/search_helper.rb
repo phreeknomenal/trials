@@ -2,19 +2,19 @@ module SearchHelper
   def status_badge_class(status)
     case status
     when "Recruiting"
-      "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300"
+      "bg-good/10 text-good dark:bg-good-on-dark/20 dark:text-good-on-dark"
     when "Active, not recruiting"
-      "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300"
+      "bg-info/10 text-info dark:bg-info-on-dark/20 dark:text-info-on-dark"
     when "Completed"
-      "bg-zinc-100 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-300"
+      "bg-surface-2 text-ink-2 dark:bg-surface-2-on-dark dark:text-ink-2-on-dark"
     when "Not yet recruiting"
-      "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300"
+      "bg-warn/10 text-warn dark:bg-warn-on-dark/20 dark:text-warn-on-dark"
     when "Enrolling by invitation"
-      "bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300"
+      "bg-info/10 text-info dark:bg-info-on-dark/20 dark:text-info-on-dark"
     when "Suspended", "Terminated", "Withdrawn"
-      "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300"
+      "bg-crit/10 text-crit dark:bg-crit-on-dark/20 dark:text-crit-on-dark"
     else
-      "bg-zinc-100 text-zinc-800 dark:bg-zinc-700 dark:text-zinc-300"
+      "bg-surface-2 text-ink-2 dark:bg-surface-2-on-dark dark:text-ink-2-on-dark"
     end
   end
 end

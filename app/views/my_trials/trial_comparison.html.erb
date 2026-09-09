@@ -1,8 +1,8 @@
-<section class="px-5 lg:px-44 py-12 border-b border-zinc-200 dark:border-zinc-700">
+<section class="px-5 lg:px-44 py-12 border-b border-line dark:border-line-on-dark">
   <div class="flex items-center justify-between">
     <div>
-      <h1 class="text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">Compare Trials</h1>
-      <p class="text-zinc-600 dark:text-zinc-400">
+      <h1 class="text-3xl font-bold text-ink dark:text-ink-on-dark mb-2">Compare Trials</h1>
+      <p class="text-ink-3 dark:text-ink-3-on-dark">
         Comparing <%= @saved_trials.count %> trials side-by-side
       </p>
     </div>
@@ -12,7 +12,7 @@
 </section>
 
 <section class="px-5 lg:px-44 py-12">
-  <div class="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700 shadow-md bg-white dark:bg-zinc-800">
+  <div class="overflow-x-auto rounded-lg border border-line dark:border-line-on-dark shadow-md bg-surface dark:bg-surface-on-dark">
     <table class="w-full min-w-[800px] border-collapse table-fixed">
       <colgroup>
         <col style="width: 160px;">
@@ -21,15 +21,15 @@
         <% end %>
       </colgroup>
       <thead>
-        <tr class="border-b border-zinc-200 dark:border-zinc-700">
-          <th scope="col" class="text-left py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400 bg-transparent align-top">
+        <tr class="border-b border-line dark:border-line-on-dark">
+          <th scope="col" class="text-left py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark bg-transparent align-top">
             Trial Details
           </th>
           <% @saved_trials.each do |trial| %>
-            <th scope="col" class="text-left py-4 px-5 align-top border-l border-zinc-200 dark:border-zinc-700">
+            <th scope="col" class="text-left py-4 px-5 align-top border-l border-line dark:border-line-on-dark">
               <div class="space-y-2">
-                <p class="text-sm text-zinc-500 dark:text-zinc-400">NCT<%= trial.nct_id %></p>
-                <h3 class="font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-2 text-base leading-snug">
+                <p class="text-sm text-ink-3 dark:text-ink-3-on-dark">NCT<%= trial.nct_id %></p>
+                <h3 class="font-semibold text-ink dark:text-ink-on-dark line-clamp-2 text-base leading-snug">
                   <%= trial.trial_title %>
                 </h3>
                 <% if trial.match_score.present? %>
@@ -47,104 +47,104 @@
         </tr>
       </thead>
       <tbody>
-        <tr class="border-b border-zinc-200 dark:border-zinc-700">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Status</td>
+        <tr class="border-b border-line dark:border-line-on-dark">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Status</td>
           <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 border-l border-zinc-200 dark:border-zinc-700">
+            <td class="py-4 px-5 border-l border-line dark:border-line-on-dark">
               <span class="inline-block px-3 py-1 rounded-full text-sm font-medium <%= status_badge_classes(trial.status) %>">
                 <%= trial.status.titleize %>
               </span>
             </td>
           <% end %>
         </tr>
-        <tr class="border-b border-zinc-200 dark:border-zinc-700">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Phase</td>
+        <tr class="border-b border-line dark:border-line-on-dark">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Phase</td>
           <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 text-sm text-zinc-900 dark:text-zinc-100 border-l border-zinc-200 dark:border-zinc-700">
+            <td class="py-4 px-5 text-sm text-ink dark:text-ink-on-dark border-l border-line dark:border-line-on-dark">
               <%= trial.phase.presence || "—" %>
             </td>
           <% end %>
         </tr>
-        <tr class="border-b border-zinc-200 dark:border-zinc-700">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Study Type</td>
+        <tr class="border-b border-line dark:border-line-on-dark">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Study Type</td>
           <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 text-sm text-zinc-900 dark:text-zinc-100 border-l border-zinc-200 dark:border-zinc-700">
+            <td class="py-4 px-5 text-sm text-ink dark:text-ink-on-dark border-l border-line dark:border-line-on-dark">
               <%= trial.study_type.presence || "—" %>
             </td>
           <% end %>
         </tr>
-        <tr class="border-b border-zinc-200 dark:border-zinc-700">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Age Range</td>
+        <tr class="border-b border-line dark:border-line-on-dark">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Age Range</td>
           <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 text-sm text-zinc-900 dark:text-zinc-100 border-l border-zinc-200 dark:border-zinc-700">
+            <td class="py-4 px-5 text-sm text-ink dark:text-ink-on-dark border-l border-line dark:border-line-on-dark">
               <%= trial.min_age.present? || trial.max_age.present? ? "#{trial.min_age} - #{trial.max_age}" : "—" %>
             </td>
           <% end %>
         </tr>
-        <tr class="border-b border-zinc-200 dark:border-zinc-700">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Sponsor(s)</td>
+        <tr class="border-b border-line dark:border-line-on-dark">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Sponsor(s)</td>
           <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 text-sm text-zinc-900 dark:text-zinc-100 border-l border-zinc-200 dark:border-zinc-700 align-top">
+            <td class="py-4 px-5 text-sm text-ink dark:text-ink-on-dark border-l border-line dark:border-line-on-dark align-top">
               <span class="block line-clamp-2 break-words"><%= trial.sponsor.presence || "—" %></span>
             </td>
           <% end %>
         </tr>
-        <tr class="border-b border-zinc-200 dark:border-zinc-700">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Summary</td>
+        <tr class="border-b border-line dark:border-line-on-dark">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Summary</td>
           <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 text-sm text-zinc-900 dark:text-zinc-100 border-l border-zinc-200 dark:border-zinc-700 align-top">
+            <td class="py-4 px-5 text-sm text-ink dark:text-ink-on-dark border-l border-line dark:border-line-on-dark align-top">
               <span class="block line-clamp-3 break-words"><%= trial.summary.presence || "—" %></span>
             </td>
           <% end %>
         </tr>
-        <tr class="border-b border-zinc-200 dark:border-zinc-700">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Enrollment</td>
+        <tr class="border-b border-line dark:border-line-on-dark">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Enrollment</td>
           <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 text-sm text-zinc-900 dark:text-zinc-100 border-l border-zinc-200 dark:border-zinc-700">
+            <td class="py-4 px-5 text-sm text-ink dark:text-ink-on-dark border-l border-line dark:border-line-on-dark">
               <%= trial.enrollment_count.present? ? "#{number_with_delimiter(trial.enrollment_count)} participants" : "—" %>
             </td>
           <% end %>
         </tr>
-        <tr class="border-b border-zinc-200 dark:border-zinc-700">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Trial Status</td>
+        <tr class="border-b border-line dark:border-line-on-dark">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Trial Status</td>
           <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 border-l border-zinc-200 dark:border-zinc-700">
+            <td class="py-4 px-5 border-l border-line dark:border-line-on-dark">
               <%= render Utilities::BadgeComponent.new(status: trial.trial_status, text: trial.trial_status.blank? ? "—" : nil) %>
             </td>
           <% end %>
         </tr>
-        <tr class="border-b border-zinc-200 dark:border-zinc-700">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Start Date</td>
+        <tr class="border-b border-line dark:border-line-on-dark">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Start Date</td>
           <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 text-sm text-zinc-900 dark:text-zinc-100 border-l border-zinc-200 dark:border-zinc-700">
+            <td class="py-4 px-5 text-sm text-ink dark:text-ink-on-dark border-l border-line dark:border-line-on-dark">
               <%= trial.start_date.present? ? trial.start_date.strftime("%B %Y") : "—" %>
             </td>
           <% end %>
         </tr>
-        <tr class="border-b border-zinc-200 dark:border-zinc-700">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Completion Date</td>
+        <tr class="border-b border-line dark:border-line-on-dark">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Completion Date</td>
           <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 text-sm text-zinc-900 dark:text-zinc-100 border-l border-zinc-200 dark:border-zinc-700">
+            <td class="py-4 px-5 text-sm text-ink dark:text-ink-on-dark border-l border-line dark:border-line-on-dark">
               <%= trial.completion_date.present? ? trial.completion_date.strftime("%B %Y") : "—" %>
             </td>
           <% end %>
         </tr>
-        <tr class="border-b border-zinc-200 dark:border-zinc-700">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400">Duration</td>
+        <tr class="border-b border-line dark:border-line-on-dark">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Duration</td>
           <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 text-sm text-zinc-900 dark:text-zinc-100 border-l border-zinc-200 dark:border-zinc-700">
+            <td class="py-4 px-5 text-sm text-ink dark:text-ink-on-dark border-l border-line dark:border-line-on-dark">
               <%= trial_duration(trial.start_date, trial.completion_date).presence || "—" %>
             </td>
           <% end %>
         </tr>
-        <tr class="bg-zinc-50 dark:bg-zinc-700/50">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-zinc-600 dark:text-zinc-400"></td>
+        <tr class="bg-surface-2 dark:bg-surface-2-on-dark/50">
+          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark"></td>
           <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 border-l border-zinc-200 dark:border-zinc-700 space-y-2">
+            <td class="py-4 px-5 border-l border-line dark:border-line-on-dark space-y-2">
               <%= link_to "View Full Trial", my_trial_path(trial.nct_id), 
                   class: "block w-full px-4 py-2 bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors text-center font-medium text-sm" %>
               <%= link_to "Edit Entry", edit_saved_trial_path(trial), 
-                  class: "block w-full px-4 py-2 bg-white dark:bg-zinc-800 border-2 border-navy-600 text-sky-600 dark:text-sky-400 rounded-lg hover:bg-sky-50 dark:hover:bg-navy-900/20 transition-colors text-center font-medium text-sm" %>
+                  class: "block w-full px-4 py-2 bg-surface dark:bg-surface-on-dark border-2 border-navy-600 text-sky-600 dark:text-sky-400 rounded-lg hover:bg-sky-50 dark:hover:bg-navy-900/20 transition-colors text-center font-medium text-sm" %>
             </td>
           <% end %>
         </tr>

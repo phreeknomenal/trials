@@ -5,28 +5,47 @@ module Shared
   #   render Shared::PaginationComponent.new(pagy: @pagy, path_for: ->(page) { admin_users_path(page: page) })
   class PaginationComponent < ApplicationComponent
     erb_template <<~ERB
-      <nav class="mt-6 flex items-center justify-between text-sm" aria-label="Pagination">
-        <div class="w-24">
-          <% if previous_page %>
-            <%= link_to "← Previous", path_for.call(previous_page),
-                  class: "text-sky-600 hover:text-sky-700 font-medium",
-                  rel: "prev" %>
+      <nav class="mt-6 flex items-center justify-between gap-4 border-t border-line dark:border-line-on-dark pt-4 text-sm" aria-label="Pagination">
+        <% if previous_page %>
+          <%= link_to path_for.call(previous_page), rel: "prev", class: link_classes do %>
+            <%= render Utilities::IconComponent.new("chevron_left", size: 4) %>
+            Previous
           <% end %>
-        </div>
+        <% else %>
+          <span class="\#{link_classes} opacity-40 pointer-events-none" aria-disabled="true">
+            <%= render Utilities::IconComponent.new("chevron_left", size: 4) %>
+            Previous
+          </span>
+        <% end %>
 
-        <span class="text-zinc-500 dark:text-zinc-400">
+        <span class="text-ink-3 dark:text-ink-3-on-dark tabular-nums">
           Page <%= pagy.page %> of <%= pagy.pages %><%= count_suffix %>
         </span>
 
-        <div class="w-24 text-right">
-          <% if next_page %>
-            <%= link_to "Next →", path_for.call(next_page),
-                  class: "text-sky-600 hover:text-sky-700 font-medium",
-                  rel: "next" %>
+        <% if next_page %>
+          <%= link_to path_for.call(next_page), rel: "next", class: link_classes do %>
+            Next
+            <%= render Utilities::IconComponent.new("chevron_right", size: 4) %>
           <% end %>
-        </div>
+        <% else %>
+          <span class="\#{link_classes} opacity-40 pointer-events-none" aria-disabled="true">
+            Next
+            <%= render Utilities::IconComponent.new("chevron_right", size: 4) %>
+          </span>
+        <% end %>
       </nav>
     ERB
+
+    # Both ends are always rendered, disabled rather than absent, so the page
+    # indicator stays centred instead of sliding as you reach either end.
+    LINK_CLASSES = "inline-flex items-center gap-1 rounded-md px-2 py-1 font-semibold " \
+      "text-sky-600 dark:text-sky-300 hover:bg-sky-50 dark:hover:bg-navy-900/30 " \
+      "transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 " \
+      "focus-visible:outline-sky-500"
+
+    def link_classes
+      LINK_CLASSES
+    end
 
     attr_reader :pagy, :path_for, :unit
 

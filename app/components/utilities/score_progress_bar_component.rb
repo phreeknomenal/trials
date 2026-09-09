@@ -2,36 +2,22 @@ class Utilities::ScoreProgressBarComponent < ApplicationComponent
   def initialize(score:, label:, match_level: nil)
     @score = score
     @label = label
-    @match_level = match_level || determine_match_level(score)
+    # match_level_for lives on ApplicationComponent. This class previously
+    # carried its own copy of the thresholds and its own green/blue/orange/red
+    # case, which meant a fifth definition of the tiers that the recolour in
+    # #115 did not reach.
+    @match_level = match_level || match_level_for(score)
   end
 
   private
 
   attr_reader :score, :label, :match_level
 
-  def determine_match_level(score)
-    case score
-    when 80..100 then "excellent"
-    when 60..79 then "good"
-    when 40..59 then "fair"
-    else "poor"
-    end
-  end
-
   def progress_bar_color_class
-    case match_level
-    when "excellent"
-      "bg-green-500 dark:bg-green-400"
-    when "good"
-      "bg-blue-500 dark:bg-blue-400"
-    when "fair"
-      "bg-orange-500 dark:bg-orange-400"
-    else
-      "bg-red-500 dark:bg-red-400"
-    end
+    match_score_bar_class(match_level)
   end
 
   def progress_bar_bg_class
-    "bg-zinc-200 dark:bg-zinc-600"
+    "bg-surface-2 dark:bg-surface-2-on-dark"
   end
 end

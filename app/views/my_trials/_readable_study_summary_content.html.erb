@@ -6,18 +6,18 @@
       </div>
       <span class="text-xs font-semibold uppercase tracking-wide">AI-generated, plain-language summary</span>
     </div>
-    <div class="text-zinc-700 dark:text-zinc-300 font-body max-w-none">
+    <div class="text-ink-2 dark:text-ink-2-on-dark font-body max-w-none">
       <%= simple_format(record.content) %>
     </div>
   </div>
 <% elsif record&.pending? %>
-  <div class="flex items-center gap-3 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/40 p-6 text-zinc-600 dark:text-zinc-400">
+  <div class="flex items-center gap-3 rounded-lg border border-line dark:border-line-on-dark bg-surface-2 dark:bg-surface-on-dark/40 p-6 text-ink-3 dark:text-ink-3-on-dark">
     <span class="inline-block w-4 h-4 rounded-full border-2 border-sky-500 border-t-transparent animate-spin" aria-hidden="true"></span>
     <span class="text-sm">Generating a more readable version&hellip;</span>
   </div>
 <% elsif record&.failed? %>
-  <div class="rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-6">
-    <p class="text-sm text-red-800 dark:text-red-200 mb-3">
+  <div class="rounded-lg border border-crit/30 dark:border-crit-on-dark bg-crit/10 dark:bg-crit-on-dark/20 p-6">
+    <p class="text-sm text-crit dark:text-crit-on-dark mb-3">
       <%= record.error_message.presence || "We couldn't generate a readable version right now." %>
     </p>
     <%= button_to "Try again",

@@ -65,13 +65,13 @@ class Page::Trials::ComparisonScoreBreakdownComponent < ApplicationComponent
   def get_text_color_for_score(score)
     case score_match_level(score)
     when "excellent"
-      "text-green-900 dark:text-green-100"
+      "text-good dark:text-good-on-dark"
     when "good"
-      "text-blue-900 dark:text-blue-100"
+      "text-info dark:text-info-on-dark"
     when "fair"
-      "text-orange-900 dark:text-orange-100"
+      "text-warn dark:text-warn-on-dark"
     else
-      "text-red-900 dark:text-red-100"
+      "text-crit dark:text-crit-on-dark"
     end
   end
 end

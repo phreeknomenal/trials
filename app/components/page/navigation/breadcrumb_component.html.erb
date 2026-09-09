@@ -13,14 +13,14 @@
     <% crumbs.each do |crumb| %>
       <li>
         <div class="flex items-center space-x-2">
-          <span class="text-zinc-500 dark:text-zinc-400">/</span>
+          <span class="text-ink-3 dark:text-ink-3-on-dark">/</span>
 
           <% if crumb[:path].present? %>
-            <%= link_to crumb[:path], class: "text-zinc-500 dark:text-zinc-400 hover:text-sky-600" do %>
+            <%= link_to crumb[:path], class: "text-ink-3 dark:text-ink-3-on-dark hover:text-sky-600" do %>
               <%= crumb[:name] %>
             <% end %>
           <% else %>
-            <span class="text-zinc-500 dark:text-zinc-400">
+            <span class="text-ink-3 dark:text-ink-3-on-dark">
               <%= crumb[:name] %>
             </span>
           <% end %>

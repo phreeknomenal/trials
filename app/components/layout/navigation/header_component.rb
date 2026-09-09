@@ -1,6 +1,6 @@
 class Layout::Navigation::HeaderComponent < ApplicationComponent
   erb_template <<-ERB
-    <header class="border-b border-zinc-200 dark:border-zinc-700"
+    <header class="border-b border-line dark:border-line-on-dark"
             data-controller="mobile-menu"
             data-action="keydown.esc@window->mobile-menu#closeOnEscape click@window->mobile-menu#closeOnOutsideClick">
 
@@ -8,7 +8,7 @@ class Layout::Navigation::HeaderComponent < ApplicationComponent
         <div>
           <%= link_to root_path, class: "flex items-center gap-2 rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500" do %>
             <%= render Utilities::MarkComponent.new(height: 8) %>
-            <span class="font-primary text-2xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-300">Dira<span class="font-light text-zinc-500 dark:text-zinc-400"> Health</span></span>
+            <span class="font-primary text-2xl font-extrabold tracking-tight text-ink dark:text-ink-2-on-dark">Dira<span class="font-light text-ink-3 dark:text-ink-3-on-dark"> Health</span></span>
           <% end %>
         </div>
 
@@ -19,7 +19,7 @@ class Layout::Navigation::HeaderComponent < ApplicationComponent
         </div>
 
         <button type="button"
-                class="lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-md text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+                class="lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-md text-ink-2 dark:text-ink-2-on-dark hover:bg-surface-2 dark:hover:bg-surface-on-dark transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
                 data-mobile-menu-target="trigger"
                 data-action="mobile-menu#toggle"
                 aria-controls="mobile-menu-panel"
@@ -37,11 +37,11 @@ class Layout::Navigation::HeaderComponent < ApplicationComponent
       <div id="mobile-menu-panel"
            data-mobile-menu-target="panel"
            hidden
-           class="lg:hidden border-t border-zinc-200 dark:border-zinc-700">
+           class="lg:hidden border-t border-line dark:border-line-on-dark">
         <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 py-4 flex flex-col gap-4">
           <%= render Layout::Navigation::Menu::HeaderMenuComponent.new(orientation: :vertical) %>
 
-          <div class="flex items-center justify-between gap-4 border-t border-zinc-200 dark:border-zinc-700 pt-4">
+          <div class="flex items-center justify-between gap-4 border-t border-line dark:border-line-on-dark pt-4">
             <%= render Buttons::DarkModeToggleComponent.new %>
             <%= render_account_control %>
           </div>
