@@ -46,26 +46,31 @@ class ApplicationComponent < ViewComponent::Base
   # into the same else branch as "poor" and the two were indistinguishable.
   MATCH_TIER_STYLES = {
     "excellent" => {
+      bar: "bg-sky-700 dark:bg-sky-300",
       bg: "bg-sky-100 dark:bg-navy-900/40",
       text: "text-sky-800 dark:text-sky-200",
       border: "border-sky-400 dark:border-sky-700"
     },
     "good" => {
+      bar: "bg-sky-500 dark:bg-sky-400",
       bg: "bg-sky-50 dark:bg-navy-900/30",
       text: "text-sky-700 dark:text-sky-300",
       border: "border-sky-300 dark:border-sky-800"
     },
     "fair" => {
+      bar: "bg-sky-300 dark:bg-sky-600",
       bg: "bg-sky-50 dark:bg-navy-900/20",
       text: "text-sky-600 dark:text-sky-400",
       border: "border-sky-200 dark:border-navy-700"
     },
     "poor" => {
+      bar: "bg-sky-200 dark:bg-sky-700",
       bg: "bg-sky-50 dark:bg-navy-900/20",
       text: "text-sky-500 dark:text-sky-500",
       border: "border-sky-100 dark:border-navy-800"
     },
     "ineligible" => {
+      bar: "bg-ink-4 dark:bg-ink-4-on-dark",
       bg: "bg-surface-2 dark:bg-navy-900/20",
       text: "text-ink-3 dark:text-ink-3-on-dark",
       border: "border-line dark:border-navy-700"
@@ -88,6 +93,10 @@ class ApplicationComponent < ViewComponent::Base
 
   def match_score_text_class(match_level)
     match_tier_styles(match_level).fetch(:text)
+  end
+
+  def match_score_bar_class(match_level)
+    match_tier_styles(match_level).fetch(:bar)
   end
 
   def match_level_for(match_score)

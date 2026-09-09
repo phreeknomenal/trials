@@ -1,7 +1,7 @@
-<div class="col-span-2 lg:col-span-1 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg p-6 relative" id="saved-trial-<%= saved_trial.id %>">
+<div class="col-span-2 lg:col-span-1 bg-surface dark:bg-surface-on-dark border border-line dark:border-line-on-dark rounded-xl p-6 relative transition-colors hover:border-line-2 dark:hover:border-line-2-on-dark" id="saved-trial-<%= saved_trial.id %>">
   <div class="absolute top-4 right-4">
-    <label class="flex items-center gap-2 cursor-pointer text-sm text-zinc-600 dark:text-zinc-400" title="Select for comparison">
-      <input type="checkbox" name="ids[]" value="<%= saved_trial.id %>" form="compare-trials-form" class="w-4 h-4 rounded border-zinc-300 text-sky-600 focus:ring-sky-500">
+    <label class="flex items-center gap-2 cursor-pointer text-sm text-ink-3 dark:text-ink-3-on-dark" title="Select for comparison">
+      <input type="checkbox" name="ids[]" value="<%= saved_trial.id %>" form="compare-trials-form" class="w-4 h-4 rounded border-line-2 accent-sky-500">
       <span>Compare</span>
     </label>
   </div>
