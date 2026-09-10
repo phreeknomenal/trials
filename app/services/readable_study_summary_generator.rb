@@ -2,7 +2,12 @@ class ReadableStudySummaryGenerator
   class GenerationError < StandardError; end
 
   MODEL = "claude-opus-4-8".freeze
-  MAX_TOKENS = 1024
+
+  # 1024 was not enough headroom for a plain-language rewrite of a long
+  # detailed_description, and the truncated result was being cached as though
+  # it were complete. Raised, and truncation is now an error rather than a
+  # silent half-summary.
+  MAX_TOKENS = 4096
 
   SYSTEM_PROMPT = <<~PROMPT.freeze
     You rewrite dense clinical trial descriptions into plain, patient-facing language.
@@ -12,6 +17,8 @@ class ReadableStudySummaryGenerator
     Do not give medical advice or recommendations.
     Output plain prose only. Do not use Markdown, headings, bullet points, or any formatting.
   PROMPT
+
+  TRUNCATED_MESSAGE = "The summary ran longer than we allow, so it was cut off. Please try again."
 
   def initialize(nct_id)
     @nct_id = nct_id
@@ -39,6 +46,11 @@ class ReadableStudySummaryGenerator
     )
 
     raise GenerationError, "The model refused to generate a summary" if message.stop_reason.to_s == "refusal"
+
+    # A truncated summary reads as complete: it just stops mid-sentence. Caching
+    # one means a patient reads half an explanation of a study and has no way to
+    # tell. Failing is recoverable, because the retry path already exists.
+    raise GenerationError, TRUNCATED_MESSAGE if message.stop_reason.to_s == "max_tokens"
 
     text = extract_text(message)
     raise GenerationError, "The model returned an empty summary" if text.blank?
