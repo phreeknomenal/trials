@@ -4,7 +4,7 @@ require "rails_helper"
 # Page::Trials::OverviewComponent without nct_id, which defaulted to nil and
 # surfaced as a confusing routing error from deep inside a partial:
 #
-#   No route matches {action: "generate_readable_summary", controller:
+#   No route matches {action: "create", controller:
 #   "my_trials", id: nil}, missing required keys: [:id]
 RSpec.describe "GET /search/:id", type: :request do
   let(:user) { create(:user) }
@@ -48,6 +48,6 @@ RSpec.describe "GET /search/:id", type: :request do
   it "builds the generate-summary path with the real nct_id, not nil" do
     get search_path(nct_id)
 
-    expect(response.body).to include("/my_trials/#{nct_id}/generate_readable_summary")
+    expect(response.body).to include("/summaries/#{nct_id}")
   end
 end

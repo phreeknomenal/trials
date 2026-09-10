@@ -1,19 +1,31 @@
 require "rails_helper"
 
-RSpec.describe "POST /my_trials/:id/generate_readable_summary", type: :request do
+RSpec.describe "POST /summaries/:nct_id", type: :request do
   let(:user) { create(:user) }
   let(:nct_id) { "NCT01234567" }
   let(:turbo_headers) { {"Accept" => "text/vnd.turbo-stream.html"} }
 
   def post_generate
-    post generate_readable_summary_my_trial_path(nct_id), headers: turbo_headers
+    post readable_summary_path(nct_id), headers: turbo_headers
   end
 
-  context "when unauthenticated" do
-    it "redirects to the sign-in path" do
-      post generate_readable_summary_my_trial_path(nct_id)
+  # This endpoint used to require a signed-in user, which was the only thing
+  # bounding a paid Claude call per enumerable nct_id. Limits replaced that.
+  context "when signed out" do
+    it "generates a summary" do
+      expect { post readable_summary_path(nct_id), headers: turbo_headers }
+        .to change(ReadableStudySummary, :count).by(1)
+    end
 
-      expect(response).to redirect_to(new_user_session_path)
+    it "enqueues the generation job" do
+      expect { post readable_summary_path(nct_id), headers: turbo_headers }
+        .to have_enqueued_job(GenerateReadableStudySummaryJob).with(nct_id)
+    end
+
+    it "does not redirect to sign in" do
+      post readable_summary_path(nct_id), headers: turbo_headers
+
+      expect(response).to have_http_status(:ok)
     end
   end
 
@@ -78,7 +90,7 @@ RSpec.describe "POST /my_trials/:id/generate_readable_summary", type: :request d
       let(:bad_id) { "FOO" }
 
       def post_bad_generate
-        post generate_readable_summary_my_trial_path(bad_id), headers: turbo_headers
+        post readable_summary_path(nct_id: bad_id), headers: turbo_headers
       end
 
       it "does not create a record" do

@@ -25,7 +25,7 @@ class GenerateReadableStudySummaryJob < ApplicationJob
     Turbo::StreamsChannel.broadcast_update_to(
       "readable_study_summary_#{nct_id}",
       target: "readable-study-summary-content-#{nct_id}",
-      partial: "my_trials/readable_study_summary_content",
+      partial: "shared/readable_study_summary_content",
       locals: {record: record, nct_id: nct_id, source_present: true}
     )
   end
