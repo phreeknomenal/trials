@@ -20,7 +20,11 @@ Rails.application.configure do
 
   # Show full error reports.
   config.consider_all_requests_local = true
-  config.cache_store = :null_store
+  # Not :null_store. ActionController's rate_limit captures its store when the
+  # class is defined and calls increment on it, and the null store always returns
+  # nil, so a rate limit could never trip and its specs would prove nothing.
+  # spec/support/cache.rb clears this between examples.
+  config.cache_store = :memory_store
 
   # Render exception templates for rescuable exceptions and raise for other exceptions.
   config.action_dispatch.show_exceptions = :rescuable

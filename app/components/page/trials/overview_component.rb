@@ -3,7 +3,7 @@ class Page::Trials::OverviewComponent < ApplicationComponent
 
   # Both are required. nct_id previously defaulted to nil, which let
   # search/show.html.erb render without it and blow up downstream in
-  # generate_readable_summary_my_trial_path(nil) rather than here.
+  # readable_summary_path(nil) rather than here.
   def initialize(study:, nct_id:)
     @study = study
     @nct_id = nct_id

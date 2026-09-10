@@ -21,13 +21,13 @@
       <%= record.error_message.presence || "We couldn't generate a readable version right now." %>
     </p>
     <%= button_to "Try again",
-      generate_readable_summary_my_trial_path(nct_id),
+      readable_summary_path(nct_id),
       method: :post,
       class: "inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-navy-600 text-white hover:bg-navy-700" %>
   </div>
 <% elsif source_present %>
   <%= button_to "Generate a more readable version",
-    generate_readable_summary_my_trial_path(nct_id),
+    readable_summary_path(nct_id),
     method: :post,
     class: "inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-navy-600 text-white hover:bg-navy-700" %>
 <% end %>

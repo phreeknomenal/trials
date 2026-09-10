@@ -6,7 +6,7 @@
 
   <%= helpers.turbo_stream_from "readable_study_summary_#{nct_id}" %>
   <div id="readable-study-summary-content-<%= nct_id %>" class="mt-6">
-    <%= helpers.render partial: "my_trials/readable_study_summary_content", locals: {record: readable_summary, nct_id: nct_id, source_present: source_present?} %>
+    <%= helpers.render partial: "shared/readable_study_summary_content", locals: {record: readable_summary, nct_id: nct_id, source_present: source_present?} %>
   </div>
 
   <% if detailed_description.present? %>

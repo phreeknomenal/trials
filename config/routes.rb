@@ -55,11 +55,12 @@ Rails.application.routes.draw do
   end
 
   # My Trials show action (for viewing individual trial details with scoring)
-  resources :my_trials, only: [:show] do
-    member do
-      post :generate_readable_summary
-    end
-  end
+  resources :my_trials, only: [:show]
+
+  # Public. A summary is a pure function of public study text and is cached per
+  # study rather than per user, so there is nothing account-specific to protect.
+  # Generation is bounded by rate limits instead of by authentication.
+  post "summaries/:nct_id", to: "readable_summaries#create", as: :readable_summary
 
   # Keep old saved_trials routes for backward compatibility
   resources :saved_trials, only: [:index, :show, :edit, :create, :update, :destroy]

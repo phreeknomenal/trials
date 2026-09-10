@@ -1,0 +1,8 @@
+<div class="rounded-lg border border-warn/30 bg-warn/10 p-6">
+  <div class="flex items-start gap-3">
+    <span class="shrink-0 mt-0.5 text-warn dark:text-warn-on-dark">
+      <%= render Utilities::IconComponent.new("exclamation_triangle", size: 5) %>
+    </span>
+    <p class="text-sm text-warn dark:text-warn-on-dark"><%= message %></p>
+  </div>
+</div>
