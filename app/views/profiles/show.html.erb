@@ -16,7 +16,7 @@
   <div class="flex gap-10">
     <div class="w-4/5">
       <h2 class="text-2xl font-bold text-ink dark:text-ink-2-on-dark mb-5">Personal Information</h2>
-      <div class="w-full p-6 border border-line dark:border-line-on-dark rounded-lg mb-8"> 
+      <div class="w-full p-6 border border-line dark:border-line-on-dark rounded-panel mb-8"> 
         <%= render Typography::HeadingComponent.new(size: :h7, text: "About") %>
         <%= render Typography::ParagraphComponent.new(text: @profile.about.to_plain_text) %>
 
@@ -105,7 +105,7 @@
       </div>
 
       <h2 class="text-2xl font-bold text-ink dark:text-ink-2-on-dark mb-5">Patient Information</h2>
-      <div class="w-full grid grid-cols-2 gap-6 p-6 border border-line dark:border-line-on-dark rounded-lg mb-8">
+      <div class="w-full grid grid-cols-2 gap-6 p-6 border border-line dark:border-line-on-dark rounded-panel mb-8">
         <% if @profile.conditions.any? %>
           <div class="col-span-2">
             <%= render Typography::HeadingComponent.new(size: :h7, text: "Conditions") %>
@@ -135,7 +135,7 @@
       </div>
 
       <h2 class="text-2xl font-bold text-ink dark:text-ink-2-on-dark mb-5">Preferences</h2>
-      <div class="w-full grid grid-cols-2 gap-6 p-6 border border-line dark:border-line-on-dark rounded-lg mb-8">
+      <div class="w-full grid grid-cols-2 gap-6 p-6 border border-line dark:border-line-on-dark rounded-panel mb-8">
         <!-- Trial Preferences -->
         <% if @profile.willing_travel_miles.present? %>
           <div class="col-span-1">
@@ -183,7 +183,7 @@
     </div>
 
     <div class="w-1/5 flex gap-10">
-      <div class="w-full h-124 bg-info/10 rounded-lg border border-line dark:border-line-on-dark">
+      <div class="w-full h-124 bg-info/10 rounded-panel border border-line dark:border-line-on-dark">
         This is the gauge component
       </div>
     </div>

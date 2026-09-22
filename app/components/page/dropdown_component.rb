@@ -1,6 +1,6 @@
 class Page::DropdownComponent < ApplicationComponent
   erb_template <<-ERB
-    <details class="border border-line-2 dark:border-line-on-dark rounded-lg overflow-hidden">
+    <details class="border border-line-2 dark:border-line-on-dark rounded-chip overflow-hidden">
       <summary class="cursor-pointer px-4 py-3 font-medium text-ink dark:text-ink-on-dark hover:bg-sky-50 dark:hover:bg-navy-500">
         <%= title %>
       </summary>

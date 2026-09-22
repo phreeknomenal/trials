@@ -102,4 +102,26 @@
    * primary-600, primary-800 and a whole secondary-* ramp, none of which are
    * defined, so those classes currently do nothing. */
   --color-primary: oklch(0.2077 0.0398 265.75);
+
+  /* ------------------------------------------------------------------
+   * Radius ladder
+   *
+   * A control sits one step below its container, so a 12px button inside a
+   * 14px card reads settled and an equal pair reads cramped. Named for the
+   * job each rung does, because rounded-lg said nothing about whether the
+   * thing was a card or a button and the two had drifted onto the same value.
+   *
+   * Full round is deliberately absent. It belongs to pills only, and
+   * rounded-full already says so. A button that goes fully round makes a
+   * filter and a call to action the same shape.
+   *
+   * Full spec in the vault at Projects/trials-brand-identity.md
+   * ------------------------------------------------------------------ */
+  --radius-nav: 6px;
+  --radius-flash: 8px; /* also the icon button */
+  --radius-chip: 10px; /* also the dropdown */
+  --radius-control: 12px; /* button, text input, select */
+  --radius-card: 14px;
+  --radius-search: 16px;
+  --radius-panel: 20px; /* also the CTA block and hero preview */
 }

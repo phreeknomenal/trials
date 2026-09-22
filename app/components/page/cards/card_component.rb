@@ -55,7 +55,7 @@ class Page::Cards::CardComponent < ApplicationComponent
   end
 
   def container_classes
-    base = "w-full h-full border border-line-2 dark:border-line-on-dark rounded-lg overflow-hidden bg-surface dark:bg-paper-on-dark"
+    base = "w-full h-full border border-line-2 dark:border-line-on-dark rounded-card overflow-hidden bg-surface dark:bg-paper-on-dark"
     if horizontal?
       "#{base} flex"
     else

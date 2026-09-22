@@ -1,4 +1,4 @@
-<div class="col-span-2 lg:col-span-1 bg-surface dark:bg-surface-on-dark border border-line dark:border-line-on-dark rounded-xl p-6 relative transition-colors hover:border-line-2 dark:hover:border-line-2-on-dark" id="saved-trial-<%= saved_trial.id %>">
+<div class="col-span-2 lg:col-span-1 bg-surface dark:bg-surface-on-dark border border-line dark:border-line-on-dark rounded-card p-6 relative transition-colors hover:border-line-2 dark:hover:border-line-2-on-dark" id="saved-trial-<%= saved_trial.id %>">
   <div class="absolute top-4 right-4">
     <label class="flex items-center gap-2 cursor-pointer text-sm text-ink-3 dark:text-ink-3-on-dark" title="Select for comparison">
       <input type="checkbox" name="ids[]" value="<%= saved_trial.id %>" form="compare-trials-form" class="w-4 h-4 rounded border-line-2 accent-sky-500">
@@ -44,7 +44,7 @@
 
   <div class="flex items-center justify-between gap-2">
     <% if saved_trial.match_score.present? %>
-      <div class="flex items-center px-2 py-1 rounded-lg mb-3 <%= match_score_badge_class(saved_trial.match_score) %> ">
+      <div class="flex items-center px-2 py-1 rounded-chip mb-3 <%= match_score_badge_class(saved_trial.match_score) %> ">
         <div class="">
           <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>

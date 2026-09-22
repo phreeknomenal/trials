@@ -75,15 +75,15 @@ class Forms::FieldComponent < ApplicationComponent
   end
 
   def date_field_class
-    "block w-full form-control bg-surface border border-secondary-300 text-ink text-base rounded-lg focus:ring-primary-500 focus:border-primary-500"
+    "block w-full form-control bg-surface border border-secondary-300 text-ink text-base rounded-control focus:ring-primary-500 focus:border-primary-500"
   end
 
   def file_field_class
-    "block w-full text-base text-secondary-900 border border-secondary-300 rounded-lg cursor-pointer bg-secondary-50 focus:outline-none focus:ring-primary file:bg-secondary-800"
+    "block w-full text-base text-secondary-900 border border-secondary-300 rounded-control cursor-pointer bg-secondary-50 focus:outline-none focus:ring-primary file:bg-secondary-800"
   end
 
   def rich_text_field_class
-    "prose p-2 max-w-none w-full rounded-lg text-ink dark:text-ink-2-on-dark border-secondary-200 dark:border-line-on-dark focus:border-primary focus:ring-primary text-base"
+    "prose p-2 max-w-none w-full rounded-control text-ink dark:text-ink-2-on-dark border-secondary-200 dark:border-line-on-dark focus:border-primary focus:ring-primary text-base"
   end
 
   def select_field_class

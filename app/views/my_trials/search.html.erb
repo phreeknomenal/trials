@@ -9,7 +9,7 @@
 <div class="min-h-screen">
   <div class="px-5 lg:px-24 py-10 lg:py-18">
     <!-- Search Form -->
-    <div class="border border-line dark:border-line-on-dark rounded-lg p-6 mb-8">
+    <div class="border border-line dark:border-line-on-dark rounded-panel p-6 mb-8">
       <%= form_with url: my_trials_search_path, method: :get, class: "space-y-6" do |f| %>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <!-- Condition -->
@@ -35,7 +35,7 @@
 
         <!-- Submit Button -->
         <div class="flex gap-4">
-          <%= f.submit "Search", class: "cursor-pointer inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-md text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500" %>
+          <%= f.submit "Search", class: "cursor-pointer inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-control text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500" %>
         </div>
       <% end %>
     </div>
@@ -96,7 +96,7 @@
 
     <% elsif params[:condition].present? || params[:location].present? %>
       <!-- No Results -->
-      <div class="bg-surface-2 dark:bg-surface-on-dark rounded-lg p-8 text-center">
+      <div class="bg-surface-2 dark:bg-surface-on-dark rounded-panel p-8 text-center">
         <h3 class="text-lg font-medium text-ink dark:text-ink-on-dark mb-2">No trials found</h3>
         <p class="text-ink-3 dark:text-ink-3-on-dark mb-4">
           Try adjusting your search criteria or selecting a different condition or location.
@@ -105,7 +105,7 @@
 
     <% else %>
       <!-- Initial State -->
-      <div class="bg-gradient-to-r from-sky-50 to-info/10 dark:from-navy-900/20 dark:to-info-on-dark/20 border border-sky-200 dark:border-sky-800 rounded-lg p-8 text-center">
+      <div class="bg-gradient-to-r from-sky-50 to-info/10 dark:from-navy-900/20 dark:to-info-on-dark/20 border border-sky-200 dark:border-sky-800 rounded-panel p-8 text-center">
         <h3 class="text-lg font-medium text-ink dark:text-ink-on-dark mb-2">Ready to search?</h3>
         <p class="text-ink-3 dark:text-ink-3-on-dark">
           Select a condition and location above to see personalized trial matches based on your health profile.

@@ -27,7 +27,7 @@
   <div class="grid grid-cols-5 gap-8">
     <!-- Left Sidebar -->
     <div class="col-span-5 lg:col-span-1">
-      <div class="w-full rounded-lg border border-line dark:border-line-on-dark p-6 space-y-4">
+      <div class="w-full rounded-panel border border-line dark:border-line-on-dark p-6 space-y-4">
         <div class="flex items-center justify-between mb-3">
           <%= render Typography::HeadingComponent.new(size: :h5, text: "Status") %>
         </div>
@@ -46,14 +46,14 @@
     <div class="col-span-5 lg:col-span-3 space-y-6">
       <!-- Summary Card -->
       <% if @saved_trial.summary.present? %>
-        <div class="rounded-lg border border-line dark:border-line-on-dark p-6">
+        <div class="rounded-panel border border-line dark:border-line-on-dark p-6">
           <%= render Typography::HeadingComponent.new(size: :h5, text: "Trial Summary") %>
           <p class="text-ink-3 dark:text-ink-3-on-dark font-body leading-relaxed"><%= @saved_trial.summary %></p>
         </div>
       <% end %>
 
       <!-- Notes Card -->
-      <div class="rounded-lg border border-line dark:border-line-on-dark p-6">
+      <div class="rounded-panel border border-line dark:border-line-on-dark p-6">
         <div class="flex items-center justify-between mb-3">
           <%= render Typography::HeadingComponent.new(size: :h5, text: "Notes") %>
           <%= link_to saved_trial_path(@saved_trial), class: "flex items-center gap-1 text-warn hover:text-warn font-medium" do %>
@@ -69,7 +69,7 @@
       </div>
 
       <!-- Tags Card -->
-      <div class="rounded-lg border border-line dark:border-line-on-dark p-6">
+      <div class="rounded-panel border border-line dark:border-line-on-dark p-6">
         <div class="flex items-center justify-between mb-4">
           <%= render Typography::HeadingComponent.new(size: :h5, text: "Tags") %>
           <%= link_to saved_trial_path(@saved_trial), class: "flex items-center gap-1 text-warn hover:text-warn font-medium" do %>
@@ -93,7 +93,7 @@
 
     <!-- Right Sidebar -->
     <div class="col-span-5 lg:col-span-1">
-      <div class="rounded-lg border border-line dark:border-line-on-dark p-6 sticky top-6 space-y-6">
+      <div class="rounded-panel border border-line dark:border-line-on-dark p-6 sticky top-6 space-y-6">
         <!-- Key Details -->
         <div>
           <%= render Typography::HeadingComponent.new(size: :h5, text: "Key Details") %>
@@ -151,15 +151,15 @@
 
         <div class="pt-4 border-t border-line dark:border-line-on-dark space-y-2">
           <%= link_to "View Full Trial", my_trial_path(@saved_trial.nct_id),
-              class: "block w-full text-center px-4 py-2 bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors font-medium" %>
+              class: "block w-full text-center px-4 py-2 bg-navy-600 text-white rounded-control hover:bg-navy-700 transition-colors font-medium" %>
           
           <%= link_to "Edit Trial", edit_saved_trial_path(@saved_trial),
-              class: "block w-full text-center px-4 py-2 bg-warn text-white rounded-lg hover:bg-warn transition-colors font-medium" %>
+              class: "block w-full text-center px-4 py-2 bg-warn text-white rounded-control hover:bg-warn transition-colors font-medium" %>
           
           <%= link_to "Remove from Saved", saved_trial_path(@saved_trial),
               method: :delete,
               data: { turbo_confirm: "Are you sure you want to remove this trial?" },
-              class: "block w-full text-center px-4 py-2 text-crit hover:bg-crit/10 rounded-lg transition-colors font-medium" %>
+              class: "block w-full text-center px-4 py-2 text-crit hover:bg-crit/10 rounded-control transition-colors font-medium" %>
         </div>
       </div>
     </div>

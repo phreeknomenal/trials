@@ -8,7 +8,7 @@
 
 <div class="px-5 lg:px-44 py-16">
   <!-- Filters and Search -->
-  <div class="bg-surface dark:bg-paper-on-dark rounded-lg border border-line dark:border-line-on-dark p-6 mb-6">
+  <div class="bg-surface dark:bg-paper-on-dark rounded-panel border border-line dark:border-line-on-dark p-6 mb-6">
     <%= form_with url: saved_trials_path, method: :get, class: "space-y-4", local: true do |f| %>
       <!-- Search -->
       <div class="flex gap-4">
@@ -18,7 +18,7 @@
               value: params[:search],
               class: "block p-2 w-full bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark placeholder:text-ink-3 dark:placeholder:text-ink-3-on-dark text-base text-ink dark:text-ink-2-on-dark rounded focus:ring-sky-500 focus:border-navy-600" %>
         </div>
-        <%= f.submit "Search", class: "cursor-pointer inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-md text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500" %>
+        <%= f.submit "Search", class: "cursor-pointer inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-control text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500" %>
       </div>
 
       <!-- Filters -->
@@ -87,7 +87,7 @@
     <% if @saved_trials.any? && @saved_trials.count >= 2 %>
       <%= form_with url: my_trials_trial_comparison_path, method: :get, id: "compare-trials-form", local: true, class: "flex items-center gap-2" do |f| %>
         <span class="text-sm text-ink-3 dark:text-ink-3-on-dark">Select 2–3 trials above, then</span>
-        <%= f.submit "Compare selected", class: "cursor-pointer inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500" %>
+        <%= f.submit "Compare selected", class: "cursor-pointer inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-control text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500" %>
       <% end %>
     <% end %>
   </div>
@@ -110,7 +110,7 @@
       </div>
       <h3 class="mt-2 text-2xl font-semibold text-ink dark:text-ink-on-dark">No saved trials yet</h3>
       <p class="mt-1 text-ink-3">Start saving trials to keep track of ones you're interested in</p>
-      <%= link_to "Search Trials", my_trials_root_path, class: "mt-4 inline-block px-6 py-3 bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors" %>
+      <%= link_to "Search Trials", my_trials_root_path, class: "mt-4 inline-block px-6 py-3 bg-navy-600 text-white rounded-control hover:bg-navy-700 transition-colors" %>
     </div>
   <% end %>
 </div>

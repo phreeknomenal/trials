@@ -13,8 +13,8 @@ class Layout::Navigation::FooterComponent < ApplicationComponent
 
         <div class="mt-5">
           <div class="w-1/2 flex gap-2">
-            <input type="email" placeholder="Enter your email" class="flex-1 px-4 py-2 rounded-lg border border-line dark:border-line-on-dark focus:outline-none focus:border-line dark:focus:border-line-on-dark text-ink-3 dark:text-ink-4-on-dark transition-all duration-300">
-            <button class="bg-navy-600 text-white px-6 py-2 rounded-lg hover:bg-navy-700 dark:hover:bg-navy-500 transition-colors duration-200 font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500">
+            <input type="email" placeholder="Enter your email" class="flex-1 px-4 py-2 rounded-control border border-line dark:border-line-on-dark focus:outline-none focus:border-line dark:focus:border-line-on-dark text-ink-3 dark:text-ink-4-on-dark transition-all duration-300">
+            <button class="bg-navy-600 text-white px-6 py-2 rounded-control hover:bg-navy-700 dark:hover:bg-navy-500 transition-colors duration-200 font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500">
               Subscribe
             </button>
           </div>

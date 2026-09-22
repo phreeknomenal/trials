@@ -46,4 +46,32 @@ RSpec.describe Utilities::IconComponent, type: :component do
       end
     end
   end
+
+  # Both failures these guard against were already in the library and neither
+  # announced itself: clipboard_check was an empty file that rendered a blank
+  # svg, and guage stroked every path #000000, so it stayed black in dark mode
+  # while every other icon followed the text colour.
+  describe "the icon library" do
+    partials = Dir[Rails.root.join("app/views/shared/icons/_*.html.erb")]
+
+    it "is not empty" do
+      expect(partials).not_to be_empty
+    end
+
+    partials.each do |path|
+      name = File.basename(path, ".html.erb").delete_prefix("_")
+
+      context name do
+        let(:markup) { File.read(path) }
+
+        it "draws something" do
+          expect(markup.strip).not_to be_empty
+        end
+
+        it "takes its colour from the text, not a hardcoded value" do
+          expect(markup).not_to match(/#[0-9A-Fa-f]{3,8}\b/)
+        end
+      end
+    end
+  end
 end

@@ -1,5 +1,5 @@
 <% if record&.completed? %>
-  <div class="rounded-lg border border-sky-200 dark:border-sky-800 bg-sky-50 dark:bg-navy-900/20 p-6">
+  <div class="rounded-panel border border-sky-200 dark:border-sky-800 bg-sky-50 dark:bg-navy-900/20 p-6">
     <div class="flex items-center gap-2 text-sky-700 dark:text-sky-300 mb-3">
       <div class="w-4 h-4 shrink-0">
         <%= render Utilities::IconComponent.new("star", size: 4) %>
@@ -11,23 +11,23 @@
     </div>
   </div>
 <% elsif record&.pending? %>
-  <div class="flex items-center gap-3 rounded-lg border border-line dark:border-line-on-dark bg-surface-2 dark:bg-surface-on-dark/40 p-6 text-ink-3 dark:text-ink-3-on-dark">
+  <div class="flex items-center gap-3 rounded-panel border border-line dark:border-line-on-dark bg-surface-2 dark:bg-surface-on-dark/40 p-6 text-ink-3 dark:text-ink-3-on-dark">
     <span class="inline-block w-4 h-4 rounded-full border-2 border-sky-500 border-t-transparent animate-spin" aria-hidden="true"></span>
     <span class="text-sm">Generating a more readable version&hellip;</span>
   </div>
 <% elsif record&.failed? %>
-  <div class="rounded-lg border border-crit/30 dark:border-crit-on-dark bg-crit/10 dark:bg-crit-on-dark/20 p-6">
+  <div class="rounded-panel border border-crit/30 dark:border-crit-on-dark bg-crit/10 dark:bg-crit-on-dark/20 p-6">
     <p class="text-sm text-crit dark:text-crit-on-dark mb-3">
       <%= record.error_message.presence || "We couldn't generate a readable version right now." %>
     </p>
     <%= button_to "Try again",
       readable_summary_path(nct_id),
       method: :post,
-      class: "inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-navy-600 text-white hover:bg-navy-700" %>
+      class: "inline-flex items-center px-4 py-2 rounded-control text-sm font-medium bg-navy-600 text-white hover:bg-navy-700" %>
   </div>
 <% elsif source_present %>
   <%= button_to "Generate a more readable version",
     readable_summary_path(nct_id),
     method: :post,
-    class: "inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-navy-600 text-white hover:bg-navy-700" %>
+    class: "inline-flex items-center px-4 py-2 rounded-control text-sm font-medium bg-navy-600 text-white hover:bg-navy-700" %>
 <% end %>

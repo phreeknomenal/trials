@@ -79,7 +79,7 @@
             </div>
             <div class="space-y-4">
               <% @study[:interventions].each do |intervention| %>
-                <div class="bg-surface-2 dark:bg-surface-on-dark rounded-lg p-4">
+                <div class="bg-surface-2 dark:bg-surface-on-dark rounded-card p-4">
                   <div class="flex items-start gap-2 mb-2">
                     <%= render Utilities::BadgeComponent.new(
                       text: intervention[:type],
@@ -107,7 +107,7 @@
           <% if @study[:locations].present? %>
             <div class="grid grid-cols-2 mt-4 gap-6">
               <% @study[:locations].each do |location| %>
-                <div class="col-span-1 flex items-start gap-1 p-3 border border-line-2 dark:border-line-on-dark rounded-lg">
+                <div class="col-span-1 flex items-start gap-1 p-3 border border-line-2 dark:border-line-on-dark rounded-card">
                   <div class="mt-0.5">
                     <%= render Utilities::IconComponent.new("map_pin", size: 5, options: { class: "text-sky-600" }) %>
                   </div>
@@ -121,7 +121,7 @@
         </div>
 
         <!-- CTA Section -->
-        <div class="bg-sky-50 dark:bg-navy-900/20 border border-sky-200 dark:border-sky-800 rounded-lg p-6">
+        <div class="bg-sky-50 dark:bg-navy-900/20 border border-sky-200 dark:border-sky-800 rounded-panel p-6">
           <h3 class="text-lg font-semibold text-navy-900 dark:text-sky-100 mb-2">
             Interested in this trial?
           </h3>
@@ -131,7 +131,7 @@
           <%= link_to "View on ClinicalTrials.gov", "https://clinicaltrials.gov/study/#{@study[:nct_id]}", 
               target: "_blank", 
               rel: "noopener noreferrer",
-              class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500" %>
+              class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-control text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500" %>
         </div>
 
         <!-- Contact Information -->
@@ -146,7 +146,7 @@
                 <%= render Typography::HeadingComponent.new(size: :h6, text: "Study Contacts") %>
                 <div class="mt-3 space-y-3">
                   <% @study[:central_contacts].each do |contact| %>
-                    <div class="bg-surface-2 dark:bg-surface-on-dark rounded-lg p-4">
+                    <div class="bg-surface-2 dark:bg-surface-on-dark rounded-card p-4">
                       <h4 class="font-semibold text-ink dark:text-ink-2-on-dark">
                         <%= contact[:name] %>
                       </h4>
@@ -178,7 +178,7 @@
                 <%= render Typography::HeadingComponent.new(size: :h6, text: "Principal Investigators") %>
                 <div class="mt-3 space-y-3">
                   <% @study[:overall_officials].each do |official| %>
-                    <div class="bg-surface-2 dark:bg-surface-on-dark rounded-lg p-4">
+                    <div class="bg-surface-2 dark:bg-surface-on-dark rounded-card p-4">
                       <h4 class="font-semibold text-ink dark:text-ink-2-on-dark">
                         <%= official[:name] %>
                       </h4>
@@ -205,7 +205,7 @@
 <% else %>
   <!-- Not Found State -->
   <section class="px-5 lg:px-24 py-16">
-    <div class="bg-surface-2 dark:bg-surface-on-dark rounded-lg p-8 text-center">
+    <div class="bg-surface-2 dark:bg-surface-on-dark rounded-panel p-8 text-center">
       <div class="text-ink-4 dark:text-ink-4-on-dark mb-4">
         <%= render Utilities::IconComponent.new("search", size: 12) %>
       </div>

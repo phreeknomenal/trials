@@ -12,7 +12,7 @@
 </section>
 
 <section class="px-5 lg:px-44 py-12">
-  <div class="overflow-x-auto rounded-lg border border-line dark:border-line-on-dark shadow-md bg-surface dark:bg-surface-on-dark">
+  <div class="overflow-x-auto rounded-panel border border-line dark:border-line-on-dark shadow-md bg-surface dark:bg-surface-on-dark">
     <table class="w-full min-w-[800px] border-collapse table-fixed">
       <colgroup>
         <col style="width: 160px;">
@@ -142,9 +142,9 @@
           <% @saved_trials.each do |trial| %>
             <td class="py-4 px-5 border-l border-line dark:border-line-on-dark space-y-2">
               <%= link_to "View Full Trial", my_trial_path(trial.nct_id), 
-                  class: "block w-full px-4 py-2 bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors text-center font-medium text-sm" %>
+                  class: "block w-full px-4 py-2 bg-navy-600 text-white rounded-control hover:bg-navy-700 transition-colors text-center font-medium text-sm" %>
               <%= link_to "Edit Entry", edit_saved_trial_path(trial), 
-                  class: "block w-full px-4 py-2 bg-surface dark:bg-surface-on-dark border-2 border-navy-600 text-sky-600 dark:text-sky-400 rounded-lg hover:bg-sky-50 dark:hover:bg-navy-900/20 transition-colors text-center font-medium text-sm" %>
+                  class: "block w-full px-4 py-2 bg-surface dark:bg-surface-on-dark border-2 border-navy-600 text-sky-600 dark:text-sky-400 rounded-control hover:bg-sky-50 dark:hover:bg-navy-900/20 transition-colors text-center font-medium text-sm" %>
             </td>
           <% end %>
         </tr>

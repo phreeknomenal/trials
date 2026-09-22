@@ -5,7 +5,7 @@
   </div>
 
   <% if @failed.none? && @stale.none? %>
-    <div class="rounded-lg border border-good/30 dark:border-good-on-dark bg-good/10 dark:bg-good-on-dark/20 p-4">
+    <div class="rounded-panel border border-good/30 dark:border-good-on-dark bg-good/10 dark:bg-good-on-dark/20 p-4">
       <p class="text-sm text-good dark:text-good-on-dark">
         No failed or stuck summaries. <%= pluralize(@completed_count, "summary") %> completed,
         <%= @pending.size %> currently generating.
@@ -20,7 +20,7 @@
         Pending for more than <%= distance_of_time_in_words(ReadableStudySummary::STALE_AFTER) %>.
         The job that owned these is gone, most likely a dyno restart.
       </p>
-      <div class="border border-warn/30 dark:border-warn-on-dark rounded-lg divide-y divide-warn dark:divide-warn-on-dark">
+      <div class="border border-warn/30 dark:border-warn-on-dark rounded-panel divide-y divide-warn dark:divide-warn-on-dark">
         <% @stale.each do |summary| %>
           <div class="p-4 flex items-center justify-between gap-4">
             <span class="font-mono text-sm text-ink dark:text-ink-on-dark"><%= summary.nct_id %></span>
@@ -34,7 +34,7 @@
   <% if @failed.any? %>
     <section>
       <h2 class="text-lg font-semibold text-ink dark:text-ink-on-dark mb-3">Failed</h2>
-      <div class="border border-crit/30 dark:border-crit-on-dark rounded-lg divide-y divide-crit dark:divide-crit-on-dark">
+      <div class="border border-crit/30 dark:border-crit-on-dark rounded-panel divide-y divide-crit dark:divide-crit-on-dark">
         <% @failed.each do |summary| %>
           <div class="p-4">
             <div class="flex items-center justify-between gap-4 mb-1">
@@ -51,7 +51,7 @@
   <% if @pending.any? %>
     <section>
       <h2 class="text-lg font-semibold text-ink dark:text-ink-on-dark mb-3">In progress</h2>
-      <div class="border border-line dark:border-line-on-dark rounded-lg divide-y divide-line dark:divide-line-on-dark">
+      <div class="border border-line dark:border-line-on-dark rounded-panel divide-y divide-line dark:divide-line-on-dark">
         <% @pending.each do |summary| %>
           <div class="p-4 flex items-center justify-between gap-4">
             <span class="font-mono text-sm text-ink dark:text-ink-on-dark"><%= summary.nct_id %></span>

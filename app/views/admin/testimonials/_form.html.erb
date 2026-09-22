@@ -1,6 +1,6 @@
 <%= form_with model: [:admin, testimonial], class: "space-y-5 max-w-2xl" do |f| %>
   <% if testimonial.errors.any? %>
-    <div class="rounded-lg border border-crit/30 dark:border-crit-on-dark bg-crit/10 dark:bg-crit-on-dark/20 p-4">
+    <div class="rounded-card border border-crit/30 dark:border-crit-on-dark bg-crit/10 dark:bg-crit-on-dark/20 p-4">
       <ul class="list-disc list-inside text-sm text-crit dark:text-crit-on-dark">
         <% testimonial.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -12,24 +12,24 @@
   <div>
     <%= f.label :quote, class: "block text-sm font-medium text-ink-2 dark:text-ink-2-on-dark mb-1" %>
     <%= f.text_area :quote, rows: 4,
-          class: "w-full rounded-lg border border-line-2 dark:border-line-on-dark dark:bg-surface-on-dark px-3 py-2 text-sm" %>
+          class: "w-full rounded-control border border-line-2 dark:border-line-on-dark dark:bg-surface-on-dark px-3 py-2 text-sm" %>
   </div>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
     <div>
       <%= f.label :author_name, "Author name", class: "block text-sm font-medium text-ink-2 dark:text-ink-2-on-dark mb-1" %>
-      <%= f.text_field :author_name, class: "w-full rounded-lg border border-line-2 dark:border-line-on-dark dark:bg-surface-on-dark px-3 py-2 text-sm" %>
+      <%= f.text_field :author_name, class: "w-full rounded-control border border-line-2 dark:border-line-on-dark dark:bg-surface-on-dark px-3 py-2 text-sm" %>
     </div>
     <div>
       <%= f.label :author_role, "Author role", class: "block text-sm font-medium text-ink-2 dark:text-ink-2-on-dark mb-1" %>
-      <%= f.text_field :author_role, class: "w-full rounded-lg border border-line-2 dark:border-line-on-dark dark:bg-surface-on-dark px-3 py-2 text-sm" %>
+      <%= f.text_field :author_role, class: "w-full rounded-control border border-line-2 dark:border-line-on-dark dark:bg-surface-on-dark px-3 py-2 text-sm" %>
     </div>
   </div>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
     <div>
       <%= f.label :position, class: "block text-sm font-medium text-ink-2 dark:text-ink-2-on-dark mb-1" %>
-      <%= f.number_field :position, class: "w-full rounded-lg border border-line-2 dark:border-line-on-dark dark:bg-surface-on-dark px-3 py-2 text-sm" %>
+      <%= f.number_field :position, class: "w-full rounded-control border border-line-2 dark:border-line-on-dark dark:bg-surface-on-dark px-3 py-2 text-sm" %>
       <p class="mt-1 text-xs text-ink-3">Lower numbers appear first. The landing page shows the first three.</p>
     </div>
     <div class="flex items-center gap-2 pb-2">
@@ -50,7 +50,7 @@
   </div>
 
   <div class="flex items-center gap-3 pt-2">
-    <%= f.submit class: "inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium bg-navy-600 text-white hover:bg-navy-700 cursor-pointer" %>
+    <%= f.submit class: "inline-flex items-center px-4 py-2 rounded-control text-sm font-medium bg-navy-600 text-white hover:bg-navy-700 cursor-pointer" %>
     <%= link_to "Cancel", admin_testimonials_path, class: "text-sm font-medium text-ink-3 dark:text-ink-3-on-dark hover:text-ink" %>
   </div>
 <% end %>

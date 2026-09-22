@@ -1,5 +1,5 @@
 <% if render? %>
-  <div class="mt-4 p-5 lg:p-10 bg-surface dark:bg-surface-on-dark border border-line dark:border-line-on-dark rounded-lg">
+  <div class="mt-4 p-5 lg:p-10 bg-surface dark:bg-surface-on-dark border border-line dark:border-line-on-dark rounded-panel">
     <%= render Typography::HeadingComponent.new(size: :h5, text: "Key dates") %>
     <div class="flex flex-wrap items-center gap-4 mt-4">
       <% dates.each_with_index do |(label, date_val), index| %>
