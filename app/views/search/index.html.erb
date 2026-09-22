@@ -1,7 +1,7 @@
 <section class="px-5 lg:px-24 py-16 border-b border-line dark:border-line-on-dark">
   <%= render Page::HeaderComponent.new(
-    heading: "Find Your Trials",
-    subheading: "Personalized clinical trial matches based on your health profile",
+    heading: @profile ? "Find your trials" : "Search clinical trials",
+    subheading: @profile ? "Matched against your health profile" : "Find studies by condition and location. Sign in to see how well each one fits you.",
     position: :left
   ) %>
 </section>
@@ -10,7 +10,7 @@
   <div class="px-5 lg:px-24 py-10 lg:py-18">
     <!-- Search Form -->
     <div class="border border-line dark:border-line-on-dark rounded-panel p-6 mb-8">
-      <%= form_with url: my_trials_search_path, method: :get, class: "space-y-6" do |f| %>
+      <%= form_with url: search_index_path, method: :get, class: "space-y-6" do |f| %>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <!-- Condition -->
           <div class="form-group">
@@ -36,42 +36,59 @@
         <!-- Submit Button -->
         <div class="flex gap-4">
           <%= f.submit "Search", class: "cursor-pointer inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-control text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500" %>
+          <% if params[:condition].present? || params[:location].present? %>
+            <%= link_to "Clear filters", search_index_path, class: "inline-flex items-center px-4 py-2 text-base font-medium text-ink-2 dark:text-ink-2-on-dark hover:text-sky-600" %>
+          <% end %>
         </div>
       <% end %>
     </div>
 
+    <%# Carried over from the signed-out template, which was the only one of the two
+        that showed the registry's error at all. %>
+    <% if @error.present? %>
+      <div class="bg-crit/10 dark:bg-crit-on-dark/20 border border-crit/30 dark:border-crit-on-dark rounded-card p-4 mb-8">
+        <p class="text-crit dark:text-crit-on-dark"><%= @error %></p>
+      </div>
+    <% end %>
+
     <!-- Search Results -->
-    <% if @studies_with_scores.present? %>
+    <% if @studies.present? %>
       <div class="mb-6">
         <h2 class="text-2xl font-bold text-ink dark:text-ink-2-on-dark mb-2">
           Search Results
         </h2>
         <p class="text-ink-3 dark:text-ink-3-on-dark">
-          Found <%= number_with_delimiter(@total_count) %> clinical trials matched to your profile
+          <%= number_with_delimiter(@total_count) %> studies<%= " matched to your profile" if @profile %>
         </p>
       </div>
 
-      <!-- Sorting Options -->
-      <div class="mb-6 flex items-center gap-4">
-        <%= form_with url: my_trials_search_path, method: :get, class: "flex gap-2" do |f| %>
-          <%= f.hidden_field :condition, value: params[:condition] %>
-          <%= f.hidden_field :location, value: params[:location] %>
-          <%= f.label :sort_by, "Sort by:", class: "text-sm font-medium text-ink-2 dark:text-ink-2-on-dark" %>
-          <%= f.select :sort_by,
-              options_for_select(
-                [["Match Score (High to Low)", "score_desc"], ["Match Score (Low to High)", "score_asc"], ["Newest First", "newest"]],
-                params[:sort_by] || "score_desc"
-              ),
-              { include_blank: false },
-              class: "block p-2 bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark text-base text-ink dark:text-ink-2-on-dark rounded focus:ring-sky-500 focus:border-navy-600" %>
-          <%= f.submit "Update", class: "cursor-pointer px-4 py-2 text-sm font-medium bg-navy-600 text-white rounded hover:bg-navy-700" %>
-        <% end %>
-      </div>
+      <%# Sorting by match score needs a profile to score against, so this is only
+          offered when there is one. The two options are the only two TrialSearchService
+          implements: it branches on sort_by == "score" and treats everything else as
+          the registry's own order. The previous dropdown sent "score_desc", which
+          matched neither branch, so sorting silently did nothing. %>
+      <% if @profile %>
+        <div class="mb-6 flex items-center gap-4">
+          <%= form_with url: search_index_path, method: :get, class: "flex items-center gap-2" do |f| %>
+            <%= f.hidden_field :condition, value: params[:condition] %>
+            <%= f.hidden_field :location, value: params[:location] %>
+            <%= f.label :sort_by, "Sort by", class: "text-sm font-medium text-ink-2 dark:text-ink-2-on-dark" %>
+            <%= f.select :sort_by,
+                options_for_select(
+                  [["Best match for you", "score"], ["The registry's own order", "relevance"]],
+                  params[:sort_by].presence || "score"
+                ),
+                { include_blank: false },
+                class: "block p-2 bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark text-base text-ink dark:text-ink-2-on-dark rounded-control focus:ring-sky-500 focus:border-navy-600" %>
+            <%= f.submit "Update", class: "cursor-pointer px-4 py-2 text-sm font-medium bg-navy-600 text-white rounded-control hover:bg-navy-700" %>
+          <% end %>
+        </div>
+      <% end %>
 
       <!-- Results Grid -->
       <div class="space-y-8 mb-8">
-        <% @studies_with_scores.each do |study_with_score| %>
-          <%= render Page::Cards::StudyCardComponent.new(study: study_with_score, base_path: :my_trials) %>
+        <% @studies.each do |study| %>
+          <%= render Page::Cards::StudyCardComponent.new(study: study) %>
         <% end %>
       </div>
 
@@ -79,7 +96,7 @@
       <% if @current_page > 1 || @has_next_page %>
         <div class="flex justify-center gap-4 items-center">
           <% if @current_page > 1 %>
-            <%= link_to "Previous", my_trials_search_path(pagination_params.merge(page: @current_page - 1, page_token: @prev_page_token).compact),
+            <%= link_to "Previous", search_index_path(pagination_params.merge(page: @current_page - 1, page_token: @prev_page_token).compact),
                 class: "px-4 py-2 text-sm font-medium text-ink-2 dark:text-ink-2-on-dark bg-surface dark:bg-surface-on-dark border border-line dark:border-line-on-dark rounded hover:bg-surface-2 dark:hover:bg-surface-2-on-dark" %>
           <% end %>
 
@@ -88,7 +105,7 @@
           </span>
 
           <% if @has_next_page %>
-            <%= link_to "Next", my_trials_search_path(pagination_params.merge(page: @current_page + 1, page_token: @next_page_token).compact),
+            <%= link_to "Next", search_index_path(pagination_params.merge(page: @current_page + 1, page_token: @next_page_token).compact),
                 class: "px-4 py-2 text-sm font-medium text-ink-2 dark:text-ink-2-on-dark bg-surface dark:bg-surface-on-dark border border-line dark:border-line-on-dark rounded hover:bg-surface-2 dark:hover:bg-surface-2-on-dark" %>
           <% end %>
         </div>

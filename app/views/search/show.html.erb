@@ -7,7 +7,7 @@
       </div>
       <h2 class="text-2xl font-bold text-crit dark:text-crit-on-dark mb-2">Error Loading Trial</h2>
       <p class="text-crit dark:text-crit-on-dark mb-6"><%= @error %></p>
-      <%= link_to "Back to My Trials", my_trials_path, class: "inline-flex items-center text-sky-600 hover:text-sky-700 font-medium" %>
+      <%= link_to "Back to search", search_index_path, class: "inline-flex items-center text-sky-600 hover:text-sky-700 font-medium" %>
     </div>
   </div>
 <% elsif @study.present? %>
@@ -290,6 +290,10 @@
                 <%= link_to "Add to comparison", my_trials_trial_comparison_path(ids: [ @saved_trial.id, current_user.saved_trials.where.not(id: @saved_trial.id).limit(2).pluck(:id) ].flatten.uniq.take(3)),
                     class: "inline-flex items-center px-4 py-2 border border-navy-600 dark:border-sky-500 text-sm font-medium rounded-control text-sky-700 dark:text-sky-300 bg-surface dark:bg-surface-on-dark hover:bg-sky-50 dark:hover:bg-navy-900/20" %>
               <% end %>
+            <% end %>
+            <% unless user_signed_in? %>
+              <%= link_to "Sign in to save this study", new_user_session_path,
+                  class: "inline-flex items-center px-4 py-2 border border-navy-600 dark:border-sky-500 text-sm font-medium rounded-control text-sky-700 dark:text-sky-300 bg-surface dark:bg-surface-on-dark hover:bg-sky-50 dark:hover:bg-navy-900/20" %>
             <% end %>
           </div>
         </div>
