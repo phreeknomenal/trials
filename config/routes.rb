@@ -49,13 +49,17 @@ Rails.application.routes.draw do
 
   namespace :my_trials do
     root action: :index
-    get :search
     get :saved_trials
     get :trial_comparison
   end
 
-  # My Trials show action (for viewing individual trial details with scoring)
-  resources :my_trials, only: [:show]
+  # Both of these were a second copy of search#index and search#show, differing
+  # only in having a profile. They are kept as redirects rather than removed,
+  # because they have been the signed-in links since launch and are bookmarked.
+  get "my_trials/search", to: redirect { |_params, request|
+    "/search?#{request.query_string}".chomp("?")
+  }
+  get "my_trials/:id", to: redirect("/search/%{id}"), constraints: {id: /NCT\d+/i}
 
   # Public. A summary is a pure function of public study text and is cached per
   # study rather than per user, so there is nothing account-specific to protect.
