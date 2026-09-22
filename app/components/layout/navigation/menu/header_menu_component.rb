@@ -24,15 +24,19 @@ class Layout::Navigation::Menu::HeaderMenuComponent < ApplicationComponent
     @orientation = orientation
   end
 
+  # There used to be two search links, "My Trial Search" and "Browse All Trials",
+  # pointing at two controllers that did the same job. One search now, which scores
+  # against your profile when you have one, so there is nothing left to choose
+  # between.
   def links
     if user_signed_in?
       {
-        "My Trials" => helpers.my_trials_root_path,
-        "My Trial Search" => helpers.my_trials_search_path,
-        "Browse All Trials" => helpers.search_index_path
+        "My trials" => helpers.my_trials_root_path,
+        "Find trials" => helpers.search_index_path,
+        "Saved" => helpers.saved_trials_path
       }
     else
-      {"Search Trials" => helpers.search_index_path}
+      {"Find trials" => helpers.search_index_path}
     end
   end
 
