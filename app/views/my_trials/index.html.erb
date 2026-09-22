@@ -1,89 +1,152 @@
-<section class="px-5 lg:px-44 py-16 border-b border-line dark:border-line-on-dark">
-  <div class="flex flex-col justify-center items-center">
-    <h1 class="text-4xl font-bold text-center mb-3 text-ink dark:text-ink-on-dark">
-      Welcome back, <%= @profile.first_name %>!
-    </h1>
-    <p class="text-lg text-ink-3 dark:text-ink-3-on-dark text-center max-w-2xl">
-      Manage your saved clinical trials and discover new matches
-    </p>
-  </div>
-</section>
+<div class="px-5 lg:px-24 py-8 lg:py-12 flex flex-col gap-8">
 
-<section class="px-5 lg:px-44 py-16">
-  <div class="grid grid-cols-4 gap-6 mb-10">
-    <div class="col-span-2 lg:col-span-1 bg-surface dark:bg-surface-on-dark rounded-card border border-line dark:border-line-on-dark p-8">
-      <p class="text-4xl font-bold text-sky-600 dark:text-sky-400"><%= @saved_trials_count %></p>
-      <p class="text-sm text-ink-3 dark:text-ink-3-on-dark mt-2">Saved Trials</p>
-    </div>
-    <div class="col-span-2 lg:col-span-1 bg-surface dark:bg-surface-on-dark rounded-card border border-line dark:border-line-on-dark p-8">
-      <p class="text-4xl font-bold text-good dark:text-good-on-dark"><%= @excellent_count %></p>
-      <p class="text-sm text-ink-3 dark:text-ink-3-on-dark mt-2">Excellent Match</p>
-    </div>
-    <div class="col-span-2 lg:col-span-1 bg-surface dark:bg-surface-on-dark rounded-card border border-line dark:border-line-on-dark p-8">
-      <p class="text-4xl font-bold text-info dark:text-info-on-dark"><%= @good_count %></p>
-      <p class="text-sm text-ink-3 dark:text-ink-3-on-dark mt-2">Good Match</p>
-    </div>
-    <div class="col-span-2 lg:col-span-1 bg-surface dark:bg-surface-on-dark rounded-card border border-line dark:border-line-on-dark p-8">
-      <p class="text-4xl font-bold text-warn dark:text-warn-on-dark"><%= @fair_count %></p>
-      <p class="text-sm text-ink-3 dark:text-ink-3-on-dark mt-2">Fair Match</p>
-    </div>
-  </div>
-
-  <!-- Action Cards -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-    <!-- Saved Trials Card -->
-    <div class="bg-surface dark:bg-surface-on-dark rounded-panel border border-line dark:border-line-on-dark p-8 hover:shadow-lg transition-shadow">
-      <div class="flex items-start justify-between mb-4">
-        <div>
-          <h2 class="text-2xl font-bold text-ink dark:text-ink-on-dark mb-2">Saved Trials</h2>
-          <p class="text-ink-3 dark:text-ink-3-on-dark">
-            Manage and organize your saved clinical trials. Edit status, add notes, and keep track of your progress.
-          </p>
-        </div>
-        <div class="text-3xl">📋</div>
-      </div>
-      <div class="mt-6 pt-6 border-t border-line dark:border-line-on-dark">
-        <%= link_to "View All Saved Trials", my_trials_saved_trials_path, 
-            class: "inline-block px-6 py-2 bg-navy-600 text-white rounded-control hover:bg-navy-700 transition-colors font-medium" %>
-      </div>
-    </div>
-
-    <!-- Compare Trials Card -->
-    <div class="bg-surface dark:bg-surface-on-dark rounded-panel border border-line dark:border-line-on-dark p-8 hover:shadow-lg transition-shadow">
-      <div class="flex items-start justify-between mb-4">
-        <div>
-          <h2 class="text-2xl font-bold text-ink dark:text-ink-on-dark mb-2">Compare Trials</h2>
-          <p class="text-ink-3 dark:text-ink-3-on-dark">
-            Compare up to 3 saved trials side-by-side to make informed decisions about your options.
-          </p>
-        </div>
-        <div class="text-3xl">⚖️</div>
-      </div>
-      <div class="mt-6 pt-6 border-t border-line dark:border-line-on-dark">
-        <% if @saved_trials_count >= 2 %>
-          <%= link_to "Start Comparing", my_trials_trial_comparison_path, 
-              class: "inline-block px-6 py-2 bg-navy-600 text-white rounded-control hover:bg-navy-700 transition-colors font-medium" %>
-        <% else %>
-          <p class="text-sm text-ink-3 dark:text-ink-3-on-dark">
-            Save at least 2 trials to compare them
-          </p>
+  <header class="flex flex-wrap items-start justify-between gap-4">
+    <div>
+      <h1 class="text-2xl lg:text-3xl font-bold tracking-tight text-ink dark:text-ink-on-dark">
+        <%= @profile&.first_name.present? ? "Welcome back, #{@profile.first_name}" : "Your trials" %>
+      </h1>
+      <div class="mt-2 flex flex-wrap items-center gap-2">
+        <% @profile&.conditions&.first(2)&.each do |condition| %>
+          <span class="inline-flex items-center rounded-chip bg-surface-2 dark:bg-surface-2-on-dark px-2.5 py-1 text-xs font-semibold text-ink-2 dark:text-ink-2-on-dark">
+            <%= condition.name %>
+          </span>
         <% end %>
+        <% if @profile&.zip_code.present? %>
+          <span class="inline-flex items-center gap-1 text-xs text-ink-3 dark:text-ink-3-on-dark">
+            <%= render Utilities::IconComponent.new("map_pin", size: 4) %>
+            <%= @profile.zip_code %>
+          </span>
+        <% end %>
+        <%= link_to "Edit profile", edit_profile_path(@profile), class: "text-xs font-semibold text-sky-700 dark:text-sky-300 hover:underline" if @profile %>
       </div>
     </div>
-  </div>
+    <%= link_to "Find new trials", search_index_path,
+          class: Buttons::ButtonStyles.classes("primary", size: "px-4 py-2 text-sm") %>
+  </header>
 
-  <!-- Quick Search Section -->
-  <div class="bg-surface dark:bg-surface-on-dark rounded-panel border border-line dark:border-line-on-dark p-8">
-    <h2 class="text-2xl font-bold text-ink dark:text-ink-on-dark mb-6">Search for New Trials</h2>
-    <p class="text-ink-3 dark:text-ink-3-on-dark mb-6">
-      Discover new clinical trials that match your profile
-    </p>
-    <%= link_to "Go to Trial Search", search_index_path, 
-        class: "inline-block px-6 py-2 bg-info text-white rounded-control hover:bg-info transition-colors font-medium" %>
-  </div>
-</section>
+  <%# Studies mid-conversation where nothing has moved. This is the only part of
+      the dashboard that asks for something back, so it leads. %>
+  <% if @awaiting_reply.any? %>
+    <section class="rounded-panel border border-sky-200 dark:border-sky-800 bg-sky-50 dark:bg-navy-900/20 p-5 lg:p-6">
+      <h2 class="text-base font-bold text-ink dark:text-ink-on-dark mb-3">Waiting on a reply</h2>
+      <ul class="flex flex-col gap-3">
+        <% @awaiting_reply.each do |saved| %>
+          <li class="flex flex-wrap items-center justify-between gap-3">
+            <div class="min-w-0">
+              <p class="text-sm font-semibold text-ink dark:text-ink-2-on-dark truncate">
+                <%= link_to saved.trial_title, saved_trial_path(saved), class: "hover:text-sky-700 dark:hover:text-sky-300" %>
+              </p>
+              <p class="text-xs text-ink-3 dark:text-ink-3-on-dark">
+                <%= render Shared::StatusBadgeComponent.new(status: saved.status, size: :sm) %>
+                <span class="ml-1">no change in <%= time_ago_in_words(saved.updated_at) %></span>
+              </p>
+            </div>
+            <%= link_to "Update", edit_saved_trial_path(saved),
+                  class: Buttons::ButtonStyles.classes("secondary", size: "px-3 py-1.5 text-sm") %>
+          </li>
+        <% end %>
+      </ul>
+    </section>
+  <% end %>
 
-<!-- Recommended Trials Section -->
-<section class="px-5 lg:px-44">
-  <%= render Page::Dashboard::RecommendedTrialsComponent.new(trials: @recommended_trials) %>
-</section>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2 flex flex-col gap-6">
+
+      <section class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-5 lg:p-6">
+        <div class="flex items-center justify-between gap-3 mb-4">
+          <h2 class="text-base font-bold text-ink dark:text-ink-on-dark">Your saved studies</h2>
+          <%= link_to "See all #{@saved_trials_count}", saved_trials_path, class: "text-sm font-semibold text-sky-700 dark:text-sky-300 hover:underline" if @saved_trials_count.positive? %>
+        </div>
+
+        <% if @saved_trials_count.zero? %>
+          <p class="text-sm text-ink-3 dark:text-ink-3-on-dark mb-4">
+            Nothing saved yet. Saving a study keeps your notes and its status in one place.
+          </p>
+          <%# The statuses are shown greyed rather than hidden, so the shape of
+              what the page becomes is visible before anything is in it. %>
+          <div class="flex flex-wrap gap-2 opacity-50" aria-hidden="true">
+            <% SavedTrial::STATUSES.each do |status| %>
+              <%= render Shared::StatusBadgeComponent.new(status: status, size: :sm) %>
+            <% end %>
+          </div>
+        <% else %>
+          <%# Grouped by status rather than score tier: the score is on each card
+              already, and status is the part the person controls. %>
+          <div class="flex flex-wrap gap-2 mb-5">
+            <% SavedTrial::STATUSES.each do |status| %>
+              <% count = @counts_by_status[status].to_i %>
+              <% next if count.zero? %>
+              <%= link_to saved_trials_path(status: status), class: "no-underline" do %>
+                <span class="inline-flex items-center gap-1.5">
+                  <%= render Shared::StatusBadgeComponent.new(status: status, size: :sm) %>
+                  <span class="text-sm font-bold tabular-nums text-ink dark:text-ink-2-on-dark"><%= count %></span>
+                </span>
+              <% end %>
+            <% end %>
+          </div>
+
+          <ul class="flex flex-col gap-3">
+            <% @recent_saved.each do |saved| %>
+              <li class="rounded-card border border-line dark:border-line-on-dark p-3 flex flex-wrap items-center justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="text-sm font-semibold text-ink dark:text-ink-2-on-dark truncate">
+                    <%= link_to saved.trial_title, saved_trial_path(saved), class: "hover:text-sky-700 dark:hover:text-sky-300" %>
+                  </p>
+                  <p class="text-xs text-ink-3 dark:text-ink-3-on-dark mt-1">
+                    Updated <%= time_ago_in_words(saved.updated_at) %> ago
+                  </p>
+                </div>
+                <%= render Shared::StatusBadgeComponent.new(status: saved.status, size: :sm) %>
+              </li>
+            <% end %>
+          </ul>
+
+          <% if @saved_trials_count >= 2 %>
+            <%= link_to "Compare saved studies", my_trials_trial_comparison_path,
+                  class: "#{Buttons::ButtonStyles.classes("quiet", size: "px-3 py-1.5 text-sm")} mt-4" %>
+          <% end %>
+        <% end %>
+      </section>
+
+      <%= render "my_trials/recommendations" %>
+    </div>
+
+    <aside class="flex flex-col gap-6">
+      <% if @strength && !@strength.complete? %>
+        <section class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-5">
+          <h2 class="text-base font-bold text-ink dark:text-ink-on-dark mb-1">Sharpen your matches</h2>
+          <p class="text-sm text-ink-3 dark:text-ink-3-on-dark mb-4">
+            <%= pluralize(@strength.remaining, "answer") %> left. Each one rules studies in or out, so the scores get more honest as you go.
+          </p>
+
+          <%# One measure, so one hue. The label carries the number; no legend. %>
+          <div class="h-2 rounded-full bg-surface-2 dark:bg-surface-2-on-dark overflow-hidden mb-4">
+            <div class="h-full rounded-full bg-navy-600" style="width: <%= @strength.percent %>%"></div>
+          </div>
+
+          <ul class="flex flex-col gap-2 mb-4">
+            <% @strength.unanswered.each do |slug, step, _| %>
+              <li>
+                <%= link_to onboarding_step_path(slug), class: "flex items-start gap-2 text-sm text-ink-2 dark:text-ink-2-on-dark hover:text-sky-700 dark:hover:text-sky-300" do %>
+                  <span class="shrink-0 mt-0.5 text-ink-4 dark:text-ink-4-on-dark">
+                    <%= render Utilities::IconComponent.new("question_circle", size: 4) %>
+                  </span>
+                  <span><%= step&.heading %></span>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </section>
+      <% end %>
+
+      <section class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-5">
+        <h2 class="text-base font-bold text-ink dark:text-ink-on-dark mb-3">How this works</h2>
+        <ol class="flex flex-col gap-3 text-sm text-ink-3 dark:text-ink-3-on-dark">
+          <li><strong class="text-ink dark:text-ink-2-on-dark">Open a match.</strong> Every study shows which criteria you meet and which the team still checks.</li>
+          <li><strong class="text-ink dark:text-ink-2-on-dark">Save the ones that fit.</strong> Keep notes and questions against each study, in one place.</li>
+          <li><strong class="text-ink dark:text-ink-2-on-dark">Reach out when ready.</strong> Nothing is shared with a study team until you choose to send it.</li>
+        </ol>
+      </section>
+    </aside>
+  </div>
+</div>

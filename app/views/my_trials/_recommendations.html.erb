@@ -1,0 +1,53 @@
+<%# The four outcomes TrialRecommendationService now tells apart. They used to be
+    one empty array, so this section said "no matches yet" when the registry had
+    timed out, which is both wrong and unhelpful: one is a fact about the
+    studies, the other is a fact about our request. %>
+<section class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-5 lg:p-6">
+  <div class="flex items-center justify-between gap-3 mb-1">
+    <h2 class="text-base font-bold text-ink dark:text-ink-on-dark">Studies that match you</h2>
+    <%= link_to "See all matches", search_index_path, class: "text-sm font-semibold text-sky-700 dark:text-sky-300 hover:underline" if @recommendations.any? %>
+  </div>
+  <p class="text-sm text-ink-3 dark:text-ink-3-on-dark mb-4">
+    Recruiting studies scoring <%= TrialRecommendationService::MINIMUM_SCORE_THRESHOLD %> or higher against your profile.
+  </p>
+
+  <% if @recommendations.any? %>
+    <div class="flex flex-col gap-3">
+      <% @recommendations.studies.each do |study| %>
+        <%= render Page::Cards::ResultCardComponent.new(study: study, signed_in: true) %>
+      <% end %>
+    </div>
+
+  <% elsif @recommendations.unavailable? %>
+    <%# Ours to fix, and worth saying so rather than implying the registry is
+        empty. The retry is the useful half. %>
+    <div class="rounded-card border border-warn/30 dark:border-warn-on-dark bg-warn/10 dark:bg-warn-on-dark/20 p-4">
+      <p class="text-sm font-semibold text-ink dark:text-ink-2-on-dark mb-1">We could not reach the study registry</p>
+      <p class="text-sm text-ink-2 dark:text-ink-2-on-dark mb-3">
+        This is on our side, not a sign that nothing is recruiting. Your saved studies are unaffected.
+      </p>
+      <%= link_to "Try again", my_trials_root_path,
+            class: Buttons::ButtonStyles.classes("secondary", size: "px-3 py-1.5 text-sm") %>
+    </div>
+
+  <% elsif @recommendations.needs_profile? %>
+    <div class="rounded-card border border-line dark:border-line-on-dark p-4">
+      <p class="text-sm text-ink-2 dark:text-ink-2-on-dark mb-3">
+        Matching starts with a condition. It is the largest single factor in how studies are ranked for you.
+      </p>
+      <%= link_to "Add a condition", onboarding_step_path("conditions"),
+            class: Buttons::ButtonStyles.classes("primary", size: "px-3 py-1.5 text-sm") %>
+    </div>
+
+  <% else %>
+    <div class="rounded-card border border-line dark:border-line-on-dark p-4">
+      <p class="text-sm text-ink-2 dark:text-ink-2-on-dark mb-3">
+        Nothing is recruiting that scores high enough against your profile right now. That changes often.
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <%= link_to "Search without the score", search_index_path(condition: @profile&.conditions&.first&.name),
+              class: Buttons::ButtonStyles.classes("secondary", size: "px-3 py-1.5 text-sm") %>
+      </div>
+    </div>
+  <% end %>
+</section>

@@ -1,19 +1,34 @@
 class MyTrialsController < ApplicationController
   include Secured
 
+  # How long a study can sit in applying or contacted before the dashboard
+  # raises it. Long enough that a site has had a fair chance to answer.
+  STALE_AFTER = 5.days
+
   before_action :authenticate_user!
   before_action :ensure_profile_exists
 
   def index
-    # Hub/Dashboard page
     @profile = current_profile
-    @saved_trials_count = current_user.saved_trials.count
-    @excellent_count = current_user.saved_trials.where("match_score >= ?", 80).count
-    @good_count = current_user.saved_trials.where("match_score >= ? AND match_score < ?", 60, 80).count
-    @fair_count = current_user.saved_trials.where("match_score >= ? AND match_score < ?", 40, 60).count
+    saved = current_user.saved_trials
 
-    # Generate recommendations
-    @recommended_trials = TrialRecommendationService.new(@profile).recommend
+    @saved_trials_count = saved.count
+
+    # Grouped by status rather than by score tier. The tiers answered "how well
+    # do these fit me", which the score on each card already says; status
+    # answers "what have I done about them", which is the question a dashboard
+    # is for and the only one whose answer the person controls.
+    @counts_by_status = saved.group(:status).count
+    @recent_saved = saved.order(updated_at: :desc).limit(3)
+
+    # Studies where the person is mid-conversation and nothing has moved.
+    @awaiting_reply = saved.where(status: [SavedTrial::APPLYING, SavedTrial::CONTACTED])
+      .where(updated_at: ..STALE_AFTER.ago)
+      .order(:updated_at)
+      .limit(3)
+
+    @recommendations = TrialRecommendationService.new(@profile).recommend
+    @strength = ProfileStrength.new(@profile) if @profile
   end
 
   def saved_trials
