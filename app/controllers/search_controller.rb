@@ -46,10 +46,13 @@ class SearchController < ApplicationController
       search_params: sanitized_params,
       page: current_page_num,
       page_size: page_size,
-      page_token: get_page_token(current_page_num)
+      page_token: get_page_token(current_page_num),
+      filters: filters
     ).search(sort_by: params[:sort_by])
 
     @studies = result[:studies]
+    @facets = result[:facets]
+    @refined = result[:refined]
     @total_count = result[:total_count]
     @error = result[:error]
     @current_page = result[:current_page]
@@ -116,11 +119,32 @@ class SearchController < ApplicationController
     params[:condition].present? || params[:location].present?
   end
 
+  # The registry cannot filter by phase or study type, so these are applied over
+  # a fetched batch. See TrialSearchService.
+  def filters
+    @filters ||= {
+      phase: Array(params[:phase]).compact_blank,
+      study_type: Array(params[:study_type]).compact_blank,
+      hide_ineligible: params[:hide_ineligible]
+    }
+  end
+  helper_method :filters
+
+  def filters_active?
+    filters[:phase].any? || filters[:study_type].any? || filters[:hide_ineligible].present?
+  end
+  helper_method :filters_active?
+
+  # Everything a link has to carry to keep the same search. Dropping a filter
+  # here is how a paginated page silently loses its refinements.
   def pagination_params
     {
       condition: params[:condition].presence || @default_condition,
       location: params[:location].presence,
-      sort_by: params[:sort_by].presence
+      sort_by: params[:sort_by].presence,
+      phase: filters[:phase].presence,
+      study_type: filters[:study_type].presence,
+      hide_ineligible: filters[:hide_ineligible].presence
     }.compact
   end
   helper_method :pagination_params
