@@ -1,0 +1,10 @@
+<div <%= "role=status" if label %> aria-live="<%= label ? "polite" : "off" %>">
+  <% if label %>
+    <span class="sr-only"><%= label %></span>
+  <% end %>
+  <div aria-hidden="true" class="flex flex-col gap-3">
+    <% count.times do %>
+      <span class="<%= classes %>"></span>
+    <% end %>
+  </div>
+</div>

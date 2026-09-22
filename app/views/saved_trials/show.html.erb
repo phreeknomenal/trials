@@ -31,7 +31,10 @@
         <div class="flex items-center justify-between mb-3">
           <%= render Typography::HeadingComponent.new(size: :h5, text: "Status") %>
         </div>
-        <%= render Utilities::BadgeComponent.new(status: @saved_trial.status, size: :md) %>
+        <%# BadgeComponent switches on the registry's trial status. This is the
+            user's own pipeline status, a different vocabulary, and five of its
+            seven values fell through to the default there. %>
+        <%= render Shared::StatusBadgeComponent.new(status: @saved_trial.status) %>
 
         <% if @saved_trial.match_score.present? %>
           <div class="flex flex-col ">
