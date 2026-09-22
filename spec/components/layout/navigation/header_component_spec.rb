@@ -26,7 +26,7 @@ RSpec.describe Layout::Navigation::HeaderComponent, type: :component do
       render_inline(described_class.new)
 
       panel = page.find("#mobile-menu-panel", visible: :all)
-      expect(panel).to have_link("Search Trials", visible: :all)
+      expect(panel).to have_link("Find trials", visible: :all)
     end
 
     it "keeps the panel out of the accessibility tree until it is opened" do
