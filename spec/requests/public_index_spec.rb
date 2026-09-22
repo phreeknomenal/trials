@@ -107,4 +107,65 @@ RSpec.describe "GET /", type: :request do
       expect(response.body.index("First in order")).to be < response.body.index("Second in order")
     end
   end
+
+  # Ten seeded testimonials were created with published: true and placeholder:
+  # true together, and this page read Testimonial.published, so invented quotes
+  # under invented full names were the social proof on a clinical trials site.
+  describe "the testimonials it will show" do
+    it "shows a real published quote" do
+      create(:testimonial, quote: "A real, consented quote.")
+
+      get root_path
+
+      expect(response.body).to include("A real, consented quote.")
+    end
+
+    it "never shows a seeded placeholder" do
+      create(:testimonial, :placeholder, quote: "An invented quote for layout.")
+
+      get root_path
+
+      expect(response.body).not_to include("An invented quote for layout.")
+    end
+
+    it "shows the real ones even when placeholders outnumber them" do
+      create_list(:testimonial, 5, :placeholder)
+      create(:testimonial, quote: "The only consented quote we have.")
+
+      get root_path
+
+      expect(response.body).to include("The only consented quote we have.")
+    end
+
+    # Unpublishing the ten seeded quotes leaves the page with none, so this is
+    # the state the landing page is actually in until consented quotes exist.
+    # The section drops out rather than rendering a heading over nothing.
+    it "drops the whole Community Stories section when there is nothing to show" do
+      create_list(:testimonial, 3, :placeholder)
+
+      get root_path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include("Community Stories")
+    end
+
+    it "brings the section back as soon as there is a real quote" do
+      create(:testimonial)
+
+      get root_path
+
+      expect(response.body).to include("Community Stories")
+    end
+  end
+
+  # The seeds are what put the invented quotes on the page, so this covers the
+  # seeds rather than the page.
+  describe "the seeded testimonials" do
+    it "are created held back rather than published" do
+      Seeds::Record::Testimonial.seed
+
+      expect(Testimonial.count).to be_positive
+      expect(Testimonial.publishable).to be_empty
+    end
+  end
 end

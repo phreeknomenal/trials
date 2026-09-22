@@ -3,6 +3,13 @@
 #
 #   Testimonial.placeholder.destroy_all
 #
+# They are seeded unpublished. They used to carry published: true as well, and
+# because PublicController read Testimonial.published rather than .publishable,
+# all ten rendered on the landing page under invented names. Anything public
+# reads .publishable now, but these stay unpublished regardless: two locks,
+# because the cost of this one being wrong is invented people vouching for a
+# health product.
+#
 # Copy deliberately describes using the product -- searching, eligibility,
 # tracking applications -- rather than treatment outcomes. Invented quotes
 # claiming medical results do not belong on a clinical trials site, even a
@@ -75,7 +82,7 @@ class Seeds::Record::Testimonial
           quote: "Tracking which trials I had already looked at meant I stopped rereading the same listings every week."
         }
       ].each_with_index.map do |params, index|
-        params.merge(position: index, published: true, placeholder: true)
+        params.merge(position: index, published: false, placeholder: true)
       end
     end
   end

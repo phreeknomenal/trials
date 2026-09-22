@@ -103,4 +103,53 @@ RSpec.describe Testimonial, type: :model do
       expect(build(:testimonial, author_name: "").initials).to eq("")
     end
   end
+
+  # The bug this guards: the seeds created ten testimonials with published: true
+  # and placeholder: true together, and PublicController read .published, so all
+  # ten invented quotes rendered on the landing page under invented full names.
+  describe ".publishable" do
+    it "includes a real published record" do
+      real = create(:testimonial)
+
+      expect(described_class.publishable).to include(real)
+    end
+
+    it "excludes an unpublished record" do
+      unpublished = create(:testimonial, :unpublished)
+
+      expect(described_class.publishable).not_to include(unpublished)
+    end
+
+    it "excludes a placeholder" do
+      placeholder = create(:testimonial, :placeholder)
+
+      expect(described_class.publishable).not_to include(placeholder)
+    end
+
+    # There is deliberately no example for "a placeholder that somehow has
+    # published set". The check constraint makes that row impossible to write,
+    # so it cannot be set up through ActiveRecord at all. The scope still
+    # excludes on both columns, because it is what any database seeded before
+    # the constraint landed relies on.
+  end
+
+  describe "a placeholder can never be published" do
+    it "is invalid when both are set" do
+      testimonial = build(:testimonial, placeholder: true, published: true)
+
+      expect(testimonial).not_to be_valid
+      expect(testimonial.errors[:published].join).to include("cannot be turned on for a placeholder")
+    end
+
+    it "is valid as a held-back placeholder" do
+      expect(build(:testimonial, :placeholder)).to be_valid
+    end
+
+    it "is refused by the database even when validations are skipped" do
+      placeholder = create(:testimonial, :placeholder)
+
+      expect { placeholder.update_column(:published, true) }
+        .to raise_error(ActiveRecord::CheckViolation, /testimonials_placeholder_never_published/)
+    end
+  end
 end
