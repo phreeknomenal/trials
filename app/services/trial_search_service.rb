@@ -75,13 +75,18 @@ class TrialSearchService
         study.merge(
           trial_score: score_result[:total],
           score_breakdown: score_result[:breakdown],
-          match_level: score_result[:match_level]
+          match_level: score_result[:match_level],
+          # Carried through so a row can say which criterion rules someone out
+          # rather than only greying itself down to zero. An ineligible study is
+          # a hard stop from a named failure, not a low score.
+          disqualifiers: score_result[:disqualifiers]
         )
       else
         study.merge(
           trial_score: nil,
           score_breakdown: nil,
-          match_level: nil
+          match_level: nil,
+          disqualifiers: nil
         )
       end
     end
