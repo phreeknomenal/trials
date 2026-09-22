@@ -1,3 +1,9 @@
+<%# One expression for the section and its sidebar link, so the two cannot
+    disagree and leave an anchor pointing at nothing. %>
+<% who_runs_it = @study.present? && (@study[:sponsor].present? ||
+                                    @study[:central_contacts].present? ||
+                                    @study[:overall_officials].present?) %>
+
 <% if @error.present? %>
   <!-- Error State -->
   <div class="min-h-screen flex items-center justify-center px-5">
@@ -28,10 +34,12 @@
             <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#key-details", text: "Key Details") %>
             <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#what-this-means-for-you", text: "What This Means For You") %>
             <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#study-overview", text: "Study Overview") %>
-            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#eligibility", text: "Eligibility Criteria") %>
-            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#interventions", text: "Interventions/Treatments") %>
-            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#locations", text: "Trial Locations") %>
-            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#contact-information", text: "Contact Information") %>
+            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#eligibility", text: "Do you qualify") %>
+            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#taking-part", text: "What taking part involves") %>
+            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#locations", text: "Where it takes place") %>
+            <% if who_runs_it %>
+              <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#contact-information", text: "Who runs it") %>
+            <% end %>
             <% if @similar_trials.present? && @similar_trials.any? %>
               <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#similar-trials", text: "More trials like this") %>
             <% end %>
@@ -78,10 +86,8 @@
         <%= render Page::Trials::StatusMessageComponent.new(study: @study, score_breakdown: @score_breakdown, trial_score: @trial_score, match_level: @match_level) %>
 
         <!-- Phase / Status explainer -->
-        <%#= render Page::Trials::PhaseStatusExplainerComponent.new(phase: @study[:phase], status: @study[:status]) %>
 
         <!-- Key dates timeline -->
-        <%#= render Page::Trials::KeyDatesTimelineComponent.new(study: @study) %>
 
         <!-- Overview -->
         <%= render Page::Trials::OverviewComponent.new(
@@ -90,81 +96,39 @@
         ) %>
 
         <!-- Eligibility Criteria -->
-        <div id="eligibility" class="mb-8 p-8 border border-line-2 dark:border-line-on-dark rounded-panel">
-          <%= render Typography::HeadingComponent.new(size: :h5, text: "Eligibility Criteria") %>
-          <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <% if @study[:min_age].present? %>
-              <div>
-                <p class="text-sm font-medium text-ink-3 dark:text-ink-3-on-dark">Minimum Age</p>
-                <p class="text-base text-ink dark:text-ink-on-dark"><%= @study[:min_age] %></p>
-              </div>
-            <% end %>
-            
-            <% if @study[:max_age].present? %>
-              <div>
-                <p class="text-sm font-medium text-ink-3 dark:text-ink-3-on-dark">Maximum Age</p>
-                <p class="text-base text-ink dark:text-ink-on-dark"><%= @study[:max_age] %></p>
-              </div>
-            <% end %>
-            
-            <% if @study[:sex].present? %>
-              <div>
-                <p class="text-sm font-medium text-ink-3 dark:text-ink-3-on-dark">Sex</p>
-                <p class="text-base text-ink dark:text-ink-on-dark"><%= @study[:sex] %></p>
-              </div>
-            <% end %>
-          </div>
-
-          <% if @study[:inclusion_criteria].present? %>
-            <div class="mt-6">
-              <%= render Page::DropdownComponent.new(title: "Inclusion Criteria", body: @study[:inclusion_criteria]) %>
-            </div>
-          <% end %>
-          <% if @study[:exclusion_criteria].present? %>
-            <div class="mt-4">
-              <%= render Page::DropdownComponent.new(title: "Exclusion Criteria", body: @study[:exclusion_criteria]) %>
-            </div>
-          <% end %>
+        <%# The criteria split, which is the payoff for the score on the result
+            row. What you meet, what the team still checks, and what rules you
+            out, each in its own group rather than one flat list. %>
+        <div class="mb-8">
+          <%= render Page::Trials::CriteriaSplitComponent.new(
+                checklist: @eligibility_checklist,
+                profile: @profile
+              ) %>
         </div>
 
-        <!-- Eligibility Checklist -->
-        <% if @eligibility_checklist.present? && @eligibility_checklist.any? %>
-          <%= render Page::Trials::EligibilityChecklistComponent.new(
-            checklist_items: @eligibility_checklist
-          ) %>
-        <% end %>
-
-        <!-- Interventions/Treatments -->
-        <% if @study[:interventions].present? && @study[:interventions].any? %>
-          <div id="interventions" class="mb-8 p-8 border border-line-2 dark:border-line-on-dark rounded-panel">
-            <div class="mb-4">
-              <%= render Typography::HeadingComponent.new(size: :h5, text: "Treatments") %>
-            </div>
-            <div class="space-y-4">
-              <% @study[:interventions].each do |intervention| %>
-                <div class="bg-surface-2 dark:bg-surface-on-dark rounded-card p-4">
-                  <div class="flex items-start gap-2 mb-2">
-                    <%= render Utilities::BadgeComponent.new(
-                      text: intervention[:type],
-                      variant: :tag,
-                      size: :sm
-                    ) %>
-                    <h3 class="text-base font-semibold text-ink dark:text-ink-2-on-dark">
-                      <%= intervention[:name] %>
-                    </h3>
-                  </div>
-                  <% if intervention[:description].present? %>
-                    <p class="text-sm text-ink-3 dark:text-ink-3-on-dark">
-                      <%= intervention[:description] %>
-                    </p>
-                  <% end %>
-                </div>
-              <% end %>
-            </div>
+        <%# The study's own eligibility text, which is written for clinicians and
+            is long. It stays collapsed under the split rather than above it. %>
+        <% if @study[:inclusion_criteria].present? || @study[:exclusion_criteria].present? %>
+          <div class="mb-8 rounded-panel border border-line dark:border-line-on-dark p-6 lg:p-8">
+            <h2 class="text-base font-bold text-ink dark:text-ink-on-dark mb-1">The study's own criteria</h2>
+            <p class="text-sm text-ink-3 dark:text-ink-3-on-dark mb-4">
+              The registry's wording, unedited. Ages <%= [@study[:min_age], @study[:max_age]].compact.join(" to ").presence || "not stated" %><%= ", #{humanize_registry_value(@study[:sex])}" if @study[:sex].present? %>.
+            </p>
+            <% if @study[:inclusion_criteria].present? %>
+              <%= render Page::DropdownComponent.new(title: "Inclusion criteria", body: @study[:inclusion_criteria]) %>
+            <% end %>
+            <% if @study[:exclusion_criteria].present? %>
+              <div class="mt-3">
+                <%= render Page::DropdownComponent.new(title: "Exclusion criteria", body: @study[:exclusion_criteria]) %>
+              </div>
+            <% end %>
           </div>
         <% end %>
 
-        <!-- Locations -->
+        <div class="mb-8">
+          <%= render Page::Trials::TakingPartComponent.new(study: @study) %>
+        </div>
+
         <div id="locations" class="p-8 border border-line-2 dark:border-line-on-dark rounded-panel">
           <%= render Typography::HeadingComponent.new(size: :h5, text: "Trial Locations") %>
           <% locations_to_show = @study[:locations_detailed].present? ? sort_locations_near_user(@study[:locations_detailed], @profile) : (@study[:locations] || []).map { |l| { display: l, near_you: false } } %>
@@ -198,12 +162,19 @@
           <% end %>
         </div>
 
-        <!-- Contact Information -->
-        <% if (@study[:central_contacts].present? && @study[:central_contacts].any?) || (@study[:overall_officials].present? && @study[:overall_officials].any?) %>
+        <!-- Who runs it -->
+        <% if who_runs_it %>
           <div id="contact-information" class="mb-8 p-8 border border-line-2 dark:border-line-on-dark rounded-panel">
             <div class="mb-4">
-              <%= render Typography::HeadingComponent.new(size: :h5, text: "Contact Information") %>
+              <%= render Typography::HeadingComponent.new(size: :h5, text: "Who runs it") %>
             </div>
+
+            <% if @study[:sponsor].present? %>
+              <div class="mb-6">
+                <%= render Typography::HeadingComponent.new(size: :h6, text: "Sponsor") %>
+                <p class="mt-2 text-base text-ink dark:text-ink-2-on-dark"><%= @study[:sponsor] %></p>
+              </div>
+            <% end %>
 
             <% if @study[:central_contacts].present? && @study[:central_contacts].any? %>
               <div class="mb-6">

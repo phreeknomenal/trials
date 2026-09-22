@@ -1,0 +1,69 @@
+<div id="taking-part" class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-6 lg:p-8">
+  <h2 class="text-xl font-bold tracking-tight text-ink dark:text-ink-on-dark mb-1">What taking part involves</h2>
+  <p class="text-sm text-ink-3 dark:text-ink-3-on-dark mb-6">
+    From the registry record. The study team will walk you through the detail before you agree to anything.
+  </p>
+
+  <div class="flex flex-col gap-6">
+    <% if interventions.any? %>
+      <section>
+        <h3 class="text-sm font-bold text-ink dark:text-ink-2-on-dark mb-2">What you would receive</h3>
+        <ul class="flex flex-col gap-2">
+          <% interventions.each do |intervention| %>
+            <li class="rounded-card border border-line dark:border-line-on-dark p-3">
+              <p class="text-sm font-semibold text-ink dark:text-ink-2-on-dark">
+                <%= intervention[:name] %>
+                <% if intervention[:type].present? %>
+                  <span class="ml-1 font-normal text-ink-3 dark:text-ink-3-on-dark">· <%= humanize_registry_value(intervention[:type]) %></span>
+                <% end %>
+              </p>
+              <% if intervention[:description].present? %>
+                <p class="text-sm text-ink-3 dark:text-ink-3-on-dark mt-1 leading-relaxed"><%= intervention[:description] %></p>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </section>
+    <% end %>
+
+    <% if design_rows.any? %>
+      <section>
+        <h3 class="text-sm font-bold text-ink dark:text-ink-2-on-dark mb-2">How the study is run</h3>
+        <dl class="flex flex-col gap-2">
+          <% design_rows.each do |label, value| %>
+            <div class="flex flex-col sm:flex-row sm:gap-3 rounded-card border border-line dark:border-line-on-dark p-3">
+              <dt class="text-sm text-ink-3 dark:text-ink-3-on-dark sm:w-[220px] shrink-0"><%= label %></dt>
+              <dd class="text-sm font-semibold text-ink dark:text-ink-2-on-dark"><%= value %></dd>
+            </div>
+          <% end %>
+        </dl>
+      </section>
+    <% end %>
+
+    <% if time_frames.any? %>
+      <section>
+        <h3 class="text-sm font-bold text-ink dark:text-ink-2-on-dark mb-2">How long they follow you</h3>
+        <%# The study's own words, quoted rather than parsed into a duration the
+            app would be inventing. %>
+        <ul class="flex flex-col gap-2">
+          <% time_frames.each do |frame| %>
+            <li class="flex items-start gap-2 text-sm text-ink-2 dark:text-ink-2-on-dark">
+              <span class="shrink-0 mt-0.5 text-ink-3 dark:text-ink-3-on-dark">
+                <%= render Utilities::IconComponent.new("calendar", size: 4) %>
+              </span>
+              <span><%= frame %></span>
+            </li>
+          <% end %>
+        </ul>
+      </section>
+    <% end %>
+
+    <% if enrollment.present? %>
+      <p class="text-sm text-ink-3 dark:text-ink-3-on-dark"><%= enrollment %></p>
+    <% end %>
+
+    <p class="rounded-card bg-surface-2 dark:bg-surface-2-on-dark p-3 text-sm text-ink-2 dark:text-ink-2-on-dark leading-relaxed">
+      You can leave a study at any point, for any reason, and it does not affect your regular care.
+    </p>
+  </div>
+</div>

@@ -1,6 +1,14 @@
 <div id="study-overview" class="border border-line-2 dark:border-line-on-dark rounded-panel p-8">
-  <%= render Typography::HeadingComponent.new(size: :h5, text: "Overview") %>
-  <div class="text-ink-3 dark:text-ink-3-on-dark font-body max-w-none mt-4">
+  <%= render Typography::HeadingComponent.new(size: :h5, text: "What this study is testing") %>
+
+  <%# Said out loud, because the order is the point: the registry's own words are
+      what you read, and the plain-language rewrite below is something you ask
+      for. Without the label the two blocks look interchangeable. %>
+  <p class="mt-1 text-xs font-bold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">
+    From the registry record
+  </p>
+
+  <div class="text-ink-3 dark:text-ink-3-on-dark font-body max-w-none mt-3">
     <%= simple_format(summary) %>
   </div>
 
