@@ -14,7 +14,7 @@ RSpec.describe Layout::Navigation::Menu::HeaderMenuComponent, type: :component d
     with_request_url "/search" do
       render_inline(described_class.new)
 
-      expect(page.find("a[aria-current='page']").text.strip).to eq("Search Trials")
+      expect(page.find("a[aria-current='page']").text.strip).to eq("Find trials")
     end
   end
 
@@ -58,7 +58,19 @@ RSpec.describe Layout::Navigation::Menu::HeaderMenuComponent, type: :component d
 
     render_inline(described_class.new)
 
-    expect(page).to have_link("My Trials")
-    expect(page).to have_link("Browse All Trials")
+    expect(page).to have_link("My trials")
+    expect(page).to have_link("Find trials")
+    expect(page).to have_link("Saved")
+  end
+
+  # There were two search links pointing at two controllers that did the same
+  # job. Signed in or out, there is now one search and one link to it.
+  it "offers exactly one search link in both states" do
+    render_inline(described_class.new)
+    expect(page).to have_link("Find trials", count: 1)
+
+    signed_in(true)
+    render_inline(described_class.new)
+    expect(page).to have_link("Find trials", count: 1)
   end
 end

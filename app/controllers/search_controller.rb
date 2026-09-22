@@ -1,81 +1,134 @@
+# The one search. Signed in and signed out are states of these two actions, not
+# separate controllers: MyTrialsController#search and #show used to be a parallel
+# copy of them, and the two drifted.
+#
+# The difference between the two states is entirely "is there a profile". Every
+# service below already answers nil for a nil profile -- TrialScorer#calculate_score
+# returns nil, EligibilityChecker#build_checklist returns [] -- so there is no
+# branch here, only a profile that may not be there.
 class SearchController < ApplicationController
   include Paginatable
+  include Secured
 
   def index
     @conditions = Condition.order(:name)
-    return unless search_params_present?
+    @profile = current_profile
+    @default_condition = @profile&.conditions&.first&.name
+
+    return unless search_params_present? || @default_condition.present?
 
     initialize_page_tokens
     perform_search
   end
 
   def show
-    @study = ClinicalTrialClient.get_study(params[:id])
-    @nct_id = params[:id]  # Capture the nct_id directly
+    @nct_id = params[:id]
+    @study = ClinicalTrialClient.get_study(@nct_id)
     @error = @study[:error]
+    @profile = current_profile
+    @saved_trial = current_user.saved_trials.find_by(nct_id: @nct_id) if current_user
 
-    # Check if trial is already saved (for authenticated users)
-    @saved_trial = current_user.saved_trials.find_by(nct_id: @nct_id) if user_signed_in? && current_user.present?
+    return if @error
+
+    calculate_trial_score
+    @eligibility_checklist = EligibilityChecker.new(@profile, @study).build_checklist
+    @similar_trials = similar_trials
   end
 
   private
 
   def perform_search
     current_page_num = params[:page]&.to_i || 1
-    page_token = get_page_token(current_page_num)
 
-    result = ClinicalTrialClient.advanced_search(
-      **sanitized_params,
-      page_token: page_token,
-      page_size: page_size
-    )
+    result = TrialSearchService.new(
+      profile: @profile,
+      search_params: sanitized_params,
+      page: current_page_num,
+      page_size: page_size,
+      page_token: get_page_token(current_page_num)
+    ).search(sort_by: params[:sort_by])
 
     @studies = result[:studies]
     @total_count = result[:total_count]
     @error = result[:error]
-    @current_page = current_page_num
-    @has_next_page = result[:next_page_token].present?
+    @current_page = result[:current_page]
+    @has_next_page = result[:has_next_page]
+    @next_page_token = result[:next_page_token]
+    @prev_page_token = (current_page_num > 1) ? get_page_token(current_page_num - 1) : nil
 
-    # Store the next page token for future use
+    # Persist the token from the URL so Previous can use it on the way back.
+    if params[:page_token].present? && current_page_num >= 2
+      store_page_token(current_page_num, params[:page_token])
+    end
+
     if result[:next_page_token].present?
       store_page_token(current_page_num + 1, result[:next_page_token])
     end
   end
 
+  def calculate_trial_score
+    score_result = TrialScorer.new(@profile, @study).calculate_score
+    return unless score_result
+
+    @trial_score = score_result[:total]
+    @score_breakdown = score_result[:breakdown]
+    @match_level = score_result[:match_level]
+  end
+
+  def similar_trials
+    return [] unless @profile && @study[:nct_id].present?
+
+    TrialRecommendationService.new(@profile).similar_to_study(
+      @study,
+      exclude_nct_id: @study[:nct_id],
+      limit: 5
+    )
+  end
+
+  # The condition falls back to the profile's first condition and the location to
+  # the profile's city and state, so a signed-in visitor lands on results rather
+  # than an empty form. Signed out, both are simply nil.
   def sanitized_params
     @sanitized_params ||= {
-      condition: params[:condition].presence,
-      location: params[:location].presence
+      condition: params[:condition].presence || @default_condition,
+      location: params[:location].presence || profile_location
     }
   end
 
+  def profile_location
+    return nil unless @profile
+
+    [@profile.city, @profile.state].compact.join(", ").presence
+  end
+
   def search_params_present?
-    sanitized_params.values.any?(&:present?)
+    params[:condition].present? || params[:location].present?
   end
 
   def pagination_params
     {
-      condition: params[:condition].presence,
-      location: params[:location].presence
+      condition: params[:condition].presence || @default_condition,
+      location: params[:location].presence,
+      sort_by: params[:sort_by].presence
     }.compact
   end
   helper_method :pagination_params
 
   def search_key
-    # Create a unique key for this search to store tokens
     "#{sanitized_params[:condition]}_#{sanitized_params[:location]}"
   end
 
   def initialize_page_tokens
-    # Reset token storage if this is a new search (page 1 without explicit navigation)
-    if params[:page].blank? || params[:page].to_i == 1
-      session[:page_tokens] ||= {}
-      session[:page_tokens][search_key] = {}
-    end
+    # A new search, rather than navigation within one, resets the stored tokens.
+    return unless params[:page].blank? || params[:page].to_i == 1
+
+    session[:page_tokens] ||= {}
+    session[:page_tokens][search_key] = {}
   end
 
   def get_page_token(page_num)
     return nil if page_num <= 1
+
     session.dig(:page_tokens, search_key, page_num)
   end
 

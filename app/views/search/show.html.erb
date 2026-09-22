@@ -1,46 +1,97 @@
 <% if @error.present? %>
   <!-- Error State -->
-  <%= render "search/search_error", error: @error %>
+  <div class="min-h-screen flex items-center justify-center px-5">
+    <div class="bg-crit/10 dark:bg-crit-on-dark/20 border border-crit/30 dark:border-crit-on-dark rounded-panel p-8 max-w-2xl w-full text-center">
+      <div class="text-crit dark:text-crit-on-dark mb-4">
+        <%= render Utilities::IconComponent.new("exclamation_circle", size: 12) %>
+      </div>
+      <h2 class="text-2xl font-bold text-crit dark:text-crit-on-dark mb-2">Error Loading Trial</h2>
+      <p class="text-crit dark:text-crit-on-dark mb-6"><%= @error %></p>
+      <%= link_to "Back to search", search_index_path, class: "inline-flex items-center text-sky-600 hover:text-sky-700 font-medium" %>
+    </div>
+  </div>
 <% elsif @study.present? %>
   <!-- Header Section -->
-  <%= render Page::Trials::HeaderComponent.new(study: @study, saved_trial: @saved_trial, nct_id: @nct_id, match_score: nil) %>
+  <%= render Page::Trials::HeaderComponent.new(study: @study, saved_trial: @saved_trial, nct_id: @nct_id, match_score: @trial_score) %>
 
   <section class="px-5 lg:px-44 pt-8 flex flex-row justify-between items-center">
     <%= render Page::Navigation::BreadcrumbComponent.new %>
-
-    <%= link_to search_index_path, class: "inline-flex items-center text-sky-600 hover:text-sky-700 font-medium" do %>
-      <%= render Utilities::IconComponent.new("arrow_left", size: 5) %>
-      <span class="ml-2">Back to Search Results</span>
-    <% end %>
   </section>
 
   <section class="px-5 lg:px-44 pt-8 pb-16">
-    <div class="grid grid-cols-8 gap-x-10">
+    <div class="grid grid-cols-1 lg:grid-cols-8 gap-10">
       <%# LEFT SIDEBAR %>
-      <div class="col-span-2">
+      <div class="lg:col-span-2">
         <div class="sticky top-10">
           <%= render Page::Trials::Sidebar::ContainerComponent.new() do %>
+            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#match-score-card", text: "Match Score") %>
             <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#key-details", text: "Key Details") %>
+            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#what-this-means-for-you", text: "What This Means For You") %>
             <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#study-overview", text: "Study Overview") %>
             <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#eligibility", text: "Eligibility Criteria") %>
             <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#interventions", text: "Interventions/Treatments") %>
             <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#locations", text: "Trial Locations") %>
             <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#contact-information", text: "Contact Information") %>
+            <% if @similar_trials.present? && @similar_trials.any? %>
+              <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#similar-trials", text: "More trials like this") %>
+            <% end %>
+          <% end %>
+
+          <!-- Profile Match Info -->
+          <% if @profile %>
+            <div class="mt-6 p-4 bg-sky-50 dark:bg-navy-900/20 border border-sky-200 dark:border-sky-800 rounded-card">
+              <h3 class="text-sm font-semibold text-navy-900 dark:text-sky-100 mb-2">
+                Your Profile
+              </h3>
+              <div class="text-xs text-sky-800 dark:text-sky-200 space-y-1">
+                <% if @profile.age.present? %>
+                  <p><strong>Age:</strong> <%= @profile.age %></p>
+                <% end %>
+                <% if @profile.sex_assigned_at_birth.present? %>
+                  <p><strong>Sex:</strong> <%= @profile.sex_assigned_at_birth.titleize %></p>
+                <% end %>
+                <% if @profile.city && @profile.state %>
+                  <p><strong>Location:</strong> <%= @profile.city %>, <%= @profile.state %></p>
+                <% end %>
+              </div>
+            </div>
           <% end %>
         </div>
       </div>
 
       <%# RIGHT CONTENT %>
       <div class="lg:col-span-6 space-y-8">
+        <% if @trial_score.present? %>
+          <%= render Page::Trials::KeyDetails::MatchScoreCardComponent.new(
+            trial_score: @trial_score,
+            match_level: @match_level,
+            score_breakdown: @score_breakdown
+          ) %>
+        <% end %>
+
         <!-- Key Details -->
-        <%= render Page::Trials::KeyDetailsComponent.new(study: @study) %>
+        <%= render Page::Trials::KeyDetailsComponent.new(study: @study, trial_score: @trial_score, match_level: @match_level, score_breakdown: @score_breakdown) %>
+
+        
+
+        <!-- Status Message -->
+        <%= render Page::Trials::StatusMessageComponent.new(study: @study, score_breakdown: @score_breakdown, trial_score: @trial_score, match_level: @match_level) %>
+
+        <!-- Phase / Status explainer -->
+        <%#= render Page::Trials::PhaseStatusExplainerComponent.new(phase: @study[:phase], status: @study[:status]) %>
+
+        <!-- Key dates timeline -->
+        <%#= render Page::Trials::KeyDatesTimelineComponent.new(study: @study) %>
 
         <!-- Overview -->
-        <%= render Page::Trials::OverviewComponent.new(study: @study, nct_id: @nct_id) %>
+        <%= render Page::Trials::OverviewComponent.new(
+          study: @study,
+          nct_id: @nct_id
+        ) %>
 
         <!-- Eligibility Criteria -->
-        <div id="eligibility" class="mb-8">
-          <%= render Typography::HeadingComponent.new(size: :h4, text: "Eligibility Criteria") %>
+        <div id="eligibility" class="mb-8 p-8 border border-line-2 dark:border-line-on-dark rounded-panel">
+          <%= render Typography::HeadingComponent.new(size: :h5, text: "Eligibility Criteria") %>
           <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
             <% if @study[:min_age].present? %>
               <div>
@@ -66,16 +117,28 @@
 
           <% if @study[:inclusion_criteria].present? %>
             <div class="mt-6">
-              <%= render Page::DropdownComponent.new(title: "Eligibility Criteria", body: @study[:inclusion_criteria]) %>
+              <%= render Page::DropdownComponent.new(title: "Inclusion Criteria", body: @study[:inclusion_criteria]) %>
+            </div>
+          <% end %>
+          <% if @study[:exclusion_criteria].present? %>
+            <div class="mt-4">
+              <%= render Page::DropdownComponent.new(title: "Exclusion Criteria", body: @study[:exclusion_criteria]) %>
             </div>
           <% end %>
         </div>
 
+        <!-- Eligibility Checklist -->
+        <% if @eligibility_checklist.present? && @eligibility_checklist.any? %>
+          <%= render Page::Trials::EligibilityChecklistComponent.new(
+            checklist_items: @eligibility_checklist
+          ) %>
+        <% end %>
+
         <!-- Interventions/Treatments -->
         <% if @study[:interventions].present? && @study[:interventions].any? %>
-          <div id="interventions" class="mb-8">
+          <div id="interventions" class="mb-8 p-8 border border-line-2 dark:border-line-on-dark rounded-panel">
             <div class="mb-4">
-              <%= render Typography::HeadingComponent.new(size: :h4, text: "Interventions/Treatments") %>
+              <%= render Typography::HeadingComponent.new(size: :h5, text: "Treatments") %>
             </div>
             <div class="space-y-4">
               <% @study[:interventions].each do |intervention| %>
@@ -102,9 +165,24 @@
         <% end %>
 
         <!-- Locations -->
-        <div id="locations">
-          <%= render Typography::HeadingComponent.new(size: :h4, text: "Trial Locations") %>
-          <% if @study[:locations].present? %>
+        <div id="locations" class="p-8 border border-line-2 dark:border-line-on-dark rounded-panel">
+          <%= render Typography::HeadingComponent.new(size: :h5, text: "Trial Locations") %>
+          <% locations_to_show = @study[:locations_detailed].present? ? sort_locations_near_user(@study[:locations_detailed], @profile) : (@study[:locations] || []).map { |l| { display: l, near_you: false } } %>
+          <% if locations_to_show.any? %>
+            <div class="grid grid-cols-2 mt-4 gap-6">
+              <% locations_to_show.each do |loc| %>
+                <div class="col-span-1 flex items-start gap-1 p-3 border border-line-2 dark:border-line-on-dark rounded-card <%= "ring-2 ring-sky-500 bg-sky-50 dark:bg-navy-900/20" if loc[:near_you] %>">
+                  <div class="mt-0.5">
+                    <%= render Utilities::IconComponent.new("map_pin", size: 5, options: { class: "text-sky-600" }) %>
+                  </div>
+                  <span class="text-ink dark:text-ink-on-dark"><%= loc[:display] %></span>
+                  <% if loc[:near_you] %>
+                    <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-sky-100 text-sky-800 dark:bg-navy-900/40 dark:text-sky-200">Near you</span>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          <% elsif @study[:locations].present? %>
             <div class="grid grid-cols-2 mt-4 gap-6">
               <% @study[:locations].each do |location| %>
                 <div class="col-span-1 flex items-start gap-1 p-3 border border-line-2 dark:border-line-on-dark rounded-card">
@@ -120,25 +198,11 @@
           <% end %>
         </div>
 
-        <!-- CTA Section -->
-        <div class="bg-sky-50 dark:bg-navy-900/20 border border-sky-200 dark:border-sky-800 rounded-panel p-6">
-          <h3 class="text-lg font-semibold text-navy-900 dark:text-sky-100 mb-2">
-            Interested in this trial?
-          </h3>
-          <p class="text-sky-800 dark:text-sky-200 mb-4">
-            Visit ClinicalTrials.gov for contact information and to learn more about participating.
-          </p>
-          <%= link_to "View on ClinicalTrials.gov", "https://clinicaltrials.gov/study/#{@study[:nct_id]}", 
-              target: "_blank", 
-              rel: "noopener noreferrer",
-              class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-control text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500" %>
-        </div>
-
         <!-- Contact Information -->
         <% if (@study[:central_contacts].present? && @study[:central_contacts].any?) || (@study[:overall_officials].present? && @study[:overall_officials].any?) %>
-          <div id="contact-information" class="mb-8">
+          <div id="contact-information" class="mb-8 p-8 border border-line-2 dark:border-line-on-dark rounded-panel">
             <div class="mb-4">
-              <%= render Typography::HeadingComponent.new(size: :h4, text: "Contact Information") %>
+              <%= render Typography::HeadingComponent.new(size: :h5, text: "Contact Information") %>
             </div>
 
             <% if @study[:central_contacts].present? && @study[:central_contacts].any? %>
@@ -199,6 +263,40 @@
             <% end %>
           </div>
         <% end %>
+
+        <!-- Similar trials -->
+        <% if @similar_trials.present? && @similar_trials.any? %>
+          <%= render Page::Trials::SimilarTrialsComponent.new(trials: @similar_trials) %>
+        <% end %>
+
+        <!-- CTA Section -->
+        <div class="bg-sky-50 dark:bg-navy-900/20 border border-sky-200 dark:border-sky-800 rounded-panel p-6">
+          <h3 class="text-lg font-semibold text-navy-900 dark:text-sky-100 mb-2">
+            Interested in this trial?
+          </h3>
+          <p class="text-sky-800 dark:text-sky-200 mb-4">
+            Visit ClinicalTrials.gov for contact information and to learn more about participating.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <%= link_to "View on ClinicalTrials.gov", "https://clinicaltrials.gov/study/#{@study[:nct_id]}",
+                target: "_blank",
+                rel: "noopener noreferrer",
+                class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-control text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500" %>
+            <% if @saved_trial.present? %>
+              <%= link_to "Edit status & notes", edit_saved_trial_path(@saved_trial),
+                  class: "inline-flex items-center px-4 py-2 border border-navy-600 dark:border-sky-500 text-sm font-medium rounded-control text-sky-700 dark:text-sky-300 bg-surface dark:bg-surface-on-dark hover:bg-sky-50 dark:hover:bg-navy-900/20" %>
+              <% other_saved_count = current_user.saved_trials.where.not(id: @saved_trial.id).count %>
+              <% if other_saved_count >= 1 %>
+                <%= link_to "Add to comparison", my_trials_trial_comparison_path(ids: [ @saved_trial.id, current_user.saved_trials.where.not(id: @saved_trial.id).limit(2).pluck(:id) ].flatten.uniq.take(3)),
+                    class: "inline-flex items-center px-4 py-2 border border-navy-600 dark:border-sky-500 text-sm font-medium rounded-control text-sky-700 dark:text-sky-300 bg-surface dark:bg-surface-on-dark hover:bg-sky-50 dark:hover:bg-navy-900/20" %>
+              <% end %>
+            <% end %>
+            <% unless user_signed_in? %>
+              <%= link_to "Sign in to save this study", new_user_session_path,
+                  class: "inline-flex items-center px-4 py-2 border border-navy-600 dark:border-sky-500 text-sm font-medium rounded-control text-sky-700 dark:text-sky-300 bg-surface dark:bg-surface-on-dark hover:bg-sky-50 dark:hover:bg-navy-900/20" %>
+            <% end %>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -219,3 +317,4 @@
     </div>
   </section>
 <% end %>
+
