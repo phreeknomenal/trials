@@ -11,7 +11,7 @@ class Layout::Navigation::Menu::HeaderMenuComponent < ApplicationComponent
     </nav>
   ERB
 
-  BASE_LINK_CLASS = "rounded-md px-3 py-2 font-medium transition-colors " \
+  BASE_LINK_CLASS = "rounded-nav px-3 py-2 font-medium transition-colors " \
     "hover:bg-surface-2 hover:text-ink " \
     "dark:hover:bg-surface-on-dark dark:hover:text-ink-on-dark " \
     "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"

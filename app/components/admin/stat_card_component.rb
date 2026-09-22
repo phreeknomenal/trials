@@ -1,7 +1,7 @@
 module Admin
   class StatCardComponent < ApplicationComponent
     erb_template <<~ERB
-      <div class="rounded-lg border <%= border_class %> p-4">
+      <div class="rounded-card border <%= border_class %> p-4">
         <div class="text-xs font-medium uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark"><%= label %></div>
         <div class="mt-1 text-2xl font-bold <%= value_class %>"><%= value %></div>
         <% if hint.present? %>

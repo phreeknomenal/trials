@@ -18,7 +18,7 @@
     <p class="text-ink-3 dark:text-ink-3-on-dark mb-8"><%= step.prompt %></p>
 
     <% if errors.any? %>
-      <div class="mb-6 rounded-lg border border-crit/30 dark:border-crit-on-dark bg-crit/10 dark:bg-crit-on-dark/30 p-4">
+      <div class="mb-6 rounded-flash border border-crit/30 dark:border-crit-on-dark bg-crit/10 dark:bg-crit-on-dark/30 p-4">
         <ul class="text-sm text-crit dark:text-crit-on-dark space-y-1">
           <% errors.each do |message| %>
             <li><%= message %></li>
@@ -32,7 +32,7 @@
                   method: :patch,
                   html: {multipart: true},
                   data: {turbo_action: "advance"} do |form| %>
-      <div class="bg-surface dark:bg-surface-on-dark rounded-2xl shadow-sm border border-line dark:border-line-on-dark p-6 mb-6">
+      <div class="bg-surface dark:bg-surface-on-dark rounded-panel shadow-sm border border-line dark:border-line-on-dark p-6 mb-6">
         <%= render step.component.new(form: form, profile: profile) %>
       </div>
 
@@ -46,7 +46,7 @@
         <% end %>
 
         <%= form.submit button_label,
-              class: "px-8 py-3 bg-navy-600 hover:bg-navy-700 text-white font-bold rounded-lg cursor-pointer transition-colors shadow-lg" %>
+              class: "px-8 py-3 bg-navy-600 hover:bg-navy-700 text-white font-bold rounded-control cursor-pointer transition-colors shadow-lg" %>
       </div>
     <% end %>
 

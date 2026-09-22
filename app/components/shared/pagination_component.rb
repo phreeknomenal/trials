@@ -38,7 +38,7 @@ module Shared
 
     # Both ends are always rendered, disabled rather than absent, so the page
     # indicator stays centred instead of sliding as you reach either end.
-    LINK_CLASSES = "inline-flex items-center gap-1 rounded-md px-2 py-1 font-semibold " \
+    LINK_CLASSES = "inline-flex items-center gap-1 rounded-nav px-2 py-1 font-semibold " \
       "text-sky-600 dark:text-sky-300 hover:bg-sky-50 dark:hover:bg-navy-900/30 " \
       "transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 " \
       "focus-visible:outline-sky-500"

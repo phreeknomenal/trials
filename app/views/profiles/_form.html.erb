@@ -1,6 +1,6 @@
 <%= form_with(model: @profile, local: true) do |form| %>
   <h2 class="text-2xl font-bold text-ink dark:text-ink-2-on-dark mb-5">Personal Information</h2>
-  <div class="w-full p-6 border border-line dark:border-line-on-dark rounded-lg mb-8">
+  <div class="w-full p-6 border border-line dark:border-line-on-dark rounded-panel mb-8">
     <div class="mb-6">
       <%= render Forms::FieldComponent.new(
         form: form, 
@@ -162,7 +162,7 @@
   </div>
 
   <h2 class="text-2xl font-bold text-ink dark:text-ink-2-on-dark mb-5">Patient Information</h2>
-  <div class="w-full grid grid-cols-2 gap-6 p-6 border border-line dark:border-line-on-dark rounded-lg mb-8">
+  <div class="w-full grid grid-cols-2 gap-6 p-6 border border-line dark:border-line-on-dark rounded-panel mb-8">
     <div class="w-full col-span-2">
       <div class="grid grid-cols-3 gap-6 mb-8" id="conditions">
         <%= form.fields_for :profile_conditions do |profile_condition_form| %>
@@ -176,7 +176,7 @@
             association_insertion_node: "#conditions",
             association_insertion_method: "append"
           },
-          class: "text-sky-800 font-semibold bg-navy-300 hover:bg-navy-500 text-white px-4 py-2 rounded-lg"
+          class: "text-sky-800 font-semibold bg-navy-300 hover:bg-navy-500 text-white px-4 py-2 rounded-control"
         %>
       </div>
     </div>
@@ -214,7 +214,7 @@
   </div>
 
   <h2 class="text-2xl font-bold text-ink dark:text-ink-2-on-dark mb-5">Preferences</h2>
-  <div class="w-full grid grid-cols-2 gap-6 p-6 border border-line dark:border-line-on-dark rounded-lg mb-8">
+  <div class="w-full grid grid-cols-2 gap-6 p-6 border border-line dark:border-line-on-dark rounded-panel mb-8">
     <div class="col-span-2">
       <%= render Forms::FieldComponent.new(
         form: form, 

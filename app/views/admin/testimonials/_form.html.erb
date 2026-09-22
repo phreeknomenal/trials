@@ -1,6 +1,6 @@
 <%= form_with model: [:admin, testimonial], class: "space-y-5 max-w-2xl" do |f| %>
   <% if testimonial.errors.any? %>
-    <div class="rounded-lg border border-crit/30 dark:border-crit-on-dark bg-crit/10 dark:bg-crit-on-dark/20 p-4">
+    <div class="rounded-card border border-crit/30 dark:border-crit-on-dark bg-crit/10 dark:bg-crit-on-dark/20 p-4">
       <ul class="list-disc list-inside text-sm text-crit dark:text-crit-on-dark">
         <% testimonial.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -12,7 +12,7 @@
   <div>
     <%= f.label :quote, class: "block text-sm font-medium text-ink-2 dark:text-ink-2-on-dark mb-1" %>
     <%= f.text_area :quote, rows: 4,
-          class: "w-full rounded-lg border border-line-2 dark:border-line-on-dark dark:bg-surface-on-dark px-3 py-2 text-sm" %>
+          class: "w-full rounded-control border border-line-2 dark:border-line-on-dark dark:bg-surface-on-dark px-3 py-2 text-sm" %>
   </div>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">

@@ -1,4 +1,4 @@
-<div id="match-score-card" class="grid grid-cols-4 gap-8 p-8 <%= match_score_bg_class(@match_level) %> border <%= match_score_border_class(@match_level) %> rounded-lg mb-6">
+<div id="match-score-card" class="grid grid-cols-4 gap-8 p-8 <%= match_score_bg_class(@match_level) %> border <%= match_score_border_class(@match_level) %> rounded-panel mb-6">
   <div class="col-span-1">
     <h3 class="text-lg font-bold text-center text-ink dark:text-ink-on-dark">
       Your Match Score
@@ -46,7 +46,7 @@
               </button>
               <div
                 id="explanation-<%= index %>"
-                class="hidden mt-2 p-3 bg-surface-2 dark:bg-surface-2-on-dark/50 rounded-md"
+                class="hidden mt-2 p-3 bg-surface-2 dark:bg-surface-2-on-dark/50 rounded-chip"
                 data-expandable-explanation-target="explanation"
               >
                 <p class="text-xs leading-relaxed text-ink-2 dark:text-ink-2-on-dark">

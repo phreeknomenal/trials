@@ -137,8 +137,8 @@ export default class extends Controller {
   showNotification(message, type) {
     // Create a simple notification
     const notification = document.createElement("div")
-    notification.className = `fixed top-4 right-4 p-4 rounded-lg text-white ${
-      type === "success" ? "bg-green-500" : "bg-red-500"
+    notification.className = `fixed top-4 right-4 p-4 rounded-flash text-white ${
+      type === "success" ? "bg-good" : "bg-crit"
     }`
     notification.textContent = message
 

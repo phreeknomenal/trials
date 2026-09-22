@@ -6,7 +6,7 @@ class Layout::Navigation::HeaderComponent < ApplicationComponent
 
       <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 py-4">
         <div>
-          <%= link_to root_path, class: "flex items-center gap-2 rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500" do %>
+          <%= link_to root_path, class: "flex items-center gap-2 rounded-nav focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500" do %>
             <%= render Utilities::MarkComponent.new(height: 8) %>
             <span class="font-primary text-2xl font-extrabold tracking-tight text-ink dark:text-ink-2-on-dark">Dira<span class="font-light text-ink-3 dark:text-ink-3-on-dark"> Health</span></span>
           <% end %>
@@ -19,7 +19,7 @@ class Layout::Navigation::HeaderComponent < ApplicationComponent
         </div>
 
         <button type="button"
-                class="lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-md text-ink-2 dark:text-ink-2-on-dark hover:bg-surface-2 dark:hover:bg-surface-on-dark transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+                class="lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-flash text-ink-2 dark:text-ink-2-on-dark hover:bg-surface-2 dark:hover:bg-surface-on-dark transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
                 data-mobile-menu-target="trigger"
                 data-action="mobile-menu#toggle"
                 aria-controls="mobile-menu-panel"
@@ -61,7 +61,7 @@ class Layout::Navigation::HeaderComponent < ApplicationComponent
       end
     else
       link_to "Login", helpers.new_user_session_path,
-        class: "bg-navy-600 text-white px-4 py-2 font-medium rounded-md hover:bg-navy-700 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
+        class: "bg-navy-600 text-white px-4 py-2 font-medium rounded-control hover:bg-navy-700 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
     end
   end
 end

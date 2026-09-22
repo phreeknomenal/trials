@@ -1,7 +1,7 @@
 <div id="main-flash-messages" class="flex flex-col gap-2 px-4 py-3">
   <% messages.each do |message| %>
     <% style = presentation_for(message[:tone]) %>
-    <div class="flex items-start gap-3 rounded-lg border border-l-4 p-4 <%= style[:classes] %>"
+    <div class="flex items-start gap-3 rounded-flash border border-l-4 p-4 <%= style[:classes] %>"
          role="<%= style[:role] %>"
          data-controller="flash">
       <span class="shrink-0 mt-0.5" aria-hidden="true">
