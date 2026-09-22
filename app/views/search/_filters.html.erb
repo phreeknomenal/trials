@@ -1,0 +1,70 @@
+<%# The filter set, rendered twice: in the sidebar on desktop and inside the
+    sheet on mobile. One partial, because two copies of a filter list is how the
+    two stop agreeing.
+
+    Everything here filters a batch the app has already fetched. The registry's
+    search takes a condition and a location and nothing else, so these cannot be
+    pushed down to it, and the counts are counts within the results rather than
+    corpus totals. The sidebar says so rather than implying otherwise. %>
+<%= form_with url: search_index_path, method: :get, id: id, class: "flex flex-col gap-6" do |f| %>
+  <%= f.hidden_field :condition, value: params[:condition] %>
+  <%= f.hidden_field :location, value: params[:location] %>
+  <%= f.hidden_field :sort_by, value: params[:sort_by] %>
+
+  <div class="flex items-center justify-between gap-3">
+    <h2 class="text-base font-bold text-ink dark:text-ink-on-dark">Refine</h2>
+    <% if filters_active? %>
+      <%= link_to "Clear all",
+            search_index_path(condition: params[:condition], location: params[:location], sort_by: params[:sort_by]).squish,
+            class: "text-sm font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>
+    <% end %>
+  </div>
+
+  <% if @profile %>
+    <div class="rounded-card border border-line dark:border-line-on-dark p-3">
+      <label class="flex items-start gap-2.5 cursor-pointer">
+        <%= f.check_box :hide_ineligible,
+              {checked: filters[:hide_ineligible].present?,
+               class: "mt-0.5 h-4 w-4 rounded-sm border-line-2 dark:border-line-on-dark accent-sky-500"},
+              "1", nil %>
+        <span>
+          <span class="block text-sm font-semibold text-ink dark:text-ink-2-on-dark">Hide studies you cannot join</span>
+          <span class="block text-xs text-ink-3 dark:text-ink-3-on-dark mt-0.5">
+            Ones where a criterion rules you out, rather than ones that score low.
+          </span>
+        </span>
+      </label>
+    </div>
+  <% end %>
+
+  <% {phase: "Study phase", study_type: "Study type"}.each do |key, heading| %>
+    <% options = (@facets || {})[key] || [] %>
+    <% next if options.empty? %>
+    <fieldset class="flex flex-col gap-2">
+      <legend class="text-sm font-bold text-ink dark:text-ink-2-on-dark mb-1"><%= heading %></legend>
+      <% options.each do |value, count| %>
+        <label class="flex items-center justify-between gap-3 cursor-pointer group">
+          <span class="flex items-center gap-2.5 min-w-0">
+            <%= check_box_tag "#{key}[]", value, filters[key].include?(value),
+                  id: "#{id}-#{key}-#{value.parameterize}",
+                  class: "h-4 w-4 shrink-0 rounded-sm border-line-2 dark:border-line-on-dark accent-sky-500" %>
+            <span class="text-sm text-ink-2 dark:text-ink-2-on-dark truncate group-hover:text-ink dark:group-hover:text-ink-on-dark">
+              <%= humanize_registry_value(value) %>
+            </span>
+          </span>
+          <span class="text-xs tabular-nums text-ink-3 dark:text-ink-3-on-dark shrink-0"><%= count %></span>
+        </label>
+      <% end %>
+    </fieldset>
+  <% end %>
+
+  <div class="flex flex-col gap-2">
+    <%= f.button type: "submit", class: Buttons::ButtonStyles.classes("primary", size: "px-4 py-2 text-sm") do %>
+      Apply
+    <% end %>
+    <p class="text-xs text-ink-3 dark:text-ink-3-on-dark leading-relaxed">
+      Counts are for the studies found by this search, not for the whole registry.
+      The registry's search does not offer these filters, so they are applied here.
+    </p>
+  </div>
+<% end %>

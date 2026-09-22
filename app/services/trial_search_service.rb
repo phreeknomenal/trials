@@ -1,18 +1,30 @@
 class TrialSearchService
   DEFAULT_PAGE_SIZE = 10
-  SCORE_SORT_BATCH_SIZE = 100
 
-  def initialize(profile:, search_params:, page: 1, page_size: DEFAULT_PAGE_SIZE, page_token: nil)
+  # The registry's search takes a condition and a location and nothing else: no
+  # phase, no study type, no distance radius, and no facet counts. So any
+  # refinement beyond those two has to happen here, over a batch we have already
+  # fetched.
+  #
+  # That is why a refined search pulls 100 and paginates in Ruby. Filtering a
+  # page of 10 would leave three results on page one and seven on page two,
+  # since the registry does not know what was filtered out.
+  BATCH_SIZE = 100
+
+  FILTERABLE = %i[phase study_type].freeze
+
+  def initialize(profile:, search_params:, page: 1, page_size: DEFAULT_PAGE_SIZE, page_token: nil, filters: {})
     @profile = profile
     @search_params = search_params
     @page = page
     @page_size = page_size
     @page_token = page_token
+    @filters = (filters || {}).symbolize_keys
   end
 
   def search(sort_by: nil)
-    if sort_by == "score"
-      score_sorted_search
+    if refined?(sort_by)
+      refined_search(sort_by)
     else
       standard_search
     end
@@ -20,56 +32,85 @@ class TrialSearchService
 
   private
 
+  attr_reader :filters
+
+  def refined?(sort_by)
+    sort_by == "score" || active_filters.any? || hide_ineligible?
+  end
+
+  def active_filters
+    FILTERABLE.index_with { |key| Array(filters[key]).compact_blank }.reject { |_, v| v.empty? }
+  end
+
+  def hide_ineligible? = ActiveModel::Type::Boolean.new.cast(filters[:hide_ineligible]).present?
+
   def standard_search
     result = ClinicalTrialClient.advanced_search(
-      **@search_params,
-      page_token: @page_token,
-      page_size: @page_size
+      **@search_params, page_token: @page_token, page_size: @page_size
     )
 
+    studies = score_studies(result[:studies] || [])
+
     {
-      studies: score_studies(result[:studies] || []),
+      studies: studies,
       total_count: result[:total_count],
       error: result[:error],
       current_page: @page,
       has_next_page: result[:next_page_token].present?,
-      next_page_token: result[:next_page_token]
+      next_page_token: result[:next_page_token],
+      facets: facets_for(studies),
+      refined: false
     }
   end
 
-  def score_sorted_search
-    # Fetch larger batch for proper global sorting
+  def refined_search(sort_by)
     result = ClinicalTrialClient.advanced_search(
-      **@search_params,
-      page_token: nil, # Always fetch from beginning for consistent sorting
-      page_size: SCORE_SORT_BATCH_SIZE
+      # Always from the beginning, so the batch being refined is the same batch
+      # whichever page is being asked for.
+      **@search_params, page_token: nil, page_size: BATCH_SIZE
     )
 
-    all_studies = result[:studies] || []
-    scored_studies = score_studies(all_studies)
+    scored = score_studies(result[:studies] || [])
+    kept = apply_filters(scored)
+    kept = kept.sort_by { |s| -(s[:trial_score] || 0) } if sort_by == "score"
 
-    # Sort all fetched studies by score
-    sorted_studies = scored_studies.sort_by { |s| -(s[:trial_score] || 0) }
-
-    # Client-side pagination
-    start_index = (@page - 1) * @page_size
-    end_index = start_index + @page_size - 1
-    paginated_studies = sorted_studies[start_index..end_index] || []
+    first = (@page - 1) * @page_size
 
     {
-      studies: paginated_studies,
-      total_count: [result[:total_count], SCORE_SORT_BATCH_SIZE].min,
+      studies: kept[first, @page_size] || [],
+      total_count: kept.length,
       error: result[:error],
       current_page: @page,
-      has_next_page: end_index < sorted_studies.length - 1,
-      next_page_token: nil # Not used in score sorting
+      has_next_page: first + @page_size < kept.length,
+      next_page_token: nil,
+      # Counted before filtering, so a filter never removes its own option from
+      # the sidebar and strands whoever ticked it.
+      facets: facets_for(scored),
+      refined: true
     }
+  end
+
+  def apply_filters(studies)
+    studies.select do |study|
+      next false if hide_ineligible? && study[:match_level] == TrialScorer::INELIGIBLE
+
+      active_filters.all? { |key, wanted| wanted.include?(study[key].to_s) }
+    end
+  end
+
+  # Counts within what was fetched, which is what the sidebar has to say. They
+  # are not corpus counts: the registry returns no facets, and claiming 41
+  # Phase 2 studies exist when 41 is what came back in a batch of 100 would be
+  # a number the app cannot stand behind.
+  def facets_for(studies)
+    FILTERABLE.index_with do |key|
+      studies.filter_map { |s| s[key].presence }.tally.sort_by { |value, count| [-count, value] }
+    end
   end
 
   def score_studies(studies)
     studies.map do |study|
-      scorer = TrialScorer.new(@profile, study)
-      score_result = scorer.calculate_score
+      score_result = TrialScorer.new(@profile, study).calculate_score
 
       if score_result
         study.merge(
@@ -82,12 +123,7 @@ class TrialSearchService
           disqualifiers: score_result[:disqualifiers]
         )
       else
-        study.merge(
-          trial_score: nil,
-          score_breakdown: nil,
-          match_level: nil,
-          disqualifiers: nil
-        )
+        study.merge(trial_score: nil, score_breakdown: nil, match_level: nil, disqualifiers: nil)
       end
     end
   end

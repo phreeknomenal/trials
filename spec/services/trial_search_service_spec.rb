@@ -64,4 +64,100 @@ RSpec.describe TrialSearchService do
       expect(result[:disqualifiers]).to be_nil
     end
   end
+
+  # The registry's search takes a condition and a location and nothing else, so
+  # phase and study type are applied here, over a batch already fetched.
+  describe "refining" do
+    let(:batch) do
+      [
+        study.merge(nct_id: "NCT1", phase: "PHASE2", study_type: "INTERVENTIONAL"),
+        study.merge(nct_id: "NCT2", phase: "PHASE3", study_type: "INTERVENTIONAL"),
+        study.merge(nct_id: "NCT3", phase: "NA", study_type: "OBSERVATIONAL")
+      ]
+    end
+
+    def refine(filters, sort_by: nil)
+      described_class.new(profile: profile, search_params: {condition: "Asthma"}, filters: filters)
+        .search(sort_by: sort_by)
+    end
+
+    before { stub_search(batch) }
+
+    it "keeps only the phases asked for" do
+      expect(refine({phase: ["PHASE2"]})[:studies].map { |s| s[:nct_id] }).to eq(["NCT1"])
+    end
+
+    it "treats several values of one filter as or" do
+      expect(refine({phase: ["PHASE2", "PHASE3"]})[:studies].length).to eq(2)
+    end
+
+    it "treats different filters as and" do
+      result = refine({phase: ["PHASE2"], study_type: ["OBSERVATIONAL"]})
+
+      expect(result[:studies]).to be_empty
+    end
+
+    it "reports the filtered total, not the registry's" do
+      expect(refine({phase: ["PHASE2"]})[:total_count]).to eq(1)
+    end
+
+    it "says it refined, so the page can say so too" do
+      expect(refine({phase: ["PHASE2"]})[:refined]).to be(true)
+      expect(refine({})[:refined]).to be(false)
+    end
+
+    it "ignores blank filter values rather than matching nothing" do
+      expect(refine({phase: ["", nil]})[:studies].length).to eq(3)
+    end
+
+    # A filter that removed its own option from the sidebar would strand
+    # whoever ticked it.
+    it "counts facets before filtering, not after" do
+      phases = refine({phase: ["PHASE2"]})[:facets][:phase].to_h
+
+      expect(phases.keys).to contain_exactly("PHASE2", "PHASE3", "NA")
+    end
+
+    it "offers facets on an unfiltered search too" do
+      expect(refine({})[:facets][:study_type].to_h)
+        .to eq({"INTERVENTIONAL" => 2, "OBSERVATIONAL" => 1})
+    end
+
+    # Filtering a page of 10 would leave three results on page one and seven on
+    # page two, the registry not knowing what was removed.
+    it "paginates over what survived the filter" do
+      first = described_class.new(profile: profile, search_params: {condition: "Asthma"},
+        page: 1, page_size: 2, filters: {study_type: ["INTERVENTIONAL"]}).search
+
+      expect(first[:studies].length).to eq(2)
+      expect(first[:has_next_page]).to be(false)
+    end
+  end
+
+  describe "hiding studies the profile cannot join" do
+    before do
+      stub_search([study.merge(nct_id: "NCT1"), study.merge(nct_id: "NCT2", min_age: "90 Years")])
+    end
+
+    it "drops the ineligible ones when asked" do
+      kept = described_class.new(profile: profile, search_params: {condition: "Asthma"},
+        filters: {hide_ineligible: "1"}).search[:studies]
+
+      expect(kept.map { |s| s[:match_level] }).not_to include(TrialScorer::INELIGIBLE)
+    end
+
+    it "keeps them otherwise" do
+      kept = described_class.new(profile: profile, search_params: {condition: "Asthma"}).search[:studies]
+
+      expect(kept.length).to eq(2)
+    end
+
+    # Without this the filter test passes trivially whenever both studies happen
+    # to be eligible.
+    it "has something to hide in the first place" do
+      kept = described_class.new(profile: profile, search_params: {condition: "Asthma"}).search[:studies]
+
+      expect(kept.map { |s| s[:match_level] }).to include(TrialScorer::INELIGIBLE)
+    end
+  end
 end

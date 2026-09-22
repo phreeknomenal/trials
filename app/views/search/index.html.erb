@@ -1,138 +1,156 @@
-<section class="px-5 lg:px-24 py-16 border-b border-line dark:border-line-on-dark">
-  <%= render Page::HeaderComponent.new(
-    heading: @profile ? "Find your trials" : "Search clinical trials",
-    subheading: @profile ? "Matched against your health profile" : "Find studies by condition and location. Sign in to see how well each one fits you.",
-    position: :left
-  ) %>
-</section>
+<% searched = @studies.present? || params[:condition].present? || params[:location].present? %>
 
-<div class="min-h-screen">
-  <div class="px-5 lg:px-24 py-10 lg:py-18">
-    <!-- Search Form -->
-    <div class="border border-line dark:border-line-on-dark rounded-panel p-6 mb-8">
-      <%= form_with url: search_index_path, method: :get, class: "space-y-6" do |f| %>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Condition -->
-          <div class="form-group">
-            <%= f.label :condition, "Condition", class: "block text-sm font-medium text-ink dark:text-ink-2-on-dark mb-2" %>
-            <%= f.select :condition, 
-                options_for_select(@conditions.pluck(:name, :name), params[:condition]),
-                { include_blank: "Select a condition" },
-                { class: "block p-2 w-full bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark placeholder:text-ink-3 dark:placeholder:text-ink-3-on-dark text-base text-ink dark:text-ink-2-on-dark rounded-control focus:ring-sky-500 focus:border-navy-600" } 
-            %>
-          </div>
+<div class="px-5 lg:px-24 py-8 lg:py-12">
 
-          <!-- Location -->
-          <div class="form-group">
-            <%= f.label :location, "Location (City, State)", class: "block text-sm font-medium text-ink dark:text-ink-2-on-dark mb-2" %>
-            <%= f.text_field :location, 
-                value: params[:location],
-                placeholder: "e.g., Boston, MA",
-                class: "block w-full form-control bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark text-ink dark:text-ink-2-on-dark text-base rounded-control focus:ring-sky-500 focus:border-navy-600 p-2" 
-            %>
-          </div>
-        </div>
+  <%# The search bar leads the page rather than a heading over a form. On a
+      results page the compact variant is the right one: the person has already
+      said what they want and is adjusting it. %>
+  <div class="mb-6">
+    <h1 class="text-2xl lg:text-3xl font-bold tracking-tight text-ink dark:text-ink-on-dark mb-4">
+      <%= @profile ? "Find your trials" : "Search clinical trials" %>
+    </h1>
+    <%= render Shared::SearchBarComponent.new(
+          url: search_index_path,
+          variant: :compact,
+          conditions: @conditions,
+          condition: params[:condition] || @default_condition,
+          location: params[:location]
+        ) %>
+  </div>
 
-        <!-- Submit Button -->
-        <div class="flex gap-4">
-          <%= f.submit "Search", class: "cursor-pointer inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-control text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500" %>
-          <% if params[:condition].present? || params[:location].present? %>
-            <%= link_to "Clear filters", search_index_path, class: "inline-flex items-center px-4 py-2 text-base font-medium text-ink-2 dark:text-ink-2-on-dark hover:text-sky-600" %>
-          <% end %>
-        </div>
-      <% end %>
+  <% if @error.present? %>
+    <div class="rounded-card border border-crit/30 dark:border-crit-on-dark bg-crit/10 dark:bg-crit-on-dark/20 p-4 mb-6">
+      <p class="text-crit dark:text-crit-on-dark"><%= @error %></p>
     </div>
+  <% end %>
 
-    <%# Carried over from the signed-out template, which was the only one of the two
-        that showed the registry's error at all. %>
-    <% if @error.present? %>
-      <div class="bg-crit/10 dark:bg-crit-on-dark/20 border border-crit/30 dark:border-crit-on-dark rounded-card p-4 mb-8">
-        <p class="text-crit dark:text-crit-on-dark"><%= @error %></p>
-      </div>
-    <% end %>
+  <% if @studies.present? %>
+    <div class="flex flex-col lg:flex-row gap-8">
 
-    <!-- Search Results -->
-    <% if @studies.present? %>
-      <div class="mb-6">
-        <h2 class="text-2xl font-bold text-ink dark:text-ink-2-on-dark mb-2">
-          Search Results
-        </h2>
-        <p class="text-ink-3 dark:text-ink-3-on-dark">
-          <%= number_with_delimiter(@total_count) %> studies<%= " matched to your profile" if @profile %>
-        </p>
-      </div>
+      <%# Desktop sidebar. Below lg the same partial renders inside the sheet. %>
+      <aside class="hidden lg:block w-[260px] shrink-0">
+        <div class="sticky top-6">
+          <%= render "search/filters", id: "filters-desktop" %>
+        </div>
+      </aside>
 
-      <%# Sorting by match score needs a profile to score against, so this is only
-          offered when there is one. The two options are the only two TrialSearchService
-          implements: it branches on sort_by == "score" and treats everything else as
-          the registry's own order. The previous dropdown sent "score_desc", which
-          matched neither branch, so sorting silently did nothing. %>
-      <% if @profile %>
-        <div class="mb-6 flex items-center gap-4">
-          <%= form_with url: search_index_path, method: :get, class: "flex items-center gap-2" do |f| %>
-            <%= f.hidden_field :condition, value: params[:condition] %>
-            <%= f.hidden_field :location, value: params[:location] %>
-            <%= f.label :sort_by, "Sort by", class: "text-sm font-medium text-ink-2 dark:text-ink-2-on-dark" %>
-            <%= f.select :sort_by,
-                options_for_select(
-                  [["Best match for you", "score"], ["The registry's own order", "relevance"]],
-                  params[:sort_by].presence || "score"
-                ),
-                { include_blank: false },
-                class: "block p-2 bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark text-base text-ink dark:text-ink-2-on-dark rounded-control focus:ring-sky-500 focus:border-navy-600" %>
-            <%= f.submit "Update", class: "cursor-pointer px-4 py-2 text-sm font-medium bg-navy-600 text-white rounded-control hover:bg-navy-700" %>
+      <div class="min-w-0 flex-1">
+
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+          <div>
+            <p class="text-lg font-bold text-ink dark:text-ink-on-dark">
+              <%= number_with_delimiter(@total_count) %>
+              <%= "study".pluralize(@total_count) %>
+              <%= "matching your filters" if @refined %>
+            </p>
+            <% if @profile %>
+              <p class="text-sm text-ink-3 dark:text-ink-3-on-dark">Scored against your profile.</p>
+            <% else %>
+              <p class="text-sm text-ink-3 dark:text-ink-3-on-dark">
+                <%= link_to "Sign in", new_user_session_path, class: "font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>
+                to see how well each one fits you.
+              </p>
+            <% end %>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <%# The filter trigger is a details element rather than a modal, so it
+                works with no JavaScript and closes on Escape for free. %>
+            <details class="lg:hidden relative">
+              <summary class="<%= Buttons::ButtonStyles.classes("secondary", size: "px-3 py-2 text-sm") %> list-none">
+                <%= render Utilities::IconComponent.new("filter_1", size: 4) %>
+                Filters<%= " · on" if filters_active? %>
+              </summary>
+              <div class="absolute right-0 z-20 mt-2 w-[280px] rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-4 shadow-lg">
+                <%= render "search/filters", id: "filters-sheet" %>
+              </div>
+            </details>
+
+            <%# Sorting by match needs a profile to match against. %>
+            <% if @profile %>
+              <%= form_with url: search_index_path, method: :get, class: "flex items-center gap-2" do |f| %>
+                <% pagination_params.except(:sort_by).each do |key, value| %>
+                  <% Array(value).each do |v| %>
+                    <%= hidden_field_tag "#{key}#{"[]" if value.is_a?(Array)}", v %>
+                  <% end %>
+                <% end %>
+                <%= f.label :sort_by, "Sort", class: "text-sm font-medium text-ink-2 dark:text-ink-2-on-dark" %>
+                <%= f.select :sort_by,
+                      options_for_select([["Best match for you", "score"], ["The registry's own order", "relevance"]],
+                        params[:sort_by].presence || "score"),
+                      {include_blank: false},
+                      {class: Forms::FieldStyles.input(extra: "py-1.5 text-sm w-auto")} %>
+                <%= f.button "Sort", type: "submit", class: Buttons::ButtonStyles.classes("secondary", size: "px-3 py-1.5 text-sm") %>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-4 mb-8">
+          <% @studies.each do |study| %>
+            <%= render Page::Cards::ResultCardComponent.new(
+                  study: study,
+                  saved_trial: @saved_trials_by_nct_id&.dig(study[:nct_id]),
+                  signed_in: user_signed_in?
+                ) %>
           <% end %>
         </div>
-      <% end %>
 
-      <!-- Results Grid -->
-      <div class="space-y-4 mb-8">
-        <% @studies.each do |study| %>
-          <%= render Page::Cards::ResultCardComponent.new(
-                study: study,
-                saved_trial: @saved_trials_by_nct_id&.dig(study[:nct_id]),
-                signed_in: user_signed_in?
-              ) %>
+        <% if @current_page > 1 || @has_next_page %>
+          <nav class="flex items-center justify-center gap-3" aria-label="Results pages">
+            <% if @current_page > 1 %>
+              <%= link_to "Previous", search_index_path(pagination_params.merge(page: @current_page - 1, page_token: @prev_page_token).compact),
+                    class: Buttons::ButtonStyles.classes("secondary", size: "px-4 py-2 text-sm") %>
+            <% end %>
+            <span class="text-sm text-ink-3 dark:text-ink-3-on-dark">Page <%= @current_page %></span>
+            <% if @has_next_page %>
+              <%= link_to "Next", search_index_path(pagination_params.merge(page: @current_page + 1, page_token: @next_page_token).compact),
+                    class: Buttons::ButtonStyles.classes("secondary", size: "px-4 py-2 text-sm") %>
+            <% end %>
+          </nav>
         <% end %>
       </div>
+    </div>
 
-      <!-- Pagination -->
-      <% if @current_page > 1 || @has_next_page %>
-        <div class="flex justify-center gap-4 items-center">
-          <% if @current_page > 1 %>
-            <%= link_to "Previous", search_index_path(pagination_params.merge(page: @current_page - 1, page_token: @prev_page_token).compact),
-                class: "px-4 py-2 text-sm font-medium text-ink-2 dark:text-ink-2-on-dark bg-surface dark:bg-surface-on-dark border border-line dark:border-line-on-dark rounded-nav hover:bg-surface-2 dark:hover:bg-surface-2-on-dark" %>
-          <% end %>
-
-          <span class="text-sm text-ink-3 dark:text-ink-3-on-dark">
-            Page <%= @current_page %>
-          </span>
-
-          <% if @has_next_page %>
-            <%= link_to "Next", search_index_path(pagination_params.merge(page: @current_page + 1, page_token: @next_page_token).compact),
-                class: "px-4 py-2 text-sm font-medium text-ink-2 dark:text-ink-2-on-dark bg-surface dark:bg-surface-on-dark border border-line dark:border-line-on-dark rounded-nav hover:bg-surface-2 dark:hover:bg-surface-2-on-dark" %>
-          <% end %>
-        </div>
-      <% end %>
-
-    <% elsif params[:condition].present? || params[:location].present? %>
-      <!-- No Results -->
-      <div class="bg-surface-2 dark:bg-surface-on-dark rounded-panel p-8 text-center">
-        <h3 class="text-lg font-medium text-ink dark:text-ink-on-dark mb-2">No trials found</h3>
-        <p class="text-ink-3 dark:text-ink-3-on-dark mb-4">
-          Try adjusting your search criteria or selecting a different condition or location.
-        </p>
+  <% elsif searched %>
+    <%# The empty state names what was actually searched for, and every way out
+        of it is something the app can really do. %>
+    <div class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-8 lg:p-12 max-w-2xl">
+      <div class="text-ink-4 dark:text-ink-4-on-dark mb-4">
+        <%= render Utilities::IconComponent.new("file_search", size: 12) %>
       </div>
-
-    <% else %>
-      <!-- Initial State -->
-      <div class="bg-gradient-to-r from-sky-50 to-info/10 dark:from-navy-900/20 dark:to-info-on-dark/20 border border-sky-200 dark:border-sky-800 rounded-panel p-8 text-center">
-        <h3 class="text-lg font-medium text-ink dark:text-ink-on-dark mb-2">Ready to search?</h3>
-        <p class="text-ink-3 dark:text-ink-3-on-dark">
-          Select a condition and location above to see personalized trial matches based on your health profile.
-        </p>
+      <h2 class="text-xl font-bold text-ink dark:text-ink-on-dark mb-2">
+        No studies found<%= " for #{params[:condition]}" if params[:condition].present? %><%= " near #{params[:location]}" if params[:location].present? %>
+      </h2>
+      <p class="text-ink-3 dark:text-ink-3-on-dark mb-6 leading-relaxed">
+        <% if filters_active? %>
+          The search found studies, but none of them match the filters you have set.
+        <% else %>
+          The registry has nothing recruiting under those terms right now. That changes often.
+        <% end %>
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <% if filters_active? %>
+          <%= link_to "Clear the filters",
+                search_index_path(condition: params[:condition], location: params[:location]),
+                class: Buttons::ButtonStyles.classes("primary", size: "px-4 py-2 text-sm") %>
+        <% end %>
+        <% if params[:location].present? %>
+          <%= link_to "Search everywhere instead",
+                search_index_path(condition: params[:condition]),
+                class: Buttons::ButtonStyles.classes("secondary", size: "px-4 py-2 text-sm") %>
+        <% end %>
+        <%= link_to "Start a new search", search_index_path,
+              class: Buttons::ButtonStyles.classes("quiet", size: "px-4 py-2 text-sm") %>
       </div>
-    <% end %>
-  </div>
+    </div>
+
+  <% else %>
+    <div class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-8 lg:p-12 max-w-2xl">
+      <h2 class="text-xl font-bold text-ink dark:text-ink-on-dark mb-2">Start with a condition</h2>
+      <p class="text-ink-3 dark:text-ink-3-on-dark leading-relaxed">
+        Pick what you are looking for above, and add a location if you want studies near you.
+      </p>
+    </div>
+  <% end %>
 </div>
-

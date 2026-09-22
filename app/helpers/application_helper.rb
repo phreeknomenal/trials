@@ -86,4 +86,21 @@ module ApplicationHelper
       "bg-surface-2 text-ink-2"
     end
   end
+
+  # The registry returns its enums shouted: "PHASE2", "INTERVENTIONAL",
+  # "NOT_YET_RECRUITING", and phases arrive already joined as "PHASE1, PHASE2".
+  # Nothing should print those at a patient.
+  def humanize_registry_value(value)
+    return "" if value.blank?
+
+    value.to_s.split(",").map { |part|
+      cleaned = part.strip
+
+      # The registry uses NA for a study with no phase, which is most
+      # observational ones. "Na" is not a phase.
+      next "Not applicable" if cleaned.casecmp?("na")
+
+      cleaned.tr("_", " ").downcase.gsub(/\bphase(\d)\b/, 'phase \\1').upcase_first
+    }.join(", ")
+  end
 end
