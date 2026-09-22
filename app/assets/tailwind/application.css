@@ -97,11 +97,14 @@
   --color-match-none: #8B96AB;
   --color-match-none-on-dark: #68738A;
 
-  /* bg-primary, focus:ring-primary and focus:border-primary across the form
-   * components. Note the same files also reach for primary-300, primary-500,
-   * primary-600, primary-800 and a whole secondary-* ramp, none of which are
-   * defined, so those classes currently do nothing. */
-  --color-primary: oklch(0.2077 0.0398 265.75);
+  /* --color-primary and the primary and secondary ramps are gone. They were the
+   * pre-rebrand palette, and only --color-primary was ever defined: the 33 other
+   * classes reaching for those names did nothing at all, which is why every form
+   * field had a focus ring that never appeared.
+   *
+   * They are not redefined as aliases of navy and sky, because a second name for
+   * navy is how this drifted the first time. The form components now use the
+   * tokens above like everything else. */
 
   /* ------------------------------------------------------------------
    * Radius ladder

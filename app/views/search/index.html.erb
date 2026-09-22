@@ -18,7 +18,7 @@
             <%= f.select :condition, 
                 options_for_select(@conditions.pluck(:name, :name), params[:condition]),
                 { include_blank: "Select a condition" },
-                { class: "block p-2 w-full bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark placeholder:text-ink-3 dark:placeholder:text-ink-3-on-dark text-base text-ink dark:text-ink-2-on-dark rounded focus:ring-sky-500 focus:border-navy-600" } 
+                { class: "block p-2 w-full bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark placeholder:text-ink-3 dark:placeholder:text-ink-3-on-dark text-base text-ink dark:text-ink-2-on-dark rounded-control focus:ring-sky-500 focus:border-navy-600" } 
             %>
           </div>
 
@@ -28,7 +28,7 @@
             <%= f.text_field :location, 
                 value: params[:location],
                 placeholder: "e.g., Boston, MA",
-                class: "block w-full form-control bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark text-ink dark:text-ink-2-on-dark text-base rounded focus:ring-sky-500 focus:border-navy-600 p-2" 
+                class: "block w-full form-control bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark text-ink dark:text-ink-2-on-dark text-base rounded-control focus:ring-sky-500 focus:border-navy-600 p-2" 
             %>
           </div>
         </div>
@@ -97,7 +97,7 @@
         <div class="flex justify-center gap-4 items-center">
           <% if @current_page > 1 %>
             <%= link_to "Previous", search_index_path(pagination_params.merge(page: @current_page - 1, page_token: @prev_page_token).compact),
-                class: "px-4 py-2 text-sm font-medium text-ink-2 dark:text-ink-2-on-dark bg-surface dark:bg-surface-on-dark border border-line dark:border-line-on-dark rounded hover:bg-surface-2 dark:hover:bg-surface-2-on-dark" %>
+                class: "px-4 py-2 text-sm font-medium text-ink-2 dark:text-ink-2-on-dark bg-surface dark:bg-surface-on-dark border border-line dark:border-line-on-dark rounded-nav hover:bg-surface-2 dark:hover:bg-surface-2-on-dark" %>
           <% end %>
 
           <span class="text-sm text-ink-3 dark:text-ink-3-on-dark">
@@ -106,7 +106,7 @@
 
           <% if @has_next_page %>
             <%= link_to "Next", search_index_path(pagination_params.merge(page: @current_page + 1, page_token: @next_page_token).compact),
-                class: "px-4 py-2 text-sm font-medium text-ink-2 dark:text-ink-2-on-dark bg-surface dark:bg-surface-on-dark border border-line dark:border-line-on-dark rounded hover:bg-surface-2 dark:hover:bg-surface-2-on-dark" %>
+                class: "px-4 py-2 text-sm font-medium text-ink-2 dark:text-ink-2-on-dark bg-surface dark:bg-surface-on-dark border border-line dark:border-line-on-dark rounded-nav hover:bg-surface-2 dark:hover:bg-surface-2-on-dark" %>
           <% end %>
         </div>
       <% end %>

@@ -19,6 +19,6 @@ class Forms::RankingComponent < ApplicationComponent
   end
 
   def label_class_str
-    "block text-md text-secondary-800"
+    "block text-md text-ink-2"
   end
 end

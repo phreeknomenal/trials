@@ -1,0 +1,21 @@
+<% if link? %>
+  <%= link_to path, class: classes, aria: {current: ("true" if selected?)}, **options do %>
+    <% if selected? %>
+      <%= render Utilities::IconComponent.new("check", size: 4) %>
+    <% end %>
+    <span><%= text %></span>
+    <% if count %>
+      <span class="<%= count_class %> tabular-nums"><%= count %></span>
+    <% end %>
+  <% end %>
+<% else %>
+  <button type="button" class="<%= classes %>" aria-pressed="<%= selected? %>" <%= tag.attributes(options) %>>
+    <% if selected? %>
+      <%= render Utilities::IconComponent.new("check", size: 4) %>
+    <% end %>
+    <span><%= text %></span>
+    <% if count %>
+      <span class="<%= count_class %> tabular-nums"><%= count %></span>
+    <% end %>
+  </button>
+<% end %>

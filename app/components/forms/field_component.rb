@@ -1,100 +1,120 @@
+# The interface is unchanged: 41 call sites pass form, attribute, field_type,
+# label, options and select_options, and they all still work. What changed is
+# that the classes come from Forms::FieldStyles rather than from nine
+# hand-written strings that disagreed with each other, and that a field with a
+# validation error now says so instead of rendering identically to a valid one.
 class Forms::FieldComponent < ApplicationComponent
-  attr_reader :form, :attribute, :field_type, :label, :options, :select_options
+  attr_reader :form, :attribute, :field_type, :label, :options, :select_options, :hint
 
-  def initialize(form:, attribute:, field_type: :text, label: nil, options: {}, select_options: nil)
+  def initialize(form:, attribute:, field_type: :text, label: nil, options: {}, select_options: nil, hint: nil)
     @form = form
     @attribute = attribute
     @field_type = field_type.to_sym
     @label = label
     @options = options
     @select_options = select_options
+    @hint = hint
   end
 
+  # The model is the source of truth for whether a field is in its error state.
+  # Nothing has to remember to pass a flag.
+  def errors
+    return [] unless form.object.respond_to?(:errors)
+
+    form.object.errors[attribute]
+  end
+
+  def invalid?
+    errors.any?
+  end
+
+  def describedby
+    ids = []
+    ids << hint_id if hint.present?
+    ids << error_id if invalid?
+    ids.presence&.join(" ")
+  end
+
+  def hint_id = "#{field_id}-hint"
+
+  def error_id = "#{field_id}-error"
+
+  def field_id = "#{form.object_name}_#{attribute}".parameterize
+
   def merge_class(default_class)
-    classes = [default_class, options[:class]].compact.join(" ")
-    merged_options = options.dup
-    merged_options[:class] = classes
-    merged_options
+    merged = options.dup
+    merged[:class] = [default_class, options[:class]].compact.join(" ")
+    merged[:"aria-invalid"] = true if invalid?
+    merged[:"aria-describedby"] = describedby if describedby
+    merged
   end
 
   private
 
   def input_field
     case field_type
-    when :checkbox
-      form.check_box(attribute, merge_class(checkbox_field_class), options[:checked_value] || "1")
-    when :checkbox_with_description
+    when :checkbox, :checkbox_with_description
       form.check_box(attribute, merge_class(checkbox_field_class), options[:checked_value] || "1")
     when :date
-      form.date_field(attribute, merge_class(text_field_class))
+      form.date_field(attribute, merge_class(input_class))
     when :file
       form.file_field(attribute, merge_class(file_field_class))
     when :number
-      form.number_field(attribute, merge_class(text_field_class))
+      form.number_field(attribute, merge_class(input_class))
     when :rich_text
       form.rich_text_area(attribute, merge_class(rich_text_field_class))
     when :select
-      html_options = {}
-
-      if options[:data]
-        html_options[:data] = options[:data]
-      end
-      if options[:class]
-        html_options[:class] = options[:class]
-      end
-      if options[:required]
-        html_options[:required] = options[:required]
-      end
-
-      html_options[:class] = [select_field_class, html_options[:class]].compact.join(" ")
-
-      form.select(attribute, select_options, options.except(:data, :class, :required), html_options)
-    when :text
-      form.text_field(attribute, merge_class(text_field_class))
+      form.select(attribute, select_options, options.except(:data, :class, :required), select_html_options)
     when :text_area
       form.text_area(attribute, merge_class(text_area_class))
     else
-      form.text_field(attribute, merge_class(text_field_class))
+      form.text_field(attribute, merge_class(input_class))
     end
   end
 
-  def field_label
-    if label.present? && options[:required]
-      "#{label} <span class='text-crit'>*</span>".html_safe
-    else
-      label
-    end
+  # select takes its html options in a separate hash from its own options, which
+  # is why it cannot go through merge_class like everything else.
+  def select_html_options
+    html = options.slice(:data, :required)
+    html[:class] = [select_field_class, options[:class]].compact.join(" ")
+    html[:"aria-invalid"] = true if invalid?
+    html[:"aria-describedby"] = describedby if describedby
+    html
   end
 
-  def checkbox_field_class
-    "h-4 w-4 rounded border-line dark:border-line-on-dark text-white focus:ring-sky-500 form-check-input accent-sky-500"
-  end
+  def input_class = Forms::FieldStyles.input(invalid: invalid?)
 
-  def checkbox_label_class
-    "ms-1 text-base font-medium text-ink dark:text-ink-2-on-dark form-check-label"
-  end
+  def select_field_class = Forms::FieldStyles.input(invalid: invalid?)
 
-  def date_field_class
-    "block w-full form-control bg-surface border border-secondary-300 text-ink text-base rounded-control focus:ring-primary-500 focus:border-primary-500"
-  end
+  def text_area_class = Forms::FieldStyles.input(invalid: invalid?, extra: "h-36")
 
   def file_field_class
-    "block w-full text-base text-secondary-900 border border-secondary-300 rounded-control cursor-pointer bg-secondary-50 focus:outline-none focus:ring-primary file:bg-secondary-800"
+    Forms::FieldStyles.input(
+      invalid: invalid?,
+      extra: "cursor-pointer file:mr-3 file:rounded-control file:border-0 " \
+             "file:bg-navy-600 file:px-3 file:py-1.5 file:text-white file:font-medium"
+    )
   end
 
   def rich_text_field_class
-    "prose p-2 max-w-none w-full rounded-control text-ink dark:text-ink-2-on-dark border-secondary-200 dark:border-line-on-dark focus:border-primary focus:ring-primary text-base"
+    Forms::FieldStyles.input(invalid: invalid?, extra: "prose max-w-none")
   end
 
-  def select_field_class
-    "block p-2 w-full bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark placeholder:text-ink-3 dark:placeholder:text-ink-3-on-dark text-base text-ink dark:text-ink-2-on-dark rounded focus:ring-sky-500 focus:border-navy-600 disabled:bg-sky-50 disabled:text-sky-500 disabled:border-sky-200 disabled:shadow-none"
+  # Native, styled with accent-color rather than rebuilt from divs, so keyboard
+  # behaviour, screen reader semantics and forced-colors mode keep working.
+  def checkbox_field_class
+    "h-4 w-4 rounded-sm border-line-2 dark:border-line-on-dark accent-sky-500 " \
+      "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
   end
 
-  def text_field_class
-    "block w-full form-control bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark text-ink dark:text-ink-2-on-dark text-base rounded focus:ring-sky-500 focus:border-navy-600 p-2 disabled:bg-sky-50 disabled:text-sky-500 disabled:border-sky-200 disabled:shadow-none"
+  def checkbox_label_class
+    "ms-1 text-base font-medium text-ink dark:text-ink-2-on-dark"
   end
 
-  def text_area_class
-    "block w-full h-36 form-control bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark text-ink dark:text-ink-2-on-dark text-base rounded focus:ring-sky-500 focus:border-navy-600 p-2"
+  def field_label
+    return label unless label.present? && options[:required]
+
+    safe_join([label, " ", tag.span("*", class: "text-crit", aria: {hidden: true}),
+      tag.span("required", class: "sr-only")])
   end
 end

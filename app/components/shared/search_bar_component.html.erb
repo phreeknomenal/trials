@@ -1,0 +1,51 @@
+<div>
+  <%= form_with url: url, method: :get, class: container_class do |f| %>
+    <div class="<%= layout_class %>">
+
+      <div class="<%= full? ? "flex-1 min-w-0" : "flex-1 min-w-0" %>">
+        <%= f.label :condition, "Condition", class: label_class %>
+        <% if condition_options.any? %>
+          <%= f.select :condition,
+                options_for_select(condition_options, condition),
+                {include_blank: PLACEHOLDER},
+                {class: field_class} %>
+        <% else %>
+          <%= f.text_field :condition, value: condition, placeholder: PLACEHOLDER, class: field_class %>
+        <% end %>
+      </div>
+
+      <span class="<%= divider_class %>" aria-hidden="true"></span>
+
+      <div class="<%= full? ? "lg:w-[220px]" : "sm:w-[200px]" %>">
+        <%= f.label :location, "Location", class: label_class %>
+        <%= f.text_field :location, value: location, placeholder: "City, state or ZIP", class: field_class %>
+      </div>
+
+      <span class="<%= divider_class %>" aria-hidden="true"></span>
+
+      <div class="<%= full? ? "lg:w-[150px]" : "hidden" %>">
+        <%= f.label :distance, "Distance", class: label_class %>
+        <%= f.select :distance,
+              options_for_select(Shared::SearchBarComponent::DISTANCES, distance),
+              {},
+              {class: field_class} %>
+      </div>
+
+      <%# A button rather than a submit input, because an input cannot hold the
+          search icon the style guide asks for. %>
+      <%= f.button type: "submit", class: submit_class do %>
+        <%= render Utilities::IconComponent.new("search", size: full? ? 5 : 4) %>
+        <%= submit_text %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <% if full? && popular_conditions.any? %>
+    <div class="mt-3 flex flex-wrap items-center gap-2">
+      <span class="text-sm text-ink-3 dark:text-ink-3-on-dark">Common searches</span>
+      <% popular_conditions.each do |name| %>
+        <%= render Shared::PillComponent.new(text: name, path: path_for(name)) %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

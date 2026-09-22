@@ -71,7 +71,7 @@ class Page::Trials::StatusMessageComponent < ApplicationComponent
   end
 
   def css_classes_for_score(score)
-    base_classes = "flex items-start gap-3 pl-3 py-2 rounded border-l-4 border "
+    base_classes = "flex items-start gap-3 pl-3 py-2 rounded-flash border-l-4 border "
 
     if score >= 75
       base_classes + "border-good dark:border-good-on-dark bg-good/10 dark:bg-good-on-dark/10"

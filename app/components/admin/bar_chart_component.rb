@@ -1,6 +1,10 @@
 module Admin
   # Server-rendered bars. No charting dependency: the app uses importmap and has
   # no JS chart library, and this is a handful of counts.
+  #
+  # The bars keep the bare `rounded`, deliberately. They are chart marks, not
+  # containers, so the radius ladder does not govern them: 4px is the rounded
+  # data-end, and putting them on a UI rung would make a bar look like a card.
   class BarChartComponent < ApplicationComponent
     erb_template <<~ERB
       <div class="space-y-2">

@@ -36,11 +36,11 @@
 
         <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
           <div class="field mb-4">
-            <%= f.email_field :email, autocomplete: "email", placeholder: "Email address", class: "w-full border border-line-2 dark:border-line-on-dark rounded text-ink-3 dark:text-ink-3-on-dark placeholder:text-ink-3 dark:placeholder:text-ink-3-on-dark p-5 mb-2" %>
+            <%= f.email_field :email, autocomplete: "email", placeholder: "Email address", class: "w-full border border-line-2 dark:border-line-on-dark rounded-control text-ink-3 dark:text-ink-3-on-dark placeholder:text-ink-3 dark:placeholder:text-ink-3-on-dark p-5 mb-2" %>
           </div>
 
           <div class="field mb-6">
-            <%= f.password_field :password, autocomplete: "current-password", placeholder: "Password", class: "w-full border border-line-2 dark:border-line-on-dark rounded text-ink-3 dark:text-ink-3-on-dark placeholder:text-ink-3 dark:placeholder:text-ink-3-on-dark p-5 mb-2" %>
+            <%= f.password_field :password, autocomplete: "current-password", placeholder: "Password", class: "w-full border border-line-2 dark:border-line-on-dark rounded-control text-ink-3 dark:text-ink-3-on-dark placeholder:text-ink-3 dark:placeholder:text-ink-3-on-dark p-5 mb-2" %>
           </div>
 
           <div class="flex items-center justify-between">
