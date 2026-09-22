@@ -1,4 +1,26 @@
 class TrialRecommendationService
+  # Five outcomes used to be one empty array, so the dashboard could not tell
+  # "nothing matches you" from "the registry did not answer", and said the
+  # former in both cases. They need different words and different next steps:
+  # one is a fact about the studies, the other is a fact about our request.
+  #
+  # The client's own :error was discarded entirely, so a failed search looked
+  # exactly like a successful search for something that does not exist.
+  Result = Data.define(:studies, :status) do
+    def any? = studies.any?
+
+    def ok? = status == :ok
+
+    # Worth telling apart in the view: these two are the person's to fix.
+    def needs_profile? = status == :no_profile || status == :no_condition
+
+    # Ours to fix, and worth saying so rather than implying the registry is
+    # empty.
+    def unavailable? = status == :unavailable
+
+    def none_matched? = status == :none_matched
+  end
+
   DEFAULT_RECOMMENDATION_COUNT = 5
   RECOMMENDATION_BATCH_SIZE = 100
   MINIMUM_SCORE_THRESHOLD = 60
@@ -9,16 +31,16 @@ class TrialRecommendationService
   end
 
   def recommend
-    return [] unless @profile
+    return Result.new(studies: [], status: :no_profile) unless @profile
 
-    begin
-      Timeout.timeout(REQUEST_TIMEOUT) do
-        fetch_and_score_trials
-      end
-    rescue => e
-      Rails.logger.error("Error generating trial recommendations: #{e.class} - #{e.message}")
-      []
+    Timeout.timeout(REQUEST_TIMEOUT) do
+      fetch_and_score_trials
     end
+  rescue => e
+    # Still rescued, because a dashboard that raises because a third party is
+    # slow is worse than one that says so. What changed is that it says so.
+    Rails.logger.error("Error generating trial recommendations: #{e.class} - #{e.message}")
+    Result.new(studies: [], status: :unavailable)
   end
 
   # Returns trials similar to the given study (same condition, excluded nct_id), scored for profile.
@@ -53,32 +75,29 @@ class TrialRecommendationService
   private
 
   def fetch_and_score_trials
-    # Determine primary condition
     primary_condition = @profile.conditions.first&.name
-    return [] unless primary_condition
+    return Result.new(studies: [], status: :no_condition) if primary_condition.blank?
 
-    # Search for trials using primary condition
     result = ClinicalTrialClient.advanced_search(
       condition: primary_condition,
       page_size: RECOMMENDATION_BATCH_SIZE
     )
 
-    studies = result[:studies] || []
-    return [] if studies.empty?
+    # The client rescues its own failures into an :error key rather than
+    # raising, so this is the only place a failed request can be noticed.
+    return Result.new(studies: [], status: :unavailable) if result[:error].present?
 
-    # Filter and score trials
-    scored_trials = score_trials(studies)
-
-    # Filter by minimum score and recruiting status
-    recommended = scored_trials.select do |trial|
+    recommended = score_trials(result[:studies] || []).select do |trial|
       trial[:trial_score] && trial[:trial_score] >= MINIMUM_SCORE_THRESHOLD &&
         is_actively_recruiting?(trial)
     end
 
-    # Sort by score and return top N
-    recommended
-      .sort_by { |t| -(t[:trial_score] || 0) }
-      .take(DEFAULT_RECOMMENDATION_COUNT)
+    studies = recommended.sort_by { |t| -(t[:trial_score] || 0) }.take(DEFAULT_RECOMMENDATION_COUNT)
+
+    # An empty registry response and a response where nothing scored high enough
+    # are the same outcome from here: there is nothing to recommend, and it is
+    # not because anything failed.
+    Result.new(studies: studies, status: studies.any? ? :ok : :none_matched)
   end
 
   def score_trials(studies)
