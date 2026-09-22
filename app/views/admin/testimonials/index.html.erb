@@ -7,6 +7,16 @@
         <%= @testimonials.count(&:published?) %> published &middot;
         <%= @testimonials.count(&:placeholder?) %> seeded placeholder
       </p>
+      <%# Which of these a visitor actually sees was not stated anywhere, which is
+          how ten seeded quotes stayed on the landing page unnoticed. %>
+      <p class="mt-1 text-sm text-ink-2 dark:text-ink-2-on-dark">
+        <% live_count = [@testimonials.count { |t| t.published? && !t.placeholder? }, PublicController::TESTIMONIAL_COUNT].min %>
+        <%= pluralize(live_count, "quote") %> showing on the landing page.
+        <% held_back = @testimonials.count(&:placeholder?) %>
+        <% if held_back.positive? %>
+          <%= pluralize(held_back, "seeded placeholder") %> held back and cannot be published.
+        <% end %>
+      </p>
     </div>
     <%= link_to "New testimonial", new_admin_testimonial_path,
           class: "inline-flex items-center px-4 py-2 rounded-control text-sm font-medium bg-navy-600 text-white hover:bg-navy-700" %>

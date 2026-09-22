@@ -28,8 +28,11 @@ FactoryBot.define do
       published { false }
     end
 
+    # A placeholder is never published: the model validates it and the database
+    # has a check constraint, so the pair is the only combination that can exist.
     trait :placeholder do
       placeholder { true }
+      published { false }
     end
 
     trait :single_word_name do

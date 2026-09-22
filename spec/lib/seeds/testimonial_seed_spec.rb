@@ -12,8 +12,16 @@ RSpec.describe Seeds::Record::Testimonial do
       expect(Testimonial.placeholder.count).to eq(10)
     end
 
-    it "publishes them so they render" do
-      expect(Testimonial.published.count).to eq(10)
+    # This used to assert the opposite, "publishes them so they render", which is
+    # how ten invented quotes under invented full names ended up as the social
+    # proof on the landing page. They are seeded so the section has something to
+    # lay out against in development, not so visitors read them.
+    it "holds them back rather than publishing them" do
+      expect(Testimonial.published.count).to eq(0)
+    end
+
+    it "leaves nothing publishable, so the landing page shows none of them" do
+      expect(Testimonial.publishable).to be_empty
     end
 
     it "assigns distinct positions so ordering is stable" do
