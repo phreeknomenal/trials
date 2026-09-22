@@ -97,7 +97,7 @@
   --color-match-none: #8B96AB;
   --color-match-none-on-dark: #68738A;
 
-  /* --color-primary and the primary-*/secondary-* ramps are gone. They were the
+  /* --color-primary and the primary and secondary ramps are gone. They were the
    * pre-rebrand palette, and only --color-primary was ever defined: the 33 other
    * classes reaching for those names did nothing at all, which is why every form
    * field had a focus ring that never appeared.

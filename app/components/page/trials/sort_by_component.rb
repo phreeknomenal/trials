@@ -30,7 +30,7 @@ class Page::Trials::SortByComponent < ApplicationComponent
   end
 
   def button_classes(active)
-    base = "px-3 py-2 text-sm rounded"
+    base = "px-3 py-2 text-sm rounded-control"
     if active
       "#{base} bg-sky-100 dark:bg-navy-900/30 text-sky-700 dark:text-sky-300"
     else

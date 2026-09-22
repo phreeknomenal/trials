@@ -1,7 +1,7 @@
 <div class="col-span-2 lg:col-span-1 bg-surface dark:bg-surface-on-dark border border-line dark:border-line-on-dark rounded-card p-6 relative transition-colors hover:border-line-2 dark:hover:border-line-2-on-dark" id="saved-trial-<%= saved_trial.id %>">
   <div class="absolute top-4 right-4">
     <label class="flex items-center gap-2 cursor-pointer text-sm text-ink-3 dark:text-ink-3-on-dark" title="Select for comparison">
-      <input type="checkbox" name="ids[]" value="<%= saved_trial.id %>" form="compare-trials-form" class="w-4 h-4 rounded border-line-2 accent-sky-500">
+      <input type="checkbox" name="ids[]" value="<%= saved_trial.id %>" form="compare-trials-form" class="w-4 h-4 rounded-sm border-line-2 accent-sky-500">
       <span>Compare</span>
     </label>
   </div>
@@ -56,12 +56,12 @@
     <% end %>
 
     <div class="flex items-center justify-between">
-      <%= link_to edit_saved_trial_path(saved_trial), class: "px-3 py-2 flex items-center gap-1 text-sm font-medium text-warn hover:bg-warn/10 dark:hover:bg-warn-on-dark/20 rounded transition-colors" do %>
+      <%= link_to edit_saved_trial_path(saved_trial), class: "px-3 py-2 flex items-center gap-1 text-sm font-medium text-warn hover:bg-warn/10 dark:hover:bg-warn-on-dark/20 rounded-control transition-colors" do %>
         <%= render Utilities::IconComponent.new("pencil", size: 4) %>
         <span>Edit</span>
       <% end %>
 
-      <%= form_with url: saved_trial_path(saved_trial), method: :delete, local: true, class: "flex items-center gap-1 *:cursor-pointer px-3 py-2 cursor-pointer text-sm font-medium text-crit hover:bg-crit/10 dark:hover:bg-crit-on-dark/20 rounded transition-colors border-0 bg-transparent cursor-pointer" do |f| %>
+      <%= form_with url: saved_trial_path(saved_trial), method: :delete, local: true, class: "flex items-center gap-1 *:cursor-pointer px-3 py-2 cursor-pointer text-sm font-medium text-crit hover:bg-crit/10 dark:hover:bg-crit-on-dark/20 rounded-control transition-colors border-0 bg-transparent cursor-pointer" do |f| %>
         <%= render Utilities::IconComponent.new("trash", size: 4) %>
         <%= f.submit "Remove", class: "", 
             data: { turbo_confirm: "Are you sure you want to remove this trial?" } %>
