@@ -1,4 +1,4 @@
-<%= link_to path, class: "inline-flex items-center gap-1 px-4 font-medium py-2 rounded-md transition-colors cursor-pointer #{color_styles}" do %>
+<%= link_to path, class: "inline-flex items-center gap-1 px-4 font-medium py-2 rounded-control transition-colors cursor-pointer #{color_styles}" do %>
   <% if icon.present? %>
     <% if icon_position == "left" %>
       <%= render Utilities::IconComponent.new(icon, size: 6) %> <%= text %>

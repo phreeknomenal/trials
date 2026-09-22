@@ -2,7 +2,7 @@
   <div class="w-full h-full flex flex-col items-center justify-center bg-secondary-100 border border-dashed border-secondary-400 rounded-lg py-4">
     <!-- Take a photo button -->
     <div class="mt-4 flex flex-col text-sm leading-6">
-      <label class="relative cursor-pointer rounded-md font-semibold text-center bg-primary text-white p-4 focus-within:outline-none focus-within:ring-2 focus-within:ring-primary-800 focus-within:ring-offset-2 hover:text-primary-600">
+      <label class="relative cursor-pointer rounded-control font-semibold text-center bg-primary text-white p-4 focus-within:outline-none focus-within:ring-2 focus-within:ring-primary-800 focus-within:ring-offset-2 hover:text-primary-600">
         <span data-upload-photos-target="buttonText">Take a photo</span>
         <%= form.file_field attribute,
           {
@@ -36,7 +36,7 @@
 
     <!-- Clear all button -->
     <div class="mt-4 flex flex-col text-sm leading-6">
-      <button type="button" class="px-4 py-2 bg-crit hover:bg-crit text-white text-sm rounded-md transition-colors hidden" data-upload-photos-target="clearButton" data-action="click->upload-photos#clearAll">
+      <button type="button" class="px-4 py-2 bg-crit hover:bg-crit text-white text-sm rounded-control transition-colors hidden" data-upload-photos-target="clearButton" data-action="click->upload-photos#clearAll">
         Clear All
       </button>
     </div>

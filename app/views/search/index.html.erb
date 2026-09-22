@@ -35,7 +35,7 @@
 
         <!-- Submit Button -->
         <div class="flex gap-4">
-          <%= f.submit "Search Trials", class: "inline-flex items-center gap-1 px-4 font-medium py-2 rounded-md transition-colors cursor-pointer border border-navy-600 text-white bg-navy-600 hover:border-navy-700 hover:bg-navy-700" %>
+          <%= f.submit "Search Trials", class: "inline-flex items-center gap-1 px-4 font-medium py-2 rounded-control transition-colors cursor-pointer border border-navy-600 text-white bg-navy-600 hover:border-navy-700 hover:bg-navy-700" %>
           <% if params[:condition].present? || params[:location].present? %>
             <%= link_to "Clear Filters", search_index_path, class: "inline-flex items-center px-4 py-2 text-base font-medium text-ink-2 dark:text-ink-2-on-dark hover:text-sky-600" %>
           <% end %>

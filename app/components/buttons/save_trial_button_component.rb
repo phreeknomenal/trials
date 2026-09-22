@@ -50,7 +50,7 @@ class Buttons::SaveTrialButtonComponent < ApplicationComponent
   end
 
   def button_classes
-    base = "inline-flex items-center gap-2 rounded-lg border font-semibold transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 #{button_size_classes}"
+    base = "inline-flex items-center gap-2 rounded-control border font-semibold transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500 #{button_size_classes}"
     state = is_saved? ? SAVED_CLASSES : UNSAVED_CLASSES
 
     "#{base} #{state}"
