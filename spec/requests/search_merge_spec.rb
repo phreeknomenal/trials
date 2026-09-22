@@ -51,7 +51,15 @@ RSpec.describe "The merged search", type: :request do
       get search_index_path(condition: "Asthma")
 
       expect(response.body).to include("A Study of Something")
-      expect(response.body).not_to include("% Match")
+      expect(response.body).not_to include("MATCH")
+    end
+
+    it "offers to find out instead of showing an empty score" do
+      stub_search
+
+      get search_index_path(condition: "Asthma")
+
+      expect(response.body).to include("Check your match")
     end
 
     it "shows the registry's error, which only the signed-out page used to do" do
@@ -79,7 +87,8 @@ RSpec.describe "The merged search", type: :request do
 
       get search_index_path(condition: "Asthma")
 
-      expect(response.body).to include("% Match")
+      expect(response.body).to include("MATCH")
+      expect(response.body).not_to include("Check your match")
     end
 
     it "offers the sort control" do
@@ -165,6 +174,44 @@ RSpec.describe "The merged search", type: :request do
       get "/my_trials/trial_comparison"
 
       expect(response).not_to have_http_status(:moved_permanently)
+    end
+  end
+
+  # The save control needs to know which of the listed studies are already
+  # saved. Asked per card that is one query per row.
+  describe "saved state on the results page" do
+    before { sign_in user }
+
+    it "loads the page's saved trials in a single query" do
+      create(:saved_trial, user: user, nct_id: nct_id)
+      stub_search(studies: Array.new(5) { |i| study.merge(nct_id: "NCT0000000#{i}") } + [study])
+
+      queries = 0
+      counter = ->(_name, _start, _finish, _id, payload) {
+        queries += 1 if payload[:sql]&.include?("saved_trials")
+      }
+
+      ActiveSupport::Notifications.subscribed(counter, "sql.active_record") do
+        get search_index_path(condition: "Asthma")
+      end
+
+      expect(queries).to eq(1)
+    end
+
+    it "asks for nothing when signed out" do
+      sign_out user
+      stub_search
+
+      queries = 0
+      counter = ->(_name, _start, _finish, _id, payload) {
+        queries += 1 if payload[:sql]&.include?("saved_trials")
+      }
+
+      ActiveSupport::Notifications.subscribed(counter, "sql.active_record") do
+        get search_index_path(condition: "Asthma")
+      end
+
+      expect(queries).to eq(0)
     end
   end
 end

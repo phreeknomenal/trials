@@ -86,9 +86,13 @@
       <% end %>
 
       <!-- Results Grid -->
-      <div class="space-y-8 mb-8">
+      <div class="space-y-4 mb-8">
         <% @studies.each do |study| %>
-          <%= render Page::Cards::StudyCardComponent.new(study: study) %>
+          <%= render Page::Cards::ResultCardComponent.new(
+                study: study,
+                saved_trial: @saved_trials_by_nct_id&.dig(study[:nct_id]),
+                signed_in: user_signed_in?
+              ) %>
         <% end %>
       </div>
 
