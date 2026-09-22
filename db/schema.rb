@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_02_014934) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_22_064140) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -370,6 +370,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_02_014934) do
     t.text "quote", null: false
     t.datetime "updated_at", null: false
     t.index ["published", "position"], name: "index_testimonials_on_published_and_position"
+    t.check_constraint "NOT (published AND placeholder)", name: "testimonials_placeholder_never_published"
   end
 
   create_table "users", force: :cascade do |t|
