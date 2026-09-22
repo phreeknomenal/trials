@@ -13,6 +13,6 @@ class Typography::SubheadingComponent < ApplicationComponent
   end
 
   def text_color(color)
-    color || "text-secondary-600"
+    color || "text-ink-3"
   end
 end

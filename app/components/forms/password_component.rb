@@ -22,6 +22,6 @@ class Forms::PasswordComponent < ApplicationComponent
   end
 
   def class_str
-    "block w-full min-w-0 flex-1 rounded-control border-secondary-300 text-secondary-800 focus:border-primary focus:ring-primary sm:text-sm"
+    "block w-full min-w-0 flex-1 rounded-control border-line-2 text-ink-2 focus:border-focus focus-visible:outline-focus sm:text-sm"
   end
 end

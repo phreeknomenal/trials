@@ -5,11 +5,11 @@ RSpec.describe Buttons::ButtonComponent, type: :component do
     render_inline(described_class.new(path: "/search", text: "Search", color: color))
   end
 
-  described_class::VARIANTS.each_key do |variant|
+  Buttons::ButtonStyles::VARIANTS.each_key do |variant|
     it "renders the #{variant} variant" do
       render_button(color: variant)
 
-      expect(page.find("a")[:class]).to include(described_class::VARIANTS.fetch(variant).split.first)
+      expect(page.find("a")[:class]).to include(Buttons::ButtonStyles::VARIANTS.fetch(variant).split.first)
     end
   end
 
@@ -34,8 +34,8 @@ RSpec.describe Buttons::ButtonComponent, type: :component do
 
   describe "the destructive variant" do
     it "is visually distinct from secondary, so a delete does not look ordinary" do
-      destructive = described_class::VARIANTS.fetch("destructive")
-      secondary = described_class::VARIANTS.fetch("secondary")
+      destructive = Buttons::ButtonStyles::VARIANTS.fetch("destructive")
+      secondary = Buttons::ButtonStyles::VARIANTS.fetch("secondary")
 
       expect(destructive).not_to eq(secondary)
       expect(destructive).to include("crit")
