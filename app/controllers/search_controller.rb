@@ -19,6 +19,7 @@ class SearchController < ApplicationController
 
     initialize_page_tokens
     perform_search
+    load_saved_trials
   end
 
   def show
@@ -64,6 +65,16 @@ class SearchController < ApplicationController
     if result[:next_page_token].present?
       store_page_token(current_page_num + 1, result[:next_page_token])
     end
+  end
+
+  # One query for the whole page rather than one per card. Keyed by nct_id
+  # because that is what a result row has; saved trials have their own ids and
+  # the row does not know them.
+  def load_saved_trials
+    return if current_user.blank? || @studies.blank?
+
+    nct_ids = @studies.filter_map { |study| study[:nct_id] }
+    @saved_trials_by_nct_id = current_user.saved_trials.where(nct_id: nct_ids).index_by(&:nct_id)
   end
 
   def calculate_trial_score
