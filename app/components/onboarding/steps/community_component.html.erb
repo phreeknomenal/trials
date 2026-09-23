@@ -1,0 +1,26 @@
+<%# No scroll regions. With this step to themselves the lists have the room to
+    lay out in full, and a pill small enough to fit several to a row beats a
+    bounded box you have to scroll to discover what is in it.
+
+    The pills carry px-3 py-1 and text-xs rather than px-4 py-2 and text-sm.
+    Sixty one of them have to fit, and the column is wider on this step. %>
+<div class="space-y-6">
+  <% {identity_ids: ["I am a...", Identity], interest_ids: ["Looking for...", Interest]}.each do |field, (heading, klass)| %>
+    <% next unless klass.any? %>
+    <fieldset>
+      <legend class="block text-sm font-bold text-ink dark:text-ink-2-on-dark mb-2"><%= heading %></legend>
+      <div class="flex flex-wrap gap-1.5">
+        <%= form.collection_check_boxes field, klass.all, :id, :name do |builder| %>
+          <%# relative, because sr-only is position: absolute and an absolutely
+              positioned child escapes any ancestor that is not a containing
+              block. That escape stretched the previous version of this step by
+              about a thousand pixels of empty space. %>
+          <label class="relative inline-flex items-center px-3 py-1 bg-surface dark:bg-surface-on-dark hover:bg-sky-100 dark:hover:bg-navy-900 rounded-full cursor-pointer transition-colors border border-line-2 dark:border-line-on-dark has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50 dark:has-[:checked]:bg-navy-900/50 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-focus">
+            <%= builder.check_box(class: "sr-only") %>
+            <span class="text-xs font-medium text-ink-2 dark:text-ink-2-on-dark"><%= builder.text.titleize %></span>
+          </label>
+        <% end %>
+      </div>
+    </fieldset>
+  <% end %>
+</div>

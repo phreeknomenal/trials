@@ -64,4 +64,34 @@ RSpec.describe "Onboarding step grouping" do
       expect(permitted).not_to include(:avatar)
     end
   end
+
+  # Split from one step: demographics and community are different questions with
+  # different reasons for asking, and together they could not fit a screen.
+  describe "the split" do
+    it "keeps demographics and community apart" do
+      expect(permits?("about_you", :gender_id)).to be(true)
+      expect(permits?("about_you", :identity_ids)).to be(false)
+
+      expect(permits?("community", :identity_ids)).to be(true)
+      expect(permits?("community", :interest_ids)).to be(true)
+      expect(permits?("community", :gender_id)).to be(false)
+    end
+
+    it "leaves both optional, so neither can block the app" do
+      expect(step("about_you")).not_to be_required
+      expect(step("community")).not_to be_required
+    end
+
+    # unlocked_number is required_count + 1, so an extra optional step cannot
+    # gate anyone who has already finished the required ones.
+    it "does not move the point at which the app unlocks" do
+      expect(Onboarding.unlocked_number).to eq(Onboarding.steps.count(&:required?) + 1)
+    end
+  end
+
+  # Every count and label on the wizard is derived, so splitting a step cannot
+  # leave "7 questions" on a screen that now has eight.
+  it "counts its own steps rather than stating a number" do
+    expect(Onboarding.count).to eq(Onboarding.steps.length)
+  end
 end

@@ -1,75 +1,19 @@
-<div class="space-y-4">
-  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-    <%# Takes the autofocus that pronouns used to carry, pronouns having moved to
-        step one. Without it the step opens with nothing focused. %>
-    <%= render Forms::FieldComponent.new(
-      form: form, attribute: :gender_id, field_type: :select, label: "Gender",
-      select_options: Gender.all.map { |gender| [gender.name.titleize, gender.id] },
-      options: {include_blank: "Prefer not to say", autofocus: true, data: {onboarding_target: "firstField"}}
-    ) %>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+  <%= render Forms::FieldComponent.new(
+    form: form, attribute: :gender_id, field_type: :select, label: "Gender",
+    select_options: Gender.all.map { |gender| [gender.name.titleize, gender.id] },
+    options: {include_blank: "Prefer not to say", autofocus: true, data: {onboarding_target: "firstField"}}
+  ) %>
 
-    <%= render Forms::FieldComponent.new(
-      form: form, attribute: :race_id, field_type: :select, label: "Race",
-      select_options: Race.all.map { |race| [race.name.titleize, race.id] },
-      options: {include_blank: "Prefer not to say"}
-    ) %>
+  <%= render Forms::FieldComponent.new(
+    form: form, attribute: :race_id, field_type: :select, label: "Race",
+    select_options: Race.all.map { |race| [race.name.titleize, race.id] },
+    options: {include_blank: "Prefer not to say"}
+  ) %>
 
-    <%= render Forms::FieldComponent.new(
-      form: form, attribute: :ethnicity, field_type: :select, label: "Ethnicity",
-      select_options: ethnicity_options,
-      options: {include_blank: "Prefer not to say"}
-    ) %>
-  </div>
-
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-  <% if Identity.any? %>
-    <div>
-      <label class="block text-sm font-bold text-ink dark:text-ink-2-on-dark mb-2">I am a...</label>
-      <%# Bounded rather than left to grow: sixty one pills between the two lists
-          ran this step well past a screen.
-
-          relative is load bearing. Each pill hides its checkbox with sr-only,
-          which is position: absolute, and an absolutely positioned child is only
-          clipped by an overflow ancestor that is also a containing block. While
-          this was static the inputs escaped to the root and stretched the page by
-          about a thousand pixels of empty space below the form, which is what
-          made the step feel long even once the visible content fitted. %>
-      <div class="relative max-h-40 overflow-y-auto overscroll-contain rounded-card border border-line dark:border-line-on-dark bg-surface-2/50 dark:bg-surface-on-dark/40 p-3">
-        <div class="flex flex-wrap gap-2">
-        <%= form.collection_check_boxes :identity_ids, Identity.all, :id, :name do |builder| %>
-          <label class="inline-flex items-center px-4 py-2 bg-surface dark:bg-surface-on-dark hover:bg-sky-100 dark:hover:bg-navy-900 rounded-full cursor-pointer transition-colors border-2 border-transparent has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50 dark:has-[:checked]:bg-navy-900/50 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-focus">
-            <%= builder.check_box(class: "sr-only") %>
-            <span class="text-sm font-medium text-ink-2 dark:text-ink-2-on-dark"><%= builder.text.titleize %></span>
-          </label>
-          <% end %>
-        </div>
-      </div>
-    </div>
-  <% end %>
-
-  <% if Interest.any? %>
-    <div>
-      <label class="block text-sm font-bold text-ink dark:text-ink-2-on-dark mb-2">Looking for...</label>
-      <%# Bounded rather than left to grow: sixty one pills between the two lists
-          ran this step well past a screen.
-
-          relative is load bearing. Each pill hides its checkbox with sr-only,
-          which is position: absolute, and an absolutely positioned child is only
-          clipped by an overflow ancestor that is also a containing block. While
-          this was static the inputs escaped to the root and stretched the page by
-          about a thousand pixels of empty space below the form, which is what
-          made the step feel long even once the visible content fitted. %>
-      <div class="relative max-h-40 overflow-y-auto overscroll-contain rounded-card border border-line dark:border-line-on-dark bg-surface-2/50 dark:bg-surface-on-dark/40 p-3">
-        <div class="flex flex-wrap gap-2">
-        <%= form.collection_check_boxes :interest_ids, Interest.all, :id, :name do |builder| %>
-          <label class="inline-flex items-center px-4 py-2 bg-surface dark:bg-surface-on-dark hover:bg-sky-100 dark:hover:bg-navy-900 rounded-full cursor-pointer transition-colors border-2 border-transparent has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50 dark:has-[:checked]:bg-navy-900/50 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-focus">
-            <%= builder.check_box(class: "sr-only") %>
-            <span class="text-sm font-medium text-ink-2 dark:text-ink-2-on-dark"><%= builder.text.titleize %></span>
-          </label>
-          <% end %>
-        </div>
-      </div>
-    </div>
-  <% end %>
-  </div>
+  <%= render Forms::FieldComponent.new(
+    form: form, attribute: :ethnicity, field_type: :select, label: "Ethnicity",
+    select_options: ethnicity_options,
+    options: {include_blank: "Prefer not to say"}
+  ) %>
 </div>

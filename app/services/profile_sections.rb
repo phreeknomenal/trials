@@ -80,7 +80,17 @@ class ProfileSections
       blurb: "Helps studies report who takes part. It changes nothing about your matches.",
       impact: :none,
       fields: %i[race_id gender_id ethnicity],
-      permitted: [:race_id, :gender_id, :ethnicity, {identity_ids: [], interest_ids: []}]
+      permitted: %i[race_id gender_id ethnicity]
+    ),
+    Section.new(
+      slug: "community",
+      heading: "What brings you here",
+      blurb: "For finding people looking for the same things. It changes no score.",
+      impact: :none,
+      # Rendered by the wizard's step rather than a generic field, so :fields is
+      # empty here and the section links across instead of duplicating it.
+      fields: [],
+      permitted: [{identity_ids: [], interest_ids: []}]
     ),
     Section.new(
       slug: "contact",

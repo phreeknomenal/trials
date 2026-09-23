@@ -19,7 +19,8 @@ class Onboarding::PanelComponent < ApplicationComponent
     "conditions" => %i[conditions],
     "logistics" => %i[location],
     "preferences" => %i[study_type phase_risk],
-    "about_you" => []
+    "about_you" => [],
+    "community" => []
   }.freeze
 
   NOTES = {
@@ -29,7 +30,8 @@ class Onboarding::PanelComponent < ApplicationComponent
     "conditions" => "The largest single factor. Everything else adjusts a ranking; this decides which studies are in it at all.",
     "logistics" => "Distance changes the ranking, not the list. A study further than you would travel drops down rather than disappearing.",
     "preferences" => "Answer only if you have a view. Left blank, these score neutrally rather than against you.",
-    "about_you" => "None of this affects matching. It helps studies report who takes part, and connects you with people looking for the same things. You can skip it."
+    "about_you" => "None of this affects matching. It is what lets a study report who took part, which is how under-representation gets noticed at all. You can skip it.",
+    "community" => "Nothing here changes a score. It is for finding people looking for the same things, and you can skip it."
   }.freeze
 
   # Reference rather than persuasion: the prompt already says to answer only if

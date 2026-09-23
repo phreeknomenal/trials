@@ -80,12 +80,22 @@ module Onboarding
       required: false,
       permitted: [:trial_type_preference, :risk_tolerance]
     ),
+    # Split from one step. Demographics and community are different questions
+    # with different reasons for asking, and together they made a step that
+    # could not fit a screen. Neither needs the other on the page.
     Step.new(
       slug: "about_you",
       heading: "Anything else you would like to share?",
-      prompt: "None of this affects matching. It helps studies report who takes part, and connects you with people looking for the same things.",
+      prompt: "None of this affects matching. It is what lets a study report who took part, which is how under-representation gets noticed at all.",
       required: false,
-      permitted: [:gender_id, :race_id, :ethnicity, {identity_ids: [], interest_ids: []}]
+      permitted: [:gender_id, :race_id, :ethnicity]
+    ),
+    Step.new(
+      slug: "community",
+      heading: "What brings you here?",
+      prompt: "Pick as many as you like, or none. This is for finding people looking for the same things, and it changes no score.",
+      required: false,
+      permitted: [{identity_ids: [], interest_ids: []}]
     )
   ].freeze
 
