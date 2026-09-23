@@ -1,64 +1,90 @@
-<div class="min-h-screen flex flex-col items-center justify-center px-4 py-10"
+<%# Mirrored from the sign-in split: the form on the left, the context on the
+    right. Sign-in puts the brand panel first because there is nothing to do
+    until you read it; here the form is the work, so it leads. %>
+<div class="min-h-screen grid grid-cols-1 lg:grid-cols-2"
      data-controller="onboarding"
      data-action="keydown->onboarding#submitOnEnter">
-  <div class="w-full max-w-xl">
 
-    <div class="mb-8">
-      <div class="flex items-center justify-between mb-2 text-sm font-medium text-ink-3 dark:text-ink-3-on-dark">
-        <span>Step <%= step.number %> of <%= total %></span>
-        <span><%= percent_complete %>%</span>
+  <%# Centred vertically, so a three field step does not sit at the top of an
+      otherwise empty screen. %>
+  <%# White explicitly, not inherited. The onboarding layout's body is
+      bg-surface-2, which is right for a full bleed page and wrong behind a form:
+      the column picked up the tint and the split read as two greys. %>
+  <div class="flex items-center justify-center px-5 py-10 lg:px-12 bg-surface dark:bg-surface-on-dark">
+    <div class="w-full <%= column_class %>">
+
+      <div class="mb-8">
+        <div class="flex items-center justify-between mb-2 text-sm font-medium text-ink-3 dark:text-ink-3-on-dark">
+          <span>Step <%= step.number %> of <%= total %></span>
+          <span><%= percent_complete %>%</span>
+        </div>
+        <div class="h-2 w-full rounded-full bg-line dark:bg-surface-2-on-dark overflow-hidden">
+          <div class="h-full rounded-full bg-navy-600 transition-all duration-300"
+               style="width: <%= percent_complete %>%"></div>
+        </div>
       </div>
-      <div class="h-2 w-full rounded-full bg-line dark:bg-surface-2-on-dark overflow-hidden">
-        <div class="h-full rounded-full bg-navy-600 transition-all duration-300"
-             style="width: <%= percent_complete %>%"></div>
+
+      <h1 class="text-3xl font-bold text-ink dark:text-ink-on-dark mb-2"><%= step.heading %></h1>
+      <p class="text-ink-3 dark:text-ink-3-on-dark mb-8"><%= step.prompt %></p>
+
+      <% if errors.any? %>
+        <div class="mb-6 rounded-flash border border-crit/30 dark:border-crit-on-dark bg-crit/10 dark:bg-crit-on-dark/30 p-4">
+          <ul class="text-sm text-crit dark:text-crit-on-dark space-y-1">
+            <% errors.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <%= form_with model: profile,
+                    url: onboarding_step_path(step: step.slug),
+                    method: :patch,
+                    html: {multipart: true},
+                    data: {turbo_action: "advance"} do |form| %>
+        <div class="bg-surface dark:bg-surface-on-dark rounded-panel shadow-sm border border-line dark:border-line-on-dark p-6 mb-6">
+          <%= render step.component.new(form: form, profile: profile) %>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <% if previous_step %>
+            <%= link_to "Back",
+                  onboarding_step_path(step: previous_step.slug),
+                  class: "text-sm font-medium text-ink-3 dark:text-ink-3-on-dark hover:text-ink-2 dark:hover:text-ink-on-dark" %>
+          <% else %>
+            <span></span>
+          <% end %>
+
+          <%= form.submit button_label,
+                class: "px-8 py-3 bg-navy-600 hover:bg-navy-700 text-white font-bold rounded-control cursor-pointer transition-colors shadow-lg" %>
+        </div>
+      <% end %>
+
+      <%# Outside the step form on purpose: a nested form is invalid HTML, and this
+          must not carry the step's fields. %>
+      <% if skippable? %>
+        <div class="mt-4 text-center">
+          <%= button_to "Skip this step",
+                skip_onboarding_step_path(step: step.slug),
+                method: :post,
+                class: "text-sm font-medium text-ink-3 dark:text-ink-3-on-dark hover:text-ink-2 dark:hover:text-ink-on-dark underline cursor-pointer" %>
+        </div>
+        <% end %>
       </div>
     </div>
 
-    <h1 class="text-3xl font-bold text-ink dark:text-ink-on-dark mb-2"><%= step.heading %></h1>
-    <p class="text-ink-3 dark:text-ink-3-on-dark mb-8"><%= step.prompt %></p>
+  <%# Same treatment as the sign-in panel, shifted slightly so the two are not
+      pixel-identical when someone signs up and lands straight in the wizard. %>
+  <%# Pinned, so a long step scrolls its form without dragging the explanation
+      off the screen. The about_you step is the reason: it carries sixty one
+      pills and runs well past one screen even with both lists bounded. %>
+  <aside class="relative hidden lg:flex items-center overflow-hidden px-12 py-10 lg:sticky lg:top-0 lg:h-screen
+                bg-[linear-gradient(180deg,#EDF2FB_0%,#F6F9FD_60%,#FFFFFF_100%)]
+                dark:bg-[linear-gradient(180deg,#141A26_0%,#1D2534_60%,#0C1017_100%)]">
+    <%= render "shared/panel_backdrop", id: "wizard", blob_x: 600, blob_y: 130, blob_r: 220, pill_y: 520, dots_x: 470, dots_y: 640 %>
 
-    <% if errors.any? %>
-      <div class="mb-6 rounded-flash border border-crit/30 dark:border-crit-on-dark bg-crit/10 dark:bg-crit-on-dark/30 p-4">
-        <ul class="text-sm text-crit dark:text-crit-on-dark space-y-1">
-          <% errors.each do |message| %>
-            <li><%= message %></li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
-
-    <%= form_with model: profile,
-                  url: onboarding_step_path(step: step.slug),
-                  method: :patch,
-                  html: {multipart: true},
-                  data: {turbo_action: "advance"} do |form| %>
-      <div class="bg-surface dark:bg-surface-on-dark rounded-panel shadow-sm border border-line dark:border-line-on-dark p-6 mb-6">
-        <%= render step.component.new(form: form, profile: profile) %>
-      </div>
-
-      <div class="flex items-center justify-between">
-        <% if previous_step %>
-          <%= link_to "Back",
-                onboarding_step_path(step: previous_step.slug),
-                class: "text-sm font-medium text-ink-3 dark:text-ink-3-on-dark hover:text-ink-2 dark:hover:text-ink-on-dark" %>
-        <% else %>
-          <span></span>
-        <% end %>
-
-        <%= form.submit button_label,
-              class: "px-8 py-3 bg-navy-600 hover:bg-navy-700 text-white font-bold rounded-control cursor-pointer transition-colors shadow-lg" %>
-      </div>
-    <% end %>
-
-    <%# Outside the step form on purpose: a nested form is invalid HTML, and this
-        must not carry the step's fields. %>
-    <% if skippable? %>
-      <div class="mt-4 text-center">
-        <%= button_to "Skip this step",
-              skip_onboarding_step_path(step: step.slug),
-              method: :post,
-              class: "text-sm font-medium text-ink-3 dark:text-ink-3-on-dark hover:text-ink-2 dark:hover:text-ink-on-dark underline cursor-pointer" %>
-      </div>
-    <% end %>
-  </div>
+    <div class="relative w-full max-w-md">
+      <%= render Onboarding::PanelComponent.new(step: step) %>
+    </div>
+  </aside>
 </div>

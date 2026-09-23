@@ -22,7 +22,10 @@ class ApplicationController < ActionController::Base
   end
 
   def layout
-    user_validated? ? "application" : "unauthenticated"
+    return "auth" if devise_controller?
+    return "application" if user_validated?
+
+    "unauthenticated"
   end
 
   def user_validated?

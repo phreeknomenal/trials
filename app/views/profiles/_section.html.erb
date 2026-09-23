@@ -30,8 +30,23 @@
 
   <% if editing %>
     <%= form_with model: profile, url: profile_path(profile, section: section.slug), method: :patch, class: "flex flex-col gap-4" do |f| %>
+      <%# The photo has its own control rather than a generic field, and belongs
+          with the names, which is where the wizard collects it. %>
+      <% if section.slug == "about_you" %>
+        <%= render Forms::ImageUploadComponent.new(
+              form: f, attribute: :avatar, current: profile.avatar, initials: profile.initials
+            ) %>
+      <% end %>
+
       <% section.fields.each do |field| %>
         <%= render Forms::FieldComponent.new(**profile_field_args(f, field)) %>
+      <% end %>
+
+      <% if section.slug == "community" %>
+        <p class="text-sm text-ink-3 dark:text-ink-3-on-dark">
+          Edited on the step that collects it, which handles the pill lists.
+          <%= link_to "Choose what brings you here", onboarding_step_path("community"), class: "font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>
+        </p>
       <% end %>
 
       <% if section.slug == "health" %>
@@ -55,6 +70,29 @@
 
   <% else %>
     <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
+      <% if section.slug == "community" %>
+        <p class="text-sm text-ink-3 dark:text-ink-3-on-dark">
+          Edited on the step that collects it, which handles the pill lists.
+          <%= link_to "Choose what brings you here", onboarding_step_path("community"), class: "font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>
+        </p>
+      <% end %>
+
+      <% if section.slug == "community" %>
+        <div class="sm:col-span-2">
+          <dt class="text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Selected</dt>
+          <dd class="mt-1 flex flex-wrap gap-1.5">
+            <% tags = profile.identities.to_a + profile.interests.to_a %>
+            <% if tags.any? %>
+              <% tags.each do |tag| %>
+                <span class="inline-flex items-center rounded-chip bg-surface-2 dark:bg-surface-2-on-dark px-2.5 py-1 text-sm font-semibold text-ink-2 dark:text-ink-2-on-dark"><%= tag.name.titleize %></span>
+              <% end %>
+            <% else %>
+              <span class="text-sm text-ink-4 dark:text-ink-4-on-dark">Nothing chosen</span>
+            <% end %>
+          </dd>
+        </div>
+      <% end %>
+
       <% if section.slug == "health" %>
         <div class="sm:col-span-2">
           <dt class="text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Conditions</dt>

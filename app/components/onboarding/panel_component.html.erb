@@ -1,0 +1,43 @@
+<div class="flex flex-col gap-6">
+  <div>
+    <p class="text-xs font-bold uppercase tracking-wide text-sky-700 dark:text-sky-300 mb-2">What this answer does</p>
+    <p class="text-lg leading-snug text-ink dark:text-ink-on-dark"><%= note %></p>
+  </div>
+
+  <% if scores_anything? %>
+    <%# One measure at one setting, so one bar and one hue. The number is read
+        from TrialScorer::WEIGHTS rather than written out here. %>
+    <div class="rounded-card border border-line dark:border-line-on-dark bg-surface/70 dark:bg-surface-on-dark/70 p-4">
+      <div class="flex items-baseline justify-between gap-3 mb-2">
+        <span class="text-sm font-semibold text-ink dark:text-ink-2-on-dark">How much it counts</span>
+        <span class="text-sm font-bold tabular-nums text-sky-700 dark:text-sky-300"><%= weight %> of 100</span>
+      </div>
+      <div class="h-2 rounded-full bg-surface-2 dark:bg-surface-2-on-dark overflow-hidden">
+        <div class="h-full rounded-full bg-navy-600 dark:bg-sky-400" style="width: <%= weight %>%"></div>
+      </div>
+    </div>
+  <% else %>
+    <p class="rounded-card border border-line dark:border-line-on-dark bg-surface/70 dark:bg-surface-on-dark/70 p-4 text-sm text-ink-2 dark:text-ink-2-on-dark">
+      This step changes no score. You can skip it and come back.
+    </p>
+  <% end %>
+
+  <% if phases? %>
+    <div>
+      <p class="text-xs font-bold uppercase tracking-wide text-sky-700 dark:text-sky-300 mb-3">What the phases mean</p>
+      <dl class="flex flex-col gap-3">
+        <% phases.each do |name, meaning| %>
+          <div>
+            <dt class="text-sm font-bold text-ink dark:text-ink-2-on-dark"><%= name %></dt>
+            <dd class="text-sm text-ink-2 dark:text-ink-2-on-dark leading-relaxed"><%= meaning %></dd>
+          </div>
+        <% end %>
+      </dl>
+    </div>
+  <% end %>
+
+  <p class="text-sm text-ink-3 dark:text-ink-3-on-dark leading-relaxed">
+    <%= Onboarding.count %> questions, about two minutes.
+    <%= Onboarding.steps.count(&:required?) %> are required, the rest you can skip.
+  </p>
+</div>

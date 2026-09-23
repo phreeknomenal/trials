@@ -1,27 +1,17 @@
-<div class="w-full flex items-center justify-center">
-  <div class="w-1/3 py-24">
-    <div class="w-full border border-line-2 dark:border-line-on-dark rounded-panel overflow-hidden">
-      <div class="p-10">
-        <h3 class="text-2xl font-semibold font-accent text-sky-600 leading-none">Reset your password</h3>
-        <h1 class="text-6xl font-bold leading-none text-ink dark:text-ink-2-on-dark">Dira<span class="font-light text-ink-3 dark:text-ink-3-on-dark"> Health</span></h1>
-        <h2 class="text-md text-ink-3 dark:text-ink-3-on-dark mb-10">Enter your email address and we'll send you instructions to reset your password.</h2>
-
-        <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-          <%= render "devise/shared/error_messages", resource: resource %>
-
-          <div class="field mb-6">
-            <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "Email address", class: "w-full border border-line-2 dark:border-line-on-dark rounded-control text-ink-3 dark:text-ink-3-on-dark placeholder:text-ink-3 dark:placeholder:text-ink-3-on-dark p-5 mb-2" %>
-          </div>
-
-          <div class="actions mt-10">
-            <%= f.submit "Send reset instructions", class: "w-full bg-navy-600 text-white font-medium py-3 px-4 rounded-control hover:bg-navy-700 transition-all duration-300 cursor-pointer" %>
-          </div>
-        <% end %>
-
-        <div class="flex items-center justify-between mt-20">
-          <p class="text-ink-3">Remember your password? <%= link_to "Log in", new_user_session_path, class: "text-sky-600 hover:text-sky-700 transition-all duration-300 cursor-pointer" %></p>
-        </div>
-      </div>
+<%= render layout: "devise/shared/auth_shell", locals: {
+      heading: "Reset your password",
+      blurb: "Enter the email you signed up with and we will send a link to set a new password."
+    } do %>
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: {method: :post, class: "flex flex-col gap-4"}) do |f| %>
+    <div>
+      <%= f.label :email, "Email", class: Forms::FieldStyles::LABEL %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: Forms::FieldStyles.input %>
     </div>
-  </div>
-</div>
+
+    <%= f.button "Send reset link", type: "submit", class: "#{Buttons::ButtonStyles.classes("primary", size: "px-4 py-2.5 text-base")} w-full mt-2" %>
+  <% end %>
+
+  <p class="mt-6 text-sm text-ink-3 dark:text-ink-3-on-dark">
+    <%= link_to "Back to sign in", new_session_path(resource_name), class: "font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>
+  </p>
+<% end %>

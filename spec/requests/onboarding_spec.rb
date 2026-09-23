@@ -10,14 +10,21 @@ RSpec.describe "Onboarding wizard", type: :request do
   # restating the fields each screen wants.
   def payload_for(slug)
     {
-      "identity" => {first_name: "M", last_name: "B"},
+      "identity" => {first_name: "M", last_name: "B", pronouns: Profile::HE_HIM},
       "basics" => {birth_year: 1986},
       "location" => {zip_code: "44106"},
       "conditions" => {no_conditions: "1"},
       "logistics" => {willing_travel_miles: Profile::FIFTY_MILES},
       "preferences" => {risk_tolerance: Profile::TESTED},
-      "about_you" => {pronouns: Profile::HE_HIM}
+      "about_you" => {ethnicity: Profile::NOT_HISPANIC_OR_LATINO},
+      "community" => {interest_ids: []}
     }.fetch(slug)
+  end
+
+  # Fails loudly rather than skipping a step nobody wrote a payload for, which
+  # would leave the wizard specs silently covering less than every step.
+  it "has a payload for every step" do
+    expect { Onboarding.steps.each { |step| payload_for(step.slug) } }.not_to raise_error
   end
 
   def submit(slug) = patch(step_path(slug), params: {profile: payload_for(slug)})
@@ -279,7 +286,7 @@ RSpec.describe "Onboarding wizard", type: :request do
     end
 
     it "completes the wizard when the last step is skipped" do
-      %w[logistics preferences about_you].each { |slug| post skip_onboarding_step_path(step: slug) }
+      Onboarding.steps.reject(&:required?).each { |step| post skip_onboarding_step_path(step: step.slug) }
 
       expect(response).to redirect_to(root_path)
       expect(profile.reload).to be_profile_completed

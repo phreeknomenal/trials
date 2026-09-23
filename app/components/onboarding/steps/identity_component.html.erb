@@ -1,11 +1,24 @@
 <div class="space-y-5">
-  <%= render Forms::FieldComponent.new(
-    form: form, attribute: :first_name, field_type: :text, label: "First name",
-    options: {autofocus: true, autocomplete: "given-name", data: {onboarding_target: "firstField"}}
-  ) %>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+    <%= render Forms::FieldComponent.new(
+      form: form, attribute: :first_name, label: "First name",
+      options: {autofocus: true, data: {onboarding_target: "firstField"}}
+    ) %>
+
+    <%= render Forms::FieldComponent.new(
+      form: form, attribute: :last_name, label: "Last name"
+    ) %>
+  </div>
 
   <%= render Forms::FieldComponent.new(
-    form: form, attribute: :last_name, field_type: :text, label: "Last name",
-    options: {autocomplete: "family-name"}
+    form: form, attribute: :pronouns, field_type: :select, label: "Pronouns",
+    select_options: pronoun_options,
+    options: {include_blank: "Prefer not to say"},
+    hint: "Shown only to you, in this app."
   ) %>
+
+  <%= render Forms::ImageUploadComponent.new(
+        form: form, attribute: :avatar,
+        current: form.object.avatar, initials: form.object.initials
+      ) %>
 </div>

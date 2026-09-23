@@ -34,9 +34,14 @@ module Onboarding
     Step.new(
       slug: "identity",
       heading: "First, what should we call you?",
-      prompt: "This is only used to personalise the app. It is never sent to a study team.",
+      prompt: "This is only used to personalise the app. None of it is sent to a study team.",
       required: true,
-      permitted: [:first_name, :last_name]
+      # Pronouns and the photo live here rather than on the last step. They are
+      # the same question this step already asks, how to address you and how you
+      # appear, and they answer to the same promise in the prompt. On about_you
+      # they sat among demographics they have nothing to do with, and the photo
+      # was the tallest thing on a step that was already too long.
+      permitted: [:first_name, :last_name, :pronouns, :avatar]
     ),
     Step.new(
       slug: "basics",
@@ -75,12 +80,22 @@ module Onboarding
       required: false,
       permitted: [:trial_type_preference, :risk_tolerance]
     ),
+    # Split from one step. Demographics and community are different questions
+    # with different reasons for asking, and together they made a step that
+    # could not fit a screen. Neither needs the other on the page.
     Step.new(
       slug: "about_you",
       heading: "Anything else you would like to share?",
-      prompt: "None of this affects matching. It personalises the app and helps studies report who takes part.",
+      prompt: "None of this affects matching. It is what lets a study report who took part, which is how under-representation gets noticed at all.",
       required: false,
-      permitted: [:avatar, :pronouns, :gender_id, :race_id, :ethnicity, {identity_ids: [], interest_ids: []}]
+      permitted: [:gender_id, :race_id, :ethnicity]
+    ),
+    Step.new(
+      slug: "community",
+      heading: "What brings you here?",
+      prompt: "Pick as many as you like, or none. This is for finding people looking for the same things, and it changes no score.",
+      required: false,
+      permitted: [{identity_ids: [], interest_ids: []}]
     )
   ].freeze
 

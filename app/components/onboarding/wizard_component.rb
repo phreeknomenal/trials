@@ -8,6 +8,15 @@ class Onboarding::WizardComponent < ApplicationComponent
     @step = step
   end
 
+  # The community step lays out sixty one pills. At the column width every other
+  # step uses that is far more rows than fit a screen, and the step has nothing
+  # else on it to compete for the width.
+  WIDE_STEPS = %w[community].freeze
+
+  def column_class
+    WIDE_STEPS.include?(step.slug) ? "max-w-3xl" : "max-w-xl"
+  end
+
   def total
     Onboarding.count
   end

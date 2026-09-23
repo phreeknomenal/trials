@@ -1,43 +1,50 @@
-<h2>Edit <%= resource_name.to_s.humanize %></h2>
+<%= render layout: "devise/shared/auth_shell", locals: {
+      heading: "Account and email",
+      blurb: "Your sign-in details. Everything a study is scored against lives on your profile instead."
+    } do %>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: {method: :put, class: "flex flex-col gap-4"}) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+    <div>
+      <%= f.label :email, "Email", class: Forms::FieldStyles::LABEL %>
+      <%= f.email_field :email, autocomplete: "email", class: Forms::FieldStyles.input(invalid: resource.errors[:email].any?) %>
+    </div>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
+    <div class="pt-2 border-t border-line dark:border-line-on-dark">
+      <p class="<%= Forms::FieldStyles::LABEL %> mt-4">Change your password</p>
+      <p class="<%= Forms::FieldStyles::HINT %> mb-3">Leave these blank to keep the one you have.</p>
 
-  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-    <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
+      <div class="flex flex-col gap-4">
+        <div>
+          <%= f.label :password, "New password", class: Forms::FieldStyles::LABEL %>
+          <%= f.password_field :password, autocomplete: "new-password", class: Forms::FieldStyles.input(invalid: resource.errors[:password].any?) %>
+          <% if @minimum_password_length %>
+            <p class="<%= Forms::FieldStyles::HINT %>"><%= @minimum_password_length %> characters minimum.</p>
+          <% end %>
+        </div>
+
+        <div>
+          <%= f.label :password_confirmation, "Confirm new password", class: Forms::FieldStyles::LABEL %>
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", class: Forms::FieldStyles.input(invalid: resource.errors[:password_confirmation].any?) %>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-2 border-t border-line dark:border-line-on-dark">
+      <%= f.label :current_password, "Current password", class: "#{Forms::FieldStyles::LABEL} mt-4" %>
+      <%= f.password_field :current_password, autocomplete: "current-password", class: Forms::FieldStyles.input(invalid: resource.errors[:current_password].any?) %>
+      <p class="<%= Forms::FieldStyles::HINT %>">Needed to confirm any change here.</p>
+    </div>
+
+    <%= f.button "Save changes", type: "submit", class: "#{Buttons::ButtonStyles.classes("primary", size: "px-4 py-2.5 text-base")} w-full mt-2" %>
   <% end %>
 
-  <div class="field">
-    <%= f.label :password %> <i>(leave blank if you don't want to change it)</i><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
-    <% if @minimum_password_length %>
-      <br />
-      <em><%= @minimum_password_length %> characters minimum</em>
-    <% end %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br />
-    <%= f.password_field :current_password, autocomplete: "current-password" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Update" %>
+  <div class="mt-8 pt-6 border-t border-line dark:border-line-on-dark flex flex-wrap items-center justify-between gap-3">
+    <%= link_to "Back to your profile", profile_path(current_user.profile), class: "text-sm font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>
+    <%# Deleting an account takes the saved studies and the health profile with
+        it, so the consequence is stated rather than left to a browser confirm. %>
+    <%= button_to "Delete my account", registration_path(resource_name), method: :delete,
+          form: {data: {turbo_confirm: "This deletes your account, your saved studies and your health profile. It cannot be undone."}},
+          class: Buttons::ButtonStyles.classes("destructive", size: "px-3 py-1.5 text-sm") %>
   </div>
 <% end %>
-
-<h3>Cancel my account</h3>
-
-<div>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete %></div>
-
-<%= link_to "Back", :back %>

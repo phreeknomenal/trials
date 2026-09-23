@@ -1,0 +1,86 @@
+<%# The split every Devise screen sits in: what an account is for on the left,
+    the form on the right. One partial, because six screens each carrying their
+    own copy of the panel is how they stop agreeing about what signing in buys.
+
+    The panel is deliberately not a sales pitch. Search works signed out, and
+    saying so is more honest than implying a wall that is not there. %>
+<div class="min-h-screen grid grid-cols-1 lg:grid-cols-2">
+
+  <%# Light, not navy. The panel is a gradient with oversized low-contrast shapes
+      running off its edges, which is the app's signature treatment; a flat fill
+      loses it entirely and makes the split read as two unrelated halves. %>
+  <aside class="relative hidden lg:flex flex-col justify-between overflow-hidden p-12
+                bg-[linear-gradient(180deg,#EDF2FB_0%,#F6F9FD_60%,#FFFFFF_100%)]
+                dark:bg-[linear-gradient(180deg,#141A26_0%,#1D2534_60%,#0C1017_100%)]">
+    <%= render "shared/panel_backdrop", id: "auth" %>
+
+    <a href="<%= root_path %>" class="relative flex items-center gap-2.5">
+      <svg width="17" height="31" viewBox="0 0 64 116" aria-hidden="true">
+        <path d="M30.6 0 L30.6 116 L0 96 Z" fill="#2E4386"></path>
+        <path d="M33.4 0 L33.4 116 L64 96 Z" fill="#489AD9"></path>
+      </svg>
+      <span class="text-2xl tracking-tight text-ink dark:text-ink-on-dark"><span class="font-extrabold">Dira</span><span class="font-light text-ink-3 dark:text-ink-3-on-dark"> Health</span></span>
+    </a>
+
+    <div class="relative max-w-md">
+      <h2 class="text-3xl font-bold tracking-tight text-ink dark:text-ink-on-dark leading-tight">
+        Everything you have looked at, in one place
+      </h2>
+      <p class="mt-3 text-ink-2 dark:text-ink-2-on-dark leading-relaxed">
+        The studies you saved, your notes on each one, and which teams have replied.
+      </p>
+
+      <ul class="mt-8 flex flex-col gap-4">
+        <% [
+             "Your saved studies, waiting where you left them",
+             "Scored against your own profile",
+             "Nothing shared with a study team until you send it"
+           ].each do |line| %>
+          <li class="flex items-start gap-2.5">
+            <span class="shrink-0 mt-0.5 text-sky-600 dark:text-sky-400">
+              <%= render Utilities::IconComponent.new("check_circle", size: 5) %>
+            </span>
+            <span class="text-ink-2 dark:text-ink-2-on-dark"><%= line %></span>
+          </li>
+        <% end %>
+      </ul>
+
+      <p class="mt-8 text-sm text-ink-3 dark:text-ink-3-on-dark leading-relaxed">
+        Search works without an account. Signing in is for keeping track.
+      </p>
+    </div>
+
+    <p class="relative text-xs text-ink-4 dark:text-ink-4-on-dark">
+      &copy; <%= Time.current.year %> Dira Health
+    </p>
+  </aside>
+
+  <%# Stated rather than inherited, for the same reason the wizard states it: a
+      form column that takes its ground from whichever layout renders it changes
+      colour when the layout does. %>
+  <main class="flex items-center justify-center p-6 sm:p-10 lg:p-12 bg-surface dark:bg-surface-on-dark">
+    <div class="w-full max-w-md">
+      <a href="<%= root_path %>" class="lg:hidden flex items-center gap-2 mb-8">
+        <svg width="16" height="29" viewBox="0 0 64 116" aria-hidden="true">
+          <path d="M30.6 0 L30.6 116 L0 96 Z" fill="#2E4386"></path>
+          <path d="M33.4 0 L33.4 116 L64 96 Z" fill="#489AD9"></path>
+        </svg>
+        <span class="text-xl tracking-tight text-ink dark:text-ink-on-dark"><span class="font-extrabold">Dira</span><span class="font-light text-ink-3 dark:text-ink-3-on-dark"> Health</span></span>
+      </a>
+
+      <h1 class="text-2xl font-bold tracking-tight text-ink dark:text-ink-on-dark"><%= heading %></h1>
+      <% if local_assigns[:blurb].present? %>
+        <p class="mt-2 text-ink-3 dark:text-ink-3-on-dark leading-relaxed"><%= blurb %></p>
+      <% end %>
+
+      <%# In the form column rather than at the top of the page. On a full height
+          split a message pinned above both halves belongs to neither, and this
+          one is almost always about the form. %>
+      <%= render Shared::FlashMessagesComponent.new(flash: flash) %>
+
+      <div class="mt-8">
+        <%= yield %>
+      </div>
+    </div>
+  </main>
+</div>
