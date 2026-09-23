@@ -50,7 +50,10 @@ module ProfileFieldsHelper
 
   ASSOCIATIONS = {race_id: Race, gender_id: Gender}.freeze
 
-  TEXT_AREAS = %i[about].freeze
+  # about is has_rich_text, so it is neither a column nor a text area: reading it
+  # returns an ActionText::RichText whose to_s is a full HTML document, layout
+  # comments and all.
+  RICH_TEXT = %i[about].freeze
 
   def profile_field_label(field) = LABELS.fetch(field, field.to_s.humanize)
 
@@ -67,8 +70,8 @@ module ProfileFieldsHelper
       args.merge(field_type: :checkbox)
     elsif NUMBERS.include?(field)
       args.merge(field_type: :number)
-    elsif TEXT_AREAS.include?(field)
-      args.merge(field_type: :text_area)
+    elsif RICH_TEXT.include?(field)
+      args.merge(field_type: :rich_text)
     else
       args.merge(field_type: :text)
     end
@@ -81,6 +84,15 @@ module ProfileFieldsHelper
       return unanswered_profile_field unless profile.public_send(field)
 
       return ASSOCIATIONS[field].find_by(id: profile.public_send(field))&.name || unanswered_profile_field
+    end
+
+    if RICH_TEXT.include?(field)
+      body = profile.public_send(field)
+      return unanswered_profile_field if body.blank?
+
+      # Rendered as rich text rather than stringified. to_s here emits the
+      # action_text layout, ERB comments included, which is what reached the page.
+      return tag.div(body, class: "prose prose-sm dark:prose-invert max-w-none")
     end
 
     value = profile.public_send(field)

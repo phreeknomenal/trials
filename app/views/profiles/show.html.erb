@@ -4,7 +4,13 @@
     <aside class="lg:w-[260px] shrink-0">
       <div class="lg:sticky lg:top-6 flex flex-col gap-5">
         <div class="flex items-center gap-3">
-          <%= render Utilities::AvatarComponent.new(avatar: @profile.avatar, initials: @profile.initials, size: 56) %>
+          <%# AvatarComponent is w-full h-full by design: its own comment says the
+              wrapper governs layout. Without a sized, non-shrinking box it
+              stretches to whatever the flex row gives it, which rendered the
+              initials as a wide pill. %>
+          <div class="w-14 h-14 shrink-0">
+            <%= render Utilities::AvatarComponent.new(avatar: @profile.avatar, initials: @profile.initials, size: 56) %>
+          </div>
           <div class="min-w-0">
             <p class="font-bold text-ink dark:text-ink-on-dark truncate">
               <%= [@profile.first_name, @profile.last_name].compact_blank.join(" ").presence || "Your profile" %>

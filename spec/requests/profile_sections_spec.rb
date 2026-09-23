@@ -106,4 +106,43 @@ RSpec.describe "The profile page", type: :request do
       expect(response).to redirect_to(profile_path(profile))
     end
   end
+
+  # Both of these shipped in the first cut of this page and were spotted on
+  # screen rather than by a test.
+  describe "fields that are not ordinary columns" do
+    # about is has_rich_text. Reading it returns an ActionText::RichText whose
+    # to_s is a full HTML document, so the page printed the action_text layout
+    # and its ERB comments as body copy.
+    it "renders the about text as rich text, not as a stringified document" do
+      profile.about = "<div>Something about me.</div>"
+      profile.save!
+
+      get profile_path(profile)
+
+      expect(response.body).to include("Something about me.")
+      expect(response.body).not_to include("begin app/views/layouts/action_text")
+      expect(response.body).not_to include("trix-content\" class")
+    end
+
+    it "offers a rich text editor for it rather than a plain text area" do
+      get profile_path(profile, section: "about_you")
+
+      expect(response.body).to include("trix-editor")
+    end
+
+    it "says the about field is unanswered when it is empty" do
+      get profile_path(profile)
+
+      expect(response.body).to include("Not answered")
+    end
+
+    # AvatarComponent is w-full h-full by design; its own comment says the
+    # wrapper governs layout. Rendered bare in a flex row it stretched into a
+    # wide pill.
+    it "gives the avatar a sized wrapper so it stays a circle" do
+      get profile_path(profile)
+
+      expect(response.body).to match(/w-14 h-14 shrink-0/)
+    end
+  end
 end

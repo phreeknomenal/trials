@@ -51,4 +51,21 @@ RSpec.describe ProfileSections do
       expect(described_class.new(profile).answered?(described_class.find("health"))).to be(true)
     end
   end
+
+  # about is has_rich_text, and reading it like a column printed an entire HTML
+  # document onto the page. Anything else that is not a plain column has to be
+  # declared in ProfileFieldsHelper, or it will be stringified the same way.
+  it "declares every field that is not a plain database column" do
+    handled = ProfileFieldsHelper::RICH_TEXT.map(&:to_s) + ProfileFieldsHelper::ASSOCIATIONS.keys.map(&:to_s)
+    not_columns = described_class.all.flat_map(&:fields).map(&:to_s) - Profile.column_names
+
+    expect(not_columns - handled).to be_empty,
+      "these are neither columns nor declared in ProfileFieldsHelper: #{(not_columns - handled).join(", ")}"
+  end
+
+  it "has a label for every field it renders" do
+    fields = described_class.all.flat_map(&:fields)
+
+    expect(fields - ProfileFieldsHelper::LABELS.keys).to be_empty
+  end
 end
