@@ -4,31 +4,33 @@ class ProfilesController < ApplicationController
 
   def show
     authorize @profile
+    @sections = ProfileSections.new(@profile)
+    @strength = ProfileStrength.new(@profile)
+    @editing = ProfileSections.find(params[:section]) if params[:section].present?
   end
 
+  # A profile is created with the account, by User#add_default_profile, so this
+  # is only reached when one has gone missing. It restores the record and hands
+  # over to the wizard, which is where these answers are actually collected.
+  # Rendering a second full-length form here only duplicated onboarding.
   def new
-    if current_user.profile.present?
-      redirect_to edit_profile_path(current_user.profile), notice: "You already have a profile. You can edit it here."
-      return
-    end
+    return redirect_to profile_path(current_user.profile) if current_user.profile.present?
 
-    @profile = Profile.new
-    authorize @profile
+    # Authorized before building, because ProfilePolicy#new? asks that the user
+    # has no profile and build_profile assigns one, so authorizing afterwards
+    # denies the very case this action exists for.
+    authorize Profile
+
+    current_user.create_profile!
+
+    redirect_to onboarding_path
   end
 
-  def create
-    @profile = current_user.build_profile(profile_params)
-    authorize @profile
-
-    if @profile.save
-      redirect_to profile_path(@profile), notice: "Profile was successfully created."
-    else
-      render :new, status: :unprocessable_entity
-    end
-  end
-
+  # Editing happens on the profile page itself, one section at a time, so the
+  # page never loses the context of what the rest of the answers are.
   def edit
     authorize @profile
+    redirect_to profile_path(@profile, section: params[:section].presence || ProfileSections.all.first.slug)
   end
 
   # The turbo_stream branches here existed only to dismiss the onboarding modal
@@ -38,9 +40,14 @@ class ProfilesController < ApplicationController
     authorize @profile
 
     if @profile.update(profile_params)
-      redirect_to profile_path(@profile), notice: "Profile was successfully updated."
+      redirect_to profile_path(@profile), notice: "#{editing_section&.heading || "Profile"} saved."
     else
-      render :edit, status: :unprocessable_entity
+      # Back to the same section with its errors, rather than to a page with no
+      # indication of which of seven sections failed.
+      @sections = ProfileSections.new(@profile)
+      @strength = ProfileStrength.new(@profile)
+      @editing = editing_section
+      render :show, status: :unprocessable_entity
     end
   end
 
@@ -50,7 +57,16 @@ class ProfilesController < ApplicationController
     @profile = Profile.find(params[:id])
   end
 
+  def editing_section
+    @editing_section ||= ProfileSections.find(params[:section]) if params[:section].present?
+  end
+
+  # Scoped to the section being edited when there is one. A form that shows five
+  # fields should not be able to write twenty-five, and the section already
+  # declares exactly which are its own.
   def profile_params
+    return params.require(:profile).permit(*editing_section.permitted) if editing_section
+
     params.require(:profile).permit(
       :onboarded,
       :first_name,
