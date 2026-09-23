@@ -1,0 +1,87 @@
+<%# One section, read or being edited. Both states live here so the two cannot
+    show different fields, which is how a read view and an edit form drift into
+    disagreeing about what a section contains. %>
+<section id="<%= section.slug %>" class="rounded-panel border <%= editing ? "border-navy-600 dark:border-sky-400" : "border-line dark:border-line-on-dark" %> bg-surface dark:bg-surface-on-dark p-5 lg:p-6">
+
+  <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+    <div>
+      <h2 class="text-base font-bold text-ink dark:text-ink-on-dark"><%= section.heading %></h2>
+      <p class="text-sm text-ink-3 dark:text-ink-3-on-dark mt-0.5"><%= section.blurb %></p>
+      <%# Said plainly, because "sex assigned at birth" and "pronouns" look
+          equally personal and only one of them rules studies out. %>
+      <span class="inline-flex items-center gap-1.5 mt-2 text-xs font-semibold <%= section.affects_matching? ? "text-sky-700 dark:text-sky-300" : "text-ink-3 dark:text-ink-3-on-dark" %>">
+        <% if section.affects_matching? %>
+          <%= render Utilities::IconComponent.new("chart_mixed", size: 4) %>
+        <% end %>
+        <%= section.impact_label %>
+      </span>
+    </div>
+
+    <% if editing %>
+      <span class="inline-flex items-center rounded-chip bg-navy-600 px-2.5 py-1 text-xs font-bold text-white">Editing</span>
+    <% else %>
+      <%= link_to profile_path(profile, section: section.slug, anchor: section.slug),
+            class: Buttons::ButtonStyles.classes("secondary", size: "px-3 py-1.5 text-sm") do %>
+        <%= render Utilities::IconComponent.new("pencil", size: 4) %>
+        Edit
+      <% end %>
+    <% end %>
+  </div>
+
+  <% if editing %>
+    <%= form_with model: profile, url: profile_path(profile, section: section.slug), method: :patch, class: "flex flex-col gap-4" do |f| %>
+      <% section.fields.each do |field| %>
+        <%= render Forms::FieldComponent.new(**profile_field_args(f, field)) %>
+      <% end %>
+
+      <% if section.slug == "health" %>
+        <p class="text-sm text-ink-3 dark:text-ink-3-on-dark">
+          Conditions are edited from the onboarding step, which handles the primary flag.
+          <%= link_to "Edit conditions", onboarding_step_path("conditions"), class: "font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>
+        </p>
+      <% end %>
+
+      <div class="flex flex-wrap items-center gap-3 pt-1">
+        <%= f.button type: "submit", class: Buttons::ButtonStyles.classes("primary", size: "px-4 py-2 text-sm") do %>
+          Save <%= section.heading.downcase %>
+        <% end %>
+        <%= link_to "Cancel", profile_path(profile, anchor: section.slug),
+              class: Buttons::ButtonStyles.classes("quiet", size: "px-4 py-2 text-sm") %>
+        <% if section.affects_matching? %>
+          <span class="text-xs text-ink-3 dark:text-ink-3-on-dark">Saving rescores every study.</span>
+        <% end %>
+      </div>
+    <% end %>
+
+  <% else %>
+    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
+      <% if section.slug == "health" %>
+        <div class="sm:col-span-2">
+          <dt class="text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Conditions</dt>
+          <dd class="mt-1 flex flex-wrap gap-1.5">
+            <% if profile.conditions.any? %>
+              <% profile.conditions.each do |condition| %>
+                <span class="inline-flex items-center rounded-chip bg-surface-2 dark:bg-surface-2-on-dark px-2.5 py-1 text-sm font-semibold text-ink-2 dark:text-ink-2-on-dark">
+                  <%= condition.name %>
+                </span>
+              <% end %>
+            <% else %>
+              <span class="text-sm text-ink-4 dark:text-ink-4-on-dark">Not answered</span>
+            <% end %>
+          </dd>
+        </div>
+      <% end %>
+
+      <% section.fields.each do |field| %>
+        <div>
+          <dt class="text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">
+            <%= profile_field_label(field) %>
+          </dt>
+          <dd class="mt-0.5 text-sm text-ink dark:text-ink-2-on-dark">
+            <%= profile_field_value(profile, field) %>
+          </dd>
+        </div>
+      <% end %>
+    </dl>
+  <% end %>
+</section>

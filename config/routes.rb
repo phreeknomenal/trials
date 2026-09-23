@@ -44,7 +44,7 @@ Rails.application.routes.draw do
     constraints: {step: /[a-z_]+/}
   delete "onboarding/banner", to: "onboarding#dismiss_banner", as: :onboarding_banner
 
-  resources :profiles, only: [:new, :create, :show, :edit, :update]
+  resources :profiles, only: [:new, :show, :edit, :update]
   resources :search, only: [:index, :show]
 
   namespace :my_trials do
