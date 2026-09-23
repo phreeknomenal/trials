@@ -55,7 +55,10 @@
     </p>
   </aside>
 
-  <main class="flex items-center justify-center p-6 sm:p-10 lg:p-12">
+  <%# Stated rather than inherited, for the same reason the wizard states it: a
+      form column that takes its ground from whichever layout renders it changes
+      colour when the layout does. %>
+  <main class="flex items-center justify-center p-6 sm:p-10 lg:p-12 bg-surface dark:bg-surface-on-dark">
     <div class="w-full max-w-md">
       <a href="<%= root_path %>" class="lg:hidden flex items-center gap-2 mb-8">
         <svg width="16" height="29" viewBox="0 0 64 116" aria-hidden="true">
