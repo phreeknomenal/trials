@@ -1,20 +1,11 @@
 <div class="space-y-5">
-  <%= render Forms::ImageUploadComponent.new(
-        form: form, attribute: :avatar,
-        current: form.object.avatar, initials: form.object.initials
-      ) %>
-
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-    <%= render Forms::FieldComponent.new(
-      form: form, attribute: :pronouns, field_type: :select, label: "Pronouns",
-      select_options: pronoun_options,
-      options: {include_blank: "Prefer not to say", autofocus: true, data: {onboarding_target: "firstField"}}
-    ) %>
-
+    <%# Takes the autofocus that pronouns used to carry, pronouns having moved to
+        step one. Without it the step opens with nothing focused. %>
     <%= render Forms::FieldComponent.new(
       form: form, attribute: :gender_id, field_type: :select, label: "Gender",
       select_options: Gender.all.map { |gender| [gender.name.titleize, gender.id] },
-      options: {include_blank: "Prefer not to say"}
+      options: {include_blank: "Prefer not to say", autofocus: true, data: {onboarding_target: "firstField"}}
     ) %>
 
     <%= render Forms::FieldComponent.new(

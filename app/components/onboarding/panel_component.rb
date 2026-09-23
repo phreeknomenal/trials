@@ -23,13 +23,13 @@ class Onboarding::PanelComponent < ApplicationComponent
   }.freeze
 
   NOTES = {
-    "identity" => "Your name never leaves your account. It is not sent to a study team, and it is not part of any score.",
+    "identity" => "Your name, pronouns and photo never leave your account. None of it is sent to a study team, and none of it is part of any score.",
     "basics" => "Age and sex are the two criteria a study can rule you out on outright, rather than merely score you lower for.",
     "location" => "Only the ZIP is stored, never a street address. It decides which sites count as near you.",
     "conditions" => "The largest single factor. Everything else adjusts a ranking; this decides which studies are in it at all.",
     "logistics" => "Distance changes the ranking, not the list. A study further than you would travel drops down rather than disappearing.",
     "preferences" => "Answer only if you have a view. Left blank, these score neutrally rather than against you.",
-    "about_you" => "None of this affects matching. It helps studies report who takes part, and you can skip it."
+    "about_you" => "None of this affects matching. It helps studies report who takes part, and connects you with people looking for the same things. You can skip it."
   }.freeze
 
   # Reference rather than persuasion: the prompt already says to answer only if

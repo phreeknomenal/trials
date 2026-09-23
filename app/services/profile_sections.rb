@@ -35,7 +35,10 @@ class ProfileSections
       blurb: "Only used to address you in the app. Never sent to a study team.",
       impact: :none,
       fields: %i[first_name last_name pronouns about],
-      permitted: %i[first_name last_name pronouns about]
+      # avatar rides with the names and pronouns, matching where the wizard now
+      # collects it. It is not in :fields because it is rendered by its own
+      # picker rather than through the generic field helper.
+      permitted: %i[first_name last_name pronouns about avatar]
     ),
     Section.new(
       slug: "health",
@@ -77,7 +80,7 @@ class ProfileSections
       blurb: "Helps studies report who takes part. It changes nothing about your matches.",
       impact: :none,
       fields: %i[race_id gender_id ethnicity],
-      permitted: [:race_id, :gender_id, :ethnicity, :avatar, {identity_ids: [], interest_ids: []}]
+      permitted: [:race_id, :gender_id, :ethnicity, {identity_ids: [], interest_ids: []}]
     ),
     Section.new(
       slug: "contact",
