@@ -1,4 +1,7 @@
-<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<%# Half width rather than thirds. Thirds were a space saving move from when
+    this step also carried the pill lists; with the step to itself there is room,
+    and "Prefer not to say" is cramped in a third of a column. %>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
   <%= render Forms::FieldComponent.new(
     form: form, attribute: :gender_id, field_type: :select, label: "Gender",
     select_options: Gender.all.map { |gender| [gender.name.titleize, gender.id] },
