@@ -113,7 +113,7 @@ RSpec.describe "Devise configuration", type: :request do
       get new_user_unlock_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("unlocks on its own after an hour")
+      expect(response.body).to include("unlocks on its own after that")
     end
 
     it "sends unlock instructions when asked" do

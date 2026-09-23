@@ -1,71 +1,41 @@
-<div class="w-full flex items-center justify-center">
-  <div class="w-2/3 py-24">
-    <div class="w-full grid grid-cols-2 border border-line-2 dark:border-line-on-dark rounded-panel overflow-hidden">
-      <%# LEFT %>
-      <div class="p-10 border-r border-line-2 dark:border-line-on-dark">
-        <%= render Page::CarouselComponent.new(
-          slides: [
-            {
-              image: "onboarding/profile.jpeg",
-              title: "Create Your Profile",
-              description: "Tell us about your health journey to receive personalized clinical trial recommendations.",
-              image_alt: "Create profile illustration"
-            },
-            {
-              image: "onboarding/discover.jpeg",
-              title: "Discover Matching Trials",
-              description: "Browse clinical trials that match your health profile, location, and interests.",
-              image_alt: "Discover trials illustration"
-            },
-            {
-              image: "onboarding/connect.jpeg",
-              title: "Connect & Participate",
-              description: "Join clinical research and help advance medical treatments for your condition.",
-              image_alt: "Connect and participate illustration"
-            }
-          ],
-          interval: 3000
-        ) %>
-      </div>
+<%= render layout: "devise/shared/auth_shell", locals: {heading: "Sign in"} do %>
+  <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: "flex flex-col gap-4"}) do |f| %>
+    <%# Devise's failure message arrives as a flash, not on the resource, so the
+        shared error partial has nothing to show here. The layout renders it. %>
 
-      <%# RIGHT %>
-      <div class="p-10">
-        <h3 class="text-2xl font-semibold font-accent text-sky-600 leading-none">Welcome back to</h3>
-        <h1 class="text-5xl font-bold tracking-tight leading-none text-ink dark:text-ink-2-on-dark">Dira<span class="font-light text-ink-3 dark:text-ink-3-on-dark"> Health</span></h1>
-        <h2 class="text-md font-body text-ink-3 dark:text-ink-3-on-dark mb-10">Find clinical trials that match your journey</h2>
-
-        <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-          <div class="field mb-4">
-            <%= f.email_field :email, autocomplete: "email", placeholder: "Email address", class: "w-full border border-line-2 dark:border-line-on-dark rounded-control text-ink-3 dark:text-ink-3-on-dark placeholder:text-ink-3 dark:placeholder:text-ink-3-on-dark p-5 mb-2" %>
-          </div>
-
-          <div class="field mb-6">
-            <%= f.password_field :password, autocomplete: "current-password", placeholder: "Password", class: "w-full border border-line-2 dark:border-line-on-dark rounded-control text-ink-3 dark:text-ink-3-on-dark placeholder:text-ink-3 dark:placeholder:text-ink-3-on-dark p-5 mb-2" %>
-          </div>
-
-          <div class="flex items-center justify-between">
-            <% if devise_mapping.rememberable? %>
-              <%= render Forms::FieldComponent.new(
-                form: f,
-                attribute: :remember_me,
-                label: "Remember me",
-                field_type: :checkbox,
-                options: { class: "form-check-input accent-sky-500" }
-              ) %>
-            <% end %>
-
-            <p class=""><%= link_to "Forgot password?", new_user_password_path, class: "text-sky-600 hover:text-sky-700 transition-all duration-300 cursor-pointer" %></p>
-          </div>
-
-          <div class="actions mt-10">
-            <%= f.submit "Log in", class: "w-full bg-navy-600 text-white font-medium py-3 px-4 rounded-control hover:bg-navy-700 transition-all duration-300 cursor-pointer" %>
-          </div>
-        <% end %>
-
-        <div class="flex items-center justify-between mt-20">
-          <p class="text-ink-3">Don't have an account? <%= link_to "Sign up", new_user_registration_path, class: "text-sky-600 hover:text-sky-700 transition-all duration-300 cursor-pointer" %></p>
-        </div>
-      </div>
+    <div>
+      <%= f.label :email, "Email", class: Forms::FieldStyles::LABEL %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: Forms::FieldStyles.input %>
     </div>
-  </div>
-</div>
+
+    <div>
+      <div class="flex items-baseline justify-between gap-3">
+        <%= f.label :password, "Password", class: Forms::FieldStyles::LABEL %>
+        <%= link_to "Forgot password?", new_password_path(resource_name), class: "text-sm font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>
+      </div>
+      <%= f.password_field :password, autocomplete: "current-password", class: Forms::FieldStyles.input %>
+    </div>
+
+    <% if devise_mapping.rememberable? %>
+      <label class="flex items-center gap-2.5 cursor-pointer">
+        <%= f.check_box :remember_me, class: "h-4 w-4 rounded-sm border-line-2 dark:border-line-on-dark accent-sky-500" %>
+        <span class="text-sm text-ink-2 dark:text-ink-2-on-dark">Keep me signed in on this device</span>
+      </label>
+    <% end %>
+
+    <%= f.button "Sign in", type: "submit", class: "#{Buttons::ButtonStyles.classes("primary", size: "px-4 py-2.5 text-base")} w-full mt-2" %>
+  <% end %>
+
+  <p class="mt-6 text-sm text-ink-3 dark:text-ink-3-on-dark">
+    New here? <%= link_to "Create an account", new_registration_path(resource_name), class: "font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>
+  </p>
+
+  <%# Paranoid mode tells a locked account "that email and password do not match",
+      the same as any other failure, so nobody is told they are locked. Without a
+      permanent link here they would keep trying and never find the way out. The
+      link reveals nothing: it is on the page for everyone. %>
+  <p class="mt-8 pt-6 border-t border-line dark:border-line-on-dark text-sm text-ink-3 dark:text-ink-3-on-dark">
+    Tried several times and still stuck? Too many attempts lock an account for an hour.
+    <%= link_to "Unlock it by email", new_unlock_path(resource_name), class: "font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>.
+  </p>
+<% end %>
