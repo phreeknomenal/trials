@@ -90,7 +90,10 @@ Devise.setup do |config|
   # It will change confirmation, password recovery and other workflows
   # to behave the same regardless if the e-mail provided was right or wrong.
   # Does not affect registerable.
-  # config.paranoid = true
+  # On, so neither the sign-in form nor the password reset says whether an
+  # address has an account. On a clinical trials site the existence of an account
+  # is itself sensitive: it says someone is looking for a study.
+  config.paranoid = true
 
   # By default Devise will store the user in session. You can skip storage for
   # particular strategies by setting this option.
