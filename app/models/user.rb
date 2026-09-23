@@ -5,10 +5,13 @@
 #  id                     :bigint           not null, primary key
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
+#  failed_attempts        :integer          default(0), not null
+#  locked_at              :datetime
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
 #  role                   :string           default("member"), not null
+#  unlock_token           :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #
@@ -16,6 +19,7 @@
 #
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#  index_users_on_unlock_token          (unlock_token) UNIQUE
 #
 class User < ApplicationRecord
   COMMUNITY_ROLES = %w[member].freeze
@@ -24,7 +28,11 @@ class User < ApplicationRecord
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable, :omniauthable
-  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable
+  # lockable is the defence against guessing a password against the live form.
+  # The ten character floor only makes an offline guess expensive; nothing was
+  # slowing an online one.
+  devise :database_authenticatable, :registerable, :recoverable, :rememberable,
+    :validatable, :lockable
 
   has_one :profile, dependent: :destroy
   has_many :saved_trials, dependent: :destroy
