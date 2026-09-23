@@ -7,10 +7,13 @@ require "rails_helper"
 #  id                     :bigint           not null, primary key
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
+#  failed_attempts        :integer          default(0), not null
+#  locked_at              :datetime
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
 #  role                   :string           default("member"), not null
+#  unlock_token           :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #
@@ -18,6 +21,7 @@ require "rails_helper"
 #
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#  index_users_on_unlock_token          (unlock_token) UNIQUE
 #
 RSpec.describe User, type: :model do
   describe "role predicates" do
