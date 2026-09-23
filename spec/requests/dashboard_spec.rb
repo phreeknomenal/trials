@@ -119,4 +119,57 @@ RSpec.describe "The dashboard", type: :request do
       expect(response.body).not_to include("Waiting on a reply")
     end
   end
+
+  # The panel used to hold one static block once a profile was matching-complete,
+  # because the only other thing on it hid itself at exactly that point.
+  describe "the side panel" do
+    before { stub_recommendations }
+
+    it "always says how complete the profile is" do
+      get my_trials_root_path
+
+      expect(response.body).to include("Your profile")
+      expect(response.body).to match(/\d+ of #{ProfileSections.all.length}/)
+    end
+
+    it "still says so when nothing is left to sharpen" do
+      user.profile.update_columns(willing_travel_miles: 50, trial_type_preference: "either", risk_tolerance: "tested")
+
+      get my_trials_root_path
+
+      expect(response.body).to include("Your profile")
+      expect(response.body).to include("Everything that affects matching is answered")
+    end
+
+    it "names what would sharpen matching when something is missing" do
+      user.profile.update_columns(willing_travel_miles: nil, remote_visit_preference: nil,
+        trial_type_preference: nil, risk_tolerance: nil)
+
+      get my_trials_root_path
+
+      expect(response.body).to include("would sharpen your matches")
+      expect(response.body).to include("How far would you travel?")
+    end
+
+    # Reported by the profile page too, and from the same object, so the two
+    # cannot disagree about how complete a profile is.
+    it "counts the same sections the profile page counts" do
+      get my_trials_root_path
+      dashboard = response.body[/(\d+) of #{ProfileSections.all.length}/, 1]
+
+      get profile_path(user.profile)
+      profile_page = response.body[/(\d+) of #{ProfileSections.all.length}/, 1]
+
+      expect(dashboard).to eq(profile_page)
+    end
+
+    it "offers comparison in the panel once there are two to compare" do
+      create_list(:saved_trial, 2, user: user)
+
+      get my_trials_root_path
+
+      expect(response.body).to include("Compare studies")
+      expect(response.body).to include("Put two or three side by side")
+    end
+  end
 end
