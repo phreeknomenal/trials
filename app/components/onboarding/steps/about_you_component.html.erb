@@ -1,7 +1,8 @@
 <div class="space-y-5">
-  <div class="flex justify-center">
-    <%= render Forms::ImageUploadComponent.new(form: form, attribute: :avatar) %>
-  </div>
+  <%= render Forms::ImageUploadComponent.new(
+        form: form, attribute: :avatar,
+        current: form.object.avatar, initials: form.object.initials
+      ) %>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
     <%= render Forms::FieldComponent.new(
@@ -31,28 +32,38 @@
 
   <% if Identity.any? %>
     <div>
-      <label class="block text-sm font-bold text-ink dark:text-ink-2-on-dark mb-3">I am a...</label>
-      <div class="flex flex-wrap gap-2">
+      <label class="block text-sm font-bold text-ink dark:text-ink-2-on-dark mb-2">I am a...</label>
+      <%# Bounded rather than left to grow. Sixty one pills between the two lists
+          ran this step to several screens, which pushed the panel beside it out
+          of view. Nothing is hidden: the region scrolls. %>
+      <div class="max-h-44 overflow-y-auto overscroll-contain rounded-card border border-line dark:border-line-on-dark bg-surface-2/50 dark:bg-surface-on-dark/40 p-3">
+        <div class="flex flex-wrap gap-2">
         <%= form.collection_check_boxes :identity_ids, Identity.all, :id, :name do |builder| %>
-          <label class="inline-flex items-center px-4 py-2 bg-surface-2 dark:bg-surface-on-dark hover:bg-sky-100 dark:hover:bg-navy-900 rounded-full cursor-pointer transition-colors border-2 border-transparent has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50 dark:has-[:checked]:bg-navy-900/50">
+          <label class="inline-flex items-center px-4 py-2 bg-surface dark:bg-surface-on-dark hover:bg-sky-100 dark:hover:bg-navy-900 rounded-full cursor-pointer transition-colors border-2 border-transparent has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50 dark:has-[:checked]:bg-navy-900/50 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-focus">
             <%= builder.check_box(class: "sr-only") %>
             <span class="text-sm font-medium text-ink-2 dark:text-ink-2-on-dark"><%= builder.text.titleize %></span>
           </label>
-        <% end %>
+          <% end %>
+        </div>
       </div>
     </div>
   <% end %>
 
   <% if Interest.any? %>
     <div>
-      <label class="block text-sm font-bold text-ink dark:text-ink-2-on-dark mb-3">Looking for...</label>
-      <div class="flex flex-wrap gap-2">
+      <label class="block text-sm font-bold text-ink dark:text-ink-2-on-dark mb-2">Looking for...</label>
+      <%# Bounded rather than left to grow. Sixty one pills between the two lists
+          ran this step to several screens, which pushed the panel beside it out
+          of view. Nothing is hidden: the region scrolls. %>
+      <div class="max-h-44 overflow-y-auto overscroll-contain rounded-card border border-line dark:border-line-on-dark bg-surface-2/50 dark:bg-surface-on-dark/40 p-3">
+        <div class="flex flex-wrap gap-2">
         <%= form.collection_check_boxes :interest_ids, Interest.all, :id, :name do |builder| %>
-          <label class="inline-flex items-center px-4 py-2 bg-surface-2 dark:bg-surface-on-dark hover:bg-sky-100 dark:hover:bg-navy-900 rounded-full cursor-pointer transition-colors border-2 border-transparent has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50 dark:has-[:checked]:bg-navy-900/50">
+          <label class="inline-flex items-center px-4 py-2 bg-surface dark:bg-surface-on-dark hover:bg-sky-100 dark:hover:bg-navy-900 rounded-full cursor-pointer transition-colors border-2 border-transparent has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50 dark:has-[:checked]:bg-navy-900/50 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-focus">
             <%= builder.check_box(class: "sr-only") %>
             <span class="text-sm font-medium text-ink-2 dark:text-ink-2-on-dark"><%= builder.text.titleize %></span>
           </label>
-        <% end %>
+          <% end %>
+        </div>
       </div>
     </div>
   <% end %>

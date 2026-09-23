@@ -75,7 +75,10 @@
 
   <%# Same treatment as the sign-in panel, shifted slightly so the two are not
       pixel-identical when someone signs up and lands straight in the wizard. %>
-  <aside class="relative hidden lg:flex items-center overflow-hidden px-12 py-10
+  <%# Pinned, so a long step scrolls its form without dragging the explanation
+      off the screen. The about_you step is the reason: it carries sixty one
+      pills and runs well past one screen even with both lists bounded. %>
+  <aside class="relative hidden lg:flex items-center overflow-hidden px-12 py-10 lg:sticky lg:top-0 lg:h-screen
                 bg-[linear-gradient(180deg,#EDF2FB_0%,#F6F9FD_60%,#FFFFFF_100%)]
                 dark:bg-[linear-gradient(180deg,#141A26_0%,#1D2534_60%,#0C1017_100%)]">
     <%= render "shared/panel_backdrop", id: "wizard", blob_x: 600, blob_y: 130, blob_r: 220, pill_y: 520, dots_x: 470, dots_y: 640 %>
