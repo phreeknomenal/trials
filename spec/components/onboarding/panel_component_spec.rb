@@ -67,4 +67,12 @@ RSpec.describe Onboarding::PanelComponent, type: :component do
 
     expect(page.text).to include("#{Onboarding.count} questions")
   end
+
+  # The panel was first written for a navy ground, so its text was white. On the
+  # light gradient that is invisible.
+  it "writes on ink, not on white" do
+    panel_for("conditions")
+
+    expect(page.native.to_html).not_to include("text-white")
+  end
 end

@@ -1,0 +1,33 @@
+<%# The gradient and shapes behind the auth and onboarding panels.
+
+    Oversized, low contrast, and cropped by the panel rather than fitted to it:
+    the shapes are meant to run off the edges, which is what stops the panel
+    reading as a picture sitting inside a box.
+
+    preserveAspectRatio is "slice" for that reason. "meet" would letterbox the
+    artwork and bring the whole composition into view, which is precisely the
+    look this is avoiding. Everything is aria-hidden: it carries no meaning.
+
+    One partial, because the two panels are the same treatment and two copies
+    would drift the moment either was touched. %>
+<svg viewBox="0 0 620 920" preserveAspectRatio="xMidYMid slice" aria-hidden="true"
+     class="pointer-events-none absolute inset-0 w-full h-full">
+  <defs>
+    <pattern id="<%= id %>-dots" width="16" height="16" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.6" fill="#92A4D6" fill-opacity="0.45"></circle>
+    </pattern>
+    <linearGradient id="<%= id %>-blob" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#D6EBF8"></stop>
+      <stop offset="100%" stop-color="#EDF6FC"></stop>
+    </linearGradient>
+  </defs>
+
+  <circle cx="<%= local_assigns.fetch(:blob_x, 560) %>" cy="<%= local_assigns.fetch(:blob_y, 140) %>"
+          r="<%= local_assigns.fetch(:blob_r, 210) %>" fill="url(#<%= id %>-blob)" opacity="0.85"></circle>
+  <rect x="-120" y="<%= local_assigns.fetch(:pill_y, 470) %>" width="300" height="360" rx="150"
+        fill="#DEE5F5" opacity="0.75"></rect>
+  <rect x="<%= local_assigns.fetch(:dots_x, 392) %>" y="<%= local_assigns.fetch(:dots_y, 596) %>"
+        width="132" height="108" fill="url(#<%= id %>-dots)"
+        transform="rotate(-12 <%= local_assigns.fetch(:dots_x, 392) + 66 %> <%= local_assigns.fetch(:dots_y, 596) + 54 %>)"></rect>
+  <circle cx="120" cy="230" r="34" fill="#BCC8E8" opacity="0.6"></circle>
+</svg>

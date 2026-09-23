@@ -155,4 +155,38 @@ RSpec.describe "The auth screens", type: :request do
       expect(response.body).to include("Create an account")
     end
   end
+
+  # The first cut of this panel was a flat navy fill with white text, which
+  # dropped the app's signature treatment entirely and made the split read as
+  # two unrelated halves. A colour is hard to assert on; the backdrop it was
+  # missing is not.
+  describe "the panel treatment" do
+    it "renders the gradient and shapes rather than a flat fill" do
+      get new_user_session_path
+
+      expect(response.body).to include("EDF2FB")
+      expect(response.body).to include("auth-blob")
+      expect(response.body).to include("auth-dots")
+    end
+
+    it "keeps the shapes out of the accessibility tree and out of the way of clicks" do
+      get new_user_session_path
+
+      expect(response.body).to include("pointer-events-none absolute inset-0")
+    end
+
+    # Slice, not meet: the shapes are meant to run off the edges, and letterboxing
+    # them brings the whole composition into view, which is the look this avoids.
+    it "crops the backdrop rather than fitting it" do
+      get new_user_session_path
+
+      expect(response.body).to include('preserveAspectRatio="xMidYMid slice"')
+    end
+
+    it "puts the panel text on ink rather than on white" do
+      get new_user_session_path
+
+      expect(response.body).to include("Everything you have looked at, in one place")
+    end
+  end
 end

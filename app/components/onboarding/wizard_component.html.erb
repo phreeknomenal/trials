@@ -70,8 +70,14 @@
       </div>
     </div>
 
-  <aside class="hidden lg:flex items-center bg-navy-600 dark:bg-navy-900 px-12 py-10">
-    <div class="w-full max-w-md">
+  <%# Same treatment as the sign-in panel, shifted slightly so the two are not
+      pixel-identical when someone signs up and lands straight in the wizard. %>
+  <aside class="relative hidden lg:flex items-center overflow-hidden px-12 py-10
+                bg-[linear-gradient(180deg,#EDF2FB_0%,#F6F9FD_60%,#FFFFFF_100%)]
+                dark:bg-[linear-gradient(180deg,#141A26_0%,#1D2534_60%,#0C1017_100%)]">
+    <%= render "shared/panel_backdrop", id: "wizard", blob_x: 600, blob_y: 130, blob_r: 220, pill_y: 520, dots_x: 470, dots_y: 640 %>
+
+    <div class="relative w-full max-w-md">
       <%= render Onboarding::PanelComponent.new(step: step) %>
     </div>
   </aside>
