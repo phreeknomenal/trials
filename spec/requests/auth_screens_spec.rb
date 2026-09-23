@@ -103,4 +103,56 @@ RSpec.describe "The auth screens", type: :request do
       expect(response.body).to include("your saved studies and your health profile")
     end
   end
+
+  # devise_for draws its routes from User.devise_modules at the moment routes are
+  # drawn. Rails reloads routes when config/routes.rb changes, not when the model
+  # does, so a dev server running since before lockable was added has no unlock
+  # helper at all and an unguarded link took the whole sign-in page down with
+  # NoMethodError.
+  #
+  # The original spec could not catch it: the test process boots fresh, so the
+  # helper always exists there. What it can catch is the same page rendered with
+  # the module off, which is the state that made the call unsafe.
+  describe "links to screens a module may not provide" do
+    # devise_mapping returns this very object, so stubbing it is enough: there is
+    # no need to reach into the controller.
+    def without_module(name)
+      allow(Devise.mappings[:user]).to receive(:"#{name}?").and_return(false)
+    end
+
+    it "renders sign in with lockable off" do
+      without_module(:lockable)
+
+      get new_user_session_path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include("Unlock it by email")
+    end
+
+    it "renders sign in with recoverable off" do
+      without_module(:recoverable)
+
+      get new_user_session_path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include("Forgot password?")
+    end
+
+    it "renders sign in with registerable off" do
+      without_module(:registerable)
+
+      get new_user_session_path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include("Create an account")
+    end
+
+    it "still offers all three when every module is on" do
+      get new_user_session_path
+
+      expect(response.body).to include("Unlock it by email")
+      expect(response.body).to include("Forgot password?")
+      expect(response.body).to include("Create an account")
+    end
+  end
 end

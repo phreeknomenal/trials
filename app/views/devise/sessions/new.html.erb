@@ -11,7 +11,12 @@
     <div>
       <div class="flex items-baseline justify-between gap-3">
         <%= f.label :password, "Password", class: Forms::FieldStyles::LABEL %>
-        <%= link_to "Forgot password?", new_password_path(resource_name), class: "text-sm font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>
+        <%# Guarded on the module, the way devise/shared/_links does. A route
+            helper for a module that is off does not exist, so an unguarded link
+            takes the whole page down rather than degrading. %>
+        <% if devise_mapping.recoverable? %>
+          <%= link_to "Forgot password?", new_password_path(resource_name), class: "text-sm font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>
+        <% end %>
       </div>
       <%= f.password_field :password, autocomplete: "current-password", class: Forms::FieldStyles.input %>
     </div>
@@ -26,16 +31,25 @@
     <%= f.button "Sign in", type: "submit", class: "#{Buttons::ButtonStyles.classes("primary", size: "px-4 py-2.5 text-base")} w-full mt-2" %>
   <% end %>
 
-  <p class="mt-6 text-sm text-ink-3 dark:text-ink-3-on-dark">
-    New here? <%= link_to "Create an account", new_registration_path(resource_name), class: "font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>
-  </p>
+  <% if devise_mapping.registerable? %>
+    <p class="mt-6 text-sm text-ink-3 dark:text-ink-3-on-dark">
+      New here? <%= link_to "Create an account", new_registration_path(resource_name), class: "font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>
+    </p>
+  <% end %>
 
   <%# Paranoid mode tells a locked account "that email and password do not match",
       the same as any other failure, so nobody is told they are locked. Without a
       permanent link here they would keep trying and never find the way out. The
-      link reveals nothing: it is on the page for everyone. %>
-  <p class="mt-8 pt-6 border-t border-line dark:border-line-on-dark text-sm text-ink-3 dark:text-ink-3-on-dark">
-    Tried several times and still stuck? Too many attempts lock an account for an hour.
-    <%= link_to "Unlock it by email", new_unlock_path(resource_name), class: "font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>.
-  </p>
+      link reveals nothing: it is on the page for everyone.
+
+      Guarded on the mapping rather than assumed. devise_for draws its routes
+      from User.devise_modules when routes are drawn, so a server whose routes
+      predate lockable has no unlock helper at all, and an unguarded call raised
+      NoMethodError on the whole sign-in page. %>
+  <% if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) %>
+    <p class="mt-8 pt-6 border-t border-line dark:border-line-on-dark text-sm text-ink-3 dark:text-ink-3-on-dark">
+      Tried several times and still stuck? Too many attempts lock an account for an hour.
+      <%= link_to "Unlock it by email", new_unlock_path(resource_name), class: "font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>.
+    </p>
+  <% end %>
 <% end %>
