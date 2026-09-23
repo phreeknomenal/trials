@@ -132,7 +132,11 @@ Devise.setup do |config|
   # config.send_email_changed_notification = false
 
   # Send a notification email when the user's password is changed.
-  # config.send_password_change_notification = false
+  # On, rather than Devise's default of off. A password change on an account
+  # holding health data should tell the account owner, since it is the one
+  # signal that someone else got in. This makes devise/mailer/password_change
+  # a live template rather than a dead one.
+  config.send_password_change_notification = true
 
   # ==> Configuration for :confirmable
   # A period that the user is allowed to access the website even without
@@ -157,6 +161,8 @@ Devise.setup do |config|
   # initial account confirmation) to be applied. Requires additional unconfirmed_email
   # db field (see migrations). Until confirmed, new email is stored in
   # unconfirmed_email column, and copied to email column on successful confirmation.
+  # Inert: reconfirmable belongs to confirmable, which User does not enable. Left
+  # set so that turning confirmable on later does not silently skip it.
   config.reconfirmable = true
 
   # Defines which key will be used when confirming an account
@@ -178,7 +184,11 @@ Devise.setup do |config|
 
   # ==> Configuration for :validatable
   # Range for password length.
-  config.password_length = 6..128
+  # Ten, not Devise's default six. This account holds a diagnosis, a stage, a
+  # treatment history and a home ZIP, and there is no lockable module slowing an
+  # online attempt either. Validated on create and on change, so nobody with an
+  # existing password is locked out by the change.
+  config.password_length = 10..128
 
   # Email regex used to validate email formats. It simply asserts that
   # one (and only one) @ exists in the given string. This is mainly
@@ -194,27 +204,33 @@ Devise.setup do |config|
   # Defines which strategy will be used to lock an account.
   # :failed_attempts = Locks an account after a number of failed attempts to sign in.
   # :none            = No lock strategy. You should handle locking by yourself.
-  # config.lock_strategy = :failed_attempts
+  config.lock_strategy = :failed_attempts
 
   # Defines which key will be used when locking and unlocking an account
-  # config.unlock_keys = [:email]
+  config.unlock_keys = [:email]
 
   # Defines which strategy will be used to unlock an account.
   # :email = Sends an unlock link to the user email
   # :time  = Re-enables login after a certain amount of time (see :unlock_in below)
   # :both  = Enables both strategies
   # :none  = No unlock strategy. You should handle unlocking by yourself.
-  # config.unlock_strategy = :both
+  # :both, so an hour's wait clears it without an email. Email-only would strand
+  # anyone whose unlock mail lands in spam, on an account they need to reach.
+  config.unlock_strategy = :both
 
   # Number of authentication tries before locking an account if lock_strategy
   # is failed attempts.
-  # config.maximum_attempts = 20
+  # Ten rather than Devise's twenty. Enough that someone mistyping a password
+  # they genuinely know will not trip it, few enough to make guessing pointless.
+  config.maximum_attempts = 10
 
   # Time interval to unlock the account if :time is enabled as unlock_strategy.
-  # config.unlock_in = 1.hour
+  config.unlock_in = 1.hour
 
   # Warn on the last attempt before the account is locked.
-  # config.last_attempt_warning = true
+  # Warn on the last try rather than locking without notice, so someone who does
+  # know their password gets a chance to stop and think.
+  config.last_attempt_warning = true
 
   # ==> Configuration for :recoverable
   #
