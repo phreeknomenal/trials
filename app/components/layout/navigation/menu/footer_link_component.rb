@@ -21,8 +21,8 @@ class Layout::Navigation::Menu::FooterLinkComponent < ApplicationComponent
   erb_template <<-ERB
     <% columns.each do |heading, links| %>
       <div>
-        <h3 class="text-xl font-semibold mb-2 text-ink dark:text-ink-2-on-dark"><%= heading %></h3>
-        <ul class="space-y-2">
+        <h3 class="text-[15px] font-semibold mb-3 text-ink dark:text-ink-2-on-dark"><%= heading %></h3>
+        <ul class="space-y-2.5">
           <% links.each do |label, path, extra| %>
             <li>
               <%= link_to label, path, class: link_class(extra) %>
@@ -33,7 +33,7 @@ class Layout::Navigation::Menu::FooterLinkComponent < ApplicationComponent
     <% end %>
   ERB
 
-  LINK_CLASS = "text-ink-3 dark:text-ink-3-on-dark hover:text-ink dark:hover:text-ink-on-dark " \
+  LINK_CLASS = "text-[15px] text-ink-3 dark:text-ink-3-on-dark hover:text-ink dark:hover:text-ink-on-dark " \
     "hover:underline underline-offset-4 transition-colors " \
     "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus rounded-nav"
 

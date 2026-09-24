@@ -27,7 +27,26 @@ module Buttons::ButtonStyles
     "destructive" => "border border-crit text-crit bg-transparent " \
                      "dark:border-crit-on-dark dark:text-crit-on-dark " \
                      "hover:bg-crit hover:text-white hover:border-crit " \
-                     "dark:hover:bg-crit-on-dark dark:hover:text-navy-900"
+                     "dark:hover:bg-crit-on-dark dark:hover:text-navy-900",
+
+    # For a button sitting on a navy-600 panel, where the ordinary variants have
+    # nothing to work against. `secondary` is navy-600 text on a navy-600 border
+    # with no fill, so on a navy-600 ground it is the same colour as what is
+    # behind it: a contrast ratio of 1 to 1, an invisible button.
+    #
+    # That is not hypothetical. The landing page's closing call to action, the
+    # last thing on the page and the main thing it asks anyone to do, rendered
+    # two buttons nobody could see in light mode. They were legible in dark only
+    # because the dark: rules swap the text to navy-300.
+    #
+    # These do not carry dark: rules. The panel is navy in both themes, so the
+    # button on it should not change.
+    "primary-on-navy" => "border border-white bg-white text-navy-700 " \
+                         "hover:bg-navy-50 hover:border-navy-50 " \
+                         "active:bg-navy-100 active:border-navy-100",
+
+    "secondary-on-navy" => "border border-white text-white bg-transparent " \
+                           "hover:bg-white hover:text-navy-700"
   }.freeze
 
   DEFAULT_VARIANT = "secondary"

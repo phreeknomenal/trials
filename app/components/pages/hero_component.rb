@@ -19,7 +19,7 @@ class Pages::HeroComponent < ApplicationComponent
               dots_x: 1030, dots_y: 250, dot_x: 150, dot_y: 90 %>
       </div>
 
-      <div class="relative mx-auto max-w-5xl px-5 lg:px-8 py-14 lg:py-20 flex flex-col gap-4">
+      <div class="relative <%= Layout::PageWidth::CONTAINER %> py-14 lg:py-20 flex flex-col gap-4">
         <p class="text-xs font-bold uppercase tracking-[0.09em] text-sky-600 dark:text-sky-300"><%= eyebrow %></p>
         <h1 class="font-primary text-4xl lg:text-5xl font-extrabold tracking-tight text-ink dark:text-ink-on-dark max-w-3xl">
           <%= heading %>
