@@ -1,0 +1,75 @@
+<div class="px-5 lg:px-12 py-10">
+  <div class="mb-6 flex flex-wrap gap-4 items-start justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-ink dark:text-ink-on-dark">Messages</h1>
+      <p class="mt-1 text-sm text-ink-3 dark:text-ink-3-on-dark">
+        <%= pluralize(@pagy.count, "message") %> &middot;
+        <%= @unanswered_count %> unanswered &middot;
+        <%# Said out loud because it is the thing most likely to be assumed
+            otherwise. Nothing notifies anyone when a message arrives. %>
+        no email is sent when one arrives, so this page is the only place they surface
+      </p>
+    </div>
+
+    <nav class="flex gap-1" aria-label="Filter messages">
+      <% [["All", nil], ["Unanswered", "unanswered"]].each do |label, value| %>
+        <%= link_to label, admin_contact_messages_path(filter: value),
+              class: "rounded-chip px-3 py-1.5 text-sm font-medium #{params[:filter].presence == value ? "bg-warn/15 text-warn dark:bg-warn-on-dark/30 dark:text-warn-on-dark" : "text-ink-3 dark:text-ink-3-on-dark hover:text-ink dark:hover:text-ink-on-dark"}" %>
+      <% end %>
+    </nav>
+  </div>
+
+  <% if @contact_messages.empty? %>
+    <div class="border border-line dark:border-line-on-dark rounded-panel p-10 text-center">
+      <p class="text-ink-3 dark:text-ink-3-on-dark">
+        <%= (params[:filter] == "unanswered") ? "Nothing unanswered." : "No messages yet." %>
+      </p>
+    </div>
+  <% else %>
+    <div class="flex flex-col gap-3">
+      <% @contact_messages.each do |message| %>
+        <article class="border border-line dark:border-line-on-dark rounded-panel p-5
+                        <%= message.answered? ? "bg-surface-2/50 dark:bg-surface-on-dark/40" : "bg-surface dark:bg-surface-on-dark" %>">
+          <div class="flex flex-wrap gap-3 items-start justify-between mb-3">
+            <div class="flex flex-col gap-1">
+              <div class="flex flex-wrap gap-2 items-center">
+                <span class="text-sm font-bold text-ink dark:text-ink-on-dark"><%= message.name %></span>
+                <span class="inline-block px-2 py-0.5 rounded-chip text-xs font-medium bg-surface-2 text-ink-3 dark:bg-surface-on-dark dark:text-ink-3-on-dark">
+                  <%= message.topic %>
+                </span>
+                <% if message.answered? %>
+                  <span class="inline-block px-2 py-0.5 rounded-chip text-xs font-medium bg-good/10 text-good dark:bg-good-on-dark/20 dark:text-good-on-dark">
+                    Answered
+                  </span>
+                <% end %>
+              </div>
+              <%# A real mailto, unlike the bracketed ones on the public page:
+                  this address was typed by the person asking, so it exists. %>
+              <%= mail_to message.email, message.email,
+                    subject: "Re: your message to Dira Health",
+                    class: "text-sm text-sky-600 dark:text-sky-300 hover:underline underline-offset-2" %>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <time class="text-xs text-ink-3 dark:text-ink-4-on-dark" datetime="<%= message.created_at.iso8601 %>">
+                <%= message.created_at.to_fs(:long) %>
+              </time>
+              <%= button_to message.answered? ? "Reopen" : "Mark answered",
+                    admin_contact_message_path(message, filter: params[:filter]),
+                    method: :patch,
+                    class: Buttons::ButtonStyles.classes(message.answered? ? "quiet" : "secondary", size: "px-3 py-1.5 text-xs") %>
+            </div>
+          </div>
+
+          <p class="text-sm leading-relaxed text-ink-2 dark:text-ink-2-on-dark whitespace-pre-line"><%= message.body %></p>
+        </article>
+      <% end %>
+    </div>
+
+    <%= render Shared::PaginationComponent.new(
+          pagy: @pagy,
+          path_for: ->(page) { admin_contact_messages_path(page: page, filter: params[:filter]) },
+          unit: "message"
+        ) %>
+  <% end %>
+</div>
