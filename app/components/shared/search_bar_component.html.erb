@@ -4,13 +4,24 @@
 
       <div class="<%= full? ? "flex-1 min-w-0" : "flex-1 min-w-0" %>">
         <%= f.label :condition, "Condition", class: label_class %>
-        <% if condition_options.any? %>
-          <%= f.select :condition,
-                options_for_select(condition_options, condition),
-                {include_blank: PLACEHOLDER},
-                {class: field_class} %>
-        <% else %>
-          <%= f.text_field :condition, value: condition, placeholder: PLACEHOLDER, class: field_class %>
+        <%# A text field with suggestions, not a select.
+
+            It was a select built from the conditions table, which meant the app
+            could search for 72 conditions and no others: somebody with
+            sarcoidosis or myasthenia gravis had no way to ask. The registry
+            accepts any term, so the control was narrower than the thing behind
+            it for no reason.
+
+            A datalist keeps the list one keystroke away and still lets anyone
+            type what they actually have. %>
+        <%= f.text_field :condition, value: condition, placeholder: PLACEHOLDER,
+              list: datalist_id, autocomplete: "off", class: field_class %>
+        <% if condition_names.any? %>
+          <datalist id="<%= datalist_id %>">
+            <% condition_names.each do |name| %>
+              <option value="<%= name %>"></option>
+            <% end %>
+          </datalist>
         <% end %>
       </div>
 
@@ -19,16 +30,6 @@
       <div class="<%= full? ? "lg:w-[220px]" : "sm:w-[200px]" %>">
         <%= f.label :location, "Location", class: label_class %>
         <%= f.text_field :location, value: location, placeholder: "City, state or ZIP", class: field_class %>
-      </div>
-
-      <span class="<%= divider_class %>" aria-hidden="true"></span>
-
-      <div class="<%= full? ? "lg:w-[150px]" : "hidden" %>">
-        <%= f.label :distance, "Distance", class: label_class %>
-        <%= f.select :distance,
-              options_for_select(Shared::SearchBarComponent::DISTANCES, distance),
-              {},
-              {class: field_class} %>
       </div>
 
       <%# A button rather than a submit input, because an input cannot hold the
