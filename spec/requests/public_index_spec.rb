@@ -32,7 +32,7 @@ RSpec.describe "GET /", type: :request do
 
       get root_path(query: "diabetes")
 
-      expect(response.body).to include("Community Stories")
+      expect(response.body).to include(%(id="stories"))
     end
   end
 
@@ -46,7 +46,7 @@ RSpec.describe "GET /", type: :request do
     it "omits the testimonial section entirely" do
       get root_path
 
-      expect(response.body).not_to include("Community Stories")
+      expect(response.body).not_to include(%(id="stories"))
     end
 
     it "omits it even when unpublished testimonials exist" do
@@ -54,7 +54,7 @@ RSpec.describe "GET /", type: :request do
 
       get root_path
 
-      expect(response.body).not_to include("Community Stories")
+      expect(response.body).not_to include(%(id="stories"))
       expect(response.body).not_to include("Hidden quote")
     end
   end
@@ -65,7 +65,7 @@ RSpec.describe "GET /", type: :request do
 
       get root_path
 
-      expect(response.body).to include("Community Stories")
+      expect(response.body).to include(%(id="stories"))
     end
 
     it "renders the quote, author name, and role" do
@@ -154,7 +154,7 @@ RSpec.describe "GET /", type: :request do
       get root_path
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).not_to include("Community Stories")
+      expect(response.body).not_to include(%(id="stories"))
     end
 
     it "brings the section back as soon as there is a real quote" do
@@ -162,7 +162,7 @@ RSpec.describe "GET /", type: :request do
 
       get root_path
 
-      expect(response.body).to include("Community Stories")
+      expect(response.body).to include(%(id="stories"))
     end
   end
 

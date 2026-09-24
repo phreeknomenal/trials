@@ -16,27 +16,40 @@ class Shared::SearchBarComponent < ApplicationComponent
   # tells you the shape of the answer and a generic one does not.
   PLACEHOLDER = "Breast cancer, type 2 diabetes, migraine".freeze
 
-  DISTANCES = [
-    ["Within 25 miles", "25"],
-    ["Within 50 miles", "50"],
-    ["Within 100 miles", "100"],
-    ["Any distance", ""]
-  ].freeze
+  # There is no distance select, and there was one here until the landing page
+  # was about to render it.
+  #
+  # The full variant is described in this file's own first line as "the hero
+  # control", and the hero is what this component was built for. Nothing used
+  # the full variant until now, and the compact variant hid the field, so a
+  # control offering "Within 25 / 50 / 100 miles" sat in the component unseen
+  # for two PRs. Nothing reads a distance param: TrialSearchService filters on
+  # phase and study type, and ClinicalTrialClient sends a condition and a
+  # location.
+  #
+  # There is no distance anywhere in the data. locations_detailed carries a
+  # near_you boolean derived by string-matching the profile's city and state.
+  # Showing miles needs geocoding at both ends and stored coordinates, which is
+  # a feature rather than a view.
 
-  attr_reader :url, :variant, :conditions, :condition, :location, :distance, :popular
+  attr_reader :url, :variant, :conditions, :condition, :location, :popular
 
-  def initialize(url:, variant: :full, conditions: [], condition: nil, location: nil, distance: nil, popular: [])
+  def initialize(url:, variant: :full, conditions: [], condition: nil, location: nil, popular: [])
     @url = url
     @variant = variant.to_sym
     @conditions = conditions
     @condition = condition
     @location = location
-    @distance = distance
     @popular = popular
 
     return if VARIANTS.include?(@variant)
 
     raise ArgumentError, "Unknown search bar variant #{variant.inspect}. Expected one of #{VARIANTS.join(", ")}."
+  end
+
+  # Unique per render, so two search bars on one page cannot share a list.
+  def datalist_id
+    @datalist_id ||= "conditions-#{variant}-#{object_id}"
   end
 
   def full? = variant == :full
@@ -82,8 +95,10 @@ class Shared::SearchBarComponent < ApplicationComponent
     full? ? "hidden lg:block w-px self-stretch bg-line dark:bg-line-on-dark my-1" : "hidden"
   end
 
-  def condition_options
-    conditions.map { |c| c.respond_to?(:name) ? [c.name, c.name] : [c, c] }
+  # Plain names. It returned [name, name] pairs for options_for_select, and the
+  # select is gone: the datalist wants one value per option.
+  def condition_names
+    conditions.map { |c| c.respond_to?(:name) ? c.name : c }
   end
 
   # Four at most. A fifth stops being a shortcut and starts being a list.
