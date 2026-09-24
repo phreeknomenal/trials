@@ -27,7 +27,7 @@
   </div>
 </section>
 
-<section id="intro" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-line-2 dark:border-line-on-dark">
+<section id="how-it-works" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-line-2 dark:border-line-on-dark">
   <div class="w-full lg:w-1/2">
     <%= render Page::HeaderComponent.new(
       pretext: "Journey", 
@@ -67,7 +67,7 @@
   </div>
 </section>
 
-<section id="how-it-works" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-line-2 dark:border-line-on-dark">
+<section id="our-approach" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-line-2 dark:border-line-on-dark">
   <div class="w-full grid grid-cols-2 gap-6 lg:gap-12">
     <div class="col-span-2 lg:col-span-1 order-2 lg:order-1">
       <%= render Page::HeaderComponent.new(
@@ -115,7 +115,7 @@
   </div>
 </section>
 
-<section id="testimonials" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-line-2 dark:border-line-on-dark">
+<section id="mission" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-line-2 dark:border-line-on-dark">
   <div class="w-full lg:w-1/2 mx-auto text-center">
     <%= render Page::HeaderComponent.new(
       pretext: "Mission", 
@@ -157,7 +157,7 @@
 </section>
 
 <% if @testimonials.any? %>
-<section id="intro" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-line-2 dark:border-line-on-dark">
+<section id="stories" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-line-2 dark:border-line-on-dark">
   <div class="w-full lg:w-1/2 mx-auto text-center">
     <%= render Page::HeaderComponent.new(
       heading: "Community Stories", 
@@ -176,7 +176,7 @@
 </section>
 <% end %>
 
-<section id="" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-line-2 dark:border-line-on-dark">
+<section id="get-started" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-line-2 dark:border-line-on-dark">
   <div class="w-full mx-auto text-center bg-navy-600 text-white flex flex-col items-center justify-center p-10 rounded-panel">
     <div class="w-4/5 mb-8 gap-5">
       <h3 class="text-7xl font-bold mb-5">Join the medical research community</h3>
@@ -184,8 +184,12 @@
     </div>
 
     <div class="flex justify-center gap-2">
-      <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Search Trials", color: "secondary") %>
-      <%= render Buttons::ButtonComponent.new(path: new_user_registration_path, text: "Sign Up Free", color: "secondary", icon: "arrow_right", icon_position: "right") %>
+      <%# On-navy variants. These were `secondary`, which is navy-600 text and a
+          navy-600 border with no fill, on this navy-600 panel: the same colour
+          as the thing behind them, so both buttons were invisible in light
+          mode. See Buttons::ButtonStyles. %>
+      <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Search Trials", color: "primary-on-navy") %>
+      <%= render Buttons::ButtonComponent.new(path: new_user_registration_path, text: "Sign Up Free", color: "secondary-on-navy", icon: "arrow_right", icon_position: "right") %>
     </div>
   </div>
 </section>
