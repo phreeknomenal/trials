@@ -52,7 +52,7 @@ RSpec.describe "Element ids", type: :request do
     it "names each always-on section for what it contains" do
       get "/"
 
-      %w[hero how-it-works our-approach mission get-started].each do |id|
+      %w[hero conditions how-it-works what-you-can-count-on faq get-started].each do |id|
         expect(response.body).to include(%(id="#{id}"))
       end
     end
