@@ -32,32 +32,45 @@ RSpec.describe "Page width", type: :request do
   end
 
   describe "the shared container" do
-    it "caps the measure near the board's 1180px of content" do
-      expect(container).to include("max-w-6xl")
+    it "insets from the edge rather than centring a column" do
+      expect(container).to include("lg:px-24")
     end
 
-    it "centres it and keeps a gutter at every width" do
-      expect(container).to include("mx-auto", "px-5")
+    it "keeps a gutter at narrow widths too" do
+      expect(container).to include("px-5")
+    end
+
+    # Capping it centred at max-w-6xl was the first attempt and the wrong one:
+    # 1152px leaves 281px of empty page on each side of a 1713px display, and
+    # the pages that had been full bleed lost width to match the chrome. The
+    # chrome was what was wrong, so the chrome is what moved.
+    it "does not cap the measure" do
+      expect(container).not_to match(/max-w-/)
     end
   end
 
   # The point of the module. A page that hand-writes its own width is how this
   # drifted the first time, and it drifts silently.
   describe "no page writes its own width" do
-    it "has no template left on the old full-bleed gutters" do
-      offenders = page_templates.select { |p| File.read(p).match?(/lg:px-(24|36)\b/) }
+    # Written out literally rather than read from the constant, so that changing
+    # the constant does not quietly change what this forbids.
+    it "has no template hand-writing the page gutters" do
+      offenders = page_templates.select { |p| File.read(p).match?(/class="[^"]*\blg:px-(24|36)\b/) }
         .map { |p| p.sub("#{Rails.root}/", "") }
 
       expect(offenders).to be_empty,
-        "#{offenders.join(", ")} still set their own page gutters. Use Layout::PageWidth::CONTAINER."
+        "#{offenders.join(", ")} set their own page gutters. Use Layout::PageWidth::CONTAINER."
     end
 
-    it "has no template capping itself at a different step" do
-      offenders = page_templates.select { |p| File.read(p).match?(/mx-auto[^"]*max-w-(4xl|5xl|7xl)\b/) }
+    # A prose column capping itself is correct and stays. What is forbidden is a
+    # template centring the *page* at its own width, which is how the content
+    # pages ended up 64px narrower than the chrome.
+    it "has no template centring the page at its own width" do
+      offenders = page_templates.select { |p| File.read(p).match?(/mx-auto w-full max-w-/) }
         .map { |p| p.sub("#{Rails.root}/", "") }
 
       expect(offenders).to be_empty,
-        "#{offenders.join(", ")} centre themselves at a width the chrome does not use."
+        "#{offenders.join(", ")} centre the page at a width the chrome does not use."
     end
   end
 
@@ -77,7 +90,7 @@ RSpec.describe "Page width", type: :request do
 
         # The chrome renders it twice, the page at least once. Fewer than three
         # means something on this page is not using it.
-        expect(response.body.scan(container.split.first).count).to be >= 3
+        expect(response.body.scan("lg:px-24").count).to be >= 3
       end
     end
   end

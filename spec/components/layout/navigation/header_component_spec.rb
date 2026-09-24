@@ -47,12 +47,20 @@ RSpec.describe Layout::Navigation::HeaderComponent, type: :component do
   end
 
   describe "the bar" do
-    it "constrains with a max width rather than a viewport percentage" do
+    # This used to assert max-w-6xl, which was the implementation of the day
+    # rather than the intent. The intent was that the bar not be sized as a
+    # percentage of the viewport, and that survives: it now takes its measure
+    # from Layout::PageWidth, the same one every page uses.
+    it "takes its measure from the shared page container" do
       render_inline(described_class.new)
 
-      html = page.native.to_html
-      expect(html).to include("max-w-6xl")
-      expect(html).not_to include("w-[80%]")
+      expect(page.native.to_html).to include(Layout::PageWidth::CONTAINER)
+    end
+
+    it "is not sized as a percentage of the viewport" do
+      render_inline(described_class.new)
+
+      expect(page.native.to_html).not_to include("w-[80%]")
     end
 
     it "renders the wordmark, not the old name" do
