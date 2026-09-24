@@ -82,4 +82,22 @@ RSpec.describe Layout::Navigation::Menu::HeaderMenuComponent, type: :component d
     render_inline(described_class.new)
     expect(page).to have_link("Find trials", count: 1)
   end
+
+  # The mobile board asks for a 44px minimum on every target. The bar's py-2 at
+  # 17px lands at about 42px, so the panel takes py-3 and the bar keeps py-2:
+  # one is a thumb, the other a pointer.
+  describe "tap targets in the panel" do
+    it "pads the vertical links enough to clear 44px" do
+      render_inline(described_class.new(orientation: :vertical))
+
+      expect(page.all("a").map { |a| a[:class] }).to all(include("py-3"))
+    end
+
+    it "leaves the horizontal bar tighter" do
+      render_inline(described_class.new)
+
+      expect(page.all("a").map { |a| a[:class] }).to all(include("py-2"))
+      expect(page.all("a").map { |a| a[:class] }).not_to include(a_string_including("py-3"))
+    end
+  end
 end

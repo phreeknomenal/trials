@@ -11,7 +11,7 @@ class Layout::Navigation::Menu::HeaderMenuComponent < ApplicationComponent
     </nav>
   ERB
 
-  BASE_LINK_CLASS = "rounded-nav px-3 py-2 font-medium transition-colors " \
+  BASE_LINK_CLASS = "rounded-nav px-3 py-2 transition-colors " \
     "hover:bg-surface-2 hover:text-ink " \
     "dark:hover:bg-surface-on-dark dark:hover:text-ink-on-dark " \
     "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
@@ -49,19 +49,30 @@ class Layout::Navigation::Menu::HeaderMenuComponent < ApplicationComponent
     end
   end
 
+  # 14px semibold in the bar, per the board. It was 16px medium, which put a nav
+  # link at the same optical weight as body copy and made the bar the loudest
+  # thing on every page.
+  #
+  # The panel keeps 17px, also per the board: a tap target read at arm's length
+  # is not the same problem as a link read in a dense row.
   def container_class
     if vertical?
-      "flex flex-col gap-1 text-base tracking-tight"
+      "flex flex-col gap-1 text-[17px] tracking-tight"
     else
-      "flex items-center gap-1 text-base tracking-tight"
+      "flex items-center gap-1 text-sm font-semibold tracking-tight"
     end
   end
 
+  # The panel's links get py-3 rather than the bar's py-2. At 17px text that is
+  # 12 + 26 + 12, so a tap target clears the 44px floor the mobile board sets;
+  # py-2 leaves it at about 42px. In the bar it is a pointer, not a thumb.
+  VERTICAL_LINK_CLASS = "block py-3"
+
   def link_class(path)
     state = current?(path) ? CURRENT_LINK_CLASS : RESTING_LINK_CLASS
-    width = vertical? ? "block" : ""
+    size = vertical? ? VERTICAL_LINK_CLASS : nil
 
-    [BASE_LINK_CLASS, state, width].reject(&:blank?).join(" ")
+    [BASE_LINK_CLASS, state, size].compact.join(" ")
   end
 
   # Guarded because a component spec can render without a request, and a nav
