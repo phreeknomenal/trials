@@ -13,10 +13,18 @@ RSpec.describe "GET /", type: :request do
       expect(response).to have_http_status(:ok)
     end
 
+    # Was `not_to receive(:search)`. That method is gone: it had no callers and
+    # sent no status filter, so leaving it was a trap for whoever called it next.
+    # Its absence is a stronger guarantee than the stub was, and the landing page
+    # should make no registry call by any route.
     it "does not call the trials API" do
-      expect(ClinicalTrialClient).not_to receive(:search)
+      expect(ClinicalTrialClient).not_to receive(:advanced_search)
 
       get root_path(query: "diabetes")
+    end
+
+    it "no longer has an unfiltered term search to call" do
+      expect(ClinicalTrialClient).not_to respond_to(:search)
     end
 
     it "still renders the testimonial section" do

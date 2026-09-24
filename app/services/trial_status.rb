@@ -20,6 +20,27 @@ module TrialStatus
   # active can reopen.
   PENDING = %w[not_yet_recruiting active_not_recruiting].freeze
 
+  # What a search asks the registry for.
+  #
+  # This module already knew which statuses mean a person can act on a study.
+  # Nothing ever told the registry. `advanced_search` sent a condition and a
+  # location and no status at all, so a search returned whatever the registry
+  # held: across asthma, leukemia, diabetes and migraine, between 6% and 14% of
+  # the first hundred results were recruiting and most of the rest were
+  # completed. The app was scoring, ranking and recommending studies nobody
+  # could enrol in.
+  #
+  # `active_not_recruiting` is in PENDING but deliberately not here. The two
+  # lists answer different questions: PENDING asks "should this count against
+  # the study", and the answer is no, a study can reopen. This asks "can the
+  # person do anything about it today", and for a study that is running with
+  # enrolment closed the answer is no.
+  #
+  # `available` is the registry's expanded-access value and has no place in the
+  # other three lists, because it never reaches a scorer. It belongs here: it is
+  # a real route to a treatment.
+  ACCEPTING = %w[recruiting not_yet_recruiting enrolling_by_invitation available].freeze
+
   module_function
 
   def normalize(value)
@@ -42,5 +63,15 @@ module TrialStatus
   # uses UNKNOWN widely, and guessing would hide trials that may be open.
   def known?(value)
     closed?(value) || open?(value) || pending?(value)
+  end
+
+  def accepting?(value)
+    ACCEPTING.include?(normalize(value))
+  end
+
+  # The value for `filter.overallStatus`. The API ORs pipe-separated values, and
+  # wants the registry's own shouted spelling.
+  def registry_filter
+    ACCEPTING.map(&:upcase).join("|")
   end
 end

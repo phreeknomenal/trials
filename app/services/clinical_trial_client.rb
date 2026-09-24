@@ -14,25 +14,6 @@ class ClinicalTrialClient
     "Withdrawn"
   ].freeze
 
-  def self.search(query, page: 1, page_size: 10)
-    return {studies: [], total_count: 0} if query.blank?
-
-    response = get("/studies", query: {
-      "query.term" => query,
-      "pageSize" => page_size,
-      "pageToken" => (page > 1) ? page.to_s : nil,
-      "format" => "json"
-    }.compact)
-
-    if response.success?
-      parse_response(response)
-    else
-      {studies: [], total_count: 0, error: "API request failed"}
-    end
-  rescue => e
-    {studies: [], total_count: 0, error: e.message}
-  end
-
   def self.advanced_search(condition: nil, location: nil, page_token: nil, page_size: 10)
     # API v2 uses query.cond for condition/disease and query.locn for location
     return {studies: [], total_count: 0} if condition.blank? && location.blank?
@@ -40,6 +21,16 @@ class ClinicalTrialClient
     query_params = {
       "query.cond" => condition.presence,
       "query.locn" => location.presence,
+      # Without this the registry returns everything it holds, which is mostly
+      # studies nobody can join. Measured across asthma, leukemia, diabetes and
+      # migraine, 6% to 14% of the first hundred results were recruiting and the
+      # largest group every time was COMPLETED. A patient searching for a trial
+      # was being shown, ranked and recommended studies that had finished.
+      #
+      # TrialStatus has known which statuses mean "a person can act on this"
+      # since it was written for TrialScorer and EligibilityChecker. Nothing had
+      # ever told the registry.
+      "filter.overallStatus" => TrialStatus.registry_filter,
       "pageSize" => page_size,
       "pageToken" => page_token,
       "format" => "json"

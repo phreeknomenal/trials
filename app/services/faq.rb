@@ -105,7 +105,13 @@ class Faq
     Entry.new(
       category: "Using Dira Health",
       question: "Where do the studies come from?",
-      answer: "ClinicalTrials.gov, the public registry. We do not choose what appears and a study cannot pay to rank higher. Listings drop off when enrollment closes.",
+      # "Listings drop off when enrollment closes" was here and was false. It
+      # came off the design board in PR #147 and was never checked, which is the
+      # same mistake as the six claims that PR corrected -- it read as a fact
+      # about the registry rather than a claim about the app. The search sent no
+      # status filter at all, so most of what it returned had finished. True now
+      # that it asks for open studies only.
+      answer: "ClinicalTrials.gov, the public registry. We do not choose what appears and a study cannot pay to rank higher. We ask the registry only for studies that are open: recruiting, opening soon, or enrolling by invitation. A study that closes stops appearing in new searches.",
       unanswered: false
     ),
     Entry.new(
