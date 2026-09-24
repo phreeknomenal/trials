@@ -101,10 +101,6 @@
             <% end %>
           </ul>
 
-          <% if @saved_trials_count >= 2 %>
-            <%= link_to "Compare saved studies", my_trials_trial_comparison_path,
-                  class: "#{Buttons::ButtonStyles.classes("quiet", size: "px-3 py-1.5 text-sm")} mt-4" %>
-          <% end %>
         <% end %>
       </section>
 
@@ -112,30 +108,61 @@
     </div>
 
     <aside class="flex flex-col gap-6">
-      <% if @strength && !@strength.complete? %>
+      <%# Always on, not only while something is missing. It used to disappear
+          the moment every matching answer was in, which took the panel down to a
+          single static block and left nothing saying how complete the profile
+          was. The count is sections answered, the same measure the profile page
+          reports, so the two cannot disagree. %>
+      <% if @sections %>
         <section class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-5">
-          <h2 class="text-base font-bold text-ink dark:text-ink-on-dark mb-1">Sharpen your matches</h2>
-          <p class="text-sm text-ink-3 dark:text-ink-3-on-dark mb-4">
-            <%= pluralize(@strength.remaining, "answer") %> left. Each one rules studies in or out, so the scores get more honest as you go.
-          </p>
-
-          <%# One measure, so one hue. The label carries the number; no legend. %>
-          <div class="h-2 rounded-full bg-surface-2 dark:bg-surface-2-on-dark overflow-hidden mb-4">
-            <div class="h-full rounded-full bg-navy-600" style="width: <%= @strength.percent %>%"></div>
+          <div class="flex items-baseline justify-between gap-2 mb-2">
+            <h2 class="text-base font-bold text-ink dark:text-ink-on-dark">Your profile</h2>
+            <p class="text-sm font-bold tabular-nums text-ink-2 dark:text-ink-2-on-dark">
+              <%= @sections.answered_count %> of <%= @sections.total %>
+            </p>
           </div>
 
-          <ul class="flex flex-col gap-2 mb-4">
-            <% @strength.unanswered.each do |slug, step, _| %>
-              <li>
-                <%= link_to onboarding_step_path(slug), class: "flex items-start gap-2 text-sm text-ink-2 dark:text-ink-2-on-dark hover:text-sky-700 dark:hover:text-sky-300" do %>
-                  <span class="shrink-0 mt-0.5 text-ink-4 dark:text-ink-4-on-dark">
-                    <%= render Utilities::IconComponent.new("question_circle", size: 4) %>
-                  </span>
-                  <span><%= step&.heading %></span>
-                <% end %>
-              </li>
-            <% end %>
-          </ul>
+          <%# One measure, so one hue. The label carries the number; no legend. %>
+          <div class="h-2 rounded-full bg-surface-2 dark:bg-surface-2-on-dark overflow-hidden mb-3">
+            <div class="h-full rounded-full bg-navy-600" style="width: <%= @sections.percent %>%"></div>
+          </div>
+
+          <% if @strength&.complete? %>
+            <p class="text-sm text-ink-3 dark:text-ink-3-on-dark">
+              Everything that affects matching is answered.
+              <%= link_to "Review your profile", profile_path(@profile), class: "font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>
+            </p>
+          <% else %>
+            <p class="text-sm text-ink-3 dark:text-ink-3-on-dark mb-3">
+              <%= pluralize(@strength.remaining, "more answer") %> would sharpen your matches.
+            </p>
+            <ul class="flex flex-col gap-2">
+              <% @strength.unanswered.each do |slug, step, _| %>
+                <li>
+                  <%= link_to onboarding_step_path(slug), class: "flex items-start gap-2 text-sm text-ink-2 dark:text-ink-2-on-dark hover:text-sky-700 dark:hover:text-sky-300" do %>
+                    <span class="shrink-0 mt-0.5 text-ink-4 dark:text-ink-4-on-dark">
+                      <%= render Utilities::IconComponent.new("question_circle", size: 4) %>
+                    </span>
+                    <span><%= step&.heading %></span>
+                  <% end %>
+                </li>
+              <% end %>
+            </ul>
+          <% end %>
+        </section>
+      <% end %>
+
+      <%# Moved out of the saved studies panel and into the sidebar, where the
+          board has it. It is a thing you do with saved studies rather than part
+          of the list of them. %>
+      <% if @saved_trials_count >= 2 %>
+        <section class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-5">
+          <h2 class="text-base font-bold text-ink dark:text-ink-on-dark mb-1">Compare studies</h2>
+          <p class="text-sm text-ink-3 dark:text-ink-3-on-dark mb-3">
+            Put two or three side by side and see where they differ.
+          </p>
+          <%= link_to "Compare saved studies", my_trials_trial_comparison_path,
+                class: Buttons::ButtonStyles.classes("secondary", size: "px-3 py-1.5 text-sm") %>
         </section>
       <% end %>
 

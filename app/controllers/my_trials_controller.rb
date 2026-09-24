@@ -29,6 +29,9 @@ class MyTrialsController < ApplicationController
 
     @recommendations = TrialRecommendationService.new(@profile).recommend
     @strength = ProfileStrength.new(@profile) if @profile
+    # The panel reports sections answered, the same measure the profile page
+    # shows, so the two cannot disagree about how complete a profile is.
+    @sections = ProfileSections.new(@profile) if @profile
   end
 
   def saved_trials

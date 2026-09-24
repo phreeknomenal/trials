@@ -3,15 +3,15 @@
 
     <aside class="lg:w-[260px] shrink-0">
       <div class="lg:sticky lg:top-6 flex flex-col gap-5">
-        <div class="flex items-center gap-3">
+        <%# The identity card the board leads with. It was a bare avatar and a
+            name, with no way to change the photo from the page that shows it. %>
+        <div class="rounded-card border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-4 flex flex-col items-center text-center gap-2">
           <%# AvatarComponent is w-full h-full by design: its own comment says the
-              wrapper governs layout. Without a sized, non-shrinking box it
-              stretches to whatever the flex row gives it, which rendered the
-              initials as a wide pill. %>
-          <div class="w-14 h-14 shrink-0">
-            <%= render Utilities::AvatarComponent.new(avatar: @profile.avatar, initials: @profile.initials, size: 56) %>
+              wrapper governs layout. %>
+          <div class="w-20 h-20 shrink-0">
+            <%= render Utilities::AvatarComponent.new(avatar: @profile.avatar, initials: @profile.initials, size: 80) %>
           </div>
-          <div class="min-w-0">
+          <div class="min-w-0 w-full">
             <p class="font-bold text-ink dark:text-ink-on-dark truncate">
               <%= [@profile.first_name, @profile.last_name].compact_blank.join(" ").presence || "Your profile" %>
             </p>
@@ -19,19 +19,36 @@
               <%= [@profile.pronouns, [@profile.city, @profile.state].compact_blank.join(", ").presence].compact_blank.join(" · ") %>
             </p>
           </div>
+          <%# Opens the section that holds the picker, rather than a separate
+              upload screen that would be the only place a photo could change. %>
+          <%= link_to "Change photo", profile_path(@profile, section: "about_you", anchor: "about_you"),
+                class: "text-sm font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>
         </div>
 
-        <% unless @strength.complete? %>
-          <div class="rounded-card border border-line dark:border-line-on-dark p-4">
-            <p class="text-sm font-bold text-ink dark:text-ink-on-dark mb-1">Sharpen your matches</p>
-            <p class="text-xs text-ink-3 dark:text-ink-3-on-dark mb-3">
-              <%= pluralize(@strength.remaining, "answer") %> left. Each one rules studies in or out.
+        <%# Always shown, not only while incomplete. "Profile strength" answers
+            how much of the profile is filled in, which stays worth seeing once it
+            is full; the dashboard's separate callout answers the different
+            question of what would sharpen matching. %>
+        <div class="rounded-card border border-line dark:border-line-on-dark p-4">
+          <div class="flex items-baseline justify-between gap-2 mb-2">
+            <p class="text-sm font-bold text-ink dark:text-ink-on-dark">Profile strength</p>
+            <p class="text-sm font-bold tabular-nums text-ink-2 dark:text-ink-2-on-dark">
+              <%= @sections.answered_count %> of <%= @sections.total %>
             </p>
-            <div class="h-2 rounded-full bg-surface-2 dark:bg-surface-2-on-dark overflow-hidden">
-              <div class="h-full rounded-full bg-navy-600" style="width: <%= @strength.percent %>%"></div>
-            </div>
           </div>
-        <% end %>
+          <div class="h-2 rounded-full bg-surface-2 dark:bg-surface-2-on-dark overflow-hidden">
+            <div class="h-full rounded-full bg-navy-600" style="width: <%= @sections.percent %>%"></div>
+          </div>
+          <% if @strength.complete? %>
+            <p class="text-xs text-ink-3 dark:text-ink-3-on-dark mt-2">
+              Everything that affects matching is answered.
+            </p>
+          <% else %>
+            <p class="text-xs text-ink-3 dark:text-ink-3-on-dark mt-2">
+              <%= pluralize(@strength.remaining, "answer") %> left that would sharpen how studies are ranked for you.
+            </p>
+          <% end %>
+        </div>
 
         <nav class="flex flex-col gap-0.5" aria-label="Profile sections">
           <% ProfileSections.all.each do |section| %>
@@ -44,6 +61,15 @@
                 <span class="w-1.5 h-1.5 rounded-full bg-warn shrink-0" aria-label="nothing answered"></span>
               <% end %>
             <% end %>
+          <% end %>
+
+          <%# On the board and absent from the app: sign-in details are the one
+              thing on a profile that Devise owns rather than Profile, so it
+              links out rather than rendering as a section. %>
+          <%= link_to edit_user_registration_path,
+                class: "flex items-center justify-between gap-2 rounded-nav px-3 py-2 text-sm font-medium text-ink-2 dark:text-ink-2-on-dark hover:bg-surface-2 dark:hover:bg-surface-on-dark" do %>
+            <span>Account and email</span>
+            <%= render Utilities::IconComponent.new("external_link", size: 4) %>
           <% end %>
         </nav>
 

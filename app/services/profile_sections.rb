@@ -119,6 +119,12 @@ class ProfileSections
   # A section counts as answered when any of its own fields has a value.
   # Conditions live on an association rather than a column, so health asks that
   # separately.
+  def answered_count = self.class.all.count { |section| answered?(section) }
+
+  def total = self.class.all.length
+
+  def percent = ((answered_count.to_f / total) * 100).round
+
   def answered?(section)
     return true if section.slug == "health" && profile.conditions.any?
 

@@ -139,10 +139,54 @@ RSpec.describe "The profile page", type: :request do
     # AvatarComponent is w-full h-full by design; its own comment says the
     # wrapper governs layout. Rendered bare in a flex row it stretched into a
     # wide pill.
+    # The size is a design choice and may change; that there IS a sized,
+    # non-shrinking wrapper is the thing that keeps it a circle.
     it "gives the avatar a sized wrapper so it stays a circle" do
       get profile_path(profile)
 
-      expect(response.body).to match(/w-14 h-14 shrink-0/)
+      expect(response.body).to match(/w-\d+ h-\d+ shrink-0/)
+    end
+  end
+
+  # The board's left panel, which the first cut of this page was missing most of.
+  describe "the side panel" do
+    it "offers a way to change the photo from the page that shows it" do
+      get profile_path(profile)
+
+      expect(response.body).to include("Change photo")
+    end
+
+    it "shows profile strength as sections answered, not as a matching score" do
+      get profile_path(profile)
+
+      expect(response.body).to include("Profile strength")
+      expect(response.body).to match(/\d+ of #{ProfileSections.all.length}/)
+    end
+
+    # It used to be hidden once every matching answer was in, which meant the
+    # number vanished exactly when someone might want to confirm it.
+    it "shows strength even when nothing is left to sharpen" do
+      profile.update_columns(willing_travel_miles: 50, trial_type_preference: "either", risk_tolerance: "tested")
+
+      get profile_path(profile)
+
+      expect(response.body).to include("Profile strength")
+      expect(response.body).to include("Everything that affects matching is answered")
+    end
+
+    # Sign-in details are the one thing on a profile that Devise owns rather than
+    # Profile, so the panel links out rather than rendering a section for them.
+    it "links to the account and email screen" do
+      get profile_path(profile)
+
+      expect(response.body).to include("Account and email")
+      expect(response.body).to include(edit_user_registration_path)
+    end
+
+    it "lists every section in the nav" do
+      get profile_path(profile)
+
+      ProfileSections.all.each { |s| expect(response.body).to include("##{s.slug}") }
     end
   end
 end
