@@ -28,6 +28,11 @@ class Layout::Navigation::Menu::HeaderMenuComponent < ApplicationComponent
   # pointing at two controllers that did the same job. One search now, which scores
   # against your profile when you have one, so there is nothing left to choose
   # between.
+  # About and FAQ are in the signed-out bar and not the signed-in one. A visitor
+  # deciding whether to trust the app needs them within reach; someone already
+  # signed in is here to work, and pushing their three task links along to make
+  # room for two reference pages gets the priority backwards. Both stay in the
+  # footer on every page, which is where a reference link belongs.
   def links
     if user_signed_in?
       {
@@ -36,7 +41,11 @@ class Layout::Navigation::Menu::HeaderMenuComponent < ApplicationComponent
         "Saved" => helpers.saved_trials_path
       }
     else
-      {"Find trials" => helpers.search_index_path}
+      {
+        "Find trials" => helpers.search_index_path,
+        "About" => helpers.about_path,
+        "FAQ" => helpers.faq_path
+      }
     end
   end
 

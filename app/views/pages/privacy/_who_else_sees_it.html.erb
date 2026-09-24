@@ -1,0 +1,52 @@
+<p class="text-base leading-relaxed text-ink-2 dark:text-ink-2-on-dark">
+  Four parties, and only four.
+</p>
+
+<div class="flex flex-col gap-4">
+  <%# The registry API is not on this list, and that is deliberate rather than an
+      omission. Searching ClinicalTrials.gov sends the condition and the location,
+      which come from the profile, so it is worth saying that the query carries
+      those two fields and nothing that identifies anyone. %>
+  <div class="rounded-card border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-5 flex flex-col gap-1.5">
+    <p class="text-base font-bold text-ink dark:text-ink-on-dark">A study team, only when you send your details</p>
+    <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+      You choose the study and you make contact, using the coordinator's own details on the study page.
+      The app does not transmit anything to a study team on your behalf. Once you have sent something,
+      what you sent is theirs, and their own privacy terms apply to it.
+    </p>
+  </div>
+
+  <div class="rounded-card border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-5 flex flex-col gap-1.5">
+    <p class="text-base font-bold text-ink dark:text-ink-on-dark">Anthropic, to rewrite a study description</p>
+    <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+      When you ask for a plain-language version of a study, that study's public registry text is sent
+      to Anthropic's API. Nothing about you goes with it, and the result is cached against the study
+      rather than against your account, so everyone who opens that study sees the same summary.
+    </p>
+  </div>
+
+  <div class="rounded-card border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-5 flex flex-col gap-3">
+    <div class="flex flex-col gap-1.5">
+      <p class="text-base font-bold text-ink dark:text-ink-on-dark">ClinicalTrials.gov, when you search</p>
+      <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+        A search sends the condition and the location it is searching on, which come from your profile
+        when you are signed in. Nothing that identifies you is part of the query, and the registry has
+        no account for you.
+      </p>
+    </div>
+  </div>
+
+  <div class="rounded-card border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-5 flex flex-col gap-3">
+    <p class="text-base font-bold text-ink dark:text-ink-on-dark">Our hosting provider</p>
+    <%= render Pages::DraftComponent.new(
+          label: "the hosting provider",
+          waiting_on: "Name the host and say what they hold, which is the database and the logs. " \
+                      "This is the only one of the four that is a company nobody has heard of, " \
+                      "so naming it is the point."
+        ) %>
+  </div>
+</div>
+
+<p class="text-base leading-relaxed text-ink-2 dark:text-ink-2-on-dark">
+  We do not sell your information, and we do not share it with advertisers or data brokers.
+</p>

@@ -1,0 +1,121 @@
+<% content_for :title, "FAQ - Dira Health" %>
+
+<%# The search box filters the questions already on the page rather than
+    submitting anywhere. There is one list of thirteen questions, so a round
+    trip to the server to hide some of them would be slower and would lose the
+    open/closed state of every <details> on the way. %>
+<div data-controller="faq-filter">
+
+  <%= render Pages::HeroComponent.new(
+        eyebrow: "Questions",
+        heading: "What people ask before joining a study"
+      ) do %>
+    <div class="w-full max-w-xl">
+      <label for="faq-filter-input" class="sr-only">Filter questions</label>
+      <div class="relative">
+        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-ink-3 dark:text-ink-3-on-dark pointer-events-none">
+          <%= render Utilities::IconComponent.new("search", size: 5) %>
+        </span>
+        <input id="faq-filter-input" type="search" autocomplete="off"
+               placeholder="Filter questions, for example placebo"
+               data-faq-filter-target="input"
+               data-action="input->faq-filter#filter search->faq-filter#filter"
+               class="<%= Forms::FieldStyles.input(extra: "pl-12 pr-4 py-3 rounded-search") %>">
+      </div>
+      <p class="mt-2 text-sm text-ink-3 dark:text-ink-3-on-dark" role="status"
+         data-faq-filter-target="status"></p>
+    </div>
+  <% end %>
+
+  <main class="bg-surface dark:bg-surface-on-dark">
+    <div class="mx-auto max-w-6xl px-5 lg:px-8 py-14 grid gap-12 lg:grid-cols-[250px_1fr] lg:gap-16 items-start">
+
+      <%# The rail is anchor links into the page, not a filter. Every href here
+          points at a section id rendered below in the same loop, which is what
+          the anchor sweep spec checks: PR 5 shipped two in-page links to
+          sections that did not exist. %>
+      <aside class="flex flex-col gap-4 lg:sticky lg:top-6">
+        <p class="text-xs font-bold uppercase tracking-[0.09em] text-ink-3 dark:text-ink-3-on-dark">Categories</p>
+        <nav aria-label="FAQ categories" class="flex flex-col gap-0.5">
+          <% @categories.each do |category| %>
+            <a href="#<%= category.parameterize %>"
+               class="rounded-chip px-3 py-2 text-sm font-semibold text-ink-2 dark:text-ink-2-on-dark
+                      hover:bg-surface-2 dark:hover:bg-surface-2-on-dark hover:text-ink dark:hover:text-ink-on-dark
+                      focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+              <%= category %>
+            </a>
+          <% end %>
+        </nav>
+
+        <div class="mt-2 rounded-card border border-line dark:border-line-on-dark bg-paper dark:bg-paper-on-dark p-5 flex flex-col gap-2 items-start">
+          <p class="text-sm font-bold text-ink dark:text-ink-on-dark">Not answered here?</p>
+          <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+            Send the question. If it comes up twice it ends up on this page.
+          </p>
+          <%= render Buttons::ButtonComponent.new(text: "Ask us", path: contact_path, color: "secondary") %>
+        </div>
+      </aside>
+
+      <div class="flex flex-col gap-10 max-w-3xl">
+        <% @categories.each do |category| %>
+          <section id="<%= category.parameterize %>" class="flex flex-col scroll-mt-6"
+                   data-faq-filter-target="category">
+            <h2 class="font-primary text-xl font-bold tracking-tight text-ink dark:text-ink-on-dark pb-3">
+              <%= category %>
+            </h2>
+
+            <% Faq.for_category(category).each_with_index do |entry, index| %>
+              <details class="border-t border-line dark:border-line-on-dark py-5 group"
+                       data-faq-filter-target="entry"
+                       data-question="<%= entry.question.downcase %>"
+                       data-answer="<%= entry.answer.to_s.downcase %>"
+                       <%= "open" if index.zero? && category == @categories.first %>>
+                <summary class="cursor-pointer list-none flex items-start gap-3
+                                text-base font-bold text-ink dark:text-ink-on-dark
+                                focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus rounded-nav">
+                  <span class="text-ink-3 dark:text-ink-3-on-dark shrink-0 mt-0.5 transition-transform group-open:rotate-180">
+                    <%= render Utilities::IconComponent.new("chevron_down", size: 5) %>
+                  </span>
+                  <span><%= entry.question %></span>
+                </summary>
+
+                <div class="pl-8 pt-3">
+                  <% if entry.unanswered? %>
+                    <%= render Pages::DraftComponent.new(
+                          label: "whether the app costs anything",
+                          waiting_on: "Answer this one honestly and early. If it is free, say who " \
+                                      "pays for it. The same answer is owed on the About page."
+                        ) %>
+                  <% else %>
+                    <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark"><%= entry.answer %></p>
+                  <% end %>
+                </div>
+              </details>
+            <% end %>
+
+            <div class="border-t border-line dark:border-line-on-dark"></div>
+          </section>
+        <% end %>
+
+        <%# Shown by the filter controller when nothing matches, so a typo does
+            not leave an apparently empty page with no explanation. %>
+        <p data-faq-filter-target="empty" hidden
+           class="text-base text-ink-3 dark:text-ink-3-on-dark">
+          No question matches that. Try a shorter word, or
+          <%= link_to "send us the question", contact_path, class: "font-semibold text-sky-600 dark:text-sky-300 underline underline-offset-2" %>.
+        </p>
+
+        <div class="rounded-card border border-line dark:border-line-on-dark bg-paper dark:bg-paper-on-dark
+                    p-6 flex flex-wrap gap-5 items-center justify-between">
+          <div class="flex flex-col gap-1">
+            <p class="text-base font-bold text-ink dark:text-ink-on-dark">Still have a question?</p>
+            <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+              We answer every one. If it is urgent and medical, call your doctor rather than waiting on us.
+            </p>
+          </div>
+          <%= render Buttons::ButtonComponent.new(text: "Ask us", path: contact_path, color: "primary") %>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

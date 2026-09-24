@@ -1,0 +1,50 @@
+<%# Every claim here points at a control that exists. The delete button is on
+    account settings rather than the profile page, which is where the design
+    board said it was, and saying the wrong page is how someone concludes the
+    feature is missing. %>
+
+<p class="text-base leading-relaxed text-ink-2 dark:text-ink-2-on-dark">
+  You can see everything we hold, change any of it, and delete all of it.
+</p>
+
+<ul class="flex flex-col gap-3">
+  <li class="flex gap-3 items-start">
+    <span class="text-good dark:text-good-on-dark shrink-0 mt-0.5">
+      <%= render Utilities::IconComponent.new("check_circle", size: 5) %>
+    </span>
+    <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+      <span class="font-bold text-ink dark:text-ink-on-dark">See it.</span>
+      Your profile page shows every answer you have given, grouped the way the sign-up questions were,
+      and each section says whether it affects matching.
+    </p>
+  </li>
+  <li class="flex gap-3 items-start">
+    <span class="text-good dark:text-good-on-dark shrink-0 mt-0.5">
+      <%= render Utilities::IconComponent.new("check_circle", size: 5) %>
+    </span>
+    <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+      <span class="font-bold text-ink dark:text-ink-on-dark">Change it.</span>
+      Any section can be edited on its own, at any time. Nothing is locked after sign-up.
+    </p>
+  </li>
+  <li class="flex gap-3 items-start">
+    <span class="text-good dark:text-good-on-dark shrink-0 mt-0.5">
+      <%= render Utilities::IconComponent.new("check_circle", size: 5) %>
+    </span>
+    <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+      <span class="font-bold text-ink dark:text-ink-on-dark">Delete it.</span>
+      Account settings has a delete button. It removes your account, your health profile, your saved
+      studies, your tags and your notes. It cannot be undone.
+    </p>
+  </li>
+  <li class="flex gap-3 items-start">
+    <span class="text-ink-4 dark:text-ink-4-on-dark shrink-0 mt-0.5">
+      <%= render Utilities::IconComponent.new("info_circle", size: 5) %>
+    </span>
+    <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+      <span class="font-bold text-ink dark:text-ink-on-dark">One thing deletion cannot reach.</span>
+      A study team you already contacted keeps whatever you sent them. That copy is theirs, not ours,
+      and you would need to ask that team directly.
+    </p>
+  </li>
+</ul>

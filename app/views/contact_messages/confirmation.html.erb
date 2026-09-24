@@ -1,0 +1,41 @@
+<% content_for :title, "Message received - Dira Health" %>
+
+<%# Replaces the form rather than redirecting with a flash, which is what the
+    design board asked for and is the better behaviour anyway: the confirmation
+    names the address back, so a typo is caught while the person is still here
+    and can send it again. A flash on another page cannot do that. %>
+
+<main class="bg-surface dark:bg-surface-on-dark">
+  <div class="mx-auto max-w-2xl px-5 py-20 lg:py-28 flex flex-col gap-6 items-start">
+    <span class="w-14 h-14 rounded-panel bg-good/10 dark:bg-good-on-dark/15 text-good dark:text-good-on-dark flex items-center justify-center">
+      <%= render Utilities::IconComponent.new("check_circle", size: 8) %>
+    </span>
+
+    <h1 class="font-primary text-4xl font-extrabold tracking-tight text-ink dark:text-ink-on-dark">
+      Message received
+    </h1>
+
+    <p class="text-lg leading-relaxed text-ink-2 dark:text-ink-2-on-dark">
+      We will reply to
+      <span class="font-bold text-ink dark:text-ink-on-dark"><%= @contact_message.email %></span>.
+      If that is not right,
+      <%= link_to "send it again", contact_path, class: "font-semibold text-sky-600 dark:text-sky-300 underline underline-offset-2" %>
+      with the correct address.
+    </p>
+
+    <div class="rounded-card border border-line dark:border-line-on-dark bg-paper dark:bg-paper-on-dark p-5 flex gap-3.5 items-start w-full">
+      <span class="text-crit dark:text-crit-on-dark shrink-0 mt-0.5">
+        <%= render Utilities::IconComponent.new("exclamation_triangle", size: 5) %>
+      </span>
+      <p class="text-sm leading-relaxed text-ink-2 dark:text-ink-2-on-dark">
+        If this turns out to be a medical emergency while you are waiting, call 911 or go to your
+        nearest emergency room. We are not a medical provider.
+      </p>
+    </div>
+
+    <div class="flex flex-wrap gap-3 pt-2">
+      <%= render Buttons::ButtonComponent.new(text: "Find trials", path: search_index_path, color: "primary") %>
+      <%= render Buttons::ButtonComponent.new(text: "Read the FAQ", path: faq_path, color: "secondary") %>
+    </div>
+  </div>
+</main>

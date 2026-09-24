@@ -1,0 +1,17 @@
+<p class="text-base leading-relaxed text-ink-2 dark:text-ink-2-on-dark">
+  While this page is a draft it has no effective date, because a date on an unfinished document
+  implies it has been reviewed. There will be one when it has.
+</p>
+
+<p class="text-base leading-relaxed text-ink-2 dark:text-ink-2-on-dark">
+  Questions about your data, or a request to see or delete what we hold, go through the
+  <%= link_to "contact form", contact_path, class: "font-semibold text-sky-600 dark:text-sky-300 underline underline-offset-2" %>.
+  Pick "My data or privacy" so it is easy to spot.
+</p>
+
+<%= render Pages::DraftComponent.new(
+      label: "how changes are announced",
+      waiting_on: "How a change to this policy reaches someone who already has an account. " \
+                  "Email needs SMTP, which is not configured yet, so the honest answer today " \
+                  "is an in-app notice. Say whichever it will be."
+    ) %>

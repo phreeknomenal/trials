@@ -1,0 +1,146 @@
+<% content_for :title, "Contact us - Dira Health" %>
+
+<main class="bg-surface dark:bg-surface-on-dark lg:grid lg:grid-cols-[minmax(0,1fr)_480px] lg:items-stretch">
+
+  <%# Form left, context right, matching the auth and onboarding shells: the form
+      is the work, so it takes the reading position. %>
+  <div class="bg-surface dark:bg-surface-on-dark px-5 lg:px-16 py-14 lg:py-20 flex flex-col justify-center">
+    <div class="w-full max-w-xl mx-auto flex flex-col gap-6">
+      <div class="flex flex-col gap-2.5">
+        <p class="text-xs font-bold uppercase tracking-[0.09em] text-sky-600 dark:text-sky-300">Contact</p>
+        <h1 class="font-primary text-4xl font-extrabold tracking-tight text-ink dark:text-ink-on-dark">
+          Ask us anything about the app
+        </h1>
+        <%# The board said "we usually reply within two working days". The app
+            cannot send email, so nothing here can promise a turnaround. What it
+            can promise is that the message is kept and read, which is true. %>
+        <p class="text-base leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+          A person reads every message. We are a very small operation, so a reply comes when it comes
+          rather than on a schedule we would have to invent.
+        </p>
+      </div>
+
+      <%= form_with model: @contact_message, url: contact_path, method: :post,
+                    class: "flex flex-col gap-4" do |form| %>
+
+        <% if @contact_message.errors.any? %>
+          <div class="rounded-card border border-crit dark:border-crit-on-dark bg-crit/5 dark:bg-crit-on-dark/10 p-4 flex gap-3 items-start"
+               role="alert">
+            <span class="text-crit dark:text-crit-on-dark shrink-0 mt-0.5">
+              <%= render Utilities::IconComponent.new("exclamation_circle", size: 5) %>
+            </span>
+            <p class="text-sm font-semibold text-crit dark:text-crit-on-dark">
+              The message was not sent. <%= @contact_message.errors.count == 1 ? "One field needs" : "Some fields need" %> a look.
+            </p>
+          </div>
+        <% end %>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <%= render Forms::FieldComponent.new(form: form, attribute: :name, label: "Your name",
+                options: {autocomplete: "name", required: true}) %>
+          <%# type: rather than field_type:. FieldComponent has no :email case and
+              would fall through to a text field, losing the mobile keyboard and
+              the browser's own format check. %>
+          <%= render Forms::FieldComponent.new(form: form, attribute: :email, label: "Email",
+                options: {type: "email", autocomplete: "email", placeholder: "you@example.com", required: true}) %>
+        </div>
+
+        <%# A prompt rather than a preselected first option. Required with a blank
+            default forces a deliberate choice, but a select showing nothing at
+            all reads as a control that failed to load. %>
+        <%= render Forms::FieldComponent.new(form: form, attribute: :topic, label: "What is this about?",
+              field_type: :select, select_options: ContactMessage::TOPICS,
+              options: {prompt: "Choose one", required: true}) %>
+
+        <%= render Forms::FieldComponent.new(form: form, attribute: :body, label: "Message",
+              field_type: :text_area,
+              hint: "Please do not include medical records or test results. We do not need them, and this form is not a secure way to send them.",
+              options: {rows: 6, required: true}) %>
+
+        <%# The honeypot. Positioned off screen rather than hidden with `hidden`,
+            because a field that is display:none is the first thing a bot skips.
+            aria-hidden and tabindex keep it out of the way of anyone real. %>
+        <div aria-hidden="true" class="absolute left-[-9999px] w-px h-px overflow-hidden">
+          <label for="contact_message_website">Website</label>
+          <%= form.text_field :website, tabindex: -1, autocomplete: "off", id: "contact_message_website" %>
+        </div>
+
+        <div class="pt-1">
+          <%= render Forms::SubmitComponent.new(form: form, text: "Send message", style: :primary) %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# The right column. The emergency notice is first, above everything, because
+      it is the one thing on this page that could matter urgently. %>
+  <aside class="relative overflow-hidden border-t lg:border-t-0 lg:border-l border-line dark:border-line-on-dark
+                bg-[linear-gradient(180deg,#EDF2FB_0%,#F6F9FD_60%,#FFFFFF_100%)]
+                dark:bg-none dark:bg-paper-on-dark
+                px-5 lg:px-10 py-14 flex flex-col justify-center gap-5">
+    <div aria-hidden="true" class="hidden lg:block dark:hidden">
+      <%= render "shared/panel_backdrop", id: "contact", blob_x: 480, blob_y: 120,
+            blob_r: 200, pill_y: 560, dots_x: 380, dots_y: 700 %>
+    </div>
+
+    <div class="relative rounded-card border border-line dark:border-line-on-dark border-l-[3px] border-l-crit
+                bg-surface dark:bg-surface-on-dark p-5 flex gap-3.5 items-start">
+      <span class="text-crit dark:text-crit-on-dark shrink-0 mt-0.5">
+        <%= render Utilities::IconComponent.new("exclamation_triangle", size: 5) %>
+      </span>
+      <div class="flex flex-col gap-1">
+        <p class="text-base font-bold text-ink dark:text-ink-on-dark">Medical emergency?</p>
+        <p class="text-sm leading-relaxed text-ink-2 dark:text-ink-2-on-dark">
+          Call 911 or go to your nearest emergency room. We are not a medical provider and this form
+          is not monitored around the clock.
+        </p>
+      </div>
+    </div>
+
+    <div class="relative rounded-card border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-5 flex flex-col gap-3">
+      <p class="text-xs font-bold uppercase tracking-[0.09em] text-ink-3 dark:text-ink-3-on-dark">Other ways to reach us</p>
+      <%# Bracketed rather than linked. Neither mailbox exists yet, and a mailto:
+          to an address that bounces is worse than no address at all. %>
+      <%= render Pages::DraftComponent.new(
+            label: "an email address",
+            waiting_on: "hello@ and privacy@ do not exist yet. Once a mailbox is real it goes here " \
+                        "as a link, and the privacy policy's contact section can point at it too."
+          ) %>
+      <div class="flex items-center gap-3">
+        <span class="w-9 h-9 shrink-0 rounded-control bg-sky-50 dark:bg-navy-900/40 text-sky-600 dark:text-sky-300 flex items-center justify-center">
+          <%= render Utilities::IconComponent.new("map_pin", size: 4) %>
+        </span>
+        <div class="flex flex-col">
+          <p class="text-sm font-semibold text-ink dark:text-ink-on-dark">Birmingham, Alabama</p>
+          <p class="text-xs text-ink-3 dark:text-ink-3-on-dark">Where the app is built</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="relative rounded-card border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-5 flex gap-3.5 items-start">
+      <span class="text-sky-600 dark:text-sky-300 shrink-0 mt-0.5">
+        <%= render Utilities::IconComponent.new("info_circle", size: 5) %>
+      </span>
+      <div class="flex flex-col gap-1">
+        <p class="text-sm font-bold text-ink dark:text-ink-on-dark">Asking about a specific study?</p>
+        <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+          We cannot answer for a study team and we cannot enroll you. The study page carries the
+          coordinator's own contact details, which is the faster route.
+        </p>
+      </div>
+    </div>
+
+    <div class="relative rounded-card border border-line dark:border-line-on-dark bg-paper dark:bg-paper-on-dark p-5 flex gap-3.5 items-start">
+      <span class="text-good dark:text-good-on-dark shrink-0 mt-0.5">
+        <%= render Utilities::IconComponent.new("check", size: 5) %>
+      </span>
+      <div class="flex flex-col gap-1">
+        <p class="text-sm font-bold text-ink dark:text-ink-on-dark">After you send</p>
+        <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+          The form is replaced by a confirmation naming the address we will reply to, so a typo is
+          caught while you are still on the page.
+        </p>
+      </div>
+    </div>
+  </aside>
+</main>
