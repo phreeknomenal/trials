@@ -1,0 +1,38 @@
+<%# Every row is generated from PrivacyInventory, which names real columns on
+    real models, and a spec fails if any column on User, Profile, SavedTrial or
+    ContactMessage appears in no row. That is the only way this table stays
+    true: add a column to profiles and nothing about a hand-written table would
+    complain, while the policy quietly stopped describing what the app holds. %>
+
+<div class="overflow-x-auto rounded-card border border-line dark:border-line-on-dark">
+  <table class="w-full text-left border-collapse">
+    <caption class="sr-only">Every category of information Dira Health stores, with examples and when it is collected</caption>
+    <thead>
+      <tr class="bg-surface-2 dark:bg-surface-2-on-dark">
+        <th scope="col" class="px-4 py-3 text-xs font-bold uppercase tracking-wider text-ink-3 dark:text-ink-3-on-dark">What</th>
+        <th scope="col" class="px-4 py-3 text-xs font-bold uppercase tracking-wider text-ink-3 dark:text-ink-3-on-dark">Examples</th>
+        <th scope="col" class="px-4 py-3 text-xs font-bold uppercase tracking-wider text-ink-3 dark:text-ink-3-on-dark">When</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @entries.each do |entry| %>
+        <tr class="border-t border-line dark:border-line-on-dark align-top">
+          <th scope="row" class="px-4 py-4 text-sm font-bold text-ink dark:text-ink-on-dark whitespace-nowrap">
+            <%= entry.title %>
+          </th>
+          <td class="px-4 py-4 text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+            <%= entry.extras.any? ? "#{entry.examples}. #{entry.extras.to_sentence}" : entry.examples %>
+          </td>
+          <td class="px-4 py-4 text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+            <%= entry.collected_when %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+  We also keep ordinary web server records: a session cookie so you stay signed in, your IP address
+  in request logs, and counters behind the rate limits that stop the app being scraped.
+</p>

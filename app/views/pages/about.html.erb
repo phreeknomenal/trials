@@ -1,0 +1,139 @@
+<% content_for :title, "About us - Dira Health" %>
+
+<%= render Pages::HeroComponent.new(
+      eyebrow: "About us",
+      heading: "Clinical research is public. Finding your place in it should be too.",
+      lead: "Every recruiting study in the United States is listed in a public registry. " \
+            "It is written for researchers, organised for researchers, and almost unusable " \
+            "if you are the person the study is looking for."
+    ) %>
+
+<main class="bg-surface dark:bg-surface-on-dark">
+
+  <%# Why this exists. The founder paragraphs carry the page, and they are the
+      one thing here nobody but Marques can write. The photo slot is left out
+      entirely rather than drawn as an empty frame: an image placeholder on a
+      live page is a broken page, and the canvas records that every photo slot
+      needs a licensed or consented image first. %>
+  <section class="border-b border-line dark:border-line-on-dark">
+    <div class="mx-auto max-w-5xl px-5 lg:px-8 py-16 flex flex-col gap-6 max-w-3xl">
+      <h2 class="font-primary text-3xl font-bold tracking-tight text-ink dark:text-ink-on-dark">Why this exists</h2>
+      <%= render Pages::DraftComponent.new(
+            label: "why this exists",
+            waiting_on: "Two or three paragraphs in your own words: what you saw at Acclinate, " \
+                        "what a patient runs into searching the registry themselves, and what a " \
+                        "tool should do about it. This section carries the page."
+          ) %>
+    </div>
+  </section>
+
+  <%# What we do. Three claims, and every one of them is true of the code:
+      studies come from the registry unfiltered, every score opens to its
+      criteria, and nothing is transmitted to a study team by the app at all. %>
+  <section class="border-b border-line dark:border-line-on-dark bg-paper dark:bg-paper-on-dark">
+    <div class="mx-auto max-w-5xl px-5 lg:px-8 py-16 flex flex-col gap-10">
+      <div class="flex flex-col gap-3 max-w-2xl">
+        <p class="text-xs font-bold uppercase tracking-[0.09em] text-sky-600 dark:text-sky-300">What we do</p>
+        <h2 class="font-primary text-3xl font-bold tracking-tight text-ink dark:text-ink-on-dark">
+          Three things, and nothing that needs your trust blindly
+        </h2>
+      </div>
+
+      <div class="grid gap-6 md:grid-cols-3">
+        <% [
+             ["search", "We read the registry for you",
+              "Studies come from ClinicalTrials.gov, the public registry. We do not choose what appears, and a study cannot pay to rank higher."],
+             ["badge_check", "We show our working",
+              "Every match score opens to the criteria behind it, including the ones you do not meet, so you can check the match rather than take it on faith."],
+             ["shield_check", "We wait for you to decide",
+              "Nothing about you reaches a study team through this app. When you are ready, you contact them yourself with the details on the study page."]
+           ].each do |icon, title, body| %>
+          <div class="rounded-card border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-7 flex flex-col gap-3">
+            <span class="w-11 h-11 rounded-control bg-sky-50 dark:bg-navy-900/40 text-sky-600 dark:text-sky-300 flex items-center justify-center">
+              <%= render Utilities::IconComponent.new(icon, size: 5) %>
+            </span>
+            <h3 class="font-primary text-lg font-bold tracking-tight text-ink dark:text-ink-on-dark"><%= title %></h3>
+            <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark"><%= body %></p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <%# What we are not. The board's argument for this section is that a patient
+      deciding about treatment deserves the limits stated rather than buried,
+      which is also why it is not the last thing on the page. %>
+  <section class="border-b border-line dark:border-line-on-dark">
+    <div class="mx-auto max-w-5xl px-5 lg:px-8 py-16 grid gap-10 lg:grid-cols-[320px_1fr] lg:gap-16">
+      <div class="flex flex-col gap-3">
+        <p class="text-xs font-bold uppercase tracking-[0.09em] text-sky-600 dark:text-sky-300">What we are not</p>
+        <h2 class="font-primary text-3xl font-bold tracking-tight text-ink dark:text-ink-on-dark">Said plainly, because it matters</h2>
+        <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+          A patient deciding about treatment deserves the limits stated, not buried.
+        </p>
+      </div>
+
+      <div class="flex flex-col">
+        <div class="flex gap-4 items-start border-t border-line dark:border-line-on-dark py-6">
+          <span class="text-crit dark:text-crit-on-dark shrink-0 mt-0.5">
+            <%= render Utilities::IconComponent.new("close_circle", size: 5) %>
+          </span>
+          <div class="flex flex-col gap-1">
+            <p class="text-base font-bold text-ink dark:text-ink-on-dark">Not medical advice</p>
+            <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+              A match score is not a recommendation to join a study. Talk to your own doctor before making a decision about treatment.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex gap-4 items-start border-t border-line dark:border-line-on-dark py-6">
+          <span class="text-crit dark:text-crit-on-dark shrink-0 mt-0.5">
+            <%= render Utilities::IconComponent.new("close_circle", size: 5) %>
+          </span>
+          <div class="flex flex-col gap-1">
+            <p class="text-base font-bold text-ink dark:text-ink-on-dark">Not the study team</p>
+            <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+              We do not run studies, screen anyone, or decide who takes part. Only the study team can confirm whether you are eligible.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex gap-4 items-start border-y border-line dark:border-line-on-dark py-6">
+          <span class="text-crit dark:text-crit-on-dark shrink-0 mt-0.5">
+            <%= render Utilities::IconComponent.new("close_circle", size: 5) %>
+          </span>
+          <div class="flex flex-col gap-2 w-full">
+            <p class="text-base font-bold text-ink dark:text-ink-on-dark">Not funded by selling your data</p>
+            <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+              We do not sell your information and we do not share it with advertisers or data brokers.
+              The privacy policy lists everyone who does see it.
+            </p>
+            <%= render Pages::DraftComponent.new(
+                  label: "how this is paid for",
+                  waiting_on: "How the app is actually funded. Stating what it is not, without " \
+                              "stating what it is, is the weaker half of the sentence, and the " \
+                              "same answer is owed on the FAQ."
+                ) %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <%# Who builds it. %>
+  <section class="bg-paper dark:bg-paper-on-dark">
+    <div class="mx-auto max-w-5xl px-5 lg:px-8 py-16 flex flex-col gap-5 max-w-3xl">
+      <p class="text-xs font-bold uppercase tracking-[0.09em] text-sky-600 dark:text-sky-300">Who builds it</p>
+      <%= render Pages::DraftComponent.new(
+            label: "who builds it",
+            waiting_on: "Your name, and two to four sentences: relevant experience, why this " \
+                        "problem, and something human. A named person builds more trust on a " \
+                        "health site than a company voice."
+          ) %>
+      <div class="flex flex-wrap gap-3 pt-2">
+        <%= render Buttons::ButtonComponent.new(text: "Get in touch", path: contact_path, color: "primary") %>
+        <%= render Buttons::ButtonComponent.new(text: "Read the FAQ", path: faq_path, color: "secondary") %>
+      </div>
+    </div>
+  </section>
+</main>

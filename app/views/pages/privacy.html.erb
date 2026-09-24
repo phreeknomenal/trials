@@ -1,0 +1,92 @@
+<% content_for :title, "Privacy policy - Dira Health" %>
+
+<%= render Pages::HeroComponent.new(
+      eyebrow: "Privacy",
+      heading: "What we collect and what we do with it",
+      lead: "Everything below is something you typed or something the app recorded because " \
+            "you used it. There is no tracking pixel, no advertising network, and no data " \
+            "bought from anyone else."
+    ) %>
+
+<main class="bg-surface dark:bg-surface-on-dark">
+  <div class="mx-auto max-w-6xl px-5 lg:px-8 py-14 grid gap-12 lg:grid-cols-[250px_1fr] lg:gap-16 items-start">
+
+    <%# The contents rail and the sections below come from the same list, so an
+        anchor here cannot point at a section that is not rendered. %>
+    <aside class="flex flex-col gap-4 lg:sticky lg:top-6">
+      <p class="text-xs font-bold uppercase tracking-[0.09em] text-ink-3 dark:text-ink-3-on-dark">On this page</p>
+      <nav aria-label="Privacy policy sections" class="flex flex-col gap-0.5">
+        <% PrivacyPolicy.sections.each do |section| %>
+          <a href="<%= section.anchor %>"
+             class="rounded-chip px-3 py-2 text-sm font-semibold flex items-center gap-2
+                    <%= section.written? ? "text-ink-2 dark:text-ink-2-on-dark" : "text-ink-3 dark:text-ink-3-on-dark" %>
+                    hover:bg-surface-2 dark:hover:bg-surface-2-on-dark hover:text-ink dark:hover:text-ink-on-dark
+                    focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+            <span><%= section.title %></span>
+            <% unless section.written? %>
+              <span class="shrink-0 text-warn dark:text-warn-on-dark" title="Not written yet">
+                <%= render Utilities::IconComponent.new("exclamation_triangle", size: 3) %>
+              </span>
+            <% end %>
+          </a>
+        <% end %>
+      </nav>
+
+      <div class="mt-2 rounded-card border border-line dark:border-line-on-dark bg-paper dark:bg-paper-on-dark p-5 flex flex-col gap-2">
+        <p class="text-sm font-bold text-ink dark:text-ink-on-dark">Prefer the short version?</p>
+        <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+          We collect what matching needs, we do not sell it, and nothing goes to a study team unless you send it.
+        </p>
+      </div>
+    </aside>
+
+    <div class="flex flex-col gap-10 max-w-3xl">
+
+      <%# The draft banner. It leads the page rather than sitting in a footnote,
+          because somebody deciding whether to enter a diagnosis is entitled to
+          know the document is unfinished before they read it as a commitment. %>
+      <div class="rounded-panel border border-warn/60 dark:border-warn-on-dark/60
+                  bg-warn/5 dark:bg-warn-on-dark/10 p-6 flex gap-4 items-start">
+        <span class="text-warn dark:text-warn-on-dark shrink-0 mt-0.5">
+          <%= render Utilities::IconComponent.new("exclamation_triangle", size: 6) %>
+        </span>
+        <div class="flex flex-col gap-2">
+          <p class="font-primary text-lg font-bold text-warn dark:text-warn-on-dark">
+            Draft. Not reviewed by anyone qualified.
+          </p>
+          <p class="text-sm leading-relaxed text-ink-2 dark:text-ink-2-on-dark">
+            The inventory below is accurate: it is generated from the app's own database columns,
+            so it cannot fall behind what we hold. The legal wording is not written, and
+            <%= PrivacyPolicy.unwritten.count %> of the <%= PrivacyPolicy.sections.count %> sections
+            are still empty. Each one says what it is waiting on. A privacy policy on a site holding
+            health data is not something to draft from a template, so those stay marked until somebody
+            qualified writes them.
+          </p>
+        </div>
+      </div>
+
+      <% PrivacyPolicy.sections.each do |section| %>
+        <section id="<%= section.slug %>" class="flex flex-col gap-4 scroll-mt-6">
+          <h2 class="font-primary text-2xl font-bold tracking-tight text-ink dark:text-ink-on-dark">
+            <%= section.title %>
+          </h2>
+
+          <% if section.written? %>
+            <%= render section.partial %>
+          <% else %>
+            <%= render Pages::DraftComponent.new(label: section.title.downcase, waiting_on: section.waiting_on) %>
+          <% end %>
+        </section>
+      <% end %>
+
+      <div class="rounded-card border border-line dark:border-line-on-dark bg-paper dark:bg-paper-on-dark
+                  p-6 flex flex-wrap gap-5 items-center justify-between">
+        <div class="flex flex-col gap-1">
+          <p class="text-base font-bold text-ink dark:text-ink-on-dark">Questions about your data?</p>
+          <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">Ask and you get a person, not a form letter.</p>
+        </div>
+        <%= render Buttons::ButtonComponent.new(text: "Contact us", path: contact_path, color: "primary") %>
+      </div>
+    </div>
+  </div>
+</main>

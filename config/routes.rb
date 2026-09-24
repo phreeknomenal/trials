@@ -32,7 +32,19 @@ Rails.application.routes.draw do
     resources :testimonials
     get "operations", to: "operations#index"
     resources :users, only: [:index]
+    resources :contact_messages, only: [:index, :update]
   end
+
+  # The pages about the app rather than part of it. Short top-level paths
+  # because they are what a footer link and a typed URL both expect.
+  get "about", to: "pages#about"
+  get "faq", to: "pages#faq"
+  get "privacy", to: "pages#privacy"
+
+  # One path for the form and its submission, so a failed submit re-renders at
+  # the URL the person is looking at rather than bouncing them somewhere else.
+  get "contact", to: "contact_messages#new", as: :contact
+  post "contact", to: "contact_messages#create"
 
   # The onboarding wizard. One step per URL so a refresh resumes where the user
   # was and the back button behaves, neither of which the modal could do.
