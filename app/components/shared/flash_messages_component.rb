@@ -16,6 +16,15 @@ module Shared
     # failure is the one the reader needs.
     PRIORITY = [:crit, :warn, :good, :info].freeze
 
+    # The dark variants carry /15 on the background and nothing on the text.
+    # They used to carry neither: `dark:bg-crit-on-dark dark:text-crit-on-dark`
+    # painted the message in exactly the colour of the panel behind it, a
+    # contrast ratio of 1 to 1. Every flash in the app was unreadable in dark
+    # mode, in all four tones, and every one of them returned 200 with the right
+    # words in it.
+    #
+    # The light side had it right all along -- `bg-good/10 text-good` -- and the
+    # opacity modifier was simply dropped when the dark pairs were added.
     PRESENTATION = {
       good: {
         icon: "check_circle",
@@ -24,21 +33,21 @@ module Shared
         # whatever a screen reader is already saying.
         role: "status",
         classes: "border-good bg-good/10 text-good " \
-                 "dark:border-good-on-dark dark:bg-good-on-dark dark:text-good-on-dark"
+                 "dark:border-good-on-dark dark:bg-good-on-dark/15 dark:text-good-on-dark"
       },
       info: {
         icon: "info_circle",
         prefix: "Information",
         role: "status",
         classes: "border-info bg-info/10 text-info " \
-                 "dark:border-info-on-dark dark:bg-info-on-dark dark:text-info-on-dark"
+                 "dark:border-info-on-dark dark:bg-info-on-dark/15 dark:text-info-on-dark"
       },
       warn: {
         icon: "exclamation_triangle",
         prefix: "Warning",
         role: "status",
         classes: "border-warn bg-warn/10 text-warn " \
-                 "dark:border-warn-on-dark dark:bg-warn-on-dark dark:text-warn-on-dark"
+                 "dark:border-warn-on-dark dark:bg-warn-on-dark/15 dark:text-warn-on-dark"
       },
       crit: {
         icon: "close_circle",
@@ -46,7 +55,7 @@ module Shared
         # The only tone that earns assertive interruption.
         role: "alert",
         classes: "border-crit bg-crit/10 text-crit " \
-                 "dark:border-crit-on-dark dark:bg-crit-on-dark dark:text-crit-on-dark"
+                 "dark:border-crit-on-dark dark:bg-crit-on-dark/15 dark:text-crit-on-dark"
       }
     }.freeze
 

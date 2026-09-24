@@ -1,13 +1,13 @@
 <label for="<%= name %>" class="<%= label_options[:class] %>">
   <%= label %>
   <% if choice_options[:required] %>
-    <span class="text-crit">*</span>
+    <span class="text-crit dark:text-crit-on-dark">*</span>
   <% end %>
 </label>
 <div class="flex flex-col my-1" data-controller="sortable">
   <ul data-sortable-target="list">
     <% choices.each do |option| %>
-      <li data-sortable-id-param="<%= option[0] %>" class="flex items-center justify-between px-2 py-1 cursor-move border border-line-2 rounded-chip my-2" data-sortable-target="item">
+      <li data-sortable-id-param="<%= option[0] %>" class="flex items-center justify-between px-2 py-1 cursor-move border border-line-2 rounded-chip my-2 dark:border-line-2-on-dark" data-sortable-target="item">
         <span class="handle mr-2 cursor-move handle">
           <%= render Utilities::IconComponent.new("bars", options: {class: "h-6 w-6 text-ink-4"}) %>
         </span>

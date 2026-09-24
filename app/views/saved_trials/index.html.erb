@@ -60,12 +60,12 @@
       <!-- Bulk Action Checkbox -->
       <div class="flex items-center gap-4">
         <label class="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" id="select-all" class="w-4 h-4 rounded-sm border-line-2 text-info">
-          <span class="text-sm text-ink-2">Select All</span>
+          <input type="checkbox" id="select-all" class="w-4 h-4 rounded-sm border-line-2 text-info dark:border-line-2-on-dark dark:text-info-on-dark">
+          <span class="text-sm text-ink-2 dark:text-ink-2-on-dark">Select All</span>
         </label>
         <div id="bulk-actions" class="hidden flex items-center gap-2">
-          <label for="bulk-status" class="text-sm text-ink-2">Mark as:</label>
-          <select id="bulk-status" class="px-3 py-1 border border-line-2 rounded-control text-sm">
+          <label for="bulk-status" class="text-sm text-ink-2 dark:text-ink-2-on-dark">Mark as:</label>
+          <select id="bulk-status" class="px-3 py-1 border border-line-2 rounded-control text-sm dark:border-line-2-on-dark">
             <option value="">-- Select Status --</option>
             <% SavedTrial::STATUSES.each do |status| %>
               <option value="<%= status %>"><%= status.humanize %></option>
@@ -109,19 +109,10 @@
         <%= render Utilities::IconComponent.new("bookmark", size: 12) %>
       </div>
       <h3 class="mt-2 text-2xl font-semibold text-ink dark:text-ink-on-dark">No saved trials yet</h3>
-      <p class="mt-1 text-ink-3">Start saving trials to keep track of ones you're interested in</p>
+      <p class="mt-1 text-ink-3 dark:text-ink-3-on-dark">Start saving trials to keep track of ones you're interested in</p>
       <%= link_to "Search Trials", my_trials_root_path, class: "mt-4 inline-block px-6 py-3 bg-navy-600 text-white rounded-control hover:bg-navy-700 transition-colors" %>
     </div>
   <% end %>
 </div>
 
-<style>
-  .status-interested { @apply bg-info/10 text-info; }
-  .status-applying { @apply bg-warn/10 text-warn; }
-  .status-contacted { @apply bg-info/10 text-info; }
-  .status-enrolled { @apply bg-good/10 text-good; }
-  .status-rejected { @apply bg-crit/10 text-crit; }
-  .status-completed { @apply bg-surface-2 text-ink-2; }
-  .status-not_eligible { @apply bg-warn/10 text-warn; }
-</style>
 

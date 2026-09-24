@@ -65,7 +65,13 @@
   --color-ink-3: #68738A;
   --color-ink-3-on-dark: #8B96AB;
   --color-ink-4: #8B96AB;
-  --color-ink-4-on-dark: #68738A;
+  /* Was #68738A, which is ink-3's *light* value: the pair was inverted, so the
+   * dimmest ink got darker on a dark ground instead of lighter. Every use of it
+   * in dark mode sat at 3.66:1 against a 4.5 requirement, including "Not
+   * answered" on the profile, which is text somebody reads to find what is
+   * missing. #7E8899 is 4.89:1 on surface-on-dark and still a step dimmer than
+   * ink-3-on-dark at 5.87:1, so the two stay distinguishable. */
+  --color-ink-4-on-dark: #7E8899;
 
   /* Status. Both sets pass the six colourblindness and contrast checks, but
    * only because status always ships with an icon and a word beside it.
@@ -127,4 +133,23 @@
   --radius-card: 14px;
   --radius-search: 16px;
   --radius-panel: 20px; /* also the CTA block and hero preview */
+}
+
+/* Tell the browser which way round the page is.
+ *
+ * Everything the app paints itself had dark pairs; everything the *browser*
+ * paints did not. A scrollbar, a date picker, a select's dropdown list and a
+ * form control's focus ring are drawn by the platform, and without this they
+ * are drawn for a light page: the Trix toolbar's horizontal scrollbar was a
+ * bright strip across a dark editor.
+ *
+ * One declaration covers all of them, and it is the only correct way to do it.
+ * Styling ::-webkit-scrollbar would fix the scrollbar on one engine and leave
+ * every other browser-drawn control alone. */
+:root {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
 }

@@ -438,3 +438,41 @@ trix-editor .attachment__metadata {
   padding: 0 !important;
   max-width: 100% !important;
 }
+
+/*
+ * Dark mode for the Trix toolbar.
+ *
+ * Trix ships its formatting icons as dark monochrome SVG data URIs, drawn at
+ * 0.6 opacity through a ::before background-image. The editor itself was given
+ * dark styles, but the toolbar sits on the page ground, which in dark mode is
+ * #0C1017 -- so every icon in the toolbar was a dark shape on a near-black
+ * background. Bold, italic, link, lists: all present, all invisible.
+ *
+ * Inverting is the right tool here rather than new icons. They are monochrome,
+ * so invert(1) turns dark strokes light and nothing else changes. A hand-drawn
+ * replacement set would be nine more files to keep in step with Trix.
+ */
+.dark trix-toolbar .trix-button--icon::before {
+  filter: invert(1);
+}
+
+.dark trix-toolbar .trix-button {
+  color: #BFC8D6;
+}
+
+.dark trix-toolbar .trix-button.trix-active {
+  background: #1D2534;
+}
+
+/* The link dialog is its own popover and inherits nothing from the editor. */
+.dark trix-toolbar .trix-dialog {
+  background: #141A26;
+  border-color: #2A3345;
+  color: #EDF1F7;
+}
+
+.dark trix-toolbar .trix-input--dialog {
+  background: #0C1017;
+  border-color: #3A4559;
+  color: #EDF1F7;
+}

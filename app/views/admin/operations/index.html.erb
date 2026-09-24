@@ -24,7 +24,7 @@
         <% @stale.each do |summary| %>
           <div class="p-4 flex items-center justify-between gap-4">
             <span class="font-mono text-sm text-ink dark:text-ink-on-dark"><%= summary.nct_id %></span>
-            <span class="text-xs text-ink-3">last updated <%= time_ago_in_words(summary.updated_at) %> ago</span>
+            <span class="text-xs text-ink-3 dark:text-ink-3-on-dark">last updated <%= time_ago_in_words(summary.updated_at) %> ago</span>
           </div>
         <% end %>
       </div>
@@ -39,7 +39,7 @@
           <div class="p-4">
             <div class="flex items-center justify-between gap-4 mb-1">
               <span class="font-mono text-sm text-ink dark:text-ink-on-dark"><%= summary.nct_id %></span>
-              <span class="text-xs text-ink-3"><%= time_ago_in_words(summary.updated_at) %> ago</span>
+              <span class="text-xs text-ink-3 dark:text-ink-3-on-dark"><%= time_ago_in_words(summary.updated_at) %> ago</span>
             </div>
             <p class="text-sm text-crit dark:text-crit-on-dark"><%= summary.error_message.presence || "No error message recorded." %></p>
           </div>
@@ -55,7 +55,7 @@
         <% @pending.each do |summary| %>
           <div class="p-4 flex items-center justify-between gap-4">
             <span class="font-mono text-sm text-ink dark:text-ink-on-dark"><%= summary.nct_id %></span>
-            <span class="text-xs text-ink-3">started <%= time_ago_in_words(summary.created_at) %> ago</span>
+            <span class="text-xs text-ink-3 dark:text-ink-3-on-dark">started <%= time_ago_in_words(summary.created_at) %> ago</span>
           </div>
         <% end %>
       </div>

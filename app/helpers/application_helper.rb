@@ -66,25 +66,20 @@ module ApplicationHelper
     end.sort_by { |h| h[:near_you] ? 0 : 1 }
   end
 
+  # Reads Shared::StatusBadgeComponent rather than restating it.
+  #
+  # This was a second copy of the same seven statuses, written before that
+  # component existed and never given dark variants. SearchHelper carries a
+  # third for the registry's own status words, and that one *was* updated, which
+  # is how a saved-study badge came to sit at 4.24 against a 4.5 requirement in
+  # dark mode while the identical badge on the results page passed.
+  #
+  # Two lists for one thing drift, and the drift is invisible: nothing fails,
+  # one of them is just quietly wrong.
   def status_badge_classes(status)
-    case status
-    when "interested"
-      "bg-info/10 text-info"
-    when "applying"
-      "bg-warn/10 text-warn"
-    when "contacted"
-      "bg-info/10 text-info"
-    when "enrolled"
-      "bg-good/10 text-good"
-    when "rejected"
-      "bg-crit/10 text-crit"
-    when "completed"
-      "bg-surface-2 text-ink-2"
-    when "not_eligible"
-      "bg-warn/10 text-warn"
-    else
-      "bg-surface-2 text-ink-2"
-    end
+    Shared::StatusBadgeComponent::STATUSES
+      .fetch(status.to_s, {})
+      .fetch(:classes, "bg-surface-2 text-ink-2 dark:bg-surface-2-on-dark dark:text-ink-2-on-dark")
   end
 
   # The registry returns its enums shouted: "PHASE2", "INTERVENTIONAL",

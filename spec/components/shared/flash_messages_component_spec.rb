@@ -92,4 +92,45 @@ RSpec.describe Shared::FlashMessagesComponent, type: :component do
     roles = page.all("[role]").map { |node| node[:role] }
     expect(roles).to eq(["alert", "status"])
   end
+
+  # Every tone painted its message in exactly the colour of the panel behind it
+  # in dark mode: `dark:bg-crit-on-dark dark:text-crit-on-dark`, a contrast ratio
+  # of 1 to 1. All four tones, every flash in the app, and each one returned 200
+  # with the right words in it.
+  #
+  # The light side had it right the whole time -- `bg-good/10 text-good` -- and
+  # the opacity modifier was simply dropped when the dark pairs were added.
+  describe "dark mode" do
+    it "tints the background rather than filling it with the text colour" do
+      described_class::PRESENTATION.each do |tone, presentation|
+        classes = presentation.fetch(:classes)
+        background = classes[/dark:bg-\S+/]
+        text = classes[/dark:text-\S+/]
+
+        expect(background).to be_present, "#{tone} has no dark background"
+        expect(background).to match(%r{/\d+\z}),
+          "#{tone}'s dark background is #{background}, at full strength. " \
+          "Without an opacity modifier it is the same colour as #{text}."
+      end
+    end
+
+    it "never paints the text in the background's own colour at full strength" do
+      described_class::PRESENTATION.each_value do |presentation|
+        classes = presentation.fetch(:classes)
+        background = classes[/dark:bg-(\S+)/, 1]
+        text = classes[/dark:text-(\S+)/, 1]
+
+        expect(background).not_to eq(text)
+      end
+    end
+
+    it "gives every tone a dark border, background and text" do
+      described_class::PRESENTATION.each do |tone, presentation|
+        %w[border bg text].each do |property|
+          expect(presentation.fetch(:classes)).to include("dark:#{property}-"),
+            "#{tone} has no dark #{property}"
+        end
+      end
+    end
+  end
 end
