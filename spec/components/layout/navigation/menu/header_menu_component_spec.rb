@@ -28,10 +28,19 @@ RSpec.describe Layout::Navigation::Menu::HeaderMenuComponent, type: :component d
     end
   end
 
+  # Was `page.find("a")`, which asserted the ring on the only link there was to
+  # find and broke the moment the signed-out bar grew About and FAQ. "Every"
+  # was always what it meant.
   it "gives every link a visible focus ring" do
     render_inline(described_class.new)
 
-    expect(page.find("a")[:class]).to include("focus-visible:outline-2")
+    expect(page.all("a").map { |a| a[:class] }).to all(include("focus-visible:outline-2"))
+  end
+
+  it "offers the content pages to a signed-out visitor" do
+    render_inline(described_class.new)
+
+    expect(page.all("a").map { |a| a[:href] }).to include("/about", "/faq")
   end
 
   it "stacks the links when rendered vertically for the mobile panel" do
