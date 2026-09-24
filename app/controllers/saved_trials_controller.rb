@@ -72,7 +72,7 @@ class SavedTrialsController < ApplicationController
   def update
     authorize @saved_trial
 
-    if @saved_trial.update(saved_trial_params)
+    if @saved_trial.update(editable_params)
       respond_to do |format|
         format.html { redirect_to saved_trial_path(@saved_trial), notice: "Trial updated successfully" }
       end
@@ -103,11 +103,24 @@ class SavedTrialsController < ApplicationController
     @saved_trial = SavedTrial.find(params[:id])
   end
 
+  # Creating a saved trial snapshots the registry's own fields, so create needs
+  # the wide list.
   def saved_trial_params
     params.require(:saved_trial).permit(
       :nct_id, :trial_title, :notes, :tags, :status, :match_score,
       :phase, :study_type, :trial_status, :min_age, :max_age,
       :enrollment_count, :start_date, :completion_date, :sponsor, :summary
     )
+  end
+
+  # Editing does not. The form offers notes, tags and status; it showed the match
+  # score read-only and never offered the registry fields at all, but update
+  # accepted all sixteen, so a hand-made POST could rewrite the snapshot or set
+  # its own score. The dashboard counts saved trials at match_score >= 80, which
+  # makes that the number worth forging.
+  EDITABLE = %i[notes tags status].freeze
+
+  def editable_params
+    params.require(:saved_trial).permit(*EDITABLE)
   end
 end
