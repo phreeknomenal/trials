@@ -1,7 +1,7 @@
 <div id="match-score-card" class="grid grid-cols-4 gap-8 p-8 <%= match_score_bg_class(@match_level) %> border <%= match_score_border_class(@match_level) %> rounded-panel mb-6">
   <div class="col-span-1">
     <h3 class="text-lg font-bold text-center text-ink dark:text-ink-on-dark">
-      Your Match Score
+      Your match score
     </h3>
     
     <div class="text-center">
@@ -16,7 +16,7 @@
 
   <div class="col-span-3">
     <h3 class="text-lg font-bold text-ink dark:text-ink-on-dark mb-4">
-      Match Score Details
+      How the score breaks down
     </h3>
     <div class="grid grid-cols-2 gap-x-8 gap-y-6">
       <% breakdown_items.each_with_index do |item, index| %>
