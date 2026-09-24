@@ -43,7 +43,7 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
     <section>
       <h2 class="text-sm font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark mb-1">Signups, last <%= Admin::DashboardController::SIGNUP_WINDOW %> days</h2>
-      <p class="text-xs text-ink-3 mb-3">Grouped by UTC date.</p>
+      <p class="text-xs text-ink-3 mb-3 dark:text-ink-3-on-dark">Grouped by UTC date.</p>
       <%= render Admin::BarChartComponent.new(series: @signups_by_day, empty_message: "No signups in this window.") %>
     </section>
 

@@ -30,7 +30,7 @@
     <div>
       <%= f.label :position, class: "block text-sm font-medium text-ink-2 dark:text-ink-2-on-dark mb-1" %>
       <%= f.number_field :position, class: "w-full rounded-control border border-line-2 dark:border-line-on-dark dark:bg-surface-on-dark px-3 py-2 text-sm" %>
-      <p class="mt-1 text-xs text-ink-3">Lower numbers appear first. The landing page shows the first three.</p>
+      <p class="mt-1 text-xs text-ink-3 dark:text-ink-3-on-dark">Lower numbers appear first. The landing page shows the first three.</p>
     </div>
     <div class="flex items-center gap-2 pb-2">
       <%= f.check_box :published, class: "rounded-sm border-line-2" %>
@@ -46,7 +46,7 @@
       </div>
     <% end %>
     <%= f.file_field :avatar, accept: "image/*", class: "text-sm" %>
-    <p class="mt-1 text-xs text-ink-3">Optional. Without one, the author's initials are shown.</p>
+    <p class="mt-1 text-xs text-ink-3 dark:text-ink-3-on-dark">Optional. Without one, the author's initials are shown.</p>
   </div>
 
   <div class="flex items-center gap-3 pt-2">

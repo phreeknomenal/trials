@@ -1,7 +1,7 @@
 <div class="col-span-2 lg:col-span-1 bg-surface dark:bg-surface-on-dark border border-line dark:border-line-on-dark rounded-card p-6 relative transition-colors hover:border-line-2 dark:hover:border-line-2-on-dark" id="saved-trial-<%= saved_trial.id %>">
   <div class="absolute top-4 right-4">
     <label class="flex items-center gap-2 cursor-pointer text-sm text-ink-3 dark:text-ink-3-on-dark" title="Select for comparison">
-      <input type="checkbox" name="ids[]" value="<%= saved_trial.id %>" form="compare-trials-form" class="w-4 h-4 rounded-sm border-line-2 accent-sky-500">
+      <input type="checkbox" name="ids[]" value="<%= saved_trial.id %>" form="compare-trials-form" class="w-4 h-4 rounded-sm border-line-2 accent-sky-500 dark:border-line-2-on-dark">
       <span>Compare</span>
     </label>
   </div>
@@ -9,7 +9,7 @@
     <%= link_to truncate(saved_trial.trial_title, length: 300), saved_trial_path(id: saved_trial), class: "text-ink-3 dark:text-ink-3-on-dark hover:text-sky-500 hover:underline" %>
   </h3>
   
-  <div class="flex flex-wrap gap-4 mb-3 text-sm items-center justify-between text-ink-3">
+  <div class="flex flex-wrap gap-4 mb-3 text-sm items-center justify-between text-ink-3 dark:text-ink-3-on-dark">
     <div class="flex items-center gap-1 text-xs text-ink-3 dark:text-ink-3-on-dark">
       <%= render Utilities::IconComponent.new("profile_card", size: 6) %>
       <span><strong>NCT-ID:</strong> <%= saved_trial.nct_id %></span>
@@ -39,7 +39,7 @@
       <% end %>
     </div>
   <% else %>
-    <p class="text-ink-3 font-body italic text-sm mt-1 mb-8">No tags added yet.</p>
+    <p class="text-ink-3 font-body italic text-sm mt-1 mb-8 dark:text-ink-3-on-dark">No tags added yet.</p>
   <% end %>
 
   <div class="flex items-center justify-between gap-2">
