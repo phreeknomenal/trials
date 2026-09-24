@@ -30,11 +30,20 @@
       <div class="lg:col-span-2">
         <div class="sticky top-10">
           <%= render Page::Trials::Sidebar::ContainerComponent.new() do %>
-            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#match-score-card", text: "Match Score") %>
-            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#key-details", text: "Key Details") %>
-            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#what-this-means-for-you", text: "What This Means For You") %>
-            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#study-overview", text: "Study Overview") %>
-            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#eligibility", text: "Do you qualify") %>
+            <%# Guarded on exactly what each section is guarded on. Two of these
+                links were unconditional while their sections were not, so a
+                signed-out visitor got a rail with two entries that scrolled
+                nowhere. That is the same bug PR 5 fixed for #interventions and
+                #contact-information, in the two places it did not reach. %>
+            <% if @trial_score.present? %>
+              <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#match-score-card", text: "Your match score") %>
+            <% end %>
+            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#key-details", text: "Key details") %>
+            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#what-this-means-for-you", text: "What this means for you") %>
+            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#study-overview", text: "What this study is testing") %>
+            <% if @eligibility_checklist.present? && @eligibility_checklist.any? %>
+              <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#eligibility", text: "Do you qualify") %>
+            <% end %>
             <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#taking-part", text: "What taking part involves") %>
             <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#locations", text: "Where it takes place") %>
             <% if who_runs_it %>
@@ -77,7 +86,6 @@
           ) %>
         <% end %>
 
-        <!-- Key Details -->
         <%= render Page::Trials::KeyDetailsComponent.new(study: @study, trial_score: @trial_score, match_level: @match_level, score_breakdown: @score_breakdown) %>
 
         
