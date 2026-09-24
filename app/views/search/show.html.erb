@@ -273,7 +273,7 @@
   </section>
 <% else %>
   <!-- Not Found State -->
-  <section class="px-5 lg:px-24 py-16">
+  <section class="<%= Layout::PageWidth::CONTAINER %> py-16">
     <div class="bg-surface-2 dark:bg-surface-on-dark rounded-panel p-8 text-center">
       <div class="text-ink-4 dark:text-ink-4-on-dark mb-4">
         <%= render Utilities::IconComponent.new("search", size: 12) %>

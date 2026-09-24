@@ -4,7 +4,7 @@ class Layout::Navigation::HeaderComponent < ApplicationComponent
             data-controller="mobile-menu"
             data-action="keydown.esc@window->mobile-menu#closeOnEscape click@window->mobile-menu#closeOnOutsideClick">
 
-      <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 py-4">
+      <div class="<%= Layout::PageWidth::CONTAINER %> flex items-center justify-between gap-4 py-4">
         <div>
           <%= link_to root_path, class: "flex items-center gap-2 rounded-nav focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500" do %>
             <%= render Utilities::MarkComponent.new(height: 8) %>
@@ -42,7 +42,7 @@ class Layout::Navigation::HeaderComponent < ApplicationComponent
            data-mobile-menu-target="panel"
            hidden
            class="lg:hidden border-t border-line dark:border-line-on-dark">
-        <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 py-4 flex flex-col gap-4">
+        <div class="<%= Layout::PageWidth::CONTAINER %> py-4 flex flex-col gap-4">
           <%= render Layout::Navigation::Menu::HeaderMenuComponent.new(orientation: :vertical) %>
 
           <%# Stacked on the panel. Two buttons and the dark toggle in one row

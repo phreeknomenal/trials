@@ -1,6 +1,6 @@
 <% searched = @studies.present? || params[:condition].present? || params[:location].present? %>
 
-<div class="px-5 lg:px-24 py-8 lg:py-12">
+<div class="<%= Layout::PageWidth::CONTAINER %> py-8 lg:py-12">
 
   <%# The search bar leads the page rather than a heading over a form. On a
       results page the compact variant is the right one: the person has already

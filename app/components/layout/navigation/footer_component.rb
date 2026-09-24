@@ -22,7 +22,7 @@ class Layout::Navigation::FooterComponent < ApplicationComponent
   # who types their address into it believes they will hear from us.
   erb_template <<-ERB
     <footer class="border-t border-line dark:border-line-on-dark">
-      <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 py-14 grid gap-12 lg:grid-cols-5">
+      <div class="<%= Layout::PageWidth::CONTAINER %> py-14 grid gap-12 lg:grid-cols-5">
         <div class="lg:col-span-2 flex flex-col gap-4">
           <div class="flex items-center gap-3">
             <%= render Utilities::MarkComponent.new(height: 10) %>
@@ -43,7 +43,7 @@ class Layout::Navigation::FooterComponent < ApplicationComponent
       </div>
 
       <div class="border-t border-line dark:border-line-on-dark">
-        <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 py-6 flex justify-center">
+        <div class="<%= Layout::PageWidth::CONTAINER %> py-6 flex justify-center">
           <span class="text-sm text-ink-3 dark:text-ink-3-on-dark flex items-center gap-1.5">
             &copy; 2026 Dira Health. Made with
             <%= render Utilities::IconComponent.new("heart_full", size: 4) %>

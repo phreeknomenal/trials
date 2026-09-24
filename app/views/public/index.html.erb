@@ -1,5 +1,5 @@
-<section id="hero" class="border-b border-line-2 dark:border-line-on-dark px-0 lg:px-24 bg-[url('landing-bg.png')] bg-cover bg-center">
-  <div class="w-full h-auto lg:h-172 grid grid-cols-2 gap-10">
+<section id="hero" class="border-b border-line-2 dark:border-line-on-dark bg-[url('landing-bg.png')] bg-cover bg-center">
+  <div class="<%= Layout::PageWidth::CONTAINER %> h-auto lg:h-172 grid grid-cols-2 gap-10">
     <div class="col-span-2 lg:col-span-1 flex flex-col justify-center">
       <div class="w-[90%] mx-auto lg:mx-0 pt-5 lg:pt-0">
         <h1 class="text-5xl lg:text-7xl tracking-tight font-bold text-left text-ink dark:text-ink-2-on-dark mb-4">Find clinical trials that match your journey</h1>
@@ -27,169 +27,179 @@
   </div>
 </section>
 
-<section id="how-it-works" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-line-2 dark:border-line-on-dark">
-  <div class="w-full lg:w-1/2">
-    <%= render Page::HeaderComponent.new(
-      pretext: "Journey", 
-      heading: "Your clinical trial journey simplified", 
-      subheading: "We break down the complex path of medical research into three clear steps. Our platform turns uncertainty into opportunity.",
-      position: :left
-    ) %>
-  </div>
-
-  <div class="w-full grid grid-cols-3 gap-10 mb-10">
-    <div class="col-span-3 lg:col-span-1">
-      <%= render Page::Cards::IconCardComponent.new(
-        icon: "search", 
-        title: "Search with precision", 
-        subtitle: "Use our intelligent matching system to find trials that match your health profile and needs."
-      ) %>
-    </div>
-    <div class="col-span-3 lg:col-span-1">
-      <%= render Page::Cards::IconCardComponent.new(
-        icon: "badge_check", 
-        title: "Review and understand", 
-        subtitle: "Use our intelligent matching system to find trials that match your health profile and needs."
-      ) %>
-    </div>
-    <div class="col-span-3 lg:col-span-1">
-      <%= render Page::Cards::IconCardComponent.new(
-        icon: "mail_box", 
-        title: "Connect and participate", 
-        subtitle: "Use our intelligent matching system to find trials that match your health profile and needs."
-      ) %>
-    </div>
-  </div>
-
-  <div class="flex gap-2">
-    <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Start Searching") %>
-    <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Explore Trials", color: "quiet", icon: "arrow_right", icon_position: "right") %>
-  </div>
-</section>
-
-<section id="our-approach" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-line-2 dark:border-line-on-dark">
-  <div class="w-full grid grid-cols-2 gap-6 lg:gap-12">
-    <div class="col-span-2 lg:col-span-1 order-2 lg:order-1">
+<section id="how-it-works" class="border-b border-line-2 dark:border-line-on-dark">
+  <div class="<%= Layout::PageWidth::CONTAINER %> py-10 lg:py-18">
+    <div class="w-full lg:w-1/2">
       <%= render Page::HeaderComponent.new(
         pretext: "Journey", 
-        heading: "Connecting patients with precision and purpose", 
-        subheading: "We understand that every patient's path is unique. Our platform transforms medical research into personal opportunity.",
+        heading: "Your clinical trial journey simplified", 
+        subheading: "We break down the complex path of medical research into three clear steps. Our platform turns uncertainty into opportunity.",
         position: :left
       ) %>
+    </div>
 
-      <div class="w-full grid grid-cols-2 gap-12 mb-10">
-        <div class="col-span-2 lg:col-span-1">
-          <div class="w-full h-full flex gap-x-4">
-            <div class="w-24 text-sky-600">
-              <%= render Utilities::IconComponent.new("map", size: 24) %>
-            </div>
-            <div class="space-y-3">
-              <%= render Typography::HeadingComponent.new(size: :h4, text: "Navigate your health journey") %>
-              <%= render Typography::ParagraphComponent.new(text: "Bridging the gap between patients and groundbreaking medical discoveries.") %>
-            </div>
-          </div>
-        </div>
-        <div class="col-span-2 lg:col-span-1">
-          <div class="w-full h-full flex gap-x-4">
-            <div class="w-24 text-sky-600">
-              <%= render Utilities::IconComponent.new("grid", size: 24) %>
-            </div>
-            <div class="space-y-3">
-              <%= render Typography::HeadingComponent.new(size: :h4, text: "Bridge patient needs") %>
-              <%= render Typography::ParagraphComponent.new(text: "Empowering individuals to take an active role in their health research") %>
-            </div>
-          </div>
-        </div>
+    <div class="w-full grid grid-cols-3 gap-10 mb-10">
+      <div class="col-span-3 lg:col-span-1">
+        <%= render Page::Cards::IconCardComponent.new(
+          icon: "search", 
+          title: "Search with precision", 
+          subtitle: "Use our intelligent matching system to find trials that match your health profile and needs."
+        ) %>
       </div>
-
-      <div class="flex gap-2">
-        <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Start Searching", color: "secondary") %>
-        <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Explore Trials", color: "quiet", icon: "arrow_right", icon_position: "right") %>
+      <div class="col-span-3 lg:col-span-1">
+        <%= render Page::Cards::IconCardComponent.new(
+          icon: "badge_check", 
+          title: "Review and understand", 
+          subtitle: "Use our intelligent matching system to find trials that match your health profile and needs."
+        ) %>
+      </div>
+      <div class="col-span-3 lg:col-span-1">
+        <%= render Page::Cards::IconCardComponent.new(
+          icon: "mail_box", 
+          title: "Connect and participate", 
+          subtitle: "Use our intelligent matching system to find trials that match your health profile and needs."
+        ) %>
       </div>
     </div>
-    <div class="col-span-2 lg:col-span-1 order-1 lg:order-2 mb-8 lg:mb-0">
-      <div class="h-full">
-        <%= image_tag "https://picsum.photos/600/500", class: "w-full rounded-card object-cover" %>
+
+    <div class="flex gap-2">
+      <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Start Searching") %>
+      <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Explore Trials", color: "quiet", icon: "arrow_right", icon_position: "right") %>
+    </div>
+  </div>
+</section>
+
+<section id="our-approach" class="border-b border-line-2 dark:border-line-on-dark">
+  <div class="<%= Layout::PageWidth::CONTAINER %> py-10 lg:py-18">
+    <div class="w-full grid grid-cols-2 gap-6 lg:gap-12">
+      <div class="col-span-2 lg:col-span-1 order-2 lg:order-1">
+        <%= render Page::HeaderComponent.new(
+          pretext: "Journey", 
+          heading: "Connecting patients with precision and purpose", 
+          subheading: "We understand that every patient's path is unique. Our platform transforms medical research into personal opportunity.",
+          position: :left
+        ) %>
+
+        <div class="w-full grid grid-cols-2 gap-12 mb-10">
+          <div class="col-span-2 lg:col-span-1">
+            <div class="w-full h-full flex gap-x-4">
+              <div class="w-24 text-sky-600">
+                <%= render Utilities::IconComponent.new("map", size: 24) %>
+              </div>
+              <div class="space-y-3">
+                <%= render Typography::HeadingComponent.new(size: :h4, text: "Navigate your health journey") %>
+                <%= render Typography::ParagraphComponent.new(text: "Bridging the gap between patients and groundbreaking medical discoveries.") %>
+              </div>
+            </div>
+          </div>
+          <div class="col-span-2 lg:col-span-1">
+            <div class="w-full h-full flex gap-x-4">
+              <div class="w-24 text-sky-600">
+                <%= render Utilities::IconComponent.new("grid", size: 24) %>
+              </div>
+              <div class="space-y-3">
+                <%= render Typography::HeadingComponent.new(size: :h4, text: "Bridge patient needs") %>
+                <%= render Typography::ParagraphComponent.new(text: "Empowering individuals to take an active role in their health research") %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-2">
+          <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Start Searching", color: "secondary") %>
+          <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Explore Trials", color: "quiet", icon: "arrow_right", icon_position: "right") %>
+        </div>
+      </div>
+      <div class="col-span-2 lg:col-span-1 order-1 lg:order-2 mb-8 lg:mb-0">
+        <div class="h-full">
+          <%= image_tag "https://picsum.photos/600/500", class: "w-full rounded-card object-cover" %>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<section id="mission" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-line-2 dark:border-line-on-dark">
-  <div class="w-full lg:w-1/2 mx-auto text-center">
-    <%= render Page::HeaderComponent.new(
-      pretext: "Mission", 
-      heading: "Empowering patient-centered research", 
-      subheading: "Connecting patients with meaningful medical research opportunities.",
-      position: :center
-    ) %>
-  </div>
+<section id="mission" class="border-b border-line-2 dark:border-line-on-dark">
+  <div class="<%= Layout::PageWidth::CONTAINER %> py-10 lg:py-18">
+    <div class="w-full lg:w-1/2 mx-auto text-center">
+      <%= render Page::HeaderComponent.new(
+        pretext: "Mission", 
+        heading: "Empowering patient-centered research", 
+        subheading: "Connecting patients with meaningful medical research opportunities.",
+        position: :center
+      ) %>
+    </div>
 
-  <div class="w-full grid grid-cols-3 gap-10 mb-10">
-    <div class="col-span-3 lg:col-span-1">
-      <%= render Page::Cards::IconCardComponent.new(
-        icon: "open_door", 
-        title: "Accessibility for all", 
-        subtitle: "Breaking down barriers in medical research participation.",
-        style: :top,
-        path: "#"
-      ) %>
-    </div>
-    <div class="col-span-3 lg:col-span-1">
-      <%= render Page::Cards::IconCardComponent.new(
-        icon: "users_group", 
-        title: "Diversity in clinical trials", 
-        subtitle: "Representing diverse populations in medical research.",
-        style: :top,
-        path: "#"
-      ) %>
-    </div>
-    <div class="col-span-3 lg:col-span-1">
-      <%= render Page::Cards::IconCardComponent.new(
-        icon: "book_open", 
-        title: "Shared knowledge and learning", 
-        subtitle: "Collaborative approach to advancing medical understanding",
-        style: :top,
-        path: "#"
-      ) %>
+    <div class="w-full grid grid-cols-3 gap-10 mb-10">
+      <div class="col-span-3 lg:col-span-1">
+        <%= render Page::Cards::IconCardComponent.new(
+          icon: "open_door", 
+          title: "Accessibility for all", 
+          subtitle: "Breaking down barriers in medical research participation.",
+          style: :top,
+          path: "#"
+        ) %>
+      </div>
+      <div class="col-span-3 lg:col-span-1">
+        <%= render Page::Cards::IconCardComponent.new(
+          icon: "users_group", 
+          title: "Diversity in clinical trials", 
+          subtitle: "Representing diverse populations in medical research.",
+          style: :top,
+          path: "#"
+        ) %>
+      </div>
+      <div class="col-span-3 lg:col-span-1">
+        <%= render Page::Cards::IconCardComponent.new(
+          icon: "book_open", 
+          title: "Shared knowledge and learning", 
+          subtitle: "Collaborative approach to advancing medical understanding",
+          style: :top,
+          path: "#"
+        ) %>
+      </div>
     </div>
   </div>
 </section>
 
 <% if @testimonials.any? %>
-<section id="stories" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-line-2 dark:border-line-on-dark">
-  <div class="w-full lg:w-1/2 mx-auto text-center">
-    <%= render Page::HeaderComponent.new(
-      heading: "Community Stories", 
-      subheading: "How people are using the platform to find and keep track of clinical trials.",
-      position: :center
-    ) %>
-  </div>
+<section id="stories" class="border-b border-line-2 dark:border-line-on-dark">
+  <div class="<%= Layout::PageWidth::CONTAINER %> py-10 lg:py-18">
+    <div class="w-full lg:w-1/2 mx-auto text-center">
+      <%= render Page::HeaderComponent.new(
+        heading: "Community Stories", 
+        subheading: "How people are using the platform to find and keep track of clinical trials.",
+        position: :center
+      ) %>
+    </div>
 
-  <div class="w-full grid grid-cols-3 gap-10 mb-10">
-    <% @testimonials.each do |testimonial| %>
-      <div class="col-span-3 lg:col-span-1">
-        <%= render Page::Cards::QuoteComponent.new(testimonial: testimonial) %>
-      </div>
-    <% end %>
+    <div class="w-full grid grid-cols-3 gap-10 mb-10">
+      <% @testimonials.each do |testimonial| %>
+        <div class="col-span-3 lg:col-span-1">
+          <%= render Page::Cards::QuoteComponent.new(testimonial: testimonial) %>
+        </div>
+      <% end %>
+    </div>
   </div>
 </section>
 <% end %>
 
-<section id="get-started" class="px-5 lg:px-24 py-10 lg:py-18 border-b border-line-2 dark:border-line-on-dark">
-  <div class="w-full mx-auto text-center bg-navy-600 text-white flex flex-col items-center justify-center p-10 rounded-panel">
-    <div class="w-4/5 mb-8 gap-5">
-      <h3 class="text-7xl font-bold mb-5">Join the medical research community</h3>
-      <p class="text-lg font-body text-white">Become part of a network transforming healthcare through collaborative research.</p>
-    </div>
+<section id="get-started" class="border-b border-line-2 dark:border-line-on-dark">
+  <div class="<%= Layout::PageWidth::CONTAINER %> py-10 lg:py-18">
+    <div class="w-full mx-auto text-center bg-navy-600 text-white flex flex-col items-center justify-center p-10 rounded-panel">
+      <div class="w-4/5 mb-8 gap-5">
+        <h3 class="text-7xl font-bold mb-5">Join the medical research community</h3>
+        <p class="text-lg font-body text-white">Become part of a network transforming healthcare through collaborative research.</p>
+      </div>
 
-    <div class="flex justify-center gap-2">
-      <%# On-navy variants. These were `secondary`, which is navy-600 text and a
-          navy-600 border with no fill, on this navy-600 panel: the same colour
-          as the thing behind them, so both buttons were invisible in light
-          mode. See Buttons::ButtonStyles. %>
-      <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Search Trials", color: "primary-on-navy") %>
-      <%= render Buttons::ButtonComponent.new(path: new_user_registration_path, text: "Sign Up Free", color: "secondary-on-navy", icon: "arrow_right", icon_position: "right") %>
+      <div class="flex justify-center gap-2">
+        <%# On-navy variants. These were `secondary`, which is navy-600 text and a
+            navy-600 border with no fill, on this navy-600 panel: the same colour
+            as the thing behind them, so both buttons were invisible in light
+            mode. See Buttons::ButtonStyles. %>
+        <%= render Buttons::ButtonComponent.new(path: search_index_path, text: "Search Trials", color: "primary-on-navy") %>
+        <%= render Buttons::ButtonComponent.new(path: new_user_registration_path, text: "Sign Up Free", color: "secondary-on-navy", icon: "arrow_right", icon_position: "right") %>
+      </div>
     </div>
   </div>
 </section>
