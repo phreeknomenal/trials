@@ -65,7 +65,10 @@
           <% end %>
         </div>
         <% if @saved_trial.notes.present? %>
-          <p class="text-ink-2 whitespace-pre-wrap"><%= @saved_trial.notes %></p>
+          <%# notes is has_rich_text, so this renders markup, not text. It was in
+              a <p>, which put a div inside a paragraph, and whitespace-pre-wrap
+              does nothing for content that already carries its own line breaks. %>
+          <div class="prose prose-sm dark:prose-invert max-w-none text-ink-2 dark:text-ink-2-on-dark"><%= @saved_trial.notes %></div>
         <% else %>
           <p class="text-ink-3 font-body italic">No notes added yet. Add notes to help you remember why you saved this trial.</p>
         <% end %>

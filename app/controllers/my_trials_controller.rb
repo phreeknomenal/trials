@@ -63,26 +63,20 @@ class MyTrialsController < ApplicationController
       return
     end
 
-    # Calculate score breakdowns for each trial
-    @saved_trials.each do |trial|
-      trial_data = {
-        min_age: trial.min_age,
-        max_age: trial.max_age,
-        sex: nil,
-        conditions: [],
-        locations: [],
-        study_type: trial.study_type,
-        phase: trial.phase,
-        status: trial.trial_status
-      }
+    # Scored against the study the registry holds, not against the saved columns.
+    # saved_trials stores no conditions and no locations, which are 40 of the 100
+    # points, so scoring from them gave every comparison a different number from
+    # the one the results page showed for the same study.
+    @scored = ComparisonScorer.new(profile: @profile, saved_trials: @saved_trials).call
 
-      scorer = TrialScorer.new(@profile, trial_data)
-      score_result = scorer.calculate_score
-
-      if score_result
-        trial.score_breakdown = score_result[:breakdown]
-      end
+    # The breakdown component reads score_breakdown off the record, so the freshly
+    # scored values are assigned back to the in-memory objects it is given.
+    @scored.each do |scored|
+      scored.saved_trial.score_breakdown = scored.breakdown
+      scored.saved_trial.match_level = scored.match_level
     end
+
+    @scored_by_id = @scored.index_by { |scored| scored.saved_trial.id }
   end
 
   private

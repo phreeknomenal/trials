@@ -32,14 +32,26 @@
                 <h3 class="font-semibold text-ink dark:text-ink-on-dark line-clamp-2 text-base leading-snug">
                   <%= trial.trial_title %>
                 </h3>
-                <% if trial.match_score.present? %>
-                  <% match_component = Page::SavedTrials::MatchScoreCardComponent.new(match_score: trial.match_score) %>
+                <%# The freshly computed score, not the one stored when this was
+                    saved, so the number here is the same one the results page
+                    shows for the same study today. %>
+                <% scored = @scored_by_id[trial.id] %>
+                <% if scored&.total.present? %>
+                  <% match_component = Page::SavedTrials::MatchScoreCardComponent.new(match_score: scored.total) %>
                   <div class="flex flex-wrap items-center gap-2 pt-1">
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold <%= match_component.score_badge_classes %>">
-                      <%= trial.match_score %>% Match
+                      <%= scored.total %>% Match
                     </span>
                     <span class="text-sm font-medium <%= match_component.score_color_classes %>"><%= match_component.score_label %></span>
                   </div>
+
+                  <%# Said rather than hidden: one unreachable study costs that
+                      column its breakdown, and the reader should know which. %>
+                  <% if scored.stale? %>
+                    <p class="text-xs text-warn dark:text-warn-on-dark pt-1">
+                      Could not reach the registry for this one. Showing the score from when you saved it.
+                    </p>
+                  <% end %>
                 <% end %>
               </div>
             </th>
