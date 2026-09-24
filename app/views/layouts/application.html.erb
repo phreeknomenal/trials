@@ -41,5 +41,10 @@
     <%= yield %>
 
     <%= render Layout::Navigation::FooterComponent.new %>
+
+    <%# Last in the body so its spacer sits after the footer, and so the fixed
+        bar stacks above everything without needing a higher z-index than the
+        page has reason to use. %>
+    <%= render Layout::Navigation::TabBarComponent.new %>
   </body>
 </html>

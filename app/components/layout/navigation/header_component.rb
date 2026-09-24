@@ -22,6 +22,19 @@ class Layout::Navigation::HeaderComponent < ApplicationComponent
           <%= render_account_control %>
         </div>
 
+        <%# Signed in, the tab bar carries navigation and this goes with the
+            board's phone header, which is the wordmark and the avatar and
+            nothing else. Signed out keeps the panel: one task, and a permanent
+            four-tab bar would spend a fifth of a 390px screen on destinations
+            an account holder has and a visitor does not. %>
+        <div class="lg:hidden flex items-center gap-2">
+          <% if tab_bar? %>
+            <%= render Buttons::DarkModeToggleComponent.new %>
+            <%= render_account_control %>
+          <% end %>
+        </div>
+
+        <% unless tab_bar? %>
         <button type="button"
                 class="lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-flash text-ink-2 dark:text-ink-2-on-dark hover:bg-surface-2 dark:hover:bg-surface-on-dark transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-500"
                 data-mobile-menu-target="trigger"
@@ -36,8 +49,10 @@ class Layout::Navigation::HeaderComponent < ApplicationComponent
             <%= render Utilities::IconComponent.new("close", size: 6) %>
           </span>
         </button>
+        <% end %>
       </div>
 
+      <% unless tab_bar? %>
       <div id="mobile-menu-panel"
            data-mobile-menu-target="panel"
            hidden
@@ -57,6 +72,7 @@ class Layout::Navigation::HeaderComponent < ApplicationComponent
           </div>
         </div>
       </div>
+      <% end %>
     </header>
   ERB
 
@@ -73,6 +89,13 @@ class Layout::Navigation::HeaderComponent < ApplicationComponent
   # The classes come from Buttons::ButtonStyles rather than being written here.
   # This method used to hand-roll a navy button, which is how the header's Login
   # drifted to a different radius and hover from every other primary button.
+  # True where Layout::Navigation::TabBarComponent renders, so the two agree
+  # about who carries navigation at phone width. Both ask the same question of
+  # the same two helpers rather than one inferring the other.
+  def tab_bar?
+    user_signed_in? && current_profile.present?
+  end
+
   def render_account_control(stacked: false)
     return profile_link if user_signed_in?
 
