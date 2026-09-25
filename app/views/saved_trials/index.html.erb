@@ -1,118 +1,146 @@
-<section class="px-5 lg:px-44 py-16 border-b border-line dark:border-line-on-dark">
-  <%= render Page::HeaderComponent.new(
-    heading: "Saved Trials",
-    subheading: "Keep track of clinical trials you're interested in",
-    position: :left
-  ) %>
-</section>
+<%# Saved studies, rebuilt against the "Saved studies" board.
 
-<div class="px-5 lg:px-44 py-16">
-  <!-- Filters and Search -->
-  <div class="bg-surface dark:bg-paper-on-dark rounded-panel border border-line dark:border-line-on-dark p-6 mb-6">
-    <%= form_with url: saved_trials_path, method: :get, class: "space-y-4", local: true do |f| %>
-      <!-- Search -->
-      <div class="flex gap-4">
-        <div class="flex-1">
-          <%= f.text_field :search, 
-              placeholder: "Search by trial title or notes...", 
-              value: params[:search],
-              class: "block p-2 w-full bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark placeholder:text-ink-3 dark:placeholder:text-ink-3-on-dark text-base text-ink dark:text-ink-2-on-dark rounded-control focus:ring-sky-500 focus:border-navy-600" %>
-        </div>
-        <%= f.submit "Search", class: "cursor-pointer inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-control text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500" %>
-      </div>
+    Two changes the board asks for and one it does not.
 
-      <!-- Filters -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <!-- Status Filter -->
-        <div>
-          <%= f.select :status, 
-              options_for_select(
-                [["All Statuses", ""]] + SavedTrial::STATUSES.map { |s| [s.humanize, s] },
-                params[:status]
-              ),
-              { include_blank: false },
-              class: "block p-2 w-full bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark placeholder:text-ink-3 dark:placeholder:text-ink-3-on-dark text-base text-ink dark:text-ink-2-on-dark rounded-control focus:ring-sky-500 focus:border-navy-600" %>
-        </div>
+    The status rail replaces a select. It is the page's main axis -- what people
+    come here to do is see what is waiting on them -- and a select hides the
+    counts, which are the whole reason to look.
 
-        <!-- Sort By -->
-        <div>
-          <%= f.select :sort_by, 
-              options_for_select(
-                [["Date Saved", "date"], ["Status", "status"], ["Match Score", "match_score"]],
-                params[:sort_by] || "date"
-              ),
-              { include_blank: false },
-              class: "block p-2 w-full bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark placeholder:text-ink-3 dark:placeholder:text-ink-3-on-dark text-base text-ink dark:text-ink-2-on-dark rounded-control focus:ring-sky-500 focus:border-navy-600" %>
-        </div>
+    One selection model replaces two. There were a "Select All" checkbox with a
+    "Mark as" dropdown, and a separate set of checkboxes inside a compare form:
+    two sets of boxes on one page answering the same question. The first pair
+    had no endpoint and no JavaScript, so it had never done anything at all.
+    Both actions now read one selection.
 
-        <!-- Sort Order -->
-        <div>
-          <%= f.select :sort, 
-              options_for_select(
-                [["Newest First", "newest"], ["Oldest First", "oldest"]],
-                params[:sort] || "newest"
-              ),
-              { include_blank: false },
-              class: "block p-2 w-full bg-surface dark:bg-paper-on-dark border border-line dark:border-line-on-dark placeholder:text-ink-3 dark:placeholder:text-ink-3-on-dark text-base text-ink dark:text-ink-2-on-dark rounded-control focus:ring-sky-500 focus:border-navy-600" %>
-        </div>
-      </div>
+    Not here: the distance beside each location ("Birmingham, AL · 4 mi"). There
+    is no distance in the data, which this plan records for the results page
+    too. %>
 
-      <!-- Bulk Action Checkbox -->
-      <div class="flex items-center gap-4">
-        <label class="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" id="select-all" class="w-4 h-4 rounded-sm border-line-2 text-info dark:border-line-2-on-dark dark:text-info-on-dark">
-          <span class="text-sm text-ink-2 dark:text-ink-2-on-dark">Select All</span>
-        </label>
-        <div id="bulk-actions" class="hidden flex items-center gap-2">
-          <label for="bulk-status" class="text-sm text-ink-2 dark:text-ink-2-on-dark">Mark as:</label>
-          <select id="bulk-status" class="px-3 py-1 border border-line-2 rounded-control text-sm dark:border-line-2-on-dark">
-            <option value="">-- Select Status --</option>
-            <% SavedTrial::STATUSES.each do |status| %>
-              <option value="<%= status %>"><%= status.humanize %></option>
-            <% end %>
-          </select>
-          <button type="button" id="bulk-update-btn" class="px-4 py-1 bg-info text-white text-sm rounded-control hover:bg-info">
-            Update
-          </button>
-        </div>
-      </div>
-    <% end %>
-  </div>
+<% content_for :title, "Saved studies - Dira Health" %>
 
-  <!-- Results -->
-  <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
-    <h2 class="text-2xl font-bold text-ink dark:text-ink-on-dark">
-      Saved Trials (<%= @saved_trials.count %>)
-    </h2>
-    <% if @saved_trials.any? && @saved_trials.count >= 2 %>
-      <%= form_with url: my_trials_trial_comparison_path, method: :get, id: "compare-trials-form", local: true, class: "flex items-center gap-2" do |f| %>
-        <span class="text-sm text-ink-3 dark:text-ink-3-on-dark">Select 2–3 trials above, then</span>
-        <%= f.submit "Compare selected", class: "cursor-pointer inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-control text-white bg-navy-600 hover:bg-navy-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500" %>
-      <% end %>
-    <% end %>
-  </div>
-  <% if @saved_trials.any? %>
-    <div class="grid grid-cols-2 gap-8">
-      <% @saved_trials.each do |saved_trial| %>
-        <%= render Page::SavedTrials::CardComponent.new(saved_trial: saved_trial) %>
-      <% end %>
+<div class="<%= Layout::PageWidth::CONTAINER %> py-10 flex flex-col gap-6"
+     data-controller="selection">
+
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <div class="flex flex-col gap-1.5">
+      <h1 class="font-primary text-3xl font-bold tracking-tight text-ink dark:text-ink-on-dark">Saved studies</h1>
+      <p class="text-sm text-ink-3 dark:text-ink-3-on-dark">
+        <%= pluralize(@total_count, "study") %> saved.
+      </p>
     </div>
+    <%= render Buttons::ButtonComponent.new(
+          path: search_index_path, text: "Find more studies", color: "primary"
+        ) %>
+  </div>
+
+  <%# The rail. Counts come from the whole collection, before the status filter,
+      so a status never removes its own option and strands whoever clicked it. %>
+  <nav class="flex flex-wrap gap-2" aria-label="Filter by status">
+    <%= render Shared::PillComponent.new(
+          text: "All", path: saved_trials_path(request.query_parameters.except("status", "page")),
+          selected: params[:status].blank?, count: @total_count
+        ) %>
+    <% SavedTrial::STATUSES.each do |status| %>
+      <% count = @status_counts[status].to_i %>
+      <% next if count.zero? && params[:status] != status %>
+      <%= render Shared::PillComponent.new(
+            text: Shared::StatusBadgeComponent::STATUSES.dig(status, :label) || status.humanize,
+            path: saved_trials_path(request.query_parameters.except("page").merge(status: status)),
+            selected: params[:status] == status,
+            count: count
+          ) %>
+    <% end %>
+  </nav>
+
+  <%= form_with url: saved_trials_path, method: :get, class: "flex flex-wrap gap-3 items-end" do |f| %>
+    <%= hidden_field_tag :status, params[:status] if params[:status].present? %>
+    <div class="flex-1 min-w-[16rem]">
+      <%= label_tag :search, "Search your saved studies and notes", class: Forms::FieldStyles::LABEL %>
+      <%= search_field_tag :search, params[:search],
+            placeholder: "A word from the title, or from a note you wrote",
+            class: Forms::FieldStyles.input %>
+    </div>
+    <div class="w-full sm:w-56">
+      <%= label_tag :sort_by, "Sort", class: Forms::FieldStyles::LABEL %>
+      <%= select_tag :sort_by,
+            options_for_select(
+              [["Date saved", "date"], ["Status", "status"], ["Match score", "match_score"]],
+              params[:sort_by]
+            ),
+            class: Forms::FieldStyles.input %>
+    </div>
+    <%= render Forms::SubmitComponent.new(form: f, text: "Apply", style: :secondary) %>
+  <% end %>
+
+  <%# Appears on selection, carries both actions, and reads one set of boxes. %>
+  <div data-selection-target="toolbar" hidden
+       class="rounded-card border border-navy-600 dark:border-sky-400 bg-sky-50 dark:bg-navy-900/40 p-4
+              flex flex-wrap items-center gap-3">
+    <span class="text-sm font-bold text-ink dark:text-ink-on-dark" data-selection-target="count"></span>
+
+    <%= form_with url: bulk_update_saved_trials_path, method: :patch,
+          data: {selection_target: "statusForm", selection_param: "saved_trial_ids[]"},
+          class: "flex items-center gap-2" do %>
+      <label for="bulk-status" class="sr-only">Move the selected studies to</label>
+      <%= select_tag :status,
+            options_for_select(SavedTrial::STATUSES.map { |s|
+              [Shared::StatusBadgeComponent::STATUSES.dig(s, :label) || s.humanize, s]
+            }),
+            include_blank: "Mark as…",
+            id: "bulk-status",
+            class: Forms::FieldStyles.input(extra: "w-48 text-sm") %>
+      <%= submit_tag "Move", class: Buttons::ButtonStyles.classes("primary", size: "px-3 py-2 text-sm") %>
+    <% end %>
+
+    <%= form_with url: my_trials_trial_comparison_path, method: :get,
+          data: {selection_target: "statusForm", selection_param: "ids[]"} do %>
+      <button type="submit" data-selection-target="compare"
+              class="<%= Buttons::ButtonStyles.classes("secondary", size: "px-3 py-2 text-sm") %>">
+        <span data-selection-target="compareLabel">Compare</span>
+      </button>
+    <% end %>
+
+    <button type="button" data-action="selection#clear"
+            class="<%= Buttons::ButtonStyles.classes("quiet", size: "px-3 py-2 text-sm") %>">
+      Clear
+    </button>
+  </div>
+
+  <% if @saved_trials.any? %>
+    <label class="flex items-center gap-2 text-sm font-semibold text-ink-2 dark:text-ink-2-on-dark w-fit">
+      <input type="checkbox" data-selection-target="selectAll" data-action="selection#toggleAll"
+             class="w-4 h-4 rounded-sm border-line-2 dark:border-line-2-on-dark">
+      Select all on this page
+    </label>
+
+    <ul class="flex flex-col gap-4">
+      <% @saved_trials.each do |saved_trial| %>
+        <li>
+          <%= render Page::SavedTrials::CardComponent.new(saved_trial: saved_trial) %>
+        </li>
+      <% end %>
+    </ul>
 
     <%= render Shared::PaginationComponent.new(
           pagy: @pagy,
           path_for: ->(page) { saved_trials_path(request.query_parameters.merge(page: page)) },
-          unit: "trial"
+          unit: "study"
         ) %>
   <% else %>
-    <div class="flex flex-col justify-center items-center text-center py-12">
-      <div class="text-sky-600">
-        <%= render Utilities::IconComponent.new("bookmark", size: 12) %>
-      </div>
-      <h3 class="mt-2 text-2xl font-semibold text-ink dark:text-ink-on-dark">No saved trials yet</h3>
-      <p class="mt-1 text-ink-3 dark:text-ink-3-on-dark">Start saving trials to keep track of ones you're interested in</p>
-      <%= link_to "Search Trials", my_trials_root_path, class: "mt-4 inline-block px-6 py-3 bg-navy-600 text-white rounded-control hover:bg-navy-700 transition-colors" %>
+    <div class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-10 text-center flex flex-col items-center gap-3">
+      <h2 class="font-primary text-xl font-bold tracking-tight text-ink dark:text-ink-on-dark">
+        <%= params[:status].present? || params[:search].present? ? "Nothing here matches" : "Nothing saved yet" %>
+      </h2>
+      <p class="text-sm text-ink-3 dark:text-ink-3-on-dark max-w-md">
+        <% if params[:status].present? || params[:search].present? %>
+          Try another status, or clear the search.
+        <% else %>
+          Saving a study keeps your notes, your tags and where you are with it in one place.
+        <% end %>
+      </p>
+      <%= render Buttons::ButtonComponent.new(
+            path: search_index_path, text: "Find studies", color: "primary"
+          ) %>
     </div>
   <% end %>
 </div>
-
-

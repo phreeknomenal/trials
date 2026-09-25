@@ -79,5 +79,10 @@ Rails.application.routes.draw do
   post "summaries/:nct_id", to: "readable_summaries#create", as: :readable_summary
 
   # Keep old saved_trials routes for backward compatibility
-  resources :saved_trials, only: [:index, :show, :edit, :create, :update, :destroy]
+  resources :saved_trials, only: [:index, :show, :edit, :create, :update, :destroy] do
+    # One request for a selection, rather than one per row. The page offered a
+    # "Mark as" control for a multiple selection with no endpoint behind it and
+    # no JavaScript wiring it up, so it has never done anything.
+    patch :bulk_update, on: :collection
+  end
 end

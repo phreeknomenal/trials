@@ -35,7 +35,9 @@ RSpec.describe "Saved trials pagination", type: :request do
       get saved_trials_path
 
       expect(response.body).to match(/Page\s+1\s+of\s+2/)
-      expect(response.body).to include("25 trials")
+      # "studies", not "trials". The board and the rest of the app say study,
+      # and this page's heading is "Saved studies".
+      expect(response.body).to include("25 studies")
     end
 
     # Previous still renders on page one, disabled rather than absent, so the

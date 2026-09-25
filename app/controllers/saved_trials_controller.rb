@@ -38,10 +38,41 @@ class SavedTrialsController < ApplicationController
       @saved_trials.order(created_at: sort_order)
     end
 
+    # Counted before pagination and before the status filter, so a rail entry
+    # never removes its own option and strands whoever clicked it. Same rule the
+    # search sidebar follows.
+    @status_counts = policy_scope(SavedTrial).group(:status).count
+    @total_count = @status_counts.values.sum
+
     # Pagination with Pagy
     # `limit:`, not `items:` -- Pagy 43 renamed it and ignores the old key,
     # so this paginated at Pagy's default rather than the value passed.
     @pagy, @saved_trials = pagy(@saved_trials, limit: page_size)
+  end
+
+  # One request for a whole selection.
+  #
+  # The page has offered a "Mark as" control for a multiple selection since it
+  # was written, with no endpoint behind it, no JavaScript wiring it up, and a
+  # container that starts hidden and is never unhidden. It has never done
+  # anything at all.
+  def bulk_update
+    authorize SavedTrial
+
+    status = params[:status].to_s
+    ids = Array(params[:saved_trial_ids]).compact_blank
+
+    unless SavedTrial::STATUSES.include?(status)
+      return redirect_back fallback_location: saved_trials_path,
+        alert: "#{status.presence || "That"} is not a status a study can be in."
+    end
+
+    # Scoped through the policy rather than found by id, so a forged id belonging
+    # to somebody else updates nothing instead of raising.
+    updated = policy_scope(SavedTrial).where(id: ids).update_all(status: status, updated_at: Time.current)
+
+    redirect_back fallback_location: saved_trials_path,
+      notice: "#{helpers.pluralize(updated, "study")} moved to #{status.humanize.downcase}."
   end
 
   def show
@@ -74,7 +105,7 @@ class SavedTrialsController < ApplicationController
 
     if @saved_trial.update(editable_params)
       respond_to do |format|
-        format.html { redirect_to saved_trial_path(@saved_trial), notice: "Trial updated successfully" }
+        format.html { redirect_to saved_trial_path(@saved_trial), notice: "Saved." }
       end
     else
       respond_to do |format|
