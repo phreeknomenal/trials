@@ -24,6 +24,15 @@ RSpec.describe "Mobile navigation", type: :request do
       expect(response.body).not_to include(%(data-action="mobile-menu#toggle"))
     end
 
+    # The panel is gone, so the controller that drives it must go too.
+    # mobile-menu#connect calls close(), close() reads the panel target, and a
+    # controller left on the header without its panel threw "Missing target
+    # element" on every signed-in page load. Nothing visibly broke, which is why
+    # it took reading a console to find.
+    it "does not attach the panel's controller with no panel to drive" do
+      expect(response.body).not_to include(%(data-controller="mobile-menu"))
+    end
+
     it "keeps the dark mode toggle reachable, which the panel used to carry" do
       expect(response.body).to match(/dark-mode|theme/i)
     end

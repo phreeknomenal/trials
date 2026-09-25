@@ -1,8 +1,16 @@
 class Layout::Navigation::HeaderComponent < ApplicationComponent
   erb_template <<-ERB
+    <%# The controller goes on only when its panel does. PR 10 stopped rendering
+        the panel for a signed-in user, because the tab bar carries navigation
+        there, but left this attribute behind: mobile-menu#connect calls close(),
+        close() reads the panel target, and the target was gone. Every signed-in
+        page threw "Missing target element" on load. Nothing visibly broke,
+        which is why it took reading a console to find. %>
     <header class="border-b border-line dark:border-line-on-dark"
-            data-controller="mobile-menu"
-            data-action="keydown.esc@window->mobile-menu#closeOnEscape click@window->mobile-menu#closeOnOutsideClick">
+            <% unless tab_bar? %>
+              data-controller="mobile-menu"
+              data-action="keydown.esc@window->mobile-menu#closeOnEscape click@window->mobile-menu#closeOnOutsideClick"
+            <% end %>>
 
       <div class="<%= Layout::PageWidth::CONTAINER %> flex items-center justify-between gap-4 py-4">
         <div>

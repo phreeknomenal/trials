@@ -1,71 +1,77 @@
-<div class="col-span-2 lg:col-span-1 bg-surface dark:bg-surface-on-dark border border-line dark:border-line-on-dark rounded-card p-6 relative transition-colors hover:border-line-2 dark:hover:border-line-2-on-dark" id="saved-trial-<%= saved_trial.id %>">
-  <div class="absolute top-4 right-4">
-    <label class="flex items-center gap-2 cursor-pointer text-sm text-ink-3 dark:text-ink-3-on-dark" title="Select for comparison">
-      <input type="checkbox" name="ids[]" value="<%= saved_trial.id %>" form="compare-trials-form" class="w-4 h-4 rounded-sm border-line-2 accent-sky-500 dark:border-line-2-on-dark">
-      <span>Compare</span>
+<%# A saved study in the list, against the board.
+
+    The checkbox is the page's one selection. It used to carry
+    `form="compare-trials-form"` and say "Compare", which made it a
+    compare-only control while a second, dead "Select All" claimed to select
+    the same rows for a status change. One box now, and the toolbar above
+    decides what to do with it.
+
+    No distance beside the location. There is none in the data. %>
+<article id="saved-trial-<%= saved_trial.id %>"
+         class="rounded-card border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark
+                p-5 flex gap-4 transition-colors hover:border-navy-600 dark:hover:border-sky-400">
+
+  <div class="pt-1">
+    <label class="flex items-center cursor-pointer">
+      <span class="sr-only">Select <%= saved_trial.trial_title %></span>
+      <input type="checkbox" value="<%= saved_trial.id %>"
+             data-selection-target="checkbox" data-action="selection#update"
+             class="w-4 h-4 rounded-sm border-line-2 dark:border-line-2-on-dark accent-navy-600">
     </label>
   </div>
-  <h3 class="text-lg font-semibold text-ink dark:text-ink-on-dark mb-2 truncate pr-24" title="<%= saved_trial.trial_title %>">
-    <%= link_to truncate(saved_trial.trial_title, length: 300), saved_trial_path(id: saved_trial), class: "text-ink-3 dark:text-ink-3-on-dark hover:text-sky-500 hover:underline" %>
-  </h3>
-  
-  <div class="flex flex-wrap gap-4 mb-3 text-sm items-center justify-between text-ink-3 dark:text-ink-3-on-dark">
-    <div class="flex items-center gap-1 text-xs text-ink-3 dark:text-ink-3-on-dark">
-      <%= render Utilities::IconComponent.new("profile_card", size: 6) %>
-      <span><strong>NCT-ID:</strong> <%= saved_trial.nct_id %></span>
-    </div>
-    <div class="flex items-center gap-1 text-xs text-ink-3 dark:text-ink-3-on-dark">
-      <%= render Utilities::IconComponent.new("bookmark", size: 4) %>
-      <span>Saved <%= time_ago_in_words(saved_trial.created_at) %> ago</span>
-    </div>
-  </div>
 
-  <div class="mb-5">
-    <span class="inline-block px-3 py-1 text-sm font-medium rounded-full <%= status_badge_classes(saved_trial.status) %>">
-      <%= saved_trial.status.humanize %>
-    </span>
-  </div>
+  <div class="flex-1 min-w-0 flex flex-col gap-3">
+    <div class="flex flex-wrap items-start justify-between gap-3">
+      <%# items-start, or the badge stretches. A flex column defaults to
+          align-items: stretch, which makes an inline-flex badge as wide as the
+          title beneath it. %>
+      <div class="flex flex-col items-start gap-2 min-w-0">
+        <%= render Shared::StatusBadgeComponent.new(status: saved_trial.status) %>
+        <h2 class="font-primary text-lg font-bold leading-snug tracking-tight text-ink dark:text-ink-on-dark">
+          <%= link_to saved_trial.trial_title, saved_trial_path(saved_trial),
+                class: "hover:text-sky-600 dark:hover:text-sky-300" %>
+        </h2>
+      </div>
 
-  <div class="flex gap-1 text-sm text-ink-3 dark:text-ink-3-on-dark mb-3">
-    <%= render Utilities::IconComponent.new("tag", size: 5) %>
-    <span class="font-medium">Tags</span>
-  </div>
-  <% if saved_trial.tags_array.any? %>
-    <div class="flex flex-wrap gap-2 mb-5">
-      <% saved_trial.tags_array.each do |tag| %>
-        <span class="inline-block bg-line text-ink-2 dark:bg-surface-2-on-dark dark:text-ink-2-on-dark px-3 py-1 rounded-full text-sm font-medium">
-          <%= tag %>
+      <% if saved_trial.match_score.present? %>
+        <span class="shrink-0 rounded-control <%= match_score_badge_class(saved_trial.match_score.to_i) %> px-2.5 py-1.5 flex flex-col items-center leading-none">
+          <span class="text-base font-extrabold tabular-nums"><%= saved_trial.match_score.to_i %></span>
+          <span class="text-[9px] font-bold tracking-wider">MATCH</span>
         </span>
       <% end %>
     </div>
-  <% else %>
-    <p class="text-ink-3 font-body italic text-sm mt-1 mb-8 dark:text-ink-3-on-dark">No tags added yet.</p>
-  <% end %>
 
-  <div class="flex items-center justify-between gap-2">
-    <% if saved_trial.match_score.present? %>
-      <div class="flex items-center px-2 py-1 rounded-chip mb-3 <%= match_score_badge_class(saved_trial.match_score) %> ">
-        <div class="">
-          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-        </div>
-        <span class="font-medium mr-1">Match Score:</span>
-        <span class="font-bold"><%= saved_trial.match_score %>%</span>
-      </div>
-    <% end %>
-
-    <div class="flex items-center justify-between">
-      <%= link_to edit_saved_trial_path(saved_trial), class: "px-3 py-2 flex items-center gap-1 text-sm font-medium text-warn hover:bg-warn/10 dark:hover:bg-warn-on-dark/20 rounded-control transition-colors" do %>
-        <%= render Utilities::IconComponent.new("pencil", size: 4) %>
-        <span>Edit</span>
-      <% end %>
-
-      <%= form_with url: saved_trial_path(saved_trial), method: :delete, local: true, class: "flex items-center gap-1 *:cursor-pointer px-3 py-2 cursor-pointer text-sm font-medium text-crit hover:bg-crit/10 dark:hover:bg-crit-on-dark/20 rounded-control transition-colors border-0 bg-transparent cursor-pointer" do |f| %>
-        <%= render Utilities::IconComponent.new("trash", size: 4) %>
-        <%= f.submit "Remove", class: "", 
-            data: { turbo_confirm: "Are you sure you want to remove this trial?" } %>
+    <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-ink-3 dark:text-ink-3-on-dark">
+      <span class="font-mono"><%= saved_trial.nct_id %></span>
+      <span>Saved <%= saved_trial.created_at.to_fs(:long) %></span>
+      <% if saved_trial.phase.present? %>
+        <span><%= humanize_registry_value(saved_trial.phase) %></span>
       <% end %>
     </div>
+
+    <%# The note if there is one, otherwise the tags. Both at once on a row this
+        size pushes the next study off the screen, and the note is the thing
+        somebody wrote themselves. %>
+    <% if saved_trial.notes.present? %>
+      <p class="text-sm leading-relaxed text-ink-2 dark:text-ink-2-on-dark line-clamp-2">
+        <span class="font-semibold text-ink dark:text-ink-on-dark">Your note:</span>
+        <%= truncate(saved_trial.notes.to_plain_text, length: 180) %>
+      </p>
+    <% elsif saved_trial.tags_array.any? %>
+      <ul class="flex flex-wrap gap-1.5">
+        <% saved_trial.tags_array.first(4).each do |tag| %>
+          <li class="rounded-chip bg-surface-2 dark:bg-surface-2-on-dark px-2 py-0.5 text-xs font-semibold text-ink-2 dark:text-ink-2-on-dark">
+            <%= tag %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <div class="flex flex-wrap gap-3 pt-1">
+      <%= link_to "Open", saved_trial_path(saved_trial),
+            class: Buttons::ButtonStyles.classes("secondary", size: "px-3 py-1.5 text-sm") %>
+      <%= link_to "View the study", search_path(saved_trial.nct_id),
+            class: Buttons::ButtonStyles.classes("quiet", size: "px-3 py-1.5 text-sm") %>
+    </div>
   </div>
-</div>
+</article>

@@ -1,0 +1,75 @@
+<div class="rounded-card border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-5 lg:p-6 flex flex-col gap-4">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <h2 class="font-primary text-base font-bold tracking-tight text-ink dark:text-ink-on-dark">
+      Where you are with it
+    </h2>
+    <span class="text-sm text-ink-3 dark:text-ink-3-on-dark">
+      Updated <%= saved_trial.updated_at.to_fs(:long) %>
+    </span>
+  </div>
+
+  <%# The four that are a sequence. A terminal study shows none of them reached,
+      because you do not progress into rejected. %>
+  <ol class="flex items-start">
+    <% STEPS.each_with_index do |step, index| %>
+      <li class="flex flex-col items-center gap-2 flex-1 text-center">
+        <span class="w-6 h-6 rounded-full flex items-center justify-center <%= step_circle_class(step) %>">
+          <% if reached?(step) && !active?(step) %>
+            <span class="text-white dark:text-navy-900">
+              <%= render Utilities::IconComponent.new("check", size: 3) %>
+            </span>
+          <% end %>
+        </span>
+        <span class="text-xs <%= step_label_class(step) %>"><%= label_for(step) %></span>
+      </li>
+      <% unless index == STEPS.length - 1 %>
+        <li aria-hidden="true" class="h-0.5 flex-1 mt-3 <%= connector_class(STEPS[index + 1]) %>"></li>
+      <% end %>
+    <% end %>
+  </ol>
+
+  <% if terminal? %>
+    <p class="text-sm text-ink-2 dark:text-ink-2-on-dark">
+      This one is marked
+      <span class="font-bold text-ink dark:text-ink-on-dark"><%= label_for(current).downcase %></span>,
+      which is outside the pipeline. You can move it back if that changes.
+    </p>
+  <% end %>
+
+  <%# Two controls, one form each. The next step is a button because it is what
+      happens next nine times out of ten; everything else is a select, so the
+      three terminal statuses have somewhere to live without sitting on the
+      pipeline as though you progress into them. %>
+  <div class="flex flex-wrap items-center gap-3">
+    <% if next_step %>
+      <%= form_with url: saved_trial_path(saved_trial), method: :patch do |f| %>
+        <%= hidden_field_tag "saved_trial[status]", next_step %>
+        <%= f.button type: "submit", class: Buttons::ButtonStyles.classes("primary") do %>
+          Move to <%= label_for(next_step).downcase %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <%= form_with url: saved_trial_path(saved_trial), method: :patch,
+          data: {controller: "autosubmit"}, class: "flex items-center gap-2" do |f| %>
+      <label for="pipeline-status-<%= saved_trial.id %>" class="sr-only">Move this study to another status</label>
+      <%= f.select :status,
+            other_statuses.map { |s| [label_for(s), s] },
+            {include_blank: "Something else…"},
+            {
+              id: "pipeline-status-#{saved_trial.id}",
+              name: "saved_trial[status]",
+              class: Forms::FieldStyles.input(extra: "w-56 text-sm"),
+              data: {action: "change->autosubmit#submit"}
+            } %>
+      <%# Visible so the control still works with JavaScript off. %>
+      <%= f.button type: "submit", class: Buttons::ButtonStyles.classes("secondary", size: "px-3 py-2 text-sm") do %>
+        Move
+      <% end %>
+    <% end %>
+  </div>
+
+  <p class="text-sm text-ink-3 dark:text-ink-3-on-dark">
+    Rejected, completed and not eligible live in that list too.
+  </p>
+</div>
