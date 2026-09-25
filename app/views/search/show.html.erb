@@ -17,11 +17,12 @@
     </div>
   </div>
 <% elsif @study.present? %>
-  <!-- Header Section -->
-  <%= render Page::Trials::HeaderComponent.new(study: @study, saved_trial: @saved_trial, nct_id: @nct_id, match_score: @trial_score) %>
-
-  <section class="px-5 lg:px-44 pt-8 flex flex-row justify-between items-center">
-    <%= render Page::Navigation::BreadcrumbComponent.new %>
+  <%# The board has no full-width banner. Its first panel is the study header,
+      inside the main column, which is why this page read as a different one: a
+      banner spanning the viewport above a two-column layout is page chrome, and
+      this is the study. %>
+  <section class="<%= Layout::PageWidth::CONTAINER %> pt-8">
+    <%= render Page::Navigation::BreadcrumbComponent.new(current: @study[:title]) %>
   </section>
 
   <section class="px-5 lg:px-44 pt-8 pb-16">
@@ -32,6 +33,10 @@
         do not always render. %>
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
       <main class="lg:col-span-2 space-y-8">
+        <%= render Page::Trials::StudyHeaderComponent.new(
+              study: @study, nct_id: @nct_id, saved_trial: @saved_trial, match_score: @trial_score
+            ) %>
+
         <%# The score is inside the criteria panel now, where the board puts it:
             one panel headed "You meet N of M criteria" with the number beside
             it, instead of a score two sections above the reason for it.
@@ -105,10 +110,22 @@
                   <div class="mt-0.5">
                     <%= render Utilities::IconComponent.new("map_pin", size: 5, options: { class: "text-sky-600" }) %>
                   </div>
-                  <span class="text-ink dark:text-ink-on-dark"><%= loc[:display] %></span>
-                  <% if loc[:near_you] %>
-                    <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-chip text-xs font-medium bg-sky-100 text-sky-800 dark:bg-navy-900/40 dark:text-sky-200">Near you</span>
-                  <% end %>
+                  <div class="flex flex-col gap-1.5 min-w-0">
+                    <span class="text-ink dark:text-ink-on-dark"><%= loc[:display] %></span>
+                    <% if loc[:near_you] %>
+                      <span class="w-fit inline-flex items-center px-2 py-0.5 rounded-chip text-xs font-medium bg-sky-100 text-sky-800 dark:bg-navy-900/40 dark:text-sky-200">Near you</span>
+                    <% end %>
+                    <%# The board puts Directions on each site. It is a maps
+                        query on the site's own address, which is the one thing
+                        the app can offer here: there is no distance in the data,
+                        so it cannot say how far, only how to get there. %>
+                    <%= link_to "https://www.google.com/maps/search/?api=1&query=#{CGI.escape(loc[:display].to_s)}",
+                          target: "_blank", rel: "noopener",
+                          class: "w-fit inline-flex items-center gap-1 text-xs font-semibold text-sky-600 dark:text-sky-300 hover:underline" do %>
+                      Directions
+                      <%= render Utilities::IconComponent.new("external_link", size: 3) %>
+                    <% end %>
+                  </div>
                 </div>
               <% end %>
             </div>
@@ -133,6 +150,32 @@
           <div id="contact-information" class="mb-8 p-8 border border-line-2 dark:border-line-on-dark rounded-panel">
             <div class="mb-4">
               <%= render Typography::HeadingComponent.new(size: :h5, text: "Who runs it") %>
+            </div>
+
+            <%# The registry id and when the record was last touched. The board
+                asks for both, and the second is the more useful: a listing is
+                only as current as its last edit, and "Recruiting" carries a
+                different weight when the team confirmed it last week than when
+                nobody has touched it in two years. %>
+            <div class="mb-6 flex flex-wrap gap-x-8 gap-y-3">
+              <div>
+                <%= render Typography::HeadingComponent.new(size: :h6, text: "Registry ID") %>
+                <p class="mt-2 text-base text-ink dark:text-ink-2-on-dark">
+                  <span class="font-mono"><%= @nct_id %></span>
+                  &middot;
+                  <%= link_to "View on ClinicalTrials.gov", "https://clinicaltrials.gov/study/#{@nct_id}",
+                        target: "_blank", rel: "noopener",
+                        class: "font-semibold text-sky-600 dark:text-sky-300 hover:underline" %>
+                </p>
+              </div>
+              <% if @study[:last_update].present? %>
+                <div>
+                  <%= render Typography::HeadingComponent.new(size: :h6, text: "Record last updated") %>
+                  <p class="mt-2 text-base text-ink dark:text-ink-2-on-dark">
+                    <%= Date.parse(@study[:last_update].to_s).to_fs(:long) rescue @study[:last_update] %>
+                  </p>
+                </div>
+              <% end %>
             </div>
 
             <% if @study[:sponsor].present? %>
@@ -201,10 +244,6 @@
           </div>
         <% end %>
 
-        <!-- Similar trials -->
-        <% if @similar_trials.present? && @similar_trials.any? %>
-          <%= render Page::Trials::SimilarTrialsComponent.new(trials: @similar_trials) %>
-        <% end %>
 
         <!-- CTA Section -->
         <div class="bg-sky-50 dark:bg-navy-900/20 border border-sky-200 dark:border-sky-800 rounded-panel p-6">
@@ -237,7 +276,9 @@
       </main>
 
       <aside class="lg:col-span-1">
-        <%= render Page::Trials::NextStepComponent.new(study: @study, nct_id: @nct_id) %>
+        <%= render Page::Trials::NextStepComponent.new(
+              study: @study, nct_id: @nct_id, similar_trials: @similar_trials
+            ) %>
       </aside>
     </div>
   </section>

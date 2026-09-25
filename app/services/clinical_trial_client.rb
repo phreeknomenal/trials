@@ -124,6 +124,10 @@ class ClinicalTrialClient
       start_date: status.dig("startDateStruct", "date"),
       primary_completion_date: status.dig("primaryCompletionDateStruct", "date"),
       completion_date: status.dig("completionDateStruct", "date") || status.dig("primaryCompletionDateStruct", "date"),
+      # When the study team last touched the record. The detail page says so,
+      # because a registry entry is only as current as its last edit and a
+      # patient reading it has no other way to know.
+      last_update: status.dig("lastUpdatePostDateStruct", "date"),
       sponsor: sponsors.dig("leadSponsor", "name"),
       min_age: eligibility.dig("minimumAge"),
       max_age: eligibility.dig("maximumAge"),

@@ -22,13 +22,31 @@ class Page::Trials::NextStepComponent < ApplicationComponent
 
   attr_reader :study, :nct_id
 
-  # Similar studies are not in here. The board puts "Other studies you match"
-  # in this column as a compact list; SimilarTrialsComponent is a full-width
-  # three-column grid with its own heading, so it stays a section at the end of
-  # the main column until someone builds the narrow variant.
-  def initialize(study:, nct_id:)
+  def initialize(study:, nct_id:, similar_trials: nil)
     @study = study
     @nct_id = nct_id
+    @similar_trials = similar_trials
+  end
+
+  # Two at most. The board shows two, and this is a column beside the study
+  # somebody is reading: a third turns a suggestion into a list to work through.
+  def similar_trials = Array(@similar_trials).first(2)
+
+  def similar_trials? = similar_trials.any?
+
+  def score_for(trial) = trial[:match_score] || trial["match_score"]
+
+  def nct_for(trial) = trial[:nct_id] || trial["nct_id"]
+
+  def title_for(trial) = trial[:title] || trial["title"]
+
+  # Phase and study type, which is what the registry gives. The board's version
+  # reads "11 mi · Phase 3"; there is no distance anywhere in the data.
+  def meta_for(trial)
+    [
+      helpers.humanize_registry_value(trial[:phase] || trial["phase"]).presence,
+      helpers.humanize_registry_value(trial[:study_type] || trial["study_type"]).presence
+    ].compact.join(" · ")
   end
 
   def contacts
