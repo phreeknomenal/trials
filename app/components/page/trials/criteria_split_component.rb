@@ -41,9 +41,38 @@ class Page::Trials::CriteriaSplitComponent < ApplicationComponent
 
   attr_reader :checklist, :profile
 
-  def initialize(checklist:, profile: nil)
+  # The score comes in here now rather than sitting in a panel of its own.
+  # The board draws one match panel headed "You meet 6 of 7 criteria", with the
+  # number beside it; the app had the number and its per-factor breakdown in one
+  # section and the criteria in another, two panels apart, so the score and the
+  # reason for it were never on screen together.
+  def initialize(checklist:, profile: nil, trial_score: nil, match_level: nil, score_breakdown: nil)
     @checklist = Array(checklist)
     @profile = profile
+    @trial_score = trial_score
+    @match_level = match_level
+    @score_breakdown = score_breakdown
+  end
+
+  attr_reader :trial_score, :match_level, :score_breakdown
+
+  def score? = trial_score.present?
+
+  def breakdown? = score_breakdown.present?
+
+  # What the score is made of, out of TrialScorer's own breakdown. Behind a
+  # disclosure because the criteria are the answer and this is the working.
+  def breakdown_items
+    return [] unless breakdown?
+
+    [
+      {label: "Age", value: score_breakdown[:age], icon: "calendar_month"},
+      {label: "Sex", value: score_breakdown[:sex], icon: "user"},
+      {label: "Conditions", value: score_breakdown[:conditions], icon: "microscope"},
+      {label: "Location", value: score_breakdown[:location], icon: "map_pin"},
+      {label: "Study type", value: score_breakdown[:study_type], icon: "rectangle_stack"},
+      {label: "Risk level", value: score_breakdown[:phase_risk], icon: "exclamation_triangle"}
+    ].select { |item| item[:value].present? }
   end
 
   def render? = checklist.any?

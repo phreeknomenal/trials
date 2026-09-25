@@ -1,9 +1,18 @@
 <div id="eligibility" class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-6 lg:p-8">
-  <div class="flex flex-wrap items-baseline justify-between gap-2 mb-1">
-    <h2 class="text-xl font-bold tracking-tight text-ink dark:text-ink-on-dark">Do you qualify</h2>
-    <p class="text-sm font-semibold text-ink-2 dark:text-ink-2-on-dark tabular-nums">
-      You meet <%= met_count %> of <%= total_count %>
-    </p>
+  <%# The board's heading is the answer, not the question: "You meet 6 of 7
+      criteria". The score sits beside it rather than two panels away, so the
+      number and the reason for it are on screen together. %>
+  <div class="flex flex-wrap items-center gap-4 mb-1">
+    <% if score? %>
+      <span class="shrink-0 rounded-control <%= match_score_bg_class(match_level) %> border <%= match_score_border_class(match_level) %> px-3 py-2 flex flex-col items-center leading-none">
+        <span class="text-2xl font-extrabold tabular-nums <%= match_score_text_class(match_level) %>"><%= trial_score.to_i %></span>
+        <span class="text-[9px] font-bold tracking-wider <%= match_score_text_class(match_level) %>">OF 100</span>
+      </span>
+    <% end %>
+    <h2 class="text-xl font-bold tracking-tight text-ink dark:text-ink-on-dark">
+      <%# Not pluralize: Rails does not know this one and produces "criterions". %>
+      You meet <%= met_count %> of <%= total_count %> <%= (total_count == 1) ? "criterion" : "criteria" %>
+    </h2>
   </div>
 
   <%# The caveat that has to be on this section rather than buried: the app is
@@ -55,4 +64,32 @@
       </section>
     <% end %>
   </div>
+
+  <%# The working, behind a disclosure. The criteria above are the answer; this
+      is how the number was arrived at, and it used to be a panel of its own two
+      sections up. %>
+  <% if breakdown_items.any? %>
+    <details class="mt-6 border-t border-line dark:border-line-on-dark pt-4 group">
+      <summary class="cursor-pointer list-none flex items-center gap-2 text-sm font-semibold text-ink-2 dark:text-ink-2-on-dark rounded-nav focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+        <span class="text-ink-3 dark:text-ink-3-on-dark transition-transform group-open:rotate-180">
+          <%= render Utilities::IconComponent.new("chevron_down", size: 4) %>
+        </span>
+        How the score breaks down
+      </summary>
+      <div class="grid gap-x-8 gap-y-4 sm:grid-cols-2 pt-4">
+        <% breakdown_items.each do |item| %>
+          <div class="flex gap-3 items-start">
+            <span class="w-5 h-5 mt-0.5 shrink-0 <%= match_score_text_class(match_level) %>">
+              <%= render Utilities::IconComponent.new(item[:icon], size: 5) %>
+            </span>
+            <div class="w-full min-w-0">
+              <%= render Utilities::ScoreProgressBarComponent.new(
+                    score: item[:value], label: item[:label], match_level: match_level
+                  ) %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </details>
+  <% end %>
 </div>

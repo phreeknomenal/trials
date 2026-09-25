@@ -37,7 +37,11 @@ RSpec.describe "The study detail page", type: :request do
   # An anchor pointing at a section that no longer exists is silent: the link
   # renders, the click does nothing. This caught #interventions after the
   # section became #taking-part.
-  it "has a section for every link in its own sidebar" do
+  # The nine-link rail is gone: the board has no such rail and puts what to do
+  # next in a right column instead. The sweep stays, because it is about any
+  # in-page anchor rather than that rail, and four of its links pointed at
+  # sections that do not always render.
+  it "has a section for every in-page anchor it renders" do
     sign_in user
 
     get search_path(nct_id)
@@ -45,8 +49,7 @@ RSpec.describe "The study detail page", type: :request do
     anchors = response.body.scan(/href="#([a-z-]+)"/).flatten.uniq
     ids = response.body.scan(/id="([a-z-]+)"/).flatten.uniq
 
-    expect(anchors).not_to be_empty
-    expect(anchors - ids).to be_empty, "sidebar links with no section: #{(anchors - ids).join(", ")}"
+    expect(anchors - ids).to be_empty, "links with no section: #{(anchors - ids).join(", ")}"
   end
 
   # The correction that started this: the registry's wording is what you read,
@@ -86,7 +89,9 @@ RSpec.describe "The study detail page", type: :request do
     it "renders the grouped criteria rather than a flat list" do
       get search_path(nct_id)
 
-      expect(response.body).to include("Do you qualify")
+      # The heading is the answer now, not the question: the board reads
+      # "You meet 6 of 7 criteria".
+      expect(response.body).to match(/You meet \d+ of \d+ criteri/)
       expect(response.body).to include("What you meet")
     end
 

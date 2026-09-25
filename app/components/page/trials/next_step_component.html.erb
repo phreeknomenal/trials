@@ -1,0 +1,75 @@
+<div class="flex flex-col gap-6 lg:sticky lg:top-6">
+
+  <section class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-6 flex flex-col gap-4">
+    <div class="flex flex-col gap-1.5">
+      <p class="text-xs font-bold uppercase tracking-[0.09em] text-sky-600 dark:text-sky-300">Next step</p>
+      <h2 class="font-primary text-lg font-bold tracking-tight text-ink dark:text-ink-on-dark">
+        Contact the study team
+      </h2>
+      <%# The board's button is "Send my details". The app does not transmit
+          anything to a study team, and About, the privacy policy and the FAQ all
+          say so. A button here implying otherwise would make those three pages
+          lies. %>
+      <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+        They answer questions and confirm whether you can join. You get in touch yourself:
+        nothing about you is sent through this app.
+      </p>
+    </div>
+
+    <% if contacts? %>
+      <ul class="flex flex-col gap-3">
+        <% contacts.each do |contact| %>
+          <li class="rounded-card border border-line dark:border-line-on-dark p-3 flex flex-col gap-1">
+            <% if contact[:name].present? %>
+              <span class="text-sm font-bold text-ink dark:text-ink-on-dark"><%= contact[:name] %></span>
+            <% end %>
+            <% if contact[:role].present? %>
+              <span class="text-xs text-ink-3 dark:text-ink-3-on-dark"><%= contact[:role] %></span>
+            <% end %>
+            <% if contact[:phone].present? %>
+              <%= link_to contact[:phone], "tel:#{contact[:phone].gsub(/[^0-9+]/, "")}",
+                    class: "text-sm font-semibold text-sky-600 dark:text-sky-300 hover:underline" %>
+            <% end %>
+            <% if contact[:email].present? %>
+              <%= mail_to contact[:email], contact[:email],
+                    class: "text-sm font-semibold text-sky-600 dark:text-sky-300 hover:underline break-all" %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <%# Said rather than left blank. A sidebar headed "Contact the study team"
+          with nothing under it reads as broken rather than as absent data. %>
+      <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+        This study has not published a contact. The registry record is the place to check,
+        and it is updated when one is added.
+      </p>
+    <% end %>
+
+    <%= link_to registry_url, target: "_blank", rel: "noopener",
+          class: Buttons::ButtonStyles.classes(contacts? ? "secondary" : "primary") do %>
+      Open the registry record
+      <%= render Utilities::IconComponent.new("external_link", size: 4) %>
+    <% end %>
+  </section>
+
+  <section class="rounded-panel border border-line dark:border-line-on-dark bg-paper dark:bg-paper-on-dark p-6 flex flex-col gap-3">
+    <h2 class="font-primary text-base font-bold tracking-tight text-ink dark:text-ink-on-dark">What happens next</h2>
+    <ol class="flex flex-col gap-3">
+      <% WHAT_HAPPENS.each_with_index do |step, index| %>
+        <li class="flex gap-3 items-start">
+          <span class="w-5 h-5 shrink-0 rounded-full bg-sky-100 dark:bg-navy-900/60 text-sky-700 dark:text-sky-300 text-[11px] font-bold flex items-center justify-center">
+            <%= index + 1 %>
+          </span>
+          <span class="text-sm leading-relaxed text-ink-2 dark:text-ink-2-on-dark"><%= step %></span>
+        </li>
+      <% end %>
+    </ol>
+    <%# The registry does not publish a study's own process, so this describes
+        what contacting a team is usually like and says which it is. %>
+    <p class="text-xs text-ink-3 dark:text-ink-3-on-dark">
+      How it usually goes. Each team runs its own process.
+    </p>
+  </section>
+
+</div>
