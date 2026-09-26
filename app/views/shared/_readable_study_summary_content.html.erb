@@ -6,7 +6,7 @@
       </div>
       <span class="text-xs font-semibold uppercase tracking-wide">AI-generated, plain-language summary</span>
     </div>
-    <div class="flex flex-col gap-4 text-ink-2 dark:text-ink-2-on-dark font-body leading-relaxed">
+    <div class="flex flex-col gap-4 text-body text-ink-2 dark:text-ink-2-on-dark">
       <% prose_paragraphs(record.content).each do |paragraph| %>
         <p><%= paragraph %></p>
       <% end %>

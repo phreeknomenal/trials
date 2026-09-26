@@ -3,11 +3,30 @@
 @variant dark (&:is(.dark *));
 
 @theme {
-  /* The wordmark has been rendering in the browser default: font-primary was
-   * applied in the header while the token sat commented out. */
+  /* One typeface. The design canvas says so in the style kit's own subtitle,
+   * "Manrope only, navy and sky only", and every one of its 37 boards loads
+   * Manrope and nothing else.
+   *
+   * Montserrat and Caveat used to sit here beside it. Nothing set a font on
+   * the body, so anything without an explicit class fell through to the
+   * browser's default instead: eleven of the study page's headings and all of
+   * its body copy were rendering in the operating system's font while the app
+   * downloaded three webfonts on every layout. The base rule below is the
+   * other half of the fix the comment on this token once described. */
   --font-primary: "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-body: "Montserrat", ui-sans-serif, system-ui, sans-serif;
-  --font-accent: "Caveat", cursive;
+
+  /* The canvas's type scale, which is smaller and tighter than Tailwind's
+   * defaults and does not line up with them: 22px sits between text-xl and
+   * text-2xl, 15px between text-sm and text-base. Named here so a heading is
+   * not a different size in each section, which is what it was. */
+  --text-title: 34px;
+  --text-title--line-height: 1.15;
+  --text-section: 22px;
+  --text-section--line-height: 1.25;
+  --text-body: 15px;
+  --text-body--line-height: 1.65;
+  --text-meta: 13px;
+  --text-meta--line-height: 1.55;
 
   /* ------------------------------------------------------------------
    * Dira Health
@@ -152,4 +171,16 @@
 
 .dark {
   color-scheme: dark;
+}
+
+/* The base typeface, set once.
+ *
+ * Nothing declared a font on the body, so every element without an explicit
+ * font class inherited the browser's default sans instead of the brand face.
+ * On the study detail page that was eleven of the twelve headings and all of
+ * the body copy: the page carried two typefaces and no rule about which went
+ * where. Per-element font classes are how that happened, so this is a base
+ * rule rather than a class on each layout's body tag. */
+body {
+  font-family: var(--font-primary);
 }

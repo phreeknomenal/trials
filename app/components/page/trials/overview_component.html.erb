@@ -4,7 +4,7 @@
       plain-language rewrite below is something you ask for. Without the label
       the two blocks look interchangeable. %>
   <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-    <%= render Typography::HeadingComponent.new(size: :h5, text: "What this study is testing") %>
+    <%= render Typography::HeadingComponent.new(size: :section, text: "What this study is testing") %>
     <p class="text-xs font-bold uppercase tracking-[0.09em] text-ink-3 dark:text-ink-3-on-dark">
       From the registry record
     </p>
@@ -15,7 +15,7 @@
       rewrite offered underneath it, and a reader who never opens the dropdown
       never sees why that offer is there. Most run to a couple of paragraphs; the
       long tail is exactly the case the rewrite exists for. %>
-  <div class="flex flex-col gap-4 font-body leading-relaxed text-ink-2 dark:text-ink-2-on-dark">
+  <div class="flex flex-col gap-4 text-body text-ink-2 dark:text-ink-2-on-dark">
     <% (helpers.prose_paragraphs(summary) + helpers.prose_paragraphs(detailed_description)).each do |paragraph| %>
       <p><%= paragraph %></p>
     <% end %>

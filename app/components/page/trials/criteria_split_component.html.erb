@@ -18,14 +18,15 @@
       <% end %>
 
       <div class="flex flex-col gap-1 min-w-0">
-        <h2 class="font-primary text-xl lg:text-2xl font-bold tracking-tight text-ink dark:text-ink-on-dark">
-          <%# Not pluralize: Rails does not know this one and produces "criterions". %>
-          You meet <%= met_count %> of <%= total_count %> <%= (total_count == 1) ? "criterion" : "criteria" %>
-        </h2>
+        <%# Not pluralize: Rails does not know this one and produces "criterions". %>
+        <%= render Typography::HeadingComponent.new(
+              size: :section,
+              text: "You meet #{met_count} of #{total_count} #{(total_count == 1) ? "criterion" : "criteria"}"
+            ) %>
         <%# The caveat that has to be on this section rather than buried: the app
             is reading a registry record against a profile, and only the study
             team can actually say yes. %>
-        <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+        <p class="text-meta text-ink-3 dark:text-ink-3-on-dark">
           <% if profile_updated_on %>
             Based on the profile you last updated on <%= profile_updated_on %>.
           <% end %>
@@ -66,7 +67,7 @@
                     because a couple of the checker's explanations ("Pregnancy
                     status may apply | Organ function requirements may apply")
                     do not say what they are about on their own. %>
-                <p class="text-sm leading-relaxed text-ink dark:text-ink-2-on-dark">
+                <p class="text-body text-ink dark:text-ink-2-on-dark">
                   <span class="font-semibold"><%= item[:label] %></span>
                   <% if item[:explanation].present? %>
                     <span class="text-ink-2 dark:text-ink-3-on-dark"><%= item[:explanation] %></span>

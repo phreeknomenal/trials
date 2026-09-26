@@ -81,8 +81,8 @@
             is long. It stays collapsed under the split rather than above it. %>
         <% if @study[:inclusion_criteria].present? || @study[:exclusion_criteria].present? %>
           <div class="mb-8 rounded-panel border border-line dark:border-line-on-dark p-6 lg:p-8">
-            <h2 class="text-base font-bold text-ink dark:text-ink-on-dark mb-1">The study's own criteria</h2>
-            <p class="text-sm text-ink-3 dark:text-ink-3-on-dark mb-4">
+            <%= render Typography::HeadingComponent.new(size: :section, text: "The study's own criteria") %>
+            <p class="mt-1 mb-4 text-meta text-ink-3 dark:text-ink-3-on-dark">
               The registry's wording, unedited. Ages <%= [@study[:min_age], @study[:max_age]].compact.join(" to ").presence || "not stated" %><%= ", #{humanize_registry_value(@study[:sex])}" if @study[:sex].present? %>.
             </p>
             <% if @study[:inclusion_criteria].present? %>
@@ -101,7 +101,7 @@
         </div>
 
         <div id="locations" class="p-8 border border-line-2 dark:border-line-on-dark rounded-panel">
-          <%= render Typography::HeadingComponent.new(size: :h5, text: "Where it takes place") %>
+          <%= render Typography::HeadingComponent.new(size: :section, text: "Where it takes place") %>
           <% locations_to_show = @study[:locations_detailed].present? ? sort_locations_near_user(@study[:locations_detailed], @profile) : (@study[:locations] || []).map { |l| { display: l, near_you: false } } %>
           <% if locations_to_show.any? %>
             <div class="grid grid-cols-2 mt-4 gap-6">
@@ -149,7 +149,7 @@
         <% if who_runs_it %>
           <div id="contact-information" class="mb-8 p-8 border border-line-2 dark:border-line-on-dark rounded-panel">
             <div class="mb-4">
-              <%= render Typography::HeadingComponent.new(size: :h5, text: "Who runs it") %>
+              <%= render Typography::HeadingComponent.new(size: :section, text: "Who runs it") %>
             </div>
 
             <%# The registry id and when the record was last touched. The board
