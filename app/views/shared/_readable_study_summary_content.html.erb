@@ -6,28 +6,44 @@
       </div>
       <span class="text-xs font-semibold uppercase tracking-wide">AI-generated, plain-language summary</span>
     </div>
-    <div class="text-ink-2 dark:text-ink-2-on-dark font-body max-w-none">
-      <%= simple_format(record.content) %>
+    <div class="flex flex-col gap-4 text-ink-2 dark:text-ink-2-on-dark font-body leading-relaxed">
+      <% prose_paragraphs(record.content).each do |paragraph| %>
+        <p><%= paragraph %></p>
+      <% end %>
     </div>
   </div>
 <% elsif record&.pending? %>
   <div class="flex items-center gap-3 rounded-panel border border-line dark:border-line-on-dark bg-surface-2 dark:bg-surface-on-dark/40 p-6 text-ink-3 dark:text-ink-3-on-dark">
     <span class="inline-block w-4 h-4 rounded-full border-2 border-sky-500 border-t-transparent animate-spin" aria-hidden="true"></span>
-    <span class="text-sm">Generating a more readable version&hellip;</span>
+    <span class="text-sm">Generating a plain-language version&hellip;</span>
   </div>
 <% elsif record&.failed? %>
-  <div class="rounded-panel border border-crit/30 dark:border-crit-on-dark bg-crit/10 dark:bg-crit-on-dark/20 p-6">
-    <p class="text-sm text-crit dark:text-crit-on-dark mb-3">
-      <%= record.error_message.presence || "We couldn't generate a readable version right now." %>
+  <div class="rounded-panel border border-crit/30 dark:border-crit-on-dark bg-crit/10 dark:bg-crit-on-dark/20 p-6 flex flex-col gap-3 items-start">
+    <p class="text-sm text-crit dark:text-crit-on-dark">
+      <%= record.error_message.presence || "We couldn't generate a plain-language version right now." %>
     </p>
-    <%= button_to "Try again",
-      readable_summary_path(nct_id),
-      method: :post,
-      class: "inline-flex items-center px-4 py-2 rounded-control text-sm font-medium bg-navy-600 text-white hover:bg-navy-700" %>
+    <%= button_to "Try again", readable_summary_path(nct_id), method: :post,
+          class: Buttons::ButtonStyles.classes("primary") %>
   </div>
 <% elsif source_present %>
-  <%= button_to "Generate a more readable version",
-    readable_summary_path(nct_id),
-    method: :post,
-    class: "inline-flex items-center px-4 py-2 rounded-control text-sm font-medium bg-navy-600 text-white hover:bg-navy-700" %>
+  <%# The board's offer panel. It used to be a bare button with no sentence
+      round it, which left the two questions it raises unanswered: how long this
+      takes, and whether asking for it replaces the registry's own wording. %>
+  <div class="rounded-panel border border-line dark:border-line-on-dark bg-paper dark:bg-paper-on-dark p-5 flex flex-wrap items-center justify-between gap-4">
+    <div class="flex items-start gap-4 flex-1 min-w-[16rem]">
+      <span class="shrink-0 w-10 h-10 rounded-card bg-sky-50 dark:bg-navy-900/50 text-sky-600 dark:text-sky-300 flex items-center justify-center">
+        <%= render Utilities::IconComponent.new("sun", size: 5) %>
+      </span>
+      <div class="flex flex-col gap-1 min-w-0">
+        <p class="font-primary text-base font-bold tracking-tight text-ink dark:text-ink-on-dark">Hard to follow?</p>
+        <p class="text-sm leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+          We can rewrite the text above in plain language. It takes a few seconds,
+          and the original stays on this page.
+        </p>
+      </div>
+    </div>
+
+    <%= button_to "Generate a plain-language version", readable_summary_path(nct_id), method: :post,
+          class: Buttons::ButtonStyles.classes("primary"), form_class: "shrink-0" %>
+  </div>
 <% end %>

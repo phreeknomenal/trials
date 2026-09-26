@@ -82,6 +82,14 @@ module ApplicationHelper
       .fetch(:classes, "bg-surface-2 text-ink-2 dark:bg-surface-2-on-dark dark:text-ink-2-on-dark")
   end
 
+  # Both the registry and the model that rewrites it separate paragraphs with a
+  # single newline, which simple_format renders as <br> inside one <p>. Four
+  # paragraphs of prose then arrive as an unbroken wall with no gap anywhere in
+  # it, which is most of why the study overview was hard to read.
+  def prose_paragraphs(text)
+    text.to_s.split(/\r?\n+/).map(&:strip).reject(&:blank?)
+  end
+
   # The registry returns its enums shouted: "PHASE2", "INTERVENTIONAL",
   # "NOT_YET_RECRUITING", and phases arrive already joined as "PHASE1, PHASE2".
   # Nothing should print those at a patient.

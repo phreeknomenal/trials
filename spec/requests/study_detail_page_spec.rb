@@ -58,7 +58,9 @@ RSpec.describe "The study detail page", type: :request do
     it "shows the registry's own text" do
       get search_path(nct_id)
 
-      expect(response.body).to include("The registry's own description")
+      # Escaped, because the paragraphs are printed rather than run through
+      # simple_format, and ERB writes an apostrophe as &#39;.
+      expect(response.body).to include(ERB::Util.html_escape("The registry's own description"))
     end
 
     it "labels it as the registry's, so the two blocks are not interchangeable" do
@@ -70,8 +72,8 @@ RSpec.describe "The study detail page", type: :request do
     it "puts the registry text before the offer to rewrite it" do
       get search_path(nct_id)
 
-      registry = response.body.index("own description of the study")
-      offer = response.body.index("readable version")
+      registry = response.body.index(ERB::Util.html_escape("own description of the study"))
+      offer = response.body.index("Generate a plain-language version")
 
       expect(registry).to be_present
       expect(offer).to be_present
