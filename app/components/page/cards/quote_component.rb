@@ -19,7 +19,7 @@ class Page::Cards::QuoteComponent < ApplicationComponent
           <div class="flex flex-col">
             <h3 class="text-base font-bold text-ink dark:text-ink-2-on-dark"><%= testimonial.author_name %></h3>
             <% if testimonial.author_role.present? %>
-              <p class="text-sm font-body text-ink-3 dark:text-ink-3-on-dark"><%= testimonial.author_role %></p>
+              <p class="text-sm text-ink-3 dark:text-ink-3-on-dark"><%= testimonial.author_role %></p>
             <% end %>
           </div>
         </div>

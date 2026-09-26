@@ -47,4 +47,19 @@ RSpec.describe TrialStatus do
       expect(described_class.known?("SOMETHING_NEW")).to be(false)
     end
   end
+
+  # It reached a patient-facing sentence as "This trial status is:
+  # NOT_YET_RECRUITING", which is the registry shouting an enum at somebody
+  # reading about their own eligibility.
+  describe ".label" do
+    it "says a registry status the way a person would" do
+      expect(TrialStatus.label("NOT_YET_RECRUITING")).to eq("Not yet recruiting")
+      expect(TrialStatus.label("ACTIVE_NOT_RECRUITING")).to eq("Active not recruiting")
+    end
+
+    it "has nothing to say about a missing status" do
+      expect(TrialStatus.label(nil)).to be_nil
+      expect(TrialStatus.label("  ")).to be_nil
+    end
+  end
 end

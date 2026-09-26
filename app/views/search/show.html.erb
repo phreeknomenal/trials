@@ -17,91 +17,45 @@
     </div>
   </div>
 <% elsif @study.present? %>
-  <!-- Header Section -->
-  <%= render Page::Trials::HeaderComponent.new(study: @study, saved_trial: @saved_trial, nct_id: @nct_id, match_score: @trial_score) %>
-
-  <section class="px-5 lg:px-44 pt-8 flex flex-row justify-between items-center">
-    <%= render Page::Navigation::BreadcrumbComponent.new %>
+  <%# The board has no full-width banner. Its first panel is the study header,
+      inside the main column, which is why this page read as a different one: a
+      banner spanning the viewport above a two-column layout is page chrome, and
+      this is the study. %>
+  <section class="<%= Layout::PageWidth::CONTAINER %> pt-8">
+    <%= render Page::Navigation::BreadcrumbComponent.new(current: @study[:title]) %>
   </section>
 
   <section class="px-5 lg:px-44 pt-8 pb-16">
-    <div class="grid grid-cols-1 lg:grid-cols-8 gap-10">
-      <%# LEFT SIDEBAR %>
-      <div class="lg:col-span-2">
-        <div class="sticky top-10">
-          <%= render Page::Trials::Sidebar::ContainerComponent.new() do %>
-            <%# Guarded on exactly what each section is guarded on. Two of these
-                links were unconditional while their sections were not, so a
-                signed-out visitor got a rail with two entries that scrolled
-                nowhere. That is the same bug PR 5 fixed for #interventions and
-                #contact-information, in the two places it did not reach. %>
-            <% if @trial_score.present? %>
-              <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#match-score-card", text: "Your match score") %>
-            <% end %>
-            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#key-details", text: "Key details") %>
-            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#what-this-means-for-you", text: "What this means for you") %>
-            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#study-overview", text: "What this study is testing") %>
-            <% if @eligibility_checklist.present? && @eligibility_checklist.any? %>
-              <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#eligibility", text: "Do you qualify") %>
-            <% end %>
-            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#taking-part", text: "What taking part involves") %>
-            <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#locations", text: "Where it takes place") %>
-            <% if who_runs_it %>
-              <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#contact-information", text: "Who runs it") %>
-            <% end %>
-            <% if @similar_trials.present? && @similar_trials.any? %>
-              <%= render Page::Trials::Sidebar::AnchorLinkComponent.new(path: "#similar-trials", text: "More trials like this") %>
-            <% end %>
-          <% end %>
+    <%# main and aside, per the board. It was a left rail of nine anchor links
+        into the page; the board has no such rail and puts what to do next in a
+        right column instead, which is the question somebody actually arrives
+        with. The rail also shipped four anchors that pointed at sections which
+        do not always render. %>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
+      <main class="lg:col-span-2 space-y-8">
+        <%= render Page::Trials::StudyHeaderComponent.new(
+              study: @study, nct_id: @nct_id, saved_trial: @saved_trial, match_score: @trial_score
+            ) %>
 
-          <!-- Profile Match Info -->
-          <% if @profile %>
-            <div class="mt-6 p-4 bg-sky-50 dark:bg-navy-900/20 border border-sky-200 dark:border-sky-800 rounded-card">
-              <h3 class="text-sm font-semibold text-navy-900 dark:text-sky-100 mb-2">
-                Your Profile
-              </h3>
-              <div class="text-xs text-sky-800 dark:text-sky-200 space-y-1">
-                <% if @profile.age.present? %>
-                  <p><strong>Age:</strong> <%= @profile.age %></p>
-                <% end %>
-                <% if @profile.sex_assigned_at_birth.present? %>
-                  <p><strong>Sex:</strong> <%= @profile.sex_assigned_at_birth.titleize %></p>
-                <% end %>
-                <% if @profile.city && @profile.state %>
-                  <p><strong>Location:</strong> <%= @profile.city %>, <%= @profile.state %></p>
-                <% end %>
-              </div>
-            </div>
-          <% end %>
-        </div>
-      </div>
+        <%# The score is inside the criteria panel now, where the board puts it:
+            one panel headed "You meet N of M criteria" with the number beside
+            it, instead of a score two sections above the reason for it.
 
-      <%# RIGHT CONTENT %>
-      <div class="lg:col-span-6 space-y-8">
-        <% if @trial_score.present? %>
-          <%= render Page::Trials::KeyDetails::MatchScoreCardComponent.new(
-            trial_score: @trial_score,
-            match_level: @match_level,
-            score_breakdown: @score_breakdown
-          ) %>
+            Key details went with it. Its facts are phase, status, ages,
+            enrolment and sponsor, and the board carries those in the page header
+            and under "Who runs it" rather than in a panel of their own. %>
+
+        <%# Only when the study is not open. get_study is deliberately unfiltered
+            unlike search, so a saved study that has since closed still opens
+            here, and that is the one time this is the most important thing on
+            the page. %>
+        <% unless TrialStatus.accepting?(@study[:status]) %>
+          <%= render Page::Trials::StatusMessageComponent.new(study: @study, score_breakdown: @score_breakdown, trial_score: @trial_score, match_level: @match_level) %>
         <% end %>
-
-        <%= render Page::Trials::KeyDetailsComponent.new(study: @study, trial_score: @trial_score, match_level: @match_level, score_breakdown: @score_breakdown) %>
-
-        
-
-        <!-- Status Message -->
-        <%= render Page::Trials::StatusMessageComponent.new(study: @study, score_breakdown: @score_breakdown, trial_score: @trial_score, match_level: @match_level) %>
 
         <!-- Phase / Status explainer -->
 
         <!-- Key dates timeline -->
-
-        <!-- Overview -->
-        <%= render Page::Trials::OverviewComponent.new(
-          study: @study,
-          nct_id: @nct_id
-        ) %>
 
         <!-- Eligibility Criteria -->
         <%# The criteria split, which is the payoff for the score on the result
@@ -110,16 +64,25 @@
         <div class="mb-8">
           <%= render Page::Trials::CriteriaSplitComponent.new(
                 checklist: @eligibility_checklist,
-                profile: @profile
+                profile: @profile,
+                trial_score: @trial_score,
+                match_level: @match_level,
+                score_breakdown: @score_breakdown
               ) %>
         </div>
+
+        <!-- Overview -->
+        <%= render Page::Trials::OverviewComponent.new(
+          study: @study,
+          nct_id: @nct_id
+        ) %>
 
         <%# The study's own eligibility text, which is written for clinicians and
             is long. It stays collapsed under the split rather than above it. %>
         <% if @study[:inclusion_criteria].present? || @study[:exclusion_criteria].present? %>
           <div class="mb-8 rounded-panel border border-line dark:border-line-on-dark p-6 lg:p-8">
-            <h2 class="text-base font-bold text-ink dark:text-ink-on-dark mb-1">The study's own criteria</h2>
-            <p class="text-sm text-ink-3 dark:text-ink-3-on-dark mb-4">
+            <%= render Typography::HeadingComponent.new(size: :section, text: "The study's own criteria") %>
+            <p class="mt-1 mb-4 text-meta text-ink-3 dark:text-ink-3-on-dark">
               The registry's wording, unedited. Ages <%= [@study[:min_age], @study[:max_age]].compact.join(" to ").presence || "not stated" %><%= ", #{humanize_registry_value(@study[:sex])}" if @study[:sex].present? %>.
             </p>
             <% if @study[:inclusion_criteria].present? %>
@@ -138,7 +101,7 @@
         </div>
 
         <div id="locations" class="p-8 border border-line-2 dark:border-line-on-dark rounded-panel">
-          <%= render Typography::HeadingComponent.new(size: :h5, text: "Trial Locations") %>
+          <%= render Typography::HeadingComponent.new(size: :section, text: "Where it takes place") %>
           <% locations_to_show = @study[:locations_detailed].present? ? sort_locations_near_user(@study[:locations_detailed], @profile) : (@study[:locations] || []).map { |l| { display: l, near_you: false } } %>
           <% if locations_to_show.any? %>
             <div class="grid grid-cols-2 mt-4 gap-6">
@@ -147,10 +110,22 @@
                   <div class="mt-0.5">
                     <%= render Utilities::IconComponent.new("map_pin", size: 5, options: { class: "text-sky-600" }) %>
                   </div>
-                  <span class="text-ink dark:text-ink-on-dark"><%= loc[:display] %></span>
-                  <% if loc[:near_you] %>
-                    <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-chip text-xs font-medium bg-sky-100 text-sky-800 dark:bg-navy-900/40 dark:text-sky-200">Near you</span>
-                  <% end %>
+                  <div class="flex flex-col gap-1.5 min-w-0">
+                    <span class="text-ink dark:text-ink-on-dark"><%= loc[:display] %></span>
+                    <% if loc[:near_you] %>
+                      <span class="w-fit inline-flex items-center px-2 py-0.5 rounded-chip text-xs font-medium bg-sky-100 text-sky-800 dark:bg-navy-900/40 dark:text-sky-200">Near you</span>
+                    <% end %>
+                    <%# The board puts Directions on each site. It is a maps
+                        query on the site's own address, which is the one thing
+                        the app can offer here: there is no distance in the data,
+                        so it cannot say how far, only how to get there. %>
+                    <%= link_to "https://www.google.com/maps/search/?api=1&query=#{CGI.escape(loc[:display].to_s)}",
+                          target: "_blank", rel: "noopener",
+                          class: "w-fit inline-flex items-center gap-1 text-xs font-semibold text-sky-600 dark:text-sky-300 hover:underline" do %>
+                      Directions
+                      <%= render Utilities::IconComponent.new("external_link", size: 3) %>
+                    <% end %>
+                  </div>
                 </div>
               <% end %>
             </div>
@@ -174,7 +149,33 @@
         <% if who_runs_it %>
           <div id="contact-information" class="mb-8 p-8 border border-line-2 dark:border-line-on-dark rounded-panel">
             <div class="mb-4">
-              <%= render Typography::HeadingComponent.new(size: :h5, text: "Who runs it") %>
+              <%= render Typography::HeadingComponent.new(size: :section, text: "Who runs it") %>
+            </div>
+
+            <%# The registry id and when the record was last touched. The board
+                asks for both, and the second is the more useful: a listing is
+                only as current as its last edit, and "Recruiting" carries a
+                different weight when the team confirmed it last week than when
+                nobody has touched it in two years. %>
+            <div class="mb-6 flex flex-wrap gap-x-8 gap-y-3">
+              <div>
+                <%= render Typography::HeadingComponent.new(size: :h6, text: "Registry ID") %>
+                <p class="mt-2 text-base text-ink dark:text-ink-2-on-dark">
+                  <span class="font-mono"><%= @nct_id %></span>
+                  &middot;
+                  <%= link_to "View on ClinicalTrials.gov", "https://clinicaltrials.gov/study/#{@nct_id}",
+                        target: "_blank", rel: "noopener",
+                        class: "font-semibold text-sky-600 dark:text-sky-300 hover:underline" %>
+                </p>
+              </div>
+              <% if @study[:last_update].present? %>
+                <div>
+                  <%= render Typography::HeadingComponent.new(size: :h6, text: "Record last updated") %>
+                  <p class="mt-2 text-base text-ink dark:text-ink-2-on-dark">
+                    <%= Date.parse(@study[:last_update].to_s).to_fs(:long) rescue @study[:last_update] %>
+                  </p>
+                </div>
+              <% end %>
             </div>
 
             <% if @study[:sponsor].present? %>
@@ -243,10 +244,6 @@
           </div>
         <% end %>
 
-        <!-- Similar trials -->
-        <% if @similar_trials.present? && @similar_trials.any? %>
-          <%= render Page::Trials::SimilarTrialsComponent.new(trials: @similar_trials) %>
-        <% end %>
 
         <!-- CTA Section -->
         <div class="bg-sky-50 dark:bg-navy-900/20 border border-sky-200 dark:border-sky-800 rounded-panel p-6">
@@ -276,7 +273,13 @@
             <% end %>
           </div>
         </div>
-      </div>
+      </main>
+
+      <aside class="lg:col-span-1">
+        <%= render Page::Trials::NextStepComponent.new(
+              study: @study, nct_id: @nct_id, similar_trials: @similar_trials
+            ) %>
+      </aside>
     </div>
   </section>
 <% else %>

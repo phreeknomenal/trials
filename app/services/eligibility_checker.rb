@@ -83,9 +83,9 @@ class EligibilityChecker
 
     status = is_recruiting ? "met" : "warning"
     explanation = if is_recruiting
-      "This trial is actively recruiting participants."
+      "This study is recruiting participants now."
     else
-      "This trial status is: #{@trial[:status] || @trial[:trial_status]}. You may want to verify current enrollment before reaching out."
+      "This study is listed as #{TrialStatus.label(@trial[:status] || @trial[:trial_status])}. Check with the team before reaching out."
     end
 
     build_item("Recruitment Status", status, explanation)

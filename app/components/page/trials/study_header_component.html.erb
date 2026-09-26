@@ -1,0 +1,43 @@
+<div class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-6 lg:p-8 flex flex-col gap-5">
+  <div class="flex flex-wrap items-start justify-between gap-4">
+    <div class="flex-1 min-w-0 flex flex-col gap-2">
+      <p class="text-xs font-bold uppercase tracking-[0.09em] text-sky-600 dark:text-sky-300">
+        <%= eyebrow_parts.join(" · ") %>
+      </p>
+      <h1 class="text-2xl lg:text-title font-bold tracking-tight text-ink dark:text-ink-on-dark">
+        <%= study[:title] %>
+      </h1>
+    </div>
+
+    <%# The board has save and share as two icon buttons. Share is not built:
+        there is nothing to share but this URL, and a button that only copies it
+        is a button pretending to be a feature. Save is real. %>
+    <% if savable? %>
+      <div class="shrink-0">
+        <%= render Buttons::SaveTrialButtonComponent.new(
+              nct_id: nct_id,
+              trial_title: study[:title],
+              saved_trial: saved_trial,
+              size: "md",
+              trial_data: study,
+              match_score: match_score
+            ) %>
+      </div>
+    <% end %>
+  </div>
+
+  <% if facts.any? %>
+    <ul class="flex flex-wrap gap-x-6 gap-y-2">
+      <% facts.each do |icon, value| %>
+        <li class="flex items-center gap-2 text-sm text-ink-2 dark:text-ink-2-on-dark">
+          <span class="text-ink-3 dark:text-ink-3-on-dark shrink-0">
+            <%= render Utilities::IconComponent.new(icon, size: 4) %>
+          </span>
+          <%= value %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <p class="font-mono text-xs text-ink-3 dark:text-ink-3-on-dark"><%= nct_id %></p>
+</div>
