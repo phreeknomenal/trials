@@ -80,50 +80,7 @@
           <%= render Page::Trials::TakingPartComponent.new(study: @study) %>
         </div>
 
-        <div id="locations" class="p-8 border border-line-2 dark:border-line-on-dark rounded-panel">
-          <%= render Typography::HeadingComponent.new(size: :section, text: "Where it takes place") %>
-          <% locations_to_show = @study[:locations_detailed].present? ? sort_locations_near_user(@study[:locations_detailed], @profile) : (@study[:locations] || []).map { |l| { display: l, near_you: false } } %>
-          <% if locations_to_show.any? %>
-            <div class="grid grid-cols-2 mt-4 gap-6">
-              <% locations_to_show.each do |loc| %>
-                <div class="col-span-1 flex items-start gap-1 p-3 border border-line-2 dark:border-line-on-dark rounded-card <%= "ring-2 ring-sky-500 bg-sky-50 dark:bg-navy-900/20" if loc[:near_you] %>">
-                  <div class="mt-0.5">
-                    <%= render Utilities::IconComponent.new("map_pin", size: 5, options: { class: "text-sky-600" }) %>
-                  </div>
-                  <div class="flex flex-col gap-1.5 min-w-0">
-                    <span class="text-ink dark:text-ink-on-dark"><%= loc[:display] %></span>
-                    <% if loc[:near_you] %>
-                      <span class="w-fit inline-flex items-center px-2 py-0.5 rounded-chip text-xs font-medium bg-sky-100 text-sky-800 dark:bg-navy-900/40 dark:text-sky-200">Near you</span>
-                    <% end %>
-                    <%# The board puts Directions on each site. It is a maps
-                        query on the site's own address, which is the one thing
-                        the app can offer here: there is no distance in the data,
-                        so it cannot say how far, only how to get there. %>
-                    <%= link_to "https://www.google.com/maps/search/?api=1&query=#{CGI.escape(loc[:display].to_s)}",
-                          target: "_blank", rel: "noopener",
-                          class: "w-fit inline-flex items-center gap-1 text-xs font-semibold text-sky-600 dark:text-sky-300 hover:underline" do %>
-                      Directions
-                      <%= render Utilities::IconComponent.new("external_link", size: 3) %>
-                    <% end %>
-                  </div>
-                </div>
-              <% end %>
-            </div>
-          <% elsif @study[:locations].present? %>
-            <div class="grid grid-cols-2 mt-4 gap-6">
-              <% @study[:locations].each do |location| %>
-                <div class="col-span-1 flex items-start gap-1 p-3 border border-line-2 dark:border-line-on-dark rounded-card">
-                  <div class="mt-0.5">
-                    <%= render Utilities::IconComponent.new("map_pin", size: 5, options: { class: "text-sky-600" }) %>
-                  </div>
-                  <span class="text-ink dark:text-ink-on-dark"><%= location %></span>
-                </div>
-              <% end %>
-            </div>
-          <% else %>
-            <p class="text-ink-3 dark:text-ink-3-on-dark mt-4">No location information available.</p>
-          <% end %>
-        </div>
+        <%= render Page::Trials::LocationsComponent.new(study: @study, profile: @profile) %>
 
         <!-- Who runs it -->
         <% if who_runs_it %>

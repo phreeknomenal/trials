@@ -98,6 +98,17 @@ RSpec.describe "The study detail page against its board", type: :request do
       expect(response.body).to include("Directions")
     end
 
+    # The component takes the profile, so this proves the wiring rather than the
+    # rendering: signed in, the summary answers "can I get to this" by name.
+    it "tells a signed-in reader how many sites are in their own state" do
+      user = create(:user)
+      user.profile.update!(onboarded: true, state: "Alabama")
+      sign_in user
+      get "/search/#{nct_id}"
+
+      expect(response.body).to match(/(\d+|None) in Alabama\./)
+    end
+
     it "gives the registry id and a way back to the registry record" do
       expect(response.body).to include("Registry ID")
       expect(response.body).to include("clinicaltrials.gov/study/#{nct_id}")

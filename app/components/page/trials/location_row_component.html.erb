@@ -1,0 +1,26 @@
+<li class="flex flex-wrap items-center gap-4 rounded-control border border-line dark:border-line-on-dark p-4">
+  <span class="w-10 h-10 shrink-0 rounded-chip bg-sky-50 dark:bg-navy-900/50 text-navy-600 dark:text-sky-300 flex items-center justify-center">
+    <%= render Utilities::IconComponent.new("map_pin", size: 5) %>
+  </span>
+
+  <div class="grow min-w-0 flex flex-col gap-0.5">
+    <span class="text-body font-semibold text-ink dark:text-ink-on-dark"><%= title %></span>
+    <% if meta.present? %>
+      <span class="text-meta text-ink-3 dark:text-ink-3-on-dark"><%= meta %></span>
+    <% end %>
+  </div>
+
+  <%# Sorting already puts these first and the summary counts them, but neither
+      says where the near ones stop. %>
+  <% if near %>
+    <span class="shrink-0 rounded-chip bg-sky-100 dark:bg-navy-900/60 px-2 py-0.5 text-xs font-semibold text-sky-800 dark:text-sky-200">
+      Near you
+    </span>
+  <% end %>
+
+  <%= link_to directions_url, target: "_blank", rel: "noopener",
+        class: "shrink-0 #{Buttons::ButtonStyles.classes("secondary", size: "px-3 py-1.5 text-meta")}" do %>
+    Directions
+    <%= render Utilities::IconComponent.new("external_link", size: 3) %>
+  <% end %>
+</li>
