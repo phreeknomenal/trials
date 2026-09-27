@@ -28,10 +28,10 @@ class Page::Trials::StudyHeaderComponent < ApplicationComponent
   end
 
   def last_updated_phrase
-    date = parse_date(study[:last_update])
-    return nil if date.nil?
+    date = helpers.registry_date(study[:last_update])
+    return nil if date.blank?
 
-    "Record updated #{date.to_fs(:long)}"
+    "Record updated #{date}"
   end
 
   # The board's facts are a distance, a visit cadence and whether travel is
@@ -80,15 +80,5 @@ class Page::Trials::StudyHeaderComponent < ApplicationComponent
 
   def savable?
     user_signed_in? && nct_id.present? && study[:title].present?
-  end
-
-  private
-
-  def parse_date(value)
-    return nil if value.blank?
-
-    Date.parse(value.to_s)
-  rescue Date::Error
-    nil
   end
 end

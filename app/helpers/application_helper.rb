@@ -87,7 +87,34 @@ module ApplicationHelper
   # paragraphs of prose then arrive as an unbroken wall with no gap anywhere in
   # it, which is most of why the study overview was hard to read.
   def prose_paragraphs(text)
-    text.to_s.split(/\r?\n+/).map(&:strip).reject(&:blank?)
+    registry_text(text).split(/\r?\n+/).map(&:strip).reject(&:blank?)
+  end
+
+  # The registry escapes markdown in its free text, so a criterion reaches the
+  # page as "Age \> 4 weeks \< 2 years" and a dose as "(\> =12y to \<18y)".
+  # Nothing renders that as markdown, so the backslashes are just debris.
+  def registry_text(value)
+    value.to_s.gsub(/\\([<>*_\[\]()#+\-.!`])/, '\1')
+  end
+
+  # A registry date, said the way a person would.
+  #
+  # Half of all studies publish their start and completion dates to the month
+  # only, "2029-09", which Date.parse raises on. Anything rescuing that and
+  # returning nil drops the date silently, and half of all studies is not an
+  # edge case. A month-precision date is said to the month rather than given a
+  # first-of-the-month the registry never claimed.
+  def registry_date(value)
+    text = value.to_s.strip
+    return nil if text.blank?
+
+    case text
+    when /\A(\d{4})-(\d{2})-(\d{2})\z/ then Date.new($1.to_i, $2.to_i, $3.to_i).strftime("%B %-d, %Y")
+    when /\A(\d{4})-(\d{2})\z/ then Date.new($1.to_i, $2.to_i, 1).strftime("%B %Y")
+    when /\A\d{4}\z/ then text
+    end
+  rescue Date::Error
+    nil
   end
 
   # The registry returns its enums shouted: "PHASE2", "INTERVENTIONAL",
