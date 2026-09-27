@@ -161,14 +161,37 @@ class ClinicalTrialClient
     locations_detailed.map { |loc| loc[:display] }
   end
 
+  # The registry publishes eight fields per location and this kept three.
+  #
+  # The board's site row reads "Academic cancer center, Birmingham AL ·
+  # Enrolling now", which needs the facility's own name and that site's own
+  # recruiting status. Both are on 100% of locations and both were dropped, so
+  # the page said "Birmingham, Alabama" and could not say whether that
+  # particular site was still taking people.
+  #
+  # zip and geo_point are captured and not yet read. The registry carries
+  # coordinates on 98% of locations, which is the whole of the distance problem
+  # bar the reader's own position; taking them now costs one fixture recapture
+  # rather than two. Tasks/trials-location-distance.md picks them up.
   def self.extract_locations_detailed(contacts)
     locations = contacts.dig("locations") || []
+
     locations.map do |loc|
       city = loc["city"]
       state = loc["state"]
       country = loc["country"]
-      display = [city, state, country].compact.join(", ")
-      {city: city, state: state, country: country, display: display}
+      geo = loc["geoPoint"]
+
+      {
+        facility: loc["facility"],
+        city: city,
+        state: state,
+        country: country,
+        zip: loc["zip"],
+        status: loc["status"],
+        geo_point: geo && {lat: geo["lat"], lon: geo["lon"]},
+        display: [city, state, country].compact.join(", ")
+      }
     end
   end
 

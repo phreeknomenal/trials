@@ -1,6 +1,6 @@
 {
   "_fixture": {
-    "captured_at": "2026-09-01",
+    "captured_at": "2026-09-27",
     "nct_id": "NCT07102836",
     "covers": "neonatal age range in days (0 Days to 28 Days), RECRUITING, two conditions",
     "source": "https://clinicaltrials.gov/api/v2/studies/NCT07102836"
@@ -19,6 +19,7 @@
     "start_date": "2025-08-07",
     "primary_completion_date": "2026-02-07",
     "completion_date": "2026-05-07",
+    "last_update": "2025-08-05",
     "sponsor": "Quaid-e-Azam Medical College",
     "min_age": "0 Days",
     "max_age": "28 Days",
@@ -44,9 +45,16 @@
     ],
     "locations_detailed": [
       {
+        "facility": "Sadiq Abbasi Hospital, QAMC, Bahawalpur",
         "city": "Bahawalpur",
         "state": "Punjab Province",
         "country": "Pakistan",
+        "zip": "63100",
+        "status": "RECRUITING",
+        "geo_point": {
+          "lat": 29.39779,
+          "lon": 71.6752
+        },
         "display": "Bahawalpur, Punjab Province, Pakistan"
       }
     ],
