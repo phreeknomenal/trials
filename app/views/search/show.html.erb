@@ -55,7 +55,6 @@
 
         <!-- Phase / Status explainer -->
 
-        <!-- Key dates timeline -->
 
         <!-- Eligibility Criteria -->
         <%# The criteria split, which is the payoff for the score on the result
@@ -76,25 +75,6 @@
           study: @study,
           nct_id: @nct_id
         ) %>
-
-        <%# The study's own eligibility text, which is written for clinicians and
-            is long. It stays collapsed under the split rather than above it. %>
-        <% if @study[:inclusion_criteria].present? || @study[:exclusion_criteria].present? %>
-          <div class="mb-8 rounded-panel border border-line dark:border-line-on-dark p-6 lg:p-8">
-            <%= render Typography::HeadingComponent.new(size: :section, text: "The study's own criteria") %>
-            <p class="mt-1 mb-4 text-meta text-ink-3 dark:text-ink-3-on-dark">
-              The registry's wording, unedited. Ages <%= [@study[:min_age], @study[:max_age]].compact.join(" to ").presence || "not stated" %><%= ", #{humanize_registry_value(@study[:sex])}" if @study[:sex].present? %>.
-            </p>
-            <% if @study[:inclusion_criteria].present? %>
-              <%= render Page::DropdownComponent.new(title: "Inclusion criteria", body: @study[:inclusion_criteria]) %>
-            <% end %>
-            <% if @study[:exclusion_criteria].present? %>
-              <div class="mt-3">
-                <%= render Page::DropdownComponent.new(title: "Exclusion criteria", body: @study[:exclusion_criteria]) %>
-              </div>
-            <% end %>
-          </div>
-        <% end %>
 
         <div class="mb-8">
           <%= render Page::Trials::TakingPartComponent.new(study: @study) %>

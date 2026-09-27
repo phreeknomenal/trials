@@ -103,13 +103,6 @@ RSpec.describe "The study detail page", type: :request do
       expect(response.body).to include("Only the study team can confirm")
     end
 
-    it "keeps the registry's own criteria text on the page, collapsed" do
-      get search_path(nct_id)
-
-      expect(response.body).to include("own criteria")
-      expect(response.body).to include("Inclusion criteria")
-    end
-
     # Signed out there is no profile to check against, so there is nothing to
     # split and the section does not render.
     it "is absent signed out" do
