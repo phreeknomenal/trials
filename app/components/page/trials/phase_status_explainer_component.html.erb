@@ -8,14 +8,14 @@
         <li class="flex items-center gap-1">
           <%= render Utilities::IconComponent.new("swatch", size: 6, options: { class: "text-sky-500" }) %>
           <strong class="text-ink-2 dark:text-ink-on-dark">Phase:</strong>
-          <p class="font-body leading-relaxed text-base text-ink-3 dark:text-ink-3-on-dark"><%= phase_explanation %></p>
+          <p class="leading-relaxed text-base text-ink-3 dark:text-ink-3-on-dark"><%= phase_explanation %></p>
         </li>
       <% end %>
       <% if status_explanation.present? %>
         <li class="flex items-center gap-1">
           <%= render Utilities::IconComponent.new("exclamation_triangle", size: 6, options: { class: "text-good" }) %>
           <strong class="text-ink-2 dark:text-ink-on-dark">Status:</strong>
-          <p class="font-body leading-relaxed text-base text-ink-3 dark:text-ink-3-on-dark"><%= status_explanation %></p>
+          <p class="leading-relaxed text-base text-ink-3 dark:text-ink-3-on-dark"><%= status_explanation %></p>
         </li>
       <% end %>
     </ul>

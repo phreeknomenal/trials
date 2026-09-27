@@ -16,11 +16,11 @@
   role="region"
   aria-labelledby="status-message-title"
 >
-  <%= render Typography::HeadingComponent.new(size: :h5, text: "What this means for you") %>
+  <%= render Typography::HeadingComponent.new(size: :section, text: "What this means for you") %>
 
   <% if status_message.present? %>
     <p
-      class="text-ink-2 dark:text-ink-2-on-dark text-base font-body leading-relaxed"
+      class="text-ink-2 dark:text-ink-2-on-dark text-base leading-relaxed"
       aria-label="<%= aria_label %>"
     >
       <%= status_message %>

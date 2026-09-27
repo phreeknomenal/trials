@@ -52,10 +52,33 @@ RSpec.describe "Page width", type: :request do
   # The point of the module. A page that hand-writes its own width is how this
   # drifted the first time, and it drifts silently.
   describe "no page writes its own width" do
-    # Written out literally rather than read from the constant, so that changing
-    # the constant does not quietly change what this forbids.
+    # A range rather than the two values that had drifted when this was written.
+    # Listing 24 and 36 let lg:px-44 straight through, and that is exactly what
+    # the study detail page and the comparison page were using: their content
+    # sat 80px inboard of the header and footer above and below it, which is the
+    # bug this file exists to prevent and it went unreported for four PRs.
+    #
+    # Anything from 24 up is a page gutter. Smaller values are panel padding —
+    # the contact form's split layout uses lg:px-16 inside a panel — so the
+    # floor is what separates the two, not a list of known offenders.
+    let(:page_gutter) { /class="[^"]*\blg:px-(2[4-9]|[3-9]\d|\d{3,})\b/ }
+
     it "has no template hand-writing the page gutters" do
-      offenders = page_templates.select { |p| File.read(p).match?(/class="[^"]*\blg:px-(24|36)\b/) }
+      offenders = page_templates.select { |p| File.read(p).match?(page_gutter) }
+        .map { |p| p.sub("#{Rails.root}/", "") }
+
+      expect(offenders).to be_empty,
+        "#{offenders.join(", ")} set their own page gutters. Use Layout::PageWidth::CONTAINER."
+    end
+
+    # Components draw page sections too. Page::Trials::HeaderComponent carried
+    # its own lg:px-44 and was rendered nowhere at all, so neither the spec nor
+    # the page could have caught it.
+    it "has no component hand-writing the page gutters" do
+      components = Dir.glob(Rails.root.join("app/components/**/*.{rb,erb}"))
+        .reject { |p| p.include?("/admin/") || p.include?("page_width.rb") }
+
+      offenders = components.select { |p| File.read(p).match?(page_gutter) }
         .map { |p| p.sub("#{Rails.root}/", "") }
 
       expect(offenders).to be_empty,
@@ -92,6 +115,20 @@ RSpec.describe "Page width", type: :request do
         # means something on this page is not using it.
         expect(response.body.scan("lg:px-24").count).to be >= 3
       end
+    end
+
+    # Not in the list above until now, which is how it kept its own gutters for
+    # four PRs while every section inside it was rebuilt against the board.
+    it "renders a study inside the same container as the header and footer" do
+      nct_id = TrialFixtures.fixture_ids.first
+      allow(ClinicalTrialClient).to receive(:get_study)
+        .with(nct_id).and_return(TrialFixtures.trial_fixture(nct_id))
+
+      get "/search/#{nct_id}"
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body.scan("lg:px-24").count).to be >= 3
+      expect(response.body).not_to include("lg:px-44")
     end
   end
 end

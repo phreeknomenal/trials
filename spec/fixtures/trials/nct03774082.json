@@ -1,6 +1,6 @@
 {
   "_fixture": {
-    "captured_at": "2026-09-01",
+    "captured_at": "2026-09-27",
     "nct_id": "NCT03774082",
     "covers": "day-based minimum (28 Days), COMPLETED, twenty-one locations",
     "source": "https://clinicaltrials.gov/api/v2/studies/NCT03774082"
@@ -18,6 +18,7 @@
     "start_date": "2020-05-20",
     "primary_completion_date": "2022-02-25",
     "completion_date": "2024-08-26",
+    "last_update": "2025-12-11",
     "sponsor": "Novartis Pharmaceuticals",
     "min_age": "28 Days",
     "max_age": "17 Years",
@@ -58,129 +59,273 @@
     ],
     "locations_detailed": [
       {
+        "facility": "Novartis Investigative Site",
         "city": "São Paulo",
         "state": null,
         "country": "Brazil",
+        "zip": "04039 001",
+        "status": null,
+        "geo_point": {
+          "lat": -23.5475,
+          "lon": -46.63611
+        },
         "display": "São Paulo, Brazil"
       },
       {
+        "facility": "Novartis Investigative Site",
         "city": "Toronto",
         "state": "Ontario",
         "country": "Canada",
+        "zip": "M5G 1X8",
+        "status": null,
+        "geo_point": {
+          "lat": 43.70643,
+          "lon": -79.39864
+        },
         "display": "Toronto, Ontario, Canada"
       },
       {
+        "facility": "Novartis Investigative Site",
         "city": "Prague",
         "state": null,
         "country": "Czechia",
+        "zip": "150 06",
+        "status": null,
+        "geo_point": {
+          "lat": 50.08804,
+          "lon": 14.42076
+        },
         "display": "Prague, Czechia"
       },
       {
+        "facility": "Novartis Investigative Site",
         "city": "Tamil Nadu",
         "state": "Chennai",
         "country": "India",
+        "zip": "600035",
+        "status": null,
+        "geo_point": null,
         "display": "Tamil Nadu, Chennai, India"
       },
       {
+        "facility": "Novartis Investigative Site",
         "city": "Pune",
         "state": "Maharashtra",
         "country": "India",
+        "zip": "411004",
+        "status": null,
+        "geo_point": {
+          "lat": 18.51957,
+          "lon": 73.85535
+        },
         "display": "Pune, Maharashtra, India"
       },
       {
+        "facility": "Novartis Investigative Site",
         "city": "Bangalore",
         "state": null,
         "country": "India",
+        "zip": "560099",
+        "status": null,
+        "geo_point": {
+          "lat": 12.97194,
+          "lon": 77.59369
+        },
         "display": "Bangalore, India"
       },
       {
+        "facility": "Novartis Investigative Site",
         "city": "Delhi",
         "state": null,
         "country": "India",
+        "zip": "110 085",
+        "status": null,
+        "geo_point": {
+          "lat": 28.65195,
+          "lon": 77.23149
+        },
         "display": "Delhi, India"
       },
       {
+        "facility": "Novartis Investigative Site",
         "city": "Roma",
         "state": "RM",
         "country": "Italy",
+        "zip": "00165",
+        "status": null,
+        "geo_point": {
+          "lat": 44.99364,
+          "lon": 11.10642
+        },
         "display": "Roma, RM, Italy"
       },
       {
+        "facility": "Novartis Investigative Site",
         "city": "Nagoya",
         "state": "Aichi-ken",
         "country": "Japan",
+        "zip": "466 8560",
+        "status": null,
+        "geo_point": {
+          "lat": 35.18147,
+          "lon": 136.90641
+        },
         "display": "Nagoya, Aichi-ken, Japan"
       },
       {
+        "facility": "Novartis Investigative Site",
         "city": "Saitama",
         "state": null,
         "country": "Japan",
+        "zip": "330 8777",
+        "status": null,
+        "geo_point": {
+          "lat": 35.90807,
+          "lon": 139.65657
+        },
         "display": "Saitama, Japan"
       },
       {
+        "facility": "Novartis Investigative Site",
         "city": "Saint Petersburg",
         "state": null,
         "country": "Russia",
+        "zip": "197022",
+        "status": null,
+        "geo_point": {
+          "lat": 59.93863,
+          "lon": 30.31413
+        },
         "display": "Saint Petersburg, Russia"
       },
       {
+        "facility": "Novartis Investigative Site",
         "city": "Bratislava",
         "state": null,
         "country": "Slovakia",
+        "zip": "833 40",
+        "status": null,
+        "geo_point": {
+          "lat": 48.14816,
+          "lon": 17.10674
+        },
         "display": "Bratislava, Slovakia"
       },
       {
+        "facility": "Novartis Investigative Site",
         "city": "Seoul",
         "state": null,
         "country": "South Korea",
+        "zip": "03080",
+        "status": null,
+        "geo_point": {
+          "lat": 37.566,
+          "lon": 126.9784
+        },
         "display": "Seoul, South Korea"
       },
       {
+        "facility": "Novartis Investigative Site",
         "city": "Seoul",
         "state": null,
         "country": "South Korea",
+        "zip": "05505",
+        "status": null,
+        "geo_point": {
+          "lat": 37.566,
+          "lon": 126.9784
+        },
         "display": "Seoul, South Korea"
       },
       {
+        "facility": "Novartis Investigative Site",
         "city": "Barcelona",
         "state": "Catalonia",
         "country": "Spain",
+        "zip": "08035",
+        "status": null,
+        "geo_point": {
+          "lat": 41.38879,
+          "lon": 2.15899
+        },
         "display": "Barcelona, Catalonia, Spain"
       },
       {
+        "facility": "Novartis Investigative Site",
         "city": "Zurich",
         "state": null,
         "country": "Switzerland",
+        "zip": "CH - 8032",
+        "status": null,
+        "geo_point": {
+          "lat": 47.36667,
+          "lon": 8.55
+        },
         "display": "Zurich, Switzerland"
       },
       {
+        "facility": "Novartis Investigative Site",
         "city": "Taipei",
         "state": null,
         "country": "Taiwan",
+        "zip": "10002",
+        "status": null,
+        "geo_point": {
+          "lat": 25.05306,
+          "lon": 121.52639
+        },
         "display": "Taipei, Taiwan"
       },
       {
+        "facility": "Novartis Investigative Site",
         "city": "Bangkok",
         "state": null,
         "country": "Thailand",
+        "zip": "10400",
+        "status": null,
+        "geo_point": {
+          "lat": 13.75398,
+          "lon": 100.50144
+        },
         "display": "Bangkok, Thailand"
       },
       {
+        "facility": "Novartis Investigative Site",
         "city": "Adana",
         "state": null,
         "country": "Turkey (Türkiye)",
+        "zip": "1330",
+        "status": null,
+        "geo_point": {
+          "lat": 36.98615,
+          "lon": 35.32531
+        },
         "display": "Adana, Turkey (Türkiye)"
       },
       {
+        "facility": "Novartis Investigative Site",
         "city": "Antalya",
         "state": null,
         "country": "Turkey (Türkiye)",
+        "zip": "07000",
+        "status": null,
+        "geo_point": {
+          "lat": 36.90812,
+          "lon": 30.69556
+        },
         "display": "Antalya, Turkey (Türkiye)"
       },
       {
+        "facility": "Novartis Investigative Site",
         "city": "Antalya",
         "state": null,
         "country": "Turkey (Türkiye)",
+        "zip": "07070",
+        "status": null,
+        "geo_point": {
+          "lat": 36.90812,
+          "lon": 30.69556
+        },
         "display": "Antalya, Turkey (Türkiye)"
       }
     ],

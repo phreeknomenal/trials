@@ -49,23 +49,6 @@ module ApplicationHelper
     user_signed_in? && current_user.profile&.onboarded?
   end
 
-  # Sorts trial locations so those near the profile (same state/city) appear first.
-  # Returns array of hashes with :display and :near_you.
-  def sort_locations_near_user(locations_detailed, profile)
-    return [] if locations_detailed.blank?
-
-    profile_state = profile&.state&.to_s&.strip&.upcase
-    profile_city = profile&.city&.to_s&.strip&.downcase
-
-    locations_detailed.map do |loc|
-      state = loc[:state]&.to_s&.strip&.upcase
-      city = loc[:city]&.to_s&.strip&.downcase
-      near_you = (profile_state.present? && state == profile_state) ||
-        (profile_city.present? && profile_state.present? && city == profile_city && state == profile_state)
-      {display: loc[:display], near_you: near_you}
-    end.sort_by { |h| h[:near_you] ? 0 : 1 }
-  end
-
   # Reads Shared::StatusBadgeComponent rather than restating it.
   #
   # This was a second copy of the same seven statuses, written before that
@@ -80,6 +63,41 @@ module ApplicationHelper
     Shared::StatusBadgeComponent::STATUSES
       .fetch(status.to_s, {})
       .fetch(:classes, "bg-surface-2 text-ink-2 dark:bg-surface-2-on-dark dark:text-ink-2-on-dark")
+  end
+
+  # Both the registry and the model that rewrites it separate paragraphs with a
+  # single newline, which simple_format renders as <br> inside one <p>. Four
+  # paragraphs of prose then arrive as an unbroken wall with no gap anywhere in
+  # it, which is most of why the study overview was hard to read.
+  def prose_paragraphs(text)
+    registry_text(text).split(/\r?\n+/).map(&:strip).reject(&:blank?)
+  end
+
+  # The registry escapes markdown in its free text, so a criterion reaches the
+  # page as "Age \> 4 weeks \< 2 years" and a dose as "(\> =12y to \<18y)".
+  # Nothing renders that as markdown, so the backslashes are just debris.
+  def registry_text(value)
+    value.to_s.gsub(/\\([<>*_\[\]()#+\-.!`])/, '\1')
+  end
+
+  # A registry date, said the way a person would.
+  #
+  # Half of all studies publish their start and completion dates to the month
+  # only, "2029-09", which Date.parse raises on. Anything rescuing that and
+  # returning nil drops the date silently, and half of all studies is not an
+  # edge case. A month-precision date is said to the month rather than given a
+  # first-of-the-month the registry never claimed.
+  def registry_date(value)
+    text = value.to_s.strip
+    return nil if text.blank?
+
+    case text
+    when /\A(\d{4})-(\d{2})-(\d{2})\z/ then Date.new($1.to_i, $2.to_i, $3.to_i).strftime("%B %-d, %Y")
+    when /\A(\d{4})-(\d{2})\z/ then Date.new($1.to_i, $2.to_i, 1).strftime("%B %Y")
+    when /\A\d{4}\z/ then text
+    end
+  rescue Date::Error
+    nil
   end
 
   # The registry returns its enums shouted: "PHASE2", "INTERVENTIONAL",

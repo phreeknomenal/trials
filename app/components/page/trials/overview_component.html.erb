@@ -1,47 +1,45 @@
-<div id="study-overview" class="border border-line-2 dark:border-line-on-dark rounded-panel p-8">
-  <%= render Typography::HeadingComponent.new(size: :h5, text: "What this study is testing") %>
-
-  <%# Said out loud, because the order is the point: the registry's own words are
-      what you read, and the plain-language rewrite below is something you ask
-      for. Without the label the two blocks look interchangeable. %>
-  <p class="mt-1 text-xs font-bold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">
-    From the registry record
-  </p>
-
-  <div class="text-ink-3 dark:text-ink-3-on-dark font-body max-w-none mt-3">
-    <%= simple_format(summary) %>
+<div id="study-overview" class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-6 lg:p-8 flex flex-col gap-5">
+  <%# Said out loud, and on the heading's own line as the board has it, because
+      the order is the point: the registry's own words are what you read, and the
+      plain-language rewrite below is something you ask for. Without the label
+      the two blocks look interchangeable. %>
+  <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+    <%= render Typography::HeadingComponent.new(size: :section, text: "What this study is testing") %>
+    <p class="text-xs font-bold uppercase tracking-[0.09em] text-ink-3 dark:text-ink-3-on-dark">
+      From the registry record
+    </p>
   </div>
 
+  <%# Unedited and in full, as on the board, rather than the detailed description
+      sitting behind the dropdown it used to. Its density is the argument for the
+      rewrite offered underneath it, and a reader who never opens the dropdown
+      never sees why that offer is there. Most run to a couple of paragraphs; the
+      long tail is exactly the case the rewrite exists for. %>
+  <div class="flex flex-col gap-4 text-body text-ink-2 dark:text-ink-2-on-dark">
+    <% (helpers.prose_paragraphs(summary) + helpers.prose_paragraphs(detailed_description)).each do |paragraph| %>
+      <p><%= paragraph %></p>
+    <% end %>
+  </div>
+
+  <%# The board's chip row. Its own chips are the study's design, which the
+      registry does give but which "What taking part involves" already says in
+      sentences further down the page. These are the conditions, which are the
+      answer to the heading and appear nowhere else on it. %>
+  <% if conditions.present? %>
+    <ul class="flex flex-wrap gap-2" aria-label="Conditions this study covers">
+      <% conditions.each do |condition| %>
+        <li class="rounded-card bg-surface-2 dark:bg-navy-900/40 px-3 py-1.5 text-sm text-ink-2 dark:text-ink-2-on-dark">
+          <%= condition %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <%# After the source text, not before it. This used to render between the
+      summary and the detailed description, so the rewrite appeared above half
+      of what it was rewriting. %>
   <%= helpers.turbo_stream_from "readable_study_summary_#{nct_id}" %>
-  <div id="readable-study-summary-content-<%= nct_id %>" class="mt-6">
+  <div id="readable-study-summary-content-<%= nct_id %>">
     <%= helpers.render partial: "shared/readable_study_summary_content", locals: {record: readable_summary, nct_id: nct_id, source_present: source_present?} %>
   </div>
-
-  <% if detailed_description.present? %>
-    <div class="mt-4">
-      <%= render Page::DropdownComponent.new(
-        title: "Detailed Description",
-        body: detailed_description
-      ) %>
-    </div>
-  <% end %>
-
-  <% if conditions.present? %>
-    <div class="flex gap-2 items-start mt-6">
-      <div class="w-5 h-5 mt-[3px] shrink-0 text-sky-600">
-        <%= render Utilities::IconComponent.new("microscope", size: 5) %>
-      </div>
-      <div class="">
-        <%= render Typography::HeadingComponent.new(size: :h7, text: "Conditions") %>
-        <div class="mt-2 flex flex-wrap gap-2">
-          <% conditions.each do |condition| %>
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-info/10 text-info dark:bg-info-on-dark/30 dark:text-info-on-dark">
-              <%= condition %>
-            </span>
-          <% end %>
-        </div>
-      </div>
-    </div>
-  <% end %>
 </div>
-

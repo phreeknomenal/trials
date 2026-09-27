@@ -1,69 +1,85 @@
-<div id="taking-part" class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-6 lg:p-8">
-  <h2 class="text-xl font-bold tracking-tight text-ink dark:text-ink-on-dark mb-1">What taking part involves</h2>
-  <p class="text-sm text-ink-3 dark:text-ink-3-on-dark mb-6">
-    From the registry record. The study team will walk you through the detail before you agree to anything.
-  </p>
+<div id="taking-part" class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-6 lg:p-8 flex flex-col gap-4">
+  <%= render Typography::HeadingComponent.new(size: :section, text: "What taking part involves") %>
 
-  <div class="flex flex-col gap-6">
-    <% if interventions.any? %>
-      <section>
-        <h3 class="text-sm font-bold text-ink dark:text-ink-2-on-dark mb-2">What you would receive</h3>
-        <ul class="flex flex-col gap-2">
-          <% interventions.each do |intervention| %>
-            <li class="rounded-card border border-line dark:border-line-on-dark p-3">
-              <p class="text-sm font-semibold text-ink dark:text-ink-2-on-dark">
-                <%= intervention[:name] %>
-                <% if intervention[:type].present? %>
-                  <span class="ml-1 font-normal text-ink-3 dark:text-ink-3-on-dark">· <%= humanize_registry_value(intervention[:type]) %></span>
+  <%# The board's timeline. Its own stages are a screening visit, a daily
+      tablet, clinic every three weeks and scans every twelve; the registry
+      publishes none of that. These are the four things it does give that
+      happen in an order, so the form is the board's and the content is real. %>
+  <% if stages.any? %>
+    <ol class="flex flex-col">
+      <% stages.each_with_index do |stage, index| %>
+        <% last = (index == stages.length - 1) %>
+        <li class="flex gap-4">
+          <div class="flex flex-col items-center w-3.5 shrink-0" aria-hidden="true">
+            <%# The first is filled: it is where you join. %>
+            <span class="w-2.5 h-2.5 rounded-full <%= (index == 0) ? "bg-navy-600 dark:bg-sky-400" : "border-2 border-line-2 dark:border-line-2-on-dark" %>"></span>
+            <% unless last %>
+              <span class="grow w-0.5 bg-line dark:bg-line-on-dark"></span>
+            <% end %>
+          </div>
+
+          <div class="<%= last ? "" : "pb-5" %> flex flex-col gap-1 min-w-0">
+            <span class="text-body font-semibold text-ink dark:text-ink-on-dark"><%= stage[:label] %></span>
+
+            <% if stage[:detail].present? %>
+              <span class="text-meta text-ink-3 dark:text-ink-3-on-dark"><%= stage[:detail] %></span>
+            <% end %>
+
+            <%# Interventions carry their own names and the registry's own
+                description, which is more than fits one line of meta text. %>
+            <% if stage[:interventions].present? %>
+              <ul class="flex flex-col gap-1.5">
+                <% stage[:interventions].each do |intervention| %>
+                  <li class="text-meta text-ink-3 dark:text-ink-3-on-dark">
+                    <span class="font-semibold text-ink-2 dark:text-ink-2-on-dark"><%= intervention[:name] %></span>
+                    <% if intervention[:type].present? %>
+                      · <%= humanize_registry_value(intervention[:type]) %>
+                    <% end %>
+                    <% if intervention[:description].present? %>
+                      <span class="block"><%= registry_text(intervention[:description]) %></span>
+                    <% end %>
+                  </li>
                 <% end %>
-              </p>
-              <% if intervention[:description].present? %>
-                <p class="text-sm text-ink-3 dark:text-ink-3-on-dark mt-1 leading-relaxed"><%= intervention[:description] %></p>
-              <% end %>
-            </li>
-          <% end %>
-        </ul>
-      </section>
-    <% end %>
+              </ul>
+            <% end %>
 
-    <% if design_rows.any? %>
-      <section>
-        <h3 class="text-sm font-bold text-ink dark:text-ink-2-on-dark mb-2">How the study is run</h3>
-        <dl class="flex flex-col gap-2">
-          <% design_rows.each do |label, value| %>
-            <div class="flex flex-col sm:flex-row sm:gap-3 rounded-card border border-line dark:border-line-on-dark p-3">
-              <dt class="text-sm text-ink-3 dark:text-ink-3-on-dark sm:w-[220px] shrink-0"><%= label %></dt>
-              <dd class="text-sm font-semibold text-ink dark:text-ink-2-on-dark"><%= value %></dd>
-            </div>
-          <% end %>
-        </dl>
-      </section>
-    <% end %>
+            <% if stage[:aside].present? %>
+              <span class="text-xs text-ink-3 dark:text-ink-3-on-dark"><%= stage[:aside] %></span>
+            <% end %>
+          </div>
+        </li>
+      <% end %>
+    </ol>
+  <% end %>
 
-    <% if time_frames.any? %>
-      <section>
-        <h3 class="text-sm font-bold text-ink dark:text-ink-2-on-dark mb-2">How long they follow you</h3>
-        <%# The study's own words, quoted rather than parsed into a duration the
-            app would be inventing. %>
-        <ul class="flex flex-col gap-2">
-          <% time_frames.each do |frame| %>
-            <li class="flex items-start gap-2 text-sm text-ink-2 dark:text-ink-2-on-dark">
-              <span class="shrink-0 mt-0.5 text-ink-3 dark:text-ink-3-on-dark">
-                <%= render Utilities::IconComponent.new("calendar", size: 4) %>
-              </span>
-              <span><%= frame %></span>
-            </li>
-          <% end %>
-        </ul>
-      </section>
-    <% end %>
+  <%# Not stages. These describe the study's shape rather than what happens to
+      you, so they read as facts under the timeline rather than steps in it. %>
+  <% if structure_rows.any? || enrollment.present? %>
+    <dl class="flex flex-col gap-1.5 border-t border-line dark:border-line-on-dark pt-4">
+      <% structure_rows.each do |label, value| %>
+        <div class="flex flex-wrap gap-x-2 text-meta">
+          <dt class="text-ink-3 dark:text-ink-3-on-dark"><%= label %></dt>
+          <dd class="font-semibold text-ink-2 dark:text-ink-2-on-dark"><%= value %></dd>
+        </div>
+      <% end %>
 
-    <% if enrollment.present? %>
-      <p class="text-sm text-ink-3 dark:text-ink-3-on-dark"><%= enrollment %></p>
-    <% end %>
+      <% if enrollment.present? %>
+        <div class="flex flex-wrap gap-x-2 text-meta">
+          <dt class="text-ink-3 dark:text-ink-3-on-dark">How many take part</dt>
+          <dd class="font-semibold text-ink-2 dark:text-ink-2-on-dark"><%= enrollment %></dd>
+        </div>
+      <% end %>
+    </dl>
+  <% end %>
 
-    <p class="rounded-card bg-surface-2 dark:bg-surface-2-on-dark p-3 text-sm text-ink-2 dark:text-ink-2-on-dark leading-relaxed">
+  <%# On the board, and true of every study, which is why it is stated rather
+      than left to the consent form nobody has read yet. %>
+  <div class="flex gap-2.5 items-start rounded-control bg-surface-2 dark:bg-surface-2-on-dark p-3.5">
+    <span class="shrink-0 mt-px text-ink-3 dark:text-ink-3-on-dark">
+      <%= render Utilities::IconComponent.new("info_circle", size: 4) %>
+    </span>
+    <span class="text-meta text-ink-3 dark:text-ink-3-on-dark">
       You can leave a study at any point, for any reason, and it does not affect your regular care.
-    </p>
+    </span>
   </div>
 </div>

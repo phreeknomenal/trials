@@ -69,6 +69,16 @@ module TrialStatus
     ACCEPTING.include?(normalize(value))
   end
 
+  # The registry's own spelling is an enum, NOT_YET_RECRUITING. Dropped into a
+  # sentence for a patient to read it shouts in a vocabulary they did not ask
+  # for, which is how it reached the eligibility checklist.
+  def label(value)
+    normalized = normalize(value)
+    return nil if normalized.blank?
+
+    normalized.tr("_", " ").upcase_first
+  end
+
   # The value for `filter.overallStatus`. The API ORs pipe-separated values, and
   # wants the registry's own shouted spelling.
   def registry_filter

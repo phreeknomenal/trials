@@ -1,0 +1,35 @@
+<div id="locations" class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-6 lg:p-8 flex flex-col gap-4">
+  <%= render Typography::HeadingComponent.new(size: :section, text: "Where it takes place") %>
+
+  <%# The answer before the list: whether this is reachable at all. With 21
+      rows the reader should not have to count them to find that out. %>
+  <% if summary.present? %>
+    <p class="text-meta text-ink-3 dark:text-ink-3-on-dark"><%= summary %></p>
+  <% end %>
+
+  <ul class="flex flex-col gap-3">
+    <% visible.each do |location| %>
+      <%= render Page::Trials::LocationRowComponent.new(location: location, near: near?(location), lead_with_place: repeated_facility?(location)) %>
+    <% end %>
+  </ul>
+
+  <%# The tail. p90 is 18 sites and the longest seen was 413, so the rest go
+      behind a disclosure rather than off the bottom of the page. %>
+  <% if hidden? %>
+    <details class="group">
+      <summary class="cursor-pointer list-none inline-flex items-center gap-2 text-meta font-semibold text-sky-700 dark:text-sky-300 rounded-nav focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+        <span class="transition-transform group-open:rotate-180">
+          <%= render Utilities::IconComponent.new("chevron_down", size: 4) %>
+        </span>
+        <span class="group-open:hidden">Show the other <%= pluralize(hidden.length, "site") %></span>
+        <span class="hidden group-open:inline">Hide the other <%= hidden.length %></span>
+      </summary>
+
+      <ul class="flex flex-col gap-3 pt-3">
+        <% hidden.each do |location| %>
+          <%= render Page::Trials::LocationRowComponent.new(location: location, near: near?(location), lead_with_place: repeated_facility?(location)) %>
+        <% end %>
+      </ul>
+    </details>
+  <% end %>
+</div>

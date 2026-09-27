@@ -16,6 +16,12 @@ class Typography::HeadingComponent < ApplicationComponent
 
   def styles
     case size
+    # A page section's heading. The design canvas gives all five of the study
+    # page's sections one class, and the app had them at four different sizes
+    # in three different declarations. Its size, leading and tracking come
+    # from the --text-section token rather than from here.
+    when :section
+      "text-section font-bold"
     when :h2
       "text-3xl lg:text-5xl font-bold"
     when :h3

@@ -1,6 +1,6 @@
 {
   "_fixture": {
-    "captured_at": "2026-09-01",
+    "captured_at": "2026-09-27",
     "nct_id": "NCT02657837",
     "covers": "four conditions, UNKNOWN status, month-based minimum (30 Months)",
     "source": "https://clinicaltrials.gov/api/v2/studies/NCT02657837"
@@ -21,6 +21,7 @@
     "start_date": "2016-01",
     "primary_completion_date": "2024-12-01",
     "completion_date": "2024-12-01",
+    "last_update": "2023-10-23",
     "sponsor": "The Hospital for Sick Children",
     "min_age": "30 Months",
     "max_age": "30 Years",
@@ -35,9 +36,16 @@
     ],
     "locations_detailed": [
       {
+        "facility": "The Hospital for Sick Children",
         "city": "Toronto",
         "state": "Ontario",
         "country": "Canada",
+        "zip": "M5G 1X8",
+        "status": "RECRUITING",
+        "geo_point": {
+          "lat": 43.70643,
+          "lon": -79.39864
+        },
         "display": "Toronto, Ontario, Canada"
       }
     ],
