@@ -13,7 +13,15 @@ module Admin
       @profiles_onboarded = Profile.where(onboarded: true).count
 
       @saved_trials_total = SavedTrial.count
+      @saved_trials_users = SavedTrial.distinct.count(:user_id)
+
+      # Ordered by count, as the board has it. The order is the story: the
+      # pipeline falls away from interested to enrolled, and sorting by status
+      # name hid that behind the alphabet.
       @saved_trials_by_status = SavedTrial.group(:status).count
+        .sort_by { |_status, count| -count }
+        .to_h
+        .transform_keys { |status| status.to_s.tr("_", " ").upcase_first }
 
       @summaries_by_status = ReadableStudySummary.group(:status).count
       @summaries_failed = ReadableStudySummary.failed.count
@@ -24,6 +32,7 @@ module Admin
       @testimonials_published = Testimonial.published.count
 
       @signups_by_day = signups_by_day
+      @signups_in_window = @signups_by_day.values.sum
     end
 
     private

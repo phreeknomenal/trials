@@ -24,7 +24,9 @@ RSpec.describe Admin::BarChartComponent, type: :component do
     it "renders a row per entry" do
       html = render_inline(component).to_html
 
-      expect(html).to include("a", "b", "width: 100%", "width: 50%")
+      # max() rather than a bare percentage, so a zero keeps a hairline and a
+      # day with no signups reads as a day with no signups.
+      expect(html).to include("a", "b", "width: max(2px, 100%)", "width: max(2px, 50%)")
     end
   end
 
