@@ -4,14 +4,13 @@ module Admin
 
     def index
       @testimonials = policy_scope(Testimonial).ordered
+      @testimonial ||= Testimonial.new
       authorize Testimonial
     end
 
-    def new
-      @testimonial = Testimonial.new
-      authorize @testimonial
-    end
-
+    # The board puts the new form beside the list rather than on a page of its
+    # own, so a rejected create renders the list again with the form holding its
+    # errors. There is no separate new page to fall back to.
     def create
       @testimonial = Testimonial.new(testimonial_params)
       authorize @testimonial
@@ -19,7 +18,8 @@ module Admin
       if @testimonial.save
         redirect_to admin_testimonials_path, notice: "Testimonial created."
       else
-        render :new, status: :unprocessable_content
+        @testimonials = policy_scope(Testimonial).ordered
+        render :index, status: :unprocessable_content
       end
     end
 

@@ -1,15 +1,20 @@
-<div class="px-5 lg:px-12 py-10">
-  <div class="flex items-center justify-between mb-6">
-    <div>
-      <h1 class="text-2xl font-bold text-ink dark:text-ink-on-dark">Testimonials</h1>
-      <p class="mt-1 text-sm text-ink-3 dark:text-ink-3-on-dark">
-        <%= pluralize(@testimonials.size, "testimonial") %> &middot;
+<%# Two columns, per the board: the list on the left and the new testimonial
+    beside it rather than on a page of its own. What is currently public is the
+    thing this screen exists to answer, so it is said before the table. %>
+<div class="px-5 lg:px-12 py-10 flex flex-col gap-6 xl:flex-row xl:items-start">
+
+  <div class="grow min-w-0 flex flex-col gap-4">
+    <div class="flex flex-col gap-1">
+      <h1 class="font-primary text-2xl font-bold tracking-tight text-ink dark:text-ink-on-dark">Testimonials</h1>
+      <p class="text-meta text-ink-3 dark:text-ink-3-on-dark">
+        <%= pluralize(@testimonials.size, "testimonial") %> on file &middot;
         <%= @testimonials.count(&:published?) %> published &middot;
-        <%= @testimonials.count(&:placeholder?) %> seeded placeholder
+        <%= @testimonials.count(&:placeholder?) %> seeded
       </p>
-      <%# Which of these a visitor actually sees was not stated anywhere, which is
-          how ten seeded quotes stayed on the landing page unnoticed. %>
-      <p class="mt-1 text-sm text-ink-2 dark:text-ink-2-on-dark">
+
+      <%# Which of these a visitor actually sees was not stated anywhere, which
+          is how ten seeded quotes stayed on the landing page unnoticed. %>
+      <p class="text-meta text-ink-2 dark:text-ink-2-on-dark">
         <% live_count = [@testimonials.count { |t| t.published? && !t.placeholder? }, PublicController::TESTIMONIAL_COUNT].min %>
         <%= pluralize(live_count, "quote") %> showing on the landing page.
         <% held_back = @testimonials.count(&:placeholder?) %>
@@ -18,64 +23,99 @@
         <% end %>
       </p>
     </div>
-    <%= link_to "New testimonial", new_admin_testimonial_path,
-          class: "inline-flex items-center px-4 py-2 rounded-control text-sm font-medium bg-navy-600 text-white hover:bg-navy-700" %>
+
+    <% if @testimonials.any? %>
+      <div class="overflow-x-auto rounded-panel border border-line dark:border-line-on-dark">
+        <table class="w-full">
+          <thead class="bg-surface-2 dark:bg-surface-2-on-dark text-left">
+            <tr>
+              <% ["#", "Author", "Quote", "Status", ""].each do |heading| %>
+                <th class="px-4 py-3 text-xs font-bold uppercase tracking-[0.07em] text-ink-3 dark:text-ink-3-on-dark">
+                  <%= heading %>
+                </th>
+              <% end %>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-line dark:divide-line-on-dark">
+            <% @testimonials.each do |testimonial| %>
+              <tr class="<%= "bg-warn/5 dark:bg-warn-on-dark/10" if testimonial.placeholder? %>">
+                <td class="px-4 py-3 text-meta font-bold tabular-nums text-ink-3 dark:text-ink-3-on-dark">
+                  <%= testimonial.position %>
+                </td>
+
+                <%# The avatar is on the board and the record already carries
+                    one. Without it a row of names says nothing about whether a
+                    photo is going out with the quote. %>
+                <td class="px-4 py-3">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 shrink-0">
+                      <%= render Utilities::AvatarComponent.new(
+                            avatar: testimonial.avatar, initials: testimonial.initials, size: 32
+                          ) %>
+                    </div>
+                    <div class="flex flex-col min-w-0">
+                      <span class="text-meta font-bold text-ink dark:text-ink-on-dark truncate">
+                        <%= testimonial.author_name %>
+                      </span>
+                      <span class="text-xs text-ink-3 dark:text-ink-3-on-dark truncate">
+                        <%= testimonial.author_role %>
+                      </span>
+                    </div>
+                  </div>
+                </td>
+
+                <td class="px-4 py-3 text-meta text-ink-2 dark:text-ink-2-on-dark max-w-md">
+                  <%= truncate(testimonial.quote, length: 90) %>
+                </td>
+
+                <td class="px-4 py-3">
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold <%= testimonial.published? ? "bg-good/12 text-good dark:bg-good-on-dark/20 dark:text-good-on-dark" : "bg-surface-2 text-ink-3 dark:bg-surface-2-on-dark dark:text-ink-3-on-dark" %>">
+                      <%= testimonial.published? ? "Published" : "Draft" %>
+                    </span>
+                    <% if testimonial.placeholder? %>
+                      <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-warn/12 text-warn dark:bg-warn-on-dark/20 dark:text-warn-on-dark"
+                            title="Seeded content. Deleting it is temporary — the next deploy recreates it.">Seeded</span>
+                    <% end %>
+                  </div>
+                </td>
+
+                <td class="px-4 py-3 text-right whitespace-nowrap">
+                  <%# IconComponent renders its svg aria-hidden, so the accessible
+                      name has to live on the control itself. %>
+                  <div class="flex items-center justify-end gap-1">
+                    <%= link_to edit_admin_testimonial_path(testimonial),
+                          class: "p-2 rounded-flash text-ink-2 dark:text-ink-2-on-dark hover:bg-surface-2 dark:hover:bg-surface-2-on-dark transition-colors",
+                          title: "Edit", "aria-label": "Edit testimonial from #{testimonial.author_name}" do %>
+                      <%= render Utilities::IconComponent.new("pencil", size: 5) %>
+                    <% end %>
+
+                    <%= button_to admin_testimonial_path(testimonial), method: :delete,
+                          form: {data: {turbo_confirm: testimonial.placeholder? ? "This is seeded placeholder content. Deleting it is temporary — the next deploy will recreate it. Continue?" : "Delete this testimonial?"}, class: "inline"},
+                          class: "p-2 rounded-flash text-crit dark:text-crit-on-dark hover:bg-surface-2 dark:hover:bg-surface-2-on-dark cursor-pointer transition-colors",
+                          title: "Delete", "aria-label": "Delete testimonial from #{testimonial.author_name}" do %>
+                      <%= render Utilities::IconComponent.new("trash", size: 5) %>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="text-meta text-ink-3 dark:text-ink-3-on-dark">No testimonials yet.</p>
+    <% end %>
   </div>
 
-  <% if @testimonials.any? %>
-    <div class="overflow-x-auto border border-line dark:border-line-on-dark rounded-panel">
-      <table class="w-full text-sm">
-        <thead class="bg-surface-2 dark:bg-surface-on-dark/50 text-left">
-          <tr>
-            <th class="px-4 py-3 font-semibold text-ink-2 dark:text-ink-2-on-dark">#</th>
-            <th class="px-4 py-3 font-semibold text-ink-2 dark:text-ink-2-on-dark">Author</th>
-            <th class="px-4 py-3 font-semibold text-ink-2 dark:text-ink-2-on-dark">Quote</th>
-            <th class="px-4 py-3 font-semibold text-ink-2 dark:text-ink-2-on-dark">Status</th>
-            <th class="px-4 py-3"></th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-line dark:divide-line-on-dark">
-          <% @testimonials.each do |testimonial| %>
-            <tr>
-              <td class="px-4 py-3 text-ink-3 dark:text-ink-4-on-dark"><%= testimonial.position %></td>
-              <td class="px-4 py-3">
-                <div class="font-medium text-ink dark:text-ink-on-dark"><%= testimonial.author_name %></div>
-                <div class="text-ink-3 dark:text-ink-4-on-dark"><%= testimonial.author_role %></div>
-              </td>
-              <td class="px-4 py-3 text-ink-2 dark:text-ink-2-on-dark max-w-md"><%= truncate(testimonial.quote, length: 90) %></td>
-              <td class="px-4 py-3">
-                <span class="inline-block px-2 py-0.5 rounded-chip text-xs font-medium <%= testimonial.published? ? "bg-good/10 text-good dark:bg-good-on-dark/40 dark:text-good-on-dark" : "bg-surface-2 text-ink-3 dark:bg-surface-on-dark dark:text-ink-3-on-dark" %>">
-                  <%= testimonial.published? ? "Published" : "Draft" %>
-                </span>
-                <% if testimonial.placeholder? %>
-                  <span class="ml-1 inline-block px-2 py-0.5 rounded-chip text-xs font-medium bg-warn/10 text-warn dark:bg-warn-on-dark/40 dark:text-warn-on-dark"
-                        title="Seeded content. Deleting it is temporary — the next deploy recreates it.">Seeded</span>
-                <% end %>
-              </td>
-              <td class="px-4 py-3 text-right whitespace-nowrap">
-                <%# IconComponent renders its svg aria-hidden, so the accessible name
-                    has to live on the control itself. %>
-                <div class="flex items-center justify-end gap-1">
-                  <%= link_to edit_admin_testimonial_path(testimonial),
-                        class: "p-2 rounded-flash text-warn hover:text-warn dark:text-warn-on-dark dark:hover:text-warn-on-dark hover:bg-surface-2 dark:hover:bg-surface-on-dark transition-colors",
-                        title: "Edit", "aria-label": "Edit testimonial from #{testimonial.author_name}" do %>
-                    <%= render Utilities::IconComponent.new("pencil", size: 5) %>
-                  <% end %>
+  <aside class="w-full xl:w-[420px] shrink-0 flex flex-col gap-3">
+    <p class="text-xs font-bold uppercase tracking-[0.09em] text-ink-3 dark:text-ink-3-on-dark">
+      New testimonial
+    </p>
 
-                  <%= button_to admin_testimonial_path(testimonial), method: :delete,
-                        form: {data: {turbo_confirm: testimonial.placeholder? ? "This is seeded placeholder content. Deleting it is temporary — the next deploy will recreate it. Continue?" : "Delete this testimonial?"}, class: "inline"},
-                        class: "p-2 rounded-flash text-crit hover:text-crit dark:text-crit-on-dark dark:hover:text-crit-on-dark hover:bg-surface-2 dark:hover:bg-surface-on-dark cursor-pointer transition-colors",
-                        title: "Delete", "aria-label": "Delete testimonial from #{testimonial.author_name}" do %>
-                    <%= render Utilities::IconComponent.new("trash", size: 5) %>
-                  <% end %>
-                </div>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+    <div class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-5">
+      <%= render "form", testimonial: @testimonial, compact: true %>
     </div>
-  <% else %>
-    <p class="text-ink-3 dark:text-ink-3-on-dark">No testimonials yet.</p>
-  <% end %>
+  </aside>
 </div>

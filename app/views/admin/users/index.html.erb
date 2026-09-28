@@ -1,40 +1,89 @@
-<div class="px-5 lg:px-12 py-10">
-  <div class="mb-6">
-    <h1 class="text-2xl font-bold text-ink dark:text-ink-on-dark">Users</h1>
-    <p class="mt-1 text-sm text-ink-3 dark:text-ink-3-on-dark">
-      <%= pluralize(@pagy.count, "user") %> &middot; <%= User.staff.count %> staff &middot; read-only
-    </p>
+<div class="px-5 lg:px-12 py-10 flex flex-col gap-5">
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <div class="flex flex-col gap-1">
+      <h1 class="font-primary text-2xl font-bold tracking-tight text-ink dark:text-ink-on-dark">Users</h1>
+      <p class="text-meta text-ink-3 dark:text-ink-3-on-dark">
+        <%= pluralize(@pagy.count, "account") %> &middot; <%= User.staff.count %> staff &middot; read-only, by design
+      </p>
+    </div>
+
+    <%# On the board, and worth saying out loud: the screen has no edit control
+        because the decision was that it should not have one, not because nobody
+        built it yet. %>
+    <span class="inline-flex items-center gap-2 rounded-control border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark px-3.5 py-2">
+      <span class="text-ink-3 dark:text-ink-3-on-dark">
+        <%= render Utilities::IconComponent.new("shield_check", size: 4) %>
+      </span>
+      <span class="text-xs font-semibold text-ink-2 dark:text-ink-2-on-dark">
+        No edit, suspend or impersonate from here
+      </span>
+    </span>
   </div>
 
+  <%# One measure at three stages, so the rows are labelled and counted and the
+      bars carry no second encoding. %>
+  <section class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-5 flex flex-col gap-3.5">
+    <div class="flex flex-wrap items-baseline justify-between gap-2">
+      <h2 class="font-primary text-body font-bold text-ink dark:text-ink-on-dark">How far accounts get</h2>
+      <span class="text-xs text-ink-3 dark:text-ink-3-on-dark">
+        Profile state across all <%= number_with_delimiter(@pagy.count) %> accounts
+      </span>
+    </div>
+
+    <%= render Admin::BarChartComponent.new(series: @funnel, empty_message: "No accounts yet.") %>
+  </section>
+
   <div class="overflow-x-auto border border-line dark:border-line-on-dark rounded-panel">
-    <table class="w-full text-sm">
-      <thead class="bg-surface-2 dark:bg-surface-on-dark/50 text-left">
+    <table class="w-full">
+      <thead class="bg-surface-2 dark:bg-surface-2-on-dark text-left">
         <tr>
-          <th class="px-4 py-3 font-semibold text-ink-2 dark:text-ink-2-on-dark">Email</th>
-          <th class="px-4 py-3 font-semibold text-ink-2 dark:text-ink-2-on-dark">Role</th>
-          <th class="px-4 py-3 font-semibold text-ink-2 dark:text-ink-2-on-dark">Profile</th>
-          <th class="px-4 py-3 font-semibold text-ink-2 dark:text-ink-2-on-dark">Joined</th>
+          <% ["Email", "Role", "Profile", "Joined"].each do |heading| %>
+            <th class="px-4 py-3 text-xs font-bold uppercase tracking-[0.07em] text-ink-3 dark:text-ink-3-on-dark">
+              <%= heading %>
+            </th>
+          <% end %>
         </tr>
       </thead>
       <tbody class="divide-y divide-line dark:divide-line-on-dark">
         <% @users.each do |user| %>
           <tr>
-            <td class="px-4 py-3 text-ink dark:text-ink-on-dark"><%= user.email %></td>
+            <%# Monospaced, as on the board. An address is scanned character by
+                character when someone is looking for one. %>
+            <td class="px-4 py-3 font-mono text-xs text-ink dark:text-ink-on-dark"><%= user.email %></td>
+
             <td class="px-4 py-3">
-              <span class="inline-block px-2 py-0.5 rounded-chip text-xs font-medium <%= user.staff? ? "bg-warn/10 text-warn dark:bg-warn-on-dark/40 dark:text-warn-on-dark" : "bg-surface-2 text-ink-3 dark:bg-surface-on-dark dark:text-ink-3-on-dark" %>">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold <%= user.staff? ? "bg-warn/12 text-warn dark:bg-warn-on-dark/20 dark:text-warn-on-dark" : "bg-surface-2 text-ink-3 dark:bg-surface-2-on-dark dark:text-ink-3-on-dark" %>">
+                <% if user.staff? %>
+                  <%= render Utilities::IconComponent.new("shield_check", size: 3) %>
+                <% end %>
                 <%= user.role %>
               </span>
             </td>
-            <td class="px-4 py-3 text-ink-3 dark:text-ink-3-on-dark">
-              <% if user.profile.nil? %>
-                <span class="text-ink-4 dark:text-ink-4-on-dark">none</span>
-              <% elsif user.profile.onboarded? %>
-                Onboarded
+
+            <td class="px-4 py-3">
+              <% profile = user.profile %>
+              <% if profile.nil? %>
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-surface-2 text-ink-4 dark:bg-surface-2-on-dark dark:text-ink-4-on-dark">
+                  No profile
+                </span>
+              <% elsif profile.onboarded? %>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-good/12 text-good dark:bg-good-on-dark/20 dark:text-good-on-dark">
+                  <%= render Utilities::IconComponent.new("check", size: 3) %>
+                  Onboarded
+                </span>
               <% else %>
-                Incomplete
+                <%# The step is on the board and the column already holds it. An
+                    account stuck at step 3 is a different thing from one that
+                    never started, and "Incomplete" alone said neither. %>
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-sky-50 text-sky-700 dark:bg-navy-900/40 dark:text-sky-300">
+                  Incomplete<%= " · step #{profile.onboarding_step}" if profile.onboarding_step.present? %>
+                </span>
               <% end %>
             </td>
-            <td class="px-4 py-3 text-ink-3 dark:text-ink-4-on-dark"><%= user.created_at.to_date.to_fs(:long) %></td>
+
+            <td class="px-4 py-3 text-meta text-ink-3 dark:text-ink-3-on-dark">
+              <%= user.created_at.to_date.to_fs(:long) %>
+            </td>
           </tr>
         <% end %>
       </tbody>
@@ -44,6 +93,12 @@
   <%= render Shared::PaginationComponent.new(
         pagy: @pagy,
         path_for: ->(page) { admin_users_path(page: page) },
-        unit: "user"
+        unit: "account"
       ) %>
+
+  <%# The reason this screen shows what it shows. %>
+  <p class="text-xs text-ink-3 dark:text-ink-3-on-dark">
+    Emails are the only personal data on this page, and there is deliberately no link
+    through to anyone's health profile.
+  </p>
 </div>

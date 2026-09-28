@@ -29,7 +29,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root to: "dashboard#index"
-    resources :testimonials
+    resources :testimonials, except: [:new]
     get "operations", to: "operations#index"
     resources :users, only: [:index]
     resources :contact_messages, only: [:index, :update]
