@@ -1,0 +1,117 @@
+<div data-controller="comparison-filter" class="flex flex-col gap-4">
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <p class="text-meta text-ink-3 dark:text-ink-3-on-dark">
+      <% if rows_that_differ.zero? %>
+        These <%= saved_trials.length %> are the same on every row compared.
+      <% else %>
+        Rows where the <%= saved_trials.length %> differ are marked. Everything else is the same across all of them.
+      <% end %>
+    </p>
+
+    <%# Rendered unchecked, then checked by the controller on connect. With no
+        JavaScript the box and the table agree: everything is shown. A box that
+        renders checked while nothing filters is how a control comes to look
+        broken. %>
+    <% if rows_that_differ.positive? %>
+      <label class="inline-flex items-center gap-2.5 rounded-control border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark px-4 py-2.5 cursor-pointer">
+        <input type="checkbox"
+               data-comparison-filter-target="checkbox"
+               data-action="change->comparison-filter#toggle"
+               class="w-4 h-4 accent-navy-600 cursor-pointer">
+        <span class="text-meta font-semibold text-ink-2 dark:text-ink-2-on-dark">Only show rows that differ</span>
+      </label>
+    <% end %>
+  </div>
+
+  <div class="overflow-x-auto">
+    <div class="min-w-[720px] flex flex-col gap-4">
+
+      <div class="grid <%= columns %> gap-3.5 items-stretch">
+        <div></div>
+        <% saved_trials.each do |saved_trial| %>
+          <% best = (saved_trial.id == best_match_id) %>
+          <article class="rounded-card border bg-surface dark:bg-surface-on-dark p-5 flex flex-col gap-3 <%= best ? "border-sky-400 dark:border-sky-500 ring-1 ring-sky-400 dark:ring-sky-500" : "border-line dark:border-line-on-dark" %>">
+            <% if best %>
+              <span class="self-start rounded-full bg-sky-700 dark:bg-sky-600 px-2.5 py-1 text-[11px] font-extrabold tracking-[0.05em] text-white">
+                BEST MATCH
+              </span>
+            <% end %>
+
+            <h2 class="text-body font-bold leading-snug text-ink dark:text-ink-on-dark line-clamp-3">
+              <%= saved_trial.trial_title %>
+            </h2>
+
+            <div class="flex flex-wrap items-center gap-2.5">
+              <% if score_for(saved_trial).present? %>
+                <span class="rounded-chip <%= match_score_bg_class(match_level_for(saved_trial)) %> px-2.5 py-1.5 text-base font-extrabold tabular-nums <%= match_score_text_class(match_level_for(saved_trial)) %>">
+                  <%= score_for(saved_trial).to_i %>
+                </span>
+              <% end %>
+              <%= render Shared::StatusBadgeComponent.new(status: saved_trial.status) %>
+            </div>
+
+            <%# Said rather than hidden: one unreachable study costs that column
+                its fresh score, and the reader should know which. %>
+            <% if stale?(saved_trial) %>
+              <p class="text-xs text-warn dark:text-warn-on-dark">
+                Could not reach the registry for this one. Showing the score from when you saved it.
+              </p>
+            <% end %>
+          </article>
+        <% end %>
+      </div>
+
+      <div class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark overflow-hidden">
+        <% groups.each_with_index do |group, group_index| %>
+          <div data-comparison-filter-target="heading"
+               data-group="<%= group_index %>"
+               class="grid <%= columns %> gap-3.5 px-5 py-3.5 bg-surface-2 dark:bg-surface-2-on-dark border-b border-line dark:border-line-on-dark">
+            <span class="text-xs font-bold uppercase tracking-[0.07em] text-ink-3 dark:text-ink-3-on-dark">
+              <%= group.heading %>
+            </span>
+          </div>
+
+          <% group.rows.each do |row| %>
+            <div data-comparison-filter-target="row"
+                 data-group="<%= group_index %>"
+                 data-differs="<%= row.differs? %>"
+                 class="grid <%= columns %> gap-3.5 px-5 py-3.5 border-b border-line dark:border-line-on-dark <%= "bg-warn/5 dark:bg-warn-on-dark/10" if row.differs? %>">
+              <div class="flex flex-col gap-1">
+                <span class="text-meta font-bold text-ink-2 dark:text-ink-2-on-dark"><%= row.label %></span>
+                <% if row.differs? %>
+                  <span class="inline-flex items-center gap-1 text-[10px] font-extrabold tracking-[0.07em] text-warn dark:text-warn-on-dark">
+                    <%= render Utilities::IconComponent.new("exclamation_triangle", size: 3) %>
+                    DIFFERS
+                  </span>
+                <% end %>
+              </div>
+
+              <% row.cells.each do |cell| %>
+                <div class="flex flex-col gap-0.5 min-w-0">
+                  <span class="text-sm <%= cell.tone || "text-ink dark:text-ink-on-dark" %>"><%= cell.text %></span>
+                  <% if cell.sub.present? %>
+                    <span class="text-xs text-ink-3 dark:text-ink-3-on-dark"><%= cell.sub %></span>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        <% end %>
+
+        <%# Only reachable with the filter on, so it is written for that case. %>
+        <p data-comparison-filter-target="empty" hidden
+           class="px-5 py-6 text-meta text-ink-3 dark:text-ink-3-on-dark border-b border-line dark:border-line-on-dark">
+          Nothing differs between these <%= saved_trials.length %> on the rows compared here.
+        </p>
+
+        <div class="grid <%= columns %> gap-3.5 px-5 py-4">
+          <div></div>
+          <% saved_trials.each_with_index do |saved_trial, index| %>
+            <%= link_to "Open this one", search_path(saved_trial.nct_id),
+                  class: Buttons::ButtonStyles.classes((index.zero? ? "primary" : "secondary"), size: "px-4 py-2 text-meta") %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

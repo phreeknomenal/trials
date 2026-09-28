@@ -1,170 +1,34 @@
-<section class="<%= Layout::PageWidth::CONTAINER %> py-12 border-b border-line dark:border-line-on-dark">
-  <div class="flex items-center justify-between">
-    <div>
-      <h1 class="text-3xl font-bold text-ink dark:text-ink-on-dark mb-2">Compare Trials</h1>
-      <p class="text-ink-3 dark:text-ink-3-on-dark">
-        Comparing <%= @saved_trials.count %> trials side-by-side
-      </p>
+<section class="<%= Layout::PageWidth::CONTAINER %> py-10 lg:py-12 flex flex-col gap-5">
+  <%= link_to my_trials_saved_trials_path,
+        class: "self-start inline-flex items-center gap-2 text-meta font-semibold text-sky-700 dark:text-sky-300 hover:underline" do %>
+    <%= render Utilities::IconComponent.new("arrow_left", size: 4) %>
+    Back to saved studies
+  <% end %>
+
+  <%# The count is spelled, as on the board. Comparison is capped at three, so
+      this is never a number a reader has to parse. %>
+  <h1 class="font-primary text-2xl lg:text-title font-bold tracking-tight text-ink dark:text-ink-on-dark">
+    <%= (@saved_trials.length == 2) ? "Two" : "Three" %> studies, side by side
+  </h1>
+
+  <%= render Page::Trials::ComparisonTableComponent.new(
+        saved_trials: @saved_trials, scored_by_id: @scored_by_id
+      ) %>
+
+  <%# The working behind the numbers in the column heads, the same shape the
+      criteria panel uses on a study: the comparison is the answer and this is
+      how each score was arrived at. The board has no such section, and a second
+      full-width table of per-factor bars under the first is why. %>
+  <details class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-6 group">
+    <summary class="cursor-pointer list-none flex items-center gap-2 text-meta font-semibold text-ink-2 dark:text-ink-2-on-dark rounded-nav focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+      <span class="text-ink-3 dark:text-ink-3-on-dark transition-transform group-open:rotate-180">
+        <%= render Utilities::IconComponent.new("chevron_down", size: 4) %>
+      </span>
+      How these scores break down
+    </summary>
+
+    <div class="pt-4">
+      <%= render Page::Trials::ComparisonScoreBreakdownComponent.new(trials: @saved_trials) %>
     </div>
-    <%= link_to "← Back to Saved Trials", my_trials_saved_trials_path, 
-        class: "text-sky-600 dark:text-sky-400 hover:underline font-medium" %>
-  </div>
-</section>
-
-<section class="<%= Layout::PageWidth::CONTAINER %> py-12">
-  <div class="overflow-x-auto rounded-panel border border-line dark:border-line-on-dark shadow-md bg-surface dark:bg-surface-on-dark">
-    <table class="w-full min-w-[800px] border-collapse table-fixed">
-      <colgroup>
-        <col style="width: 160px;">
-        <% @saved_trials.each do |_trial| %>
-          <col style="width: 280px;">
-        <% end %>
-      </colgroup>
-      <thead>
-        <tr class="border-b border-line dark:border-line-on-dark">
-          <th scope="col" class="text-left py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark bg-transparent align-top">
-            Trial Details
-          </th>
-          <% @saved_trials.each do |trial| %>
-            <th scope="col" class="text-left py-4 px-5 align-top border-l border-line dark:border-line-on-dark">
-              <div class="space-y-2">
-                <p class="text-sm text-ink-3 dark:text-ink-3-on-dark">NCT<%= trial.nct_id %></p>
-                <h3 class="font-semibold text-ink dark:text-ink-on-dark line-clamp-2 text-base leading-snug">
-                  <%= trial.trial_title %>
-                </h3>
-                <%# The freshly computed score, not the one stored when this was
-                    saved, so the number here is the same one the results page
-                    shows for the same study today. %>
-                <% scored = @scored_by_id[trial.id] %>
-                <% if scored&.total.present? %>
-                  <% match_component = Page::SavedTrials::MatchScoreCardComponent.new(match_score: scored.total) %>
-                  <div class="flex flex-wrap items-center gap-2 pt-1">
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold <%= match_component.score_badge_classes %>">
-                      <%= scored.total %>% Match
-                    </span>
-                    <span class="text-sm font-medium <%= match_component.score_color_classes %>"><%= match_component.score_label %></span>
-                  </div>
-
-                  <%# Said rather than hidden: one unreachable study costs that
-                      column its breakdown, and the reader should know which. %>
-                  <% if scored.stale? %>
-                    <p class="text-xs text-warn dark:text-warn-on-dark pt-1">
-                      Could not reach the registry for this one. Showing the score from when you saved it.
-                    </p>
-                  <% end %>
-                <% end %>
-              </div>
-            </th>
-          <% end %>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="border-b border-line dark:border-line-on-dark">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Status</td>
-          <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 border-l border-line dark:border-line-on-dark">
-              <span class="inline-block px-3 py-1 rounded-full text-sm font-medium <%= status_badge_classes(trial.status) %>">
-                <%= trial.status.titleize %>
-              </span>
-            </td>
-          <% end %>
-        </tr>
-        <tr class="border-b border-line dark:border-line-on-dark">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Phase</td>
-          <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 text-sm text-ink dark:text-ink-on-dark border-l border-line dark:border-line-on-dark">
-              <%= trial.phase.presence || "—" %>
-            </td>
-          <% end %>
-        </tr>
-        <tr class="border-b border-line dark:border-line-on-dark">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Study Type</td>
-          <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 text-sm text-ink dark:text-ink-on-dark border-l border-line dark:border-line-on-dark">
-              <%= trial.study_type.presence || "—" %>
-            </td>
-          <% end %>
-        </tr>
-        <tr class="border-b border-line dark:border-line-on-dark">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Age Range</td>
-          <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 text-sm text-ink dark:text-ink-on-dark border-l border-line dark:border-line-on-dark">
-              <%= trial.min_age.present? || trial.max_age.present? ? "#{trial.min_age} - #{trial.max_age}" : "—" %>
-            </td>
-          <% end %>
-        </tr>
-        <tr class="border-b border-line dark:border-line-on-dark">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Sponsor(s)</td>
-          <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 text-sm text-ink dark:text-ink-on-dark border-l border-line dark:border-line-on-dark align-top">
-              <span class="block line-clamp-2 break-words"><%= trial.sponsor.presence || "—" %></span>
-            </td>
-          <% end %>
-        </tr>
-        <tr class="border-b border-line dark:border-line-on-dark">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Summary</td>
-          <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 text-sm text-ink dark:text-ink-on-dark border-l border-line dark:border-line-on-dark align-top">
-              <span class="block line-clamp-3 break-words"><%= trial.summary.presence || "—" %></span>
-            </td>
-          <% end %>
-        </tr>
-        <tr class="border-b border-line dark:border-line-on-dark">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Enrollment</td>
-          <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 text-sm text-ink dark:text-ink-on-dark border-l border-line dark:border-line-on-dark">
-              <%= trial.enrollment_count.present? ? "#{number_with_delimiter(trial.enrollment_count)} participants" : "—" %>
-            </td>
-          <% end %>
-        </tr>
-        <tr class="border-b border-line dark:border-line-on-dark">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Trial Status</td>
-          <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 border-l border-line dark:border-line-on-dark">
-              <%= render Utilities::BadgeComponent.new(status: trial.trial_status, text: trial.trial_status.blank? ? "—" : nil) %>
-            </td>
-          <% end %>
-        </tr>
-        <tr class="border-b border-line dark:border-line-on-dark">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Start Date</td>
-          <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 text-sm text-ink dark:text-ink-on-dark border-l border-line dark:border-line-on-dark">
-              <%= trial.start_date.present? ? trial.start_date.strftime("%B %Y") : "—" %>
-            </td>
-          <% end %>
-        </tr>
-        <tr class="border-b border-line dark:border-line-on-dark">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Completion Date</td>
-          <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 text-sm text-ink dark:text-ink-on-dark border-l border-line dark:border-line-on-dark">
-              <%= trial.completion_date.present? ? trial.completion_date.strftime("%B %Y") : "—" %>
-            </td>
-          <% end %>
-        </tr>
-        <tr class="border-b border-line dark:border-line-on-dark">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Duration</td>
-          <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 text-sm text-ink dark:text-ink-on-dark border-l border-line dark:border-line-on-dark">
-              <%= trial_duration(trial.start_date, trial.completion_date).presence || "—" %>
-            </td>
-          <% end %>
-        </tr>
-        <tr class="bg-surface-2 dark:bg-surface-2-on-dark/50">
-          <td class="py-4 px-5 text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark"></td>
-          <% @saved_trials.each do |trial| %>
-            <td class="py-4 px-5 border-l border-line dark:border-line-on-dark space-y-2">
-              <%= link_to "View Full Trial", search_path(trial.nct_id), 
-                  class: "block w-full px-4 py-2 bg-navy-600 text-white rounded-control hover:bg-navy-700 transition-colors text-center font-medium text-sm" %>
-              <%= link_to "Edit Entry", edit_saved_trial_path(trial), 
-                  class: "block w-full px-4 py-2 bg-surface dark:bg-surface-on-dark border-2 border-navy-600 text-sky-600 dark:text-sky-400 rounded-control hover:bg-sky-50 dark:hover:bg-navy-900/20 transition-colors text-center font-medium text-sm" %>
-            </td>
-          <% end %>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<section class="<%= Layout::PageWidth::CONTAINER %> py-12">
-  <%= render Page::Trials::ComparisonScoreBreakdownComponent.new(trials: @saved_trials) %>
+  </details>
 </section>
