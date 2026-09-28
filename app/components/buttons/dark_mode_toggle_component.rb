@@ -1,16 +1,20 @@
+# on_dark for chrome that is dark whatever the theme is. The admin bar is navy
+# in light mode too, so the ordinary ink-2 icon would be a dark grey glyph on a
+# near-black bar: the same invisible control ButtonStyles records for the
+# landing page's call to action.
 class Buttons::DarkModeToggleComponent < ApplicationComponent
   erb_template <<-ERB
     <div data-controller="dark-mode">
       <button
         type="button"
         data-action="click->dark-mode#toggle"
-        class="relative inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface-2 dark:hover:bg-surface-on-dark transition-colors duration-200"
+        class="relative inline-flex items-center justify-center w-10 h-10 rounded-full <%= hover_class %> transition-colors duration-200"
         aria-label="Toggle dark mode"
       >
         <!-- Moon Icon (visible in light mode) -->
         <svg
           data-dark-mode-target="moonIcon"
-          class="w-5 h-5 text-ink-2 dark:text-ink-2-on-dark"
+          class="w-5 h-5 <%= icon_class %>"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -27,7 +31,7 @@ class Buttons::DarkModeToggleComponent < ApplicationComponent
         <!-- Sun Icon (visible in dark mode) -->
         <svg
           data-dark-mode-target="sunIcon"
-          class="w-5 h-5 text-ink-2 dark:text-ink-2-on-dark hidden"
+          class="w-5 h-5 <%= icon_class %> hidden"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -43,4 +47,18 @@ class Buttons::DarkModeToggleComponent < ApplicationComponent
       </button>
     </div>
   ERB
+
+  def initialize(on_dark: false)
+    @on_dark = on_dark
+  end
+
+  def on_dark? = @on_dark
+
+  def icon_class
+    on_dark? ? "text-ink-3-on-dark" : "text-ink-2 dark:text-ink-2-on-dark"
+  end
+
+  def hover_class
+    on_dark? ? "hover:bg-line-on-dark" : "hover:bg-surface-2 dark:hover:bg-surface-on-dark"
+  end
 end

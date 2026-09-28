@@ -8,10 +8,8 @@
       <% end %>
     </p>
 
-    <%# Rendered unchecked, then checked by the controller on connect. With no
-        JavaScript the box and the table agree: everything is shown. A box that
-        renders checked while nothing filters is how a control comes to look
-        broken. %>
+    <%# Off by default. With it on, every visible row is a row that differs, so
+        the DIFFERS badge on each of them says nothing. %>
     <% if rows_that_differ.positive? %>
       <label class="inline-flex items-center gap-2.5 rounded-control border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark px-4 py-2.5 cursor-pointer">
         <input type="checkbox"

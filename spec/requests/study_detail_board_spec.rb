@@ -47,6 +47,22 @@ RSpec.describe "The study detail page against its board", type: :request do
       expect(response.body).to match(/Recruiting/i)
     end
 
+    # The registry says NA for a study with no phase, which is most
+    # observational ones. Read through humanize_registry_value that becomes
+    # "Not applicable", and as the first word of the eyebrow it reads as though
+    # something about the study does not apply.
+    it "leaves the phase out rather than leading with Not applicable" do
+      allow(ClinicalTrialClient).to receive(:get_study).with(nct_id)
+        .and_return(study.merge(phase: "NA"))
+
+      get "/search/#{nct_id}"
+
+      eyebrow = response.body[/<p class="text-xs font-bold uppercase[^>]*>(.*?)<\/p>/m, 1].to_s
+
+      expect(eyebrow).not_to include("Not applicable")
+      expect(eyebrow).to include("Recruiting")
+    end
+
     # A registry entry is only as current as its last edit, and a reader has no
     # other way to know whether "recruiting" was confirmed last week or in 2019.
     it "says when the record was last touched" do

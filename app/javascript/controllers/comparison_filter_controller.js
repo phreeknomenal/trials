@@ -3,14 +3,18 @@ import { Controller } from "@hotwired/stimulus"
 // Hides the rows where the studies agree, so the comparison shows only what a
 // comparison is for.
 //
-// The checkbox renders unchecked and this checks it on connect. With no
-// JavaScript the markup and the table then agree that everything is shown,
-// rather than a checked box sitting above an unfiltered table.
+// It starts off. With the filter on, every visible row is one that differs, so
+// the DIFFERS badge on each of them says nothing and the reader loses the
+// denominator the summary line promises: "rows where the 3 differ are marked"
+// only reads as a claim if the unmarked ones are on screen too.
+//
+// The board draws the box ticked, but draws a table with unmarked rows in it,
+// so the board is not consistent with itself here. Making the control actually
+// work is what exposed that.
 export default class extends Controller {
   static targets = ["checkbox", "row", "heading", "empty"]
 
   connect() {
-    if (this.hasCheckboxTarget) this.checkboxTarget.checked = true
     this.apply()
   }
 

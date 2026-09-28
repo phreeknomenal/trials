@@ -127,7 +127,10 @@ class EligibilityChecker
     parsed_items = parse_criteria_summary(criteria_text)
     return nil if parsed_items.empty?
 
-    summary = parsed_items.join(" | ")
+    # Semicolons, not pipes. The checklist renders this as one flowing line, and
+    # "Confirmed diagnosis required | Organ function requirements may apply"
+    # reads as debris from whatever produced it.
+    summary = parsed_items.join("; ")
     build_item(
       "Eligibility Criteria Highlights",
       "info",

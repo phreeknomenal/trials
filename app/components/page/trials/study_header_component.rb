@@ -21,10 +21,20 @@ class Page::Trials::StudyHeaderComponent < ApplicationComponent
 
   def eyebrow_parts
     [
-      helpers.humanize_registry_value(study[:phase]).presence,
+      phase_phrase,
       helpers.humanize_registry_value(study[:status]).presence,
       last_updated_phrase
     ].compact
+  end
+
+  # The registry says NA for a study with no phase, which is most observational
+  # ones, and humanize_registry_value reads that as "Not applicable". Correct
+  # beside a label; as the first word of the eyebrow it reads as though
+  # something about the study does not apply.
+  def phase_phrase
+    return nil if study[:phase].to_s.strip.casecmp?("na")
+
+    helpers.humanize_registry_value(study[:phase]).presence
   end
 
   def last_updated_phrase
