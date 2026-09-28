@@ -8,7 +8,10 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Defines the root path route ("/")
-  # Show home page when authenticated, welcome page when not
+  #
+  # Not a home page: HomeController and app/views/home existed and nothing
+  # routed to them. Signed in the root is the dashboard, signed out the
+  # landing page.
   authenticated :user do
     root "my_trials#index", as: :authenticated_root
   end
