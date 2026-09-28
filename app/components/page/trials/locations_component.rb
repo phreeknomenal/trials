@@ -24,14 +24,41 @@ class Page::Trials::LocationsComponent < ApplicationComponent
 
   def render? = locations.any?
 
-  # Near-first, then the registry's own order. "Near" is a match on the
-  # profile's state, which is all the data supports today. The coordinates the
-  # client now captures make a real distance possible; that is
-  # Tasks/trials-location-distance.md, not this.
+  # Nearest first. Unknown sorts last rather than first, because a site with no
+  # coordinates is not a site that is nearby.
+  #
+  # The state match stays as the second key rather than being replaced by the
+  # distance: when nothing can be measured — no postal code on the profile, or
+  # no coordinates on the sites — it is the only ordering there is, and dropping
+  # it left the reader's own state wherever the registry happened to put it.
   def locations
     @locations ||= rows.each_with_index
-      .sort_by { |loc, index| [near?(loc) ? 0 : 1, index] }
+      .sort_by { |loc, index| [distance_for(loc) || Float::INFINITY, state_match?(loc) ? 0 : 1, index] }
       .map(&:first)
+  end
+
+  # Nil when either end has no point, which is the normal case rather than an
+  # error: a profile may carry no postal code, and 2% of registry locations
+  # publish no coordinates.
+  def distance_for(location)
+    return nil if origin.nil?
+
+    @distances ||= {}
+    @distances.fetch(location.object_id) do
+      @distances[location.object_id] = Distance.between(origin, location[:geo_point])
+    end
+  end
+
+  def origin = @origin ||= profile&.coordinates
+
+  # The one number this app has collected since onboarding and never read.
+  def travel_limit = profile&.willing_travel_miles
+
+  def within_limit?(location)
+    return false if travel_limit.blank?
+
+    miles = distance_for(location)
+    miles.present? && miles <= travel_limit
   end
 
   def visible = locations.first(VISIBLE)
@@ -51,7 +78,15 @@ class Page::Trials::LocationsComponent < ApplicationComponent
     repeated_facilities.include?(name)
   end
 
+  # Falls back to the state match when there is no distance to be had, so a
+  # profile with no postal code still gets its own state marked.
   def near?(location)
+    return within_limit?(location) if origin.present? && travel_limit.present?
+
+    state_match?(location)
+  end
+
+  def state_match?(location)
     return false if profile_state.blank?
 
     location[:state].to_s.strip.casecmp?(profile_state)
@@ -97,10 +132,22 @@ class Page::Trials::LocationsComponent < ApplicationComponent
 
   # The sentence somebody actually came for. Said even when the answer is none,
   # because none is the answer.
+  #
+  # In miles where the profile has a postal code and a travel limit, which is
+  # the question they were asked at onboarding and the one nothing has read
+  # since. By state otherwise.
   def state_phrase
+    return travel_phrase if origin.present? && travel_limit.present?
     return nil if profile_state.blank?
 
-    count = locations.count { |l| near?(l) }
+    count = locations.count { |l| state_match?(l) }
     count.zero? ? "None in #{profile_state}." : "#{count} in #{profile_state}."
+  end
+
+  def travel_phrase
+    count = locations.count { |l| within_limit?(l) }
+    return "None within the #{travel_limit} miles you said you could travel." if count.zero?
+
+    "#{count} within the #{travel_limit} miles you said you could travel."
   end
 end

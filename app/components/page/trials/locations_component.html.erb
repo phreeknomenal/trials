@@ -9,7 +9,7 @@
 
   <ul class="flex flex-col gap-3">
     <% visible.each do |location| %>
-      <%= render Page::Trials::LocationRowComponent.new(location: location, near: near?(location), lead_with_place: repeated_facility?(location)) %>
+      <%= render Page::Trials::LocationRowComponent.new(location: location, near: near?(location), lead_with_place: repeated_facility?(location), miles: distance_for(location)) %>
     <% end %>
   </ul>
 
@@ -27,7 +27,7 @@
 
       <ul class="flex flex-col gap-3 pt-3">
         <% hidden.each do |location| %>
-          <%= render Page::Trials::LocationRowComponent.new(location: location, near: near?(location), lead_with_place: repeated_facility?(location)) %>
+          <%= render Page::Trials::LocationRowComponent.new(location: location, near: near?(location), lead_with_place: repeated_facility?(location), miles: distance_for(location)) %>
         <% end %>
       </ul>
     </details>

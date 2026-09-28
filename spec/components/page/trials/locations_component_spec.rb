@@ -150,6 +150,63 @@ RSpec.describe Page::Trials::LocationsComponent, type: :component do
     end
   end
 
+  # The whole point of the coordinates the client now keeps, and the first thing
+  # ever to read willing_travel_miles, which onboarding has asked for since it
+  # was written.
+  describe "with a profile that has a postal code" do
+    let(:located) do
+      ZipCode.create!(zip: "35203", city: "Birmingham", state: "Alabama", lat: 33.521, lon: -86.8066)
+      create(:user).profile.tap { |p| p.update_columns(zip_code: "35203", state: "Alabama", willing_travel_miles: 50) }
+    end
+
+    def with_coords(city:, lat:, lon:, state: "Alabama")
+      site(city: city, state: state).merge(geo_point: {lat: lat, lon: lon})
+    end
+
+    let(:sites) do
+      [with_coords(city: "Toronto", state: nil, lat: 43.6532, lon: -79.3832),
+        with_coords(city: "Tuscaloosa", lat: 33.1969, lon: -87.5627),
+        with_coords(city: "Birmingham", lat: 33.5045, lon: -86.8055)]
+    end
+
+    it "orders the sites by how far away they actually are" do
+      render_sites(sites, with_profile: located)
+
+      expect(page.all("li").map(&:text).join(" | ")).to match(/Birmingham.*Tuscaloosa.*Toronto/m)
+    end
+
+    it "says how far each one is" do
+      render_sites(sites, with_profile: located)
+
+      expect(page.first("li").text).to match(/\d+ miles away/)
+    end
+
+    # Rounded to the mile: the registry gives a town centroid and the profile a
+    # postal code centroid, so a tenth of a mile is precision neither end has.
+    it "counts the ones inside the travel limit the profile was asked for" do
+      render_sites(sites, with_profile: located)
+
+      expect(page.text).to include("2 within the 50 miles you said you could travel")
+    end
+
+    # Two, because the summary is suppressed for a single site: with one row on
+    # screen it would only repeat the miles the row already says.
+    it "says none rather than going quiet when every site is too far" do
+      render_sites([with_coords(city: "Toronto", state: nil, lat: 43.6532, lon: -79.3832),
+        with_coords(city: "Osaka", state: nil, lat: 34.6937, lon: 135.5023)], with_profile: located)
+
+      expect(page.text).to include("None within the 50 miles you said you could travel")
+    end
+
+    # Unknown is not nearby. A site the registry gave no point for sorts last
+    # rather than first.
+    it "puts a site with no coordinates after the ones it could measure" do
+      render_sites(sites + [site(city: "Nowhere", state: "Alabama")], with_profile: located)
+
+      expect(page.all("li").last.text).to include("Nowhere")
+    end
+  end
+
   it "offers directions rather than a distance it cannot compute" do
     render_sites([site(city: "Birmingham", state: "Alabama", facility: "UAB Hospital")])
 
