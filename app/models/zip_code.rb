@@ -4,6 +4,8 @@
 #
 #  id         :bigint           not null, primary key
 #  city       :string           not null
+#  lat        :decimal(8, 4)
+#  lon        :decimal(9, 4)
 #  state      :string           not null
 #  zip        :string           not null
 #  created_at :datetime         not null
@@ -35,5 +37,14 @@ class ZipCode < ApplicationRecord
     return nil if zip.nil?
 
     find_by(zip: zip)
+  end
+
+  # The point Distance measures from. Nil rather than a pair of zeroes, which
+  # is a real place in the Gulf of Guinea and would put every study 5,000 miles
+  # away rather than an unknown distance away.
+  def coordinates
+    return nil if lat.nil? || lon.nil?
+
+    [lat.to_f, lon.to_f]
   end
 end

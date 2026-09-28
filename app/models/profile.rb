@@ -241,6 +241,13 @@ class Profile < ApplicationRecord
   end
 
   # Used by Utilities::AvatarComponent for the no-avatar fallback.
+  # Where this person is, for measuring how far away a study site is. Nil when
+  # they gave no postal code, or gave one that is not a US zip, which the study
+  # page has to render without anyway.
+  def coordinates
+    ZipCode.lookup(zip_code)&.coordinates
+  end
+
   def initials
     (first_name&.first&.upcase.to_s + last_name&.first&.upcase.to_s)
   end

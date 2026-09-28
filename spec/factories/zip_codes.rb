@@ -4,6 +4,8 @@
 #
 #  id         :bigint           not null, primary key
 #  city       :string           not null
+#  lat        :decimal(8, 4)
+#  lon        :decimal(9, 4)
 #  state      :string           not null
 #  zip        :string           not null
 #  created_at :datetime         not null
