@@ -47,22 +47,25 @@ RSpec.describe "Admin dashboard", type: :request do
       get admin_root_path
 
       expect(response.body).to include("Seeded placeholders")
-      expect(response.body).to include("replace before public launch")
+      expect(response.body).to include("held back, never public")
     end
 
-    it "surfaces failed summaries and links to operations" do
+    it "surfaces failed summaries" do
       get admin_root_path
 
       expect(response.body).to include("Failed")
-      expect(response.body).to include("View details on the operations page")
     end
 
-    it "does not link to operations when nothing is wrong" do
+    # The link used to appear only once something had already gone wrong, which
+    # is the wrong time to discover the operations page exists. The board keeps
+    # it in the section heading.
+    it "links to operations whether or not anything is wrong" do
       ReadableStudySummary.failed.destroy_all
 
       get admin_root_path
 
-      expect(response.body).not_to include("View details on the operations page")
+      expect(response.body).to include("Open operations")
+      expect(response.body).to include(admin_operations_path)
     end
   end
 

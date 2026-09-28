@@ -11,8 +11,8 @@
 class Utilities::MarkComponent < ApplicationComponent
   erb_template <<-ERB
     <svg class="<%= height_class %> w-auto <%= options[:class] %>" viewBox="0 0 64 116" <%= accessibility_attributes %>>
-      <path d="M30.6 0 L30.6 116 L0 96 Z" class="fill-navy-600 dark:fill-navy-400"/>
-      <path d="M33.4 0 L33.4 116 L64 96 Z" class="fill-sky-400 dark:fill-sky-300"/>
+      <path d="M30.6 0 L30.6 116 L0 96 Z" class="<%= left_fill %>"/>
+      <path d="M33.4 0 L33.4 116 L64 96 Z" class="<%= right_fill %>"/>
     </svg>
   ERB
 
@@ -32,11 +32,22 @@ class Utilities::MarkComponent < ApplicationComponent
 
   # Decorative by default, because it almost always sits beside the wordmark.
   # A label is only correct where the mark stands alone.
-  def initialize(height: 8, label: nil, options: {})
+  #
+  # on_dark takes the dark fills whatever the theme is, for chrome that is dark
+  # in both: the admin bar is navy in light mode too, deliberately, so a
+  # dark: variant would leave the mark in its light fills there.
+  def initialize(height: 8, label: nil, on_dark: false, options: {})
     @height = height
     @label = label
+    @on_dark = on_dark
     @options = options
   end
+
+  def on_dark? = @on_dark
+
+  def left_fill = on_dark? ? "fill-navy-400" : "fill-navy-600 dark:fill-navy-400"
+
+  def right_fill = on_dark? ? "fill-sky-300" : "fill-sky-400 dark:fill-sky-300"
 
   def height_class
     HEIGHTS.fetch(height)

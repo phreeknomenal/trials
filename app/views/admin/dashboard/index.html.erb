@@ -1,55 +1,95 @@
-<div class="px-5 lg:px-12 py-10 space-y-10">
-  <div>
-    <h1 class="text-2xl font-bold text-ink dark:text-ink-on-dark">Overview</h1>
-    <p class="mt-1 text-sm text-ink-3 dark:text-ink-3-on-dark">Signed in as <%= current_user.email %> (<%= current_user.role %>).</p>
+<div class="px-5 lg:px-12 py-10 flex flex-col gap-8">
+  <div class="flex flex-wrap items-end justify-between gap-4">
+    <div class="flex flex-col gap-1">
+      <h1 class="font-primary text-2xl font-bold tracking-tight text-ink dark:text-ink-on-dark">Overview</h1>
+      <%# On the board, and worth saying: every number here is a COUNT run on
+          request. Nothing is cached, so nothing can be quietly out of date. %>
+      <p class="text-meta text-ink-3 dark:text-ink-3-on-dark">Counts are live. Nothing here is cached.</p>
+    </div>
+    <p class="text-meta text-ink-3 dark:text-ink-3-on-dark tabular-nums">
+      <%= Time.current.strftime("%A %-d %B %Y, %H:%M") %>
+    </p>
   </div>
 
-  <section>
-    <h2 class="text-sm font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark mb-3">People</h2>
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <%= render Admin::StatCardComponent.new(label: "Users", value: @users_total, hint: "#{@staff_count} staff") %>
-      <%= render Admin::StatCardComponent.new(label: "New in 30 days", value: @users_recent) %>
-      <%= render Admin::StatCardComponent.new(label: "Profiles", value: @profiles_total) %>
-      <%= render Admin::StatCardComponent.new(label: "Onboarded", value: @profiles_onboarded,
-            hint: @profiles_total.zero? ? "no profiles yet" : "#{(@profiles_onboarded * 100.0 / @profiles_total).round}% of profiles") %>
-    </div>
-  </section>
+  <%# Four headline counts, per the board. It had eleven cards across three
+      sections, which is a list of every number the controller happens to load
+      rather than the four somebody opens this page for. %>
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <%= render Admin::StatCardComponent.new(
+          label: "Users", value: number_with_delimiter(@users_total),
+          hint: "#{@users_recent} joined in the last 30 days · #{@staff_count} staff"
+        ) %>
 
-  <section>
-    <h2 class="text-sm font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark mb-3">Summary generation</h2>
+    <%= render Admin::StatCardComponent.new(
+          label: "Profiles onboarded", value: number_with_delimiter(@profiles_onboarded),
+          hint: @profiles_total.zero? ? "no profiles yet" : "of #{number_with_delimiter(@profiles_total)} · #{(@profiles_onboarded * 100.0 / @profiles_total).round}%"
+        ) %>
+
+    <%= render Admin::StatCardComponent.new(
+          label: "Saved trials", value: number_with_delimiter(@saved_trials_total),
+          hint: "Across #{pluralize(@saved_trials_users, "user")}"
+        ) %>
+
+    <%= render Admin::StatCardComponent.new(
+          label: "Readable summaries", value: number_with_delimiter(@summaries_by_status.fetch("completed", 0)),
+          hint: "Cached, one per study"
+        ) %>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <section class="flex flex-col gap-2">
+      <h2 class="font-primary text-body font-bold text-ink dark:text-ink-on-dark">
+        Sign ups, last <%= Admin::DashboardController::SIGNUP_WINDOW %> days
+      </h2>
+      <p class="text-xs text-ink-3 dark:text-ink-3-on-dark">
+        One bar per day.
+        <%= pluralize(@signups_in_window, "sign up") %> in this window,
+        <%= (@signups_in_window / Admin::DashboardController::SIGNUP_WINDOW.to_f).round(1) %> a day.
+        Grouped by UTC date.
+      </p>
+      <%= render Admin::BarChartComponent.new(series: @signups_by_day, empty_message: "No signups in this window.") %>
+    </section>
+
+    <section class="flex flex-col gap-2">
+      <h2 class="font-primary text-body font-bold text-ink dark:text-ink-on-dark">Saved trials by status</h2>
+      <p class="text-xs text-ink-3 dark:text-ink-3-on-dark">
+        Ordered by count. The order is the story, so there is no legend.
+      </p>
+      <%= render Admin::BarChartComponent.new(series: @saved_trials_by_status, empty_message: "No saved trials yet.") %>
+    </section>
+  </div>
+
+  <section class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-baseline justify-between gap-3">
+      <h2 class="font-primary text-body font-bold text-ink dark:text-ink-on-dark">Summary generation</h2>
+      <%= link_to "Open operations", admin_operations_path,
+            class: "text-meta font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>
+    </div>
+
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
       <%= render Admin::StatCardComponent.new(label: "Completed", value: @summaries_by_status.fetch("completed", 0)) %>
-      <%= render Admin::StatCardComponent.new(label: "Failed", value: @summaries_failed, tone: :alert) %>
-      <%= render Admin::StatCardComponent.new(label: "Stuck", value: @summaries_stale, tone: :alert,
-            hint: "pending over #{distance_of_time_in_words(ReadableStudySummary::STALE_AFTER)}") %>
       <%= render Admin::StatCardComponent.new(label: "Pending", value: @summaries_by_status.fetch("pending", 0)) %>
+      <%= render Admin::StatCardComponent.new(label: "Stale", value: @summaries_stale, tone: :alert,
+            hint: "pending over #{distance_of_time_in_words(ReadableStudySummary::STALE_AFTER)}") %>
+      <%= render Admin::StatCardComponent.new(label: "Failed", value: @summaries_failed, tone: :alert) %>
     </div>
-    <% if @summaries_failed.positive? || @summaries_stale.positive? %>
-      <p class="mt-3 text-sm"><%= link_to "View details on the operations page →", admin_operations_path, class: "text-sky-600 hover:text-sky-700 font-medium" %></p>
-    <% end %>
   </section>
 
-  <section>
-    <h2 class="text-sm font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark mb-3">Content</h2>
+  <%# The content counts the board leaves off the overview. Kept, smaller: the
+      seeded placeholder count is the one number that has already been wrong in
+      public, and it belongs where somebody will see it. %>
+  <section class="flex flex-col gap-3">
+    <div class="flex flex-wrap items-baseline justify-between gap-3">
+      <h2 class="font-primary text-body font-bold text-ink dark:text-ink-on-dark">Content</h2>
+      <%= link_to "Open testimonials", admin_testimonials_path,
+            class: "text-meta font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>
+    </div>
+
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
       <%= render Admin::StatCardComponent.new(label: "Testimonials", value: @testimonials_total,
             hint: "#{@testimonials_published} published") %>
       <%= render Admin::StatCardComponent.new(label: "Seeded placeholders", value: @testimonials_placeholder,
-            hint: @testimonials_placeholder.positive? ? "replace before public launch" : nil) %>
-      <%= render Admin::StatCardComponent.new(label: "Saved trials", value: @saved_trials_total) %>
+            hint: @testimonials_placeholder.positive? ? "held back, never public" : nil) %>
     </div>
   </section>
-
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-    <section>
-      <h2 class="text-sm font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark mb-1">Signups, last <%= Admin::DashboardController::SIGNUP_WINDOW %> days</h2>
-      <p class="text-xs text-ink-3 mb-3 dark:text-ink-3-on-dark">Grouped by UTC date.</p>
-      <%= render Admin::BarChartComponent.new(series: @signups_by_day, empty_message: "No signups in this window.") %>
-    </section>
-
-    <section>
-      <h2 class="text-sm font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark mb-3">Saved trials by status</h2>
-      <%= render Admin::BarChartComponent.new(series: @saved_trials_by_status, empty_message: "No saved trials yet.") %>
-    </section>
-  </div>
 </div>

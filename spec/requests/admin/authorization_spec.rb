@@ -52,14 +52,16 @@ RSpec.describe "Admin access", type: :request do
           get admin_root_path
 
           expect(response).to have_http_status(:ok)
-          expect(response.body).to include("Signed in as")
+          # Who you are signed in as moved into the admin bar with the redesign,
+          # where it is on every admin page rather than only this one.
+          expect(response.body).to include(user.email)
         end
 
         it "uses the admin layout rather than the public one" do
           get admin_root_path
 
           expect(response.body).to include("Dira Health Admin")
-          expect(response.body).to include("Back to site")
+          expect(response.body).to include("Back to app")
         end
       end
     end
