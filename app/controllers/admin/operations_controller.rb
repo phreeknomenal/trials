@@ -7,6 +7,7 @@ module Admin
       @stale = ReadableStudySummary.stale.recent_first
       @pending = ReadableStudySummary.pending.where.not(id: @stale.select(:id)).recent_first
       @completed_count = ReadableStudySummary.completed.count
+      @healthy = @failed.none? && @stale.none?
     end
   end
 end
