@@ -28,6 +28,13 @@ module Admin
                     class: "px-3 py-1.5 rounded-nav text-sm font-semibold transition-colors \#{current?(path) ? "bg-navy-800 text-ink-2-on-dark" : "text-ink-3-on-dark hover:text-ink-on-dark"}" %>
             <% end %>
 
+            <%# Also what gives admin a theme at all: the controller applies the
+                dark class on connect, and no admin page mounted it, so admin
+                ignored the reader's choice and rendered light whatever they had
+                picked. PR 11 swept every page for dark and missed this one the
+                same way the plan missed the admin bar. %>
+            <%= render Buttons::DarkModeToggleComponent.new(on_dark: true) %>
+
             <span class="w-px h-5 bg-line-on-dark mx-1" aria-hidden="true"></span>
 
             <%# Kept, though the boards drop it. Knowing which account you are

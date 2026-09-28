@@ -37,6 +37,27 @@ RSpec.describe "The admin shell and overview", type: :request do
       expect(response.body).to include(admin_contact_messages_path)
     end
 
+    # The controller applies the dark class on connect, and no admin page
+    # mounted it, so admin ignored the reader's theme and rendered light
+    # whatever they had chosen. PR 11 swept every page for dark and missed this.
+    it "gives admin the reader's theme, and a way to change it" do
+      get admin_root_path
+
+      expect(response.body).to include('data-controller="dark-mode"')
+      expect(response.body).to include("Toggle dark mode")
+    end
+
+    # The bar is navy in light mode too, so an ink-2 glyph on it is a dark grey
+    # on near-black: the invisible control ButtonStyles already records once.
+    it "renders that toggle in a colour visible on a permanently dark bar" do
+      get admin_root_path
+
+      toggle = response.body[/<div data-controller="dark-mode">.*?<\/div>/m].to_s
+
+      expect(toggle).to include("text-ink-3-on-dark")
+      expect(toggle).not_to match(/class="w-5 h-5 text-ink-2[ "]/)
+    end
+
     # The boards drop it. Knowing which account you are acting as matters more
     # here than anywhere else in the app.
     it "keeps saying which account is acting" do
