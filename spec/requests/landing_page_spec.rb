@@ -21,12 +21,11 @@ RSpec.describe "The landing page", type: :request do
       expect(response.body).to include("Condition", "Location")
     end
 
-    # There is no distance anywhere in the data. locations_detailed carries a
-    # near_you boolean from a string match on city and state, and nothing reads
-    # a distance param.
-    it "offers no distance control" do
-      expect(response.body).not_to match(/Within \d+ miles/)
-      expect(response.body).not_to include("Any distance")
+    # The control was removed when nothing read a distance param. The zip lookup
+    # carries coordinates now and the registry filters by radius itself.
+    it "offers a distance, defaulting to any" do
+      expect(response.body).to match(/Within \d+ miles/)
+      expect(response.body).to include("Any distance")
     end
 
     # The board's hero badge says "Now indexing studies in all 50 states".
