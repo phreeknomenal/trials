@@ -14,7 +14,8 @@ class ClinicalTrialClient
     "Withdrawn"
   ].freeze
 
-  def self.advanced_search(condition: nil, location: nil, page_token: nil, page_size: 10)
+  def self.advanced_search(condition: nil, location: nil, within_miles: nil, origin: nil,
+    page_token: nil, page_size: 10)
     # API v2 uses query.cond for condition/disease and query.locn for location
     return {studies: [], total_count: 0} if condition.blank? && location.blank?
 
@@ -31,6 +32,12 @@ class ClinicalTrialClient
       # since it was written for TrialScorer and EligibilityChecker. Nothing had
       # ever told the registry.
       "filter.overallStatus" => TrialStatus.registry_filter,
+
+      # The registry narrows by radius itself, so a page of ten is ten studies
+      # somebody can reach rather than ten it happened to rank first. Filtering
+      # after the fetch cannot work here: the registry does not know what was
+      # dropped, so page two would repeat page one's gaps.
+      "filter.geo" => geo_filter(within_miles, origin),
       "pageSize" => page_size,
       "pageToken" => page_token,
       "format" => "json"
@@ -154,6 +161,20 @@ class ClinicalTrialClient
       # Why Stopped
       why_stopped: status.dig("whyStopped")
     }
+  end
+
+  # distance(lat,lon,Nmi), verified against the live API on 2026-09-27: every
+  # study returned for a Birmingham point had a Birmingham site.
+  #
+  # Nil when either half is missing, which drops the key and searches the whole
+  # registry. That is the right failure: a radius nobody can anchor should widen
+  # the search, never silently empty it.
+  def self.geo_filter(within_miles, origin)
+    miles = within_miles.to_i
+    lat, lon = origin
+    return nil if miles <= 0 || lat.blank? || lon.blank?
+
+    "distance(#{lat},#{lon},#{miles}mi)"
   end
 
   def self.extract_locations(contacts)

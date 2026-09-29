@@ -14,13 +14,26 @@
           variant: :compact,
           conditions: @conditions,
           condition: params[:condition] || @default_condition,
-          location: params[:location]
+          location: params[:location],
+          within_miles: params[:within_miles]
         ) %>
   </div>
 
   <% if @error.present? %>
     <div class="rounded-card border border-crit/30 dark:border-crit-on-dark bg-crit/10 dark:bg-crit-on-dark/20 p-4 mb-6">
       <p class="text-crit dark:text-crit-on-dark"><%= @error %></p>
+    </div>
+  <% end %>
+
+  <%# A radius the app cannot anchor widens the search rather than emptying it,
+      which is the right failure but a silent one. Said, so nobody reads an
+      unfiltered page as a filtered one. %>
+  <% if @radius_unanchored %>
+    <div class="rounded-card border border-warn/30 dark:border-warn-on-dark bg-warn/10 dark:bg-warn-on-dark/15 p-4 mb-6">
+      <p class="text-meta text-ink-2 dark:text-ink-2-on-dark">
+        We could not tell where to measure <%= params[:within_miles] %> miles from, so every distance is shown.
+        Search a ZIP code, or add one to your profile.
+      </p>
     </div>
   <% end %>
 

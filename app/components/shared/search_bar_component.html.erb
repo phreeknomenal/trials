@@ -32,6 +32,19 @@
         <%= f.text_field :location, value: location, placeholder: "City, state or ZIP", class: field_class %>
       </div>
 
+      <span class="<%= divider_class %>" aria-hidden="true"></span>
+
+      <%# Any distance is the default, and the blank option is how it is chosen.
+          A radius the app cannot anchor widens the search rather than emptying
+          it, and the results page says when that happened. %>
+      <div class="<%= full? ? "lg:w-[170px]" : "sm:w-[150px]" %>">
+        <%= f.label :within_miles, "Distance", class: label_class %>
+        <%= f.select :within_miles,
+              options_for_select(distance_options, within_miles),
+              {include_blank: "Any distance"},
+              class: field_class %>
+      </div>
+
       <%# A button rather than a submit input, because an input cannot hold the
           search icon the style guide asks for. %>
       <%= f.button type: "submit", class: submit_class do %>

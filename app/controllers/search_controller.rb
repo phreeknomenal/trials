@@ -58,6 +58,7 @@ class SearchController < ApplicationController
     @current_page = result[:current_page]
     @has_next_page = result[:has_next_page]
     @next_page_token = result[:next_page_token]
+    @radius_unanchored = result[:radius_unanchored]
     @prev_page_token = (current_page_num > 1) ? get_page_token(current_page_num - 1) : nil
 
     # Persist the token from the URL so Previous can use it on the way back.
@@ -105,14 +106,22 @@ class SearchController < ApplicationController
   def sanitized_params
     @sanitized_params ||= {
       condition: params[:condition].presence || @default_condition,
-      location: params[:location].presence || profile_location
-    }
+      location: params[:location].presence || profile_location,
+      within_miles: within_miles
+    }.compact
   end
 
   def profile_location
     return nil unless @profile
 
     [@profile.city, @profile.state].compact.join(", ").presence
+  end
+
+  # Only the radii the profile itself offers, so a hand-made URL cannot ask the
+  # registry for something the form never showed.
+  def within_miles
+    value = params[:within_miles].to_i
+    Profile::TRAVEL_MILES_OPTIONS.include?(value) ? value : nil
   end
 
   def search_params_present?

@@ -44,9 +44,34 @@ class TrialSearchService
 
   def hide_ineligible? = ActiveModel::Type::Boolean.new.cast(filters[:hide_ineligible]).present?
 
+  # Where a radius is measured from: the location typed into the search when it
+  # is a postal code, otherwise the profile's own. Typed first, because someone
+  # searching for Chicago while living in Birmingham means Chicago.
+  #
+  # A place name cannot be resolved. The lookup holds postal codes, so "Chicago"
+  # gives no point and the radius is dropped rather than guessed at.
+  def origin
+    return @origin if defined?(@origin)
+
+    typed = ZipCode.lookup(@search_params[:location])
+    @origin = typed&.coordinates || @profile&.coordinates
+  end
+
+  def within_miles = @search_params[:within_miles].presence
+
+  # True when a radius was asked for and there was no point to measure it from,
+  # so the page can say so instead of quietly returning the whole registry.
+  def radius_unanchored? = within_miles.present? && origin.blank?
+
+  def registry_arguments
+    @search_params.except(:within_miles)
+      .merge(within_miles: within_miles, origin: origin)
+      .compact
+  end
+
   def standard_search
     result = ClinicalTrialClient.advanced_search(
-      **@search_params, page_token: @page_token, page_size: @page_size
+      **registry_arguments, page_token: @page_token, page_size: @page_size
     )
 
     studies = score_studies(result[:studies] || [])
@@ -59,7 +84,8 @@ class TrialSearchService
       has_next_page: result[:next_page_token].present?,
       next_page_token: result[:next_page_token],
       facets: facets_for(studies),
-      refined: false
+      refined: false,
+      radius_unanchored: radius_unanchored?
     }
   end
 
@@ -67,7 +93,7 @@ class TrialSearchService
     result = ClinicalTrialClient.advanced_search(
       # Always from the beginning, so the batch being refined is the same batch
       # whichever page is being asked for.
-      **@search_params, page_token: nil, page_size: BATCH_SIZE
+      **registry_arguments, page_token: nil, page_size: BATCH_SIZE
     )
 
     scored = score_studies(result[:studies] || [])
@@ -77,6 +103,7 @@ class TrialSearchService
     first = (@page - 1) * @page_size
 
     {
+      radius_unanchored: radius_unanchored?,
       studies: kept[first, @page_size] || [],
       total_count: kept.length,
       error: result[:error],

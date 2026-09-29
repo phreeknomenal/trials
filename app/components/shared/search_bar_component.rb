@@ -16,31 +16,31 @@ class Shared::SearchBarComponent < ApplicationComponent
   # tells you the shape of the answer and a generic one does not.
   PLACEHOLDER = "Breast cancer, type 2 diabetes, migraine".freeze
 
-  # There is no distance select, and there was one here until the landing page
-  # was about to render it.
+  # The distance select is back, and this time something reads it.
   #
-  # The full variant is described in this file's own first line as "the hero
-  # control", and the hero is what this component was built for. Nothing used
-  # the full variant until now, and the compact variant hid the field, so a
-  # control offering "Within 25 / 50 / 100 miles" sat in the component unseen
-  # for two PRs. Nothing reads a distance param: TrialSearchService filters on
-  # phase and study type, and ClinicalTrialClient sends a condition and a
-  # location.
+  # It was removed because it did nothing: no code read a distance param, and
+  # the note left in its place said showing miles "needs geocoding at both ends
+  # and stored coordinates, which is a feature rather than a view". The zip
+  # lookup carries coordinates now and the registry filters by radius itself,
+  # so the control has an answer to give.
   #
-  # There is no distance anywhere in the data. locations_detailed carries a
-  # near_you boolean derived by string-matching the profile's city and state.
-  # Showing miles needs geocoding at both ends and stored coordinates, which is
-  # a feature rather than a view.
+  # On both variants. Keeping it off the compact bar was the first attempt and
+  # it loses the radius: the results page renders the compact one, so a distance
+  # chosen on the landing page would vanish the moment the results came back,
+  # with no way to see or change it.
+  DISTANCE_OPTIONS = Profile::TRAVEL_MILES_OPTIONS.map { |miles| ["Within #{miles} miles", miles] }.freeze
 
-  attr_reader :url, :variant, :conditions, :condition, :location, :popular
+  attr_reader :url, :variant, :conditions, :condition, :location, :popular, :within_miles
 
-  def initialize(url:, variant: :full, conditions: [], condition: nil, location: nil, popular: [])
+  def initialize(url:, variant: :full, conditions: [], condition: nil, location: nil,
+    popular: [], within_miles: nil)
     @url = url
     @variant = variant.to_sym
     @conditions = conditions
     @condition = condition
     @location = location
     @popular = popular
+    @within_miles = within_miles
 
     return if VARIANTS.include?(@variant)
 
@@ -51,6 +51,8 @@ class Shared::SearchBarComponent < ApplicationComponent
   def datalist_id
     @datalist_id ||= "conditions-#{variant}-#{object_id}"
   end
+
+  def distance_options = DISTANCE_OPTIONS
 
   def full? = variant == :full
 

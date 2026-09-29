@@ -86,18 +86,49 @@ RSpec.describe Shared::SearchBarComponent, type: :component do
   #
   # There is no distance in the data at all: locations_detailed carries a
   # near_you boolean from a string match on city and state.
+  # The control was removed because nothing read it, with a note saying miles
+  # "needs geocoding at both ends and stored coordinates, which is a feature
+  # rather than a view". The zip lookup carries coordinates now and the registry
+  # filters by radius itself, so it is back and something answers it.
   describe "distance" do
-    it "is not offered on either variant" do
-      %i[full compact].each do |variant|
-        render_inline(described_class.new(url: "/search", variant: variant))
+    it "is offered on the hero, where a search is started" do
+      render_inline(described_class.new(url: "/search", variant: :full))
 
-        expect(page).to have_no_css("label", text: "Distance")
-        expect(page.native.to_html).not_to include("distance")
-      end
+      expect(page).to have_css("label", text: "Distance")
+      expect(page).to have_css("select[name=within_miles] option", text: "Within 50 miles")
     end
 
-    it "is not a constant anyone can reach for" do
-      expect(described_class).not_to be_const_defined(:DISTANCES)
+    # Any distance is the default: a radius that empties a search nobody asked
+    # to narrow is worse than no radius.
+    it "defaults to any distance" do
+      render_inline(described_class.new(url: "/search", variant: :full))
+
+      expect(page.find("select[name=within_miles]").value).to be_blank
+      expect(page).to have_css("option", text: "Any distance")
+    end
+
+    it "keeps the radius that was searched for" do
+      render_inline(described_class.new(url: "/search", variant: :full, within_miles: 25))
+
+      expect(page.find("select[name=within_miles]").value).to eq("25")
+    end
+
+    # The results page renders the compact bar, so leaving the select off it
+    # would drop the radius the moment the results came back.
+    it "is on the compact bar too, so the radius survives the search" do
+      render_inline(described_class.new(url: "/search", variant: :compact, within_miles: 100))
+
+      expect(page.find("select[name=within_miles]").value).to eq("100")
+    end
+
+    # Only what the profile itself offers, so the form cannot ask the registry
+    # for a radius the app never showed.
+    it "offers only the radii the profile knows" do
+      render_inline(described_class.new(url: "/search", variant: :full))
+
+      values = page.all("select[name=within_miles] option").map(&:value).reject(&:blank?).map(&:to_i)
+
+      expect(values).to eq(Profile::TRAVEL_MILES_OPTIONS)
     end
   end
 
