@@ -30,7 +30,7 @@
         <% if location_label.present? %>
           <span class="inline-flex items-center gap-1.5">
             <%= render Utilities::IconComponent.new("map_pin", size: 4) %>
-            <%= location_label %><%= " · Near you" if near_you? %>
+            <%= location_label %><%= " · #{distance_phrase}" if distance_phrase.present? %>
           </span>
         <% end %>
 

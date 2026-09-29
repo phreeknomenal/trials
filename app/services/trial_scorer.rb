@@ -142,7 +142,47 @@ class TrialScorer
     (matching_conditions.to_f / profile_conditions.length * 100).round
   end
 
+  # Full marks inside the distance the profile said it could travel, falling
+  # away to nothing at four times it.
+  #
+  # This was a string match on city and state until the zip lookup gained
+  # coordinates: a site four miles away and one three hundred miles away in the
+  # same state both scored 75, and everything outside the state scored the same
+  # flat number whether it was in the next county or in Osaka.
+  FALLOFF_MULTIPLE = 3.0
+
+  # What to assume when a profile never answered the travel question. The middle
+  # of the four options it offers, so the assumption is not the generous end.
+  ASSUMED_TRAVEL_MILES = Profile::FIFTY_MILES
+
   def score_location
+    miles = nearest_site_miles
+    return location_score_without_distance if miles.nil?
+
+    limit = @profile.willing_travel_miles.presence || ASSUMED_TRAVEL_MILES
+    return 100 if miles <= limit
+
+    beyond = (miles - limit) / (FALLOFF_MULTIPLE * limit)
+    (100 * (1 - beyond)).clamp(0, 100).round
+  end
+
+  # The nearest site, because a study with one site five miles away and sixty
+  # across the country is a five mile study for this person.
+  #
+  # Nil when either end has no point: a profile may carry no postal code, and
+  # some registry locations publish no coordinates at all.
+  def nearest_site_miles
+    origin = @profile.coordinates
+    return nil if origin.nil?
+
+    Array(@trial[:locations_detailed])
+      .filter_map { |location| Distance.between(origin, location[:geo_point]) }
+      .min
+  end
+
+  # The pre-coordinates behaviour, unchanged, for when there is no distance to
+  # be had. A profile with no postal code scores exactly as it did before.
+  def location_score_without_distance
     return 50 unless @profile.city && @profile.state
 
     trial_locations = @trial[:locations]
@@ -157,13 +197,9 @@ class TrialScorer
     distant_location_score
   end
 
-  # No geocoding yet, so this is a willingness proxy rather than a distance
-  # calculation. Someone who will travel 100 miles should not be penalised as
-  # hard for an out-of-state trial as someone who will travel 10. The profile
-  # has collected willing_travel_miles since onboarding and nothing read it.
-  #
-  # Falls back to the previous flat score when travel tolerance is unset, so an
-  # incomplete profile scores exactly as it did before.
+  # A willingness proxy, kept only for the no-distance path above. Someone who
+  # will travel 100 miles should not be penalised as hard for an out-of-state
+  # trial as someone who will travel 10.
   DISTANT_LOCATION_SCORES = {
     Profile::TEN_MILES => 10,
     Profile::TWENTYFIVE_MILES => 20,
