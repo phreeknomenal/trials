@@ -44,17 +44,44 @@ class TrialSearchService
 
   def hide_ineligible? = ActiveModel::Type::Boolean.new.cast(filters[:hide_ineligible]).present?
 
-  # Where a radius is measured from: the location typed into the search when it
-  # is a postal code, otherwise the profile's own. Typed first, because someone
-  # searching for Chicago while living in Birmingham means Chicago.
+  def typed_location = @search_params[:location].presence
+
+  def typed_zip
+    return @typed_zip if defined?(@typed_zip)
+
+    @typed_zip = ZipCode.lookup(typed_location)
+  end
+
+  # The registry's own search does not understand postal codes. query.locn is a
+  # place-name match, so "35203" returns nothing at all while "Birmingham,
+  # Alabama" returns four, and the field has invited a zip since it was written.
   #
-  # A place name cannot be resolved. The lookup holds postal codes, so "Chicago"
-  # gives no point and the radius is dropped rather than guessed at.
+  # So a typed zip is translated into the town it names, which is what the
+  # reader meant and what the registry can answer.
+  def resolved_location
+    return typed_location if typed_zip.nil?
+    return nil if within_miles.present?
+
+    [typed_zip.city, typed_zip.state].compact_blank.join(", ")
+  end
+
+  # Where a radius is measured from.
+  #
+  # A typed zip wins: someone searching 60601 while living in Birmingham means
+  # Chicago. A typed place name anchors nothing — the lookup holds postal codes,
+  # not town names — and measuring their radius from the profile instead would
+  # silently answer a different question, fifty miles from Birmingham for a
+  # search that said Chicago. It reports that it could not be anchored.
   def origin
     return @origin if defined?(@origin)
 
-    typed = ZipCode.lookup(@search_params[:location])
-    @origin = typed&.coordinates || @profile&.coordinates
+    @origin = if typed_zip
+      typed_zip.coordinates
+    elsif typed_location
+      nil
+    else
+      @profile&.coordinates
+    end
   end
 
   def within_miles = @search_params[:within_miles].presence
@@ -63,9 +90,13 @@ class TrialSearchService
   # so the page can say so instead of quietly returning the whole registry.
   def radius_unanchored? = within_miles.present? && origin.blank?
 
+  # A radius that resolved replaces the location rather than joining it: the
+  # registry ANDs its filters, so sending both would narrow a zip search to the
+  # studies inside the radius *and* matching the town's name.
   def registry_arguments
-    @search_params.except(:within_miles)
-      .merge(within_miles: within_miles, origin: origin)
+    @search_params
+      .except(:within_miles, :location)
+      .merge(location: resolved_location, within_miles: within_miles, origin: origin)
       .compact
   end
 
