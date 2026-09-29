@@ -14,7 +14,7 @@
   <% if @recommendations.any? %>
     <div class="flex flex-col gap-3">
       <% @recommendations.studies.each do |study| %>
-        <%= render Page::Cards::ResultCardComponent.new(study: study, signed_in: true) %>
+        <%= render Page::Cards::ResultCardComponent.new(study: study, signed_in: true, profile: @profile) %>
       <% end %>
     </div>
 

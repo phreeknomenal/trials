@@ -29,10 +29,11 @@ class Page::Cards::ResultCardComponent < ApplicationComponent
 
   attr_reader :study, :saved_trial, :signed_in
 
-  def initialize(study:, saved_trial: nil, signed_in: false)
+  def initialize(study:, saved_trial: nil, signed_in: false, profile: nil)
     @study = study
     @saved_trial = saved_trial
     @signed_in = signed_in
+    @profile = profile
   end
 
   def signed_in? = !!signed_in
@@ -97,21 +98,52 @@ class Page::Cards::ResultCardComponent < ApplicationComponent
 
   def conditions = Array(study[:conditions]).first(2)
 
-  # There is no distance in the data. locations_detailed carries a near_you
-  # boolean derived from matching city and state strings, nothing more, so this
-  # says "Near you" and never a number of miles.
+  # The nearest site where one can be measured, so the row names the site the
+  # reader would actually travel to rather than whichever the registry listed
+  # first.
   def location_label
+    return nearest[:display] if nearest.present?
+
     detailed = Array(study[:locations_detailed]).first
     return Array(study[:locations]).first if detailed.blank?
 
     detailed[:display]
   end
 
-  def near_you?
-    return false unless signed_in?
+  # This read l[:near_you], a key nothing in the app has ever set: the client
+  # does not produce it and the helper that once did was only used by the study
+  # page, so the badge was false in every render since it was written.
+  #
+  # It says a distance now, or nothing.
+  def distance_phrase
+    return nil if nearest_miles.nil?
 
-    Array(study[:locations_detailed]).any? { |l| l[:near_you] }
+    "#{nearest_miles.round} miles away"
   end
+
+  def nearest
+    return nil unless measurable?
+
+    @nearest ||= Array(study[:locations_detailed])
+      .filter_map { |l| [l, Distance.between(origin, l[:geo_point])] }
+      .reject { |_l, miles| miles.nil? }
+      .min_by { |_l, miles| miles }
+      &.first
+  end
+
+  def nearest_miles
+    return nil unless measurable? && nearest.present?
+
+    Distance.between(origin, nearest[:geo_point])
+  end
+
+  private
+
+  attr_reader :profile
+
+  def measurable? = signed_in? && origin.present?
+
+  def origin = @origin ||= profile&.coordinates
 
   def age_range
     low, high = study[:min_age].presence, study[:max_age].presence

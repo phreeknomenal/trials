@@ -78,8 +78,30 @@ RSpec.describe Page::Cards::ResultCardComponent, type: :component do
       expect(page).to have_no_link("Check your match")
     end
 
-    it "marks a location near the profile" do
-      expect(page.text).to include("Near you")
+    # This asserted "Near you", which the component read off l[:near_you] — a
+    # key nothing in the app has ever set. The spec supplied it by hand, so a
+    # badge that was false in every real render looked alive here.
+    it "says how far the nearest site is" do
+      ZipCode.create!(zip: "35203", city: "Birmingham", state: "Alabama", lat: 33.521, lon: -86.8066)
+      profile = create(:user).profile
+      profile.update_columns(zip_code: "35203")
+
+      render_inline(described_class.new(
+        study: study.merge(locations_detailed: [
+          {display: "Toronto, Ontario, Canada", geo_point: {lat: 43.6532, lon: -79.3832}},
+          {display: "Birmingham, Alabama", geo_point: {lat: 33.5045, lon: -86.8055}}
+        ]),
+        signed_in: true, profile: profile
+      ))
+
+      expect(page.text).to include("miles away")
+      expect(page.text).to include("Birmingham, Alabama")
+    end
+
+    it "says no distance when the profile has no postal code" do
+      render_inline(described_class.new(study: study, signed_in: true, profile: create(:user).profile))
+
+      expect(page.text).not_to include("miles away")
     end
   end
 

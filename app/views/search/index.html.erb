@@ -91,7 +91,8 @@
             <%= render Page::Cards::ResultCardComponent.new(
                   study: study,
                   saved_trial: @saved_trials_by_nct_id&.dig(study[:nct_id]),
-                  signed_in: user_signed_in?
+                  signed_in: user_signed_in?,
+                  profile: @profile
                 ) %>
           <% end %>
         </div>
