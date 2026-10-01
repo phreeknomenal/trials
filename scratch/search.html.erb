@@ -1,0 +1,92 @@
+<!-- Interventions -->
+<% if @study[:interventions].present? %>
+  <div>
+    <%= render Typography::HeadingComponent.new(size: :h4, text: "Interventions") %>
+    <div class="mt-4 space-y-4">
+      <% @study[:interventions].each do |intervention| %>
+        <div class="border border-zinc-200 dark:border-zinc-700 rounded-lg p-4">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="px-2 py-1 text-xs font-semibold rounded bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
+              <%= intervention[:type] %>
+            </span>
+            <h5 class="font-semibold text-zinc-900 dark:text-zinc-100"><%= intervention[:name] %></h5>
+          </div>
+          <% if intervention[:description].present? %>
+            <p class="text-sm text-zinc-600 dark:text-zinc-400"><%= intervention[:description] %></p>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+
+<!-- Study Design -->
+<div id="study-design" class="border border-zinc-200 dark:border-zinc-700 rounded-lg p-6">
+  <%= render Typography::HeadingComponent.new(size: :h4, text: "Study Design") %>
+  
+  <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+    <% if @study[:study_type].present? %>
+      <div>
+        <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Study Type</p>
+        <p class="text-base text-zinc-900 dark:text-zinc-100"><%= @study[:study_type] %></p>
+      </div>
+    <% end %>
+    
+    <% if @study[:design_allocation].present? %>
+      <div>
+        <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Allocation</p>
+        <p class="text-base text-zinc-900 dark:text-zinc-100"><%= @study[:design_allocation] %></p>
+      </div>
+    <% end %>
+    
+    <% if @study[:design_intervention_model].present? %>
+      <div>
+        <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Intervention Model</p>
+        <p class="text-base text-zinc-900 dark:text-zinc-100"><%= @study[:design_intervention_model] %></p>
+      </div>
+    <% end %>
+    
+    <% if @study[:design_primary_purpose].present? %>
+      <div>
+        <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Primary Purpose</p>
+        <p class="text-base text-zinc-900 dark:text-zinc-100"><%= @study[:design_primary_purpose] %></p>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+
+<!-- Eligibility Criteria -->
+        <div id="eligibility" class="border border-zinc-300 dark:border-zinc-700 rounded-lg p-6">
+          <%= render Typography::HeadingComponent.new(size: :h4, text: "Eligibility Criteria") %>
+          
+          <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <% if @study[:min_age].present? %>
+              <div>
+                <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Minimum Age</p>
+                <p class="text-base text-zinc-900 dark:text-zinc-100"><%= @study[:min_age] %></p>
+              </div>
+            <% end %>
+            
+            <% if @study[:max_age].present? %>
+              <div>
+                <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Maximum Age</p>
+                <p class="text-base text-zinc-900 dark:text-zinc-100"><%= @study[:max_age] %></p>
+              </div>
+            <% end %>
+            
+            <% if @study[:sex].present? %>
+              <div>
+                <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400">Sex</p>
+                <p class="text-base text-zinc-900 dark:text-zinc-100"><%= @study[:sex] %></p>
+              </div>
+            <% end %>
+          </div>
+
+          <% if @study[:inclusion_criteria].present? %>
+            <div class="mt-6">
+              <%= render Page::DropdownComponent.new(title: "Eligibility Criteria", body: @study[:inclusion_criteria]) %>
+            </div>
+          <% end %>
+        </div>

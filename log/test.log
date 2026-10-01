@@ -1,0 +1,406 @@
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "schema_sha1"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.1ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.0ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.0ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.0ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[35m (0.3ms)[0m  [1m[35mDROP TABLE IF EXISTS "action_text_rich_texts"[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE TABLE "action_text_rich_texts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "body" text, "created_at" datetime(6) NOT NULL, "name" varchar NOT NULL, "record_id" bigint NOT NULL, "record_type" varchar NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_action_text_rich_texts_uniqueness" ON "action_text_rich_texts" ("record_type", "record_id", "name")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE IF EXISTS "active_storage_attachments"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TABLE "active_storage_attachments" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "blob_id" bigint NOT NULL, "created_at" datetime(6) NOT NULL, "name" varchar NOT NULL, "record_id" bigint NOT NULL, "record_type" varchar NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_active_storage_attachments_on_blob_id" ON "active_storage_attachments" ("blob_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_active_storage_attachments_uniqueness" ON "active_storage_attachments" ("record_type", "record_id", "name", "blob_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE IF EXISTS "active_storage_blobs"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "active_storage_blobs" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "byte_size" bigint NOT NULL, "checksum" varchar, "content_type" varchar, "created_at" datetime(6) NOT NULL, "filename" varchar NOT NULL, "key" varchar NOT NULL, "metadata" text, "service_name" varchar NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_active_storage_blobs_on_key" ON "active_storage_blobs" ("key")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE IF EXISTS "active_storage_variant_records"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TABLE "active_storage_variant_records" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "blob_id" bigint NOT NULL, "variation_digest" varchar NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_active_storage_variant_records_uniqueness" ON "active_storage_variant_records" ("blob_id", "variation_digest")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE IF EXISTS "conditions"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TABLE "conditions" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "name" text NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_conditions_on_name" ON "conditions" ("name")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE IF EXISTS "genders"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TABLE "genders" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "name" varchar NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_genders_on_name" ON "genders" ("name")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE IF EXISTS "identities"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TABLE "identities" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "name" text NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_identities_on_name" ON "identities" ("name")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE IF EXISTS "interests"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TABLE "interests" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "name" text NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_interests_on_name" ON "interests" ("name")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE IF EXISTS "profile_conditions"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "profile_conditions" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "condition_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "is_primary" boolean DEFAULT FALSE, "profile_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE INDEX "index_profile_conditions_on_condition_id" ON "profile_conditions" ("condition_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_profile_conditions_on_profile_id_and_condition_id" ON "profile_conditions" ("profile_id", "condition_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profile_conditions_on_profile_id" ON "profile_conditions" ("profile_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE IF EXISTS "profile_identities"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TABLE "profile_identities" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "identity_id" integer NOT NULL, "profile_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profile_identities_on_identity_id" ON "profile_identities" ("identity_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_profile_identities_on_profile_id_and_identity_id" ON "profile_identities" ("profile_id", "identity_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profile_identities_on_profile_id" ON "profile_identities" ("profile_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE IF EXISTS "profile_interests"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "profile_interests" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "interest_id" integer NOT NULL, "profile_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE INDEX "index_profile_interests_on_interest_id" ON "profile_interests" ("interest_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_profile_interests_on_profile_id_and_interest_id" ON "profile_interests" ("profile_id", "interest_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profile_interests_on_profile_id" ON "profile_interests" ("profile_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE IF EXISTS "profiles"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "profiles" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "birth_year" integer, "city" varchar, "contact_preference" varchar, "country" varchar DEFAULT 'US', "created_at" datetime(6) NOT NULL, "current_treatment" varchar, "diagnosis_timing" varchar, "ethnicity" varchar DEFAULT 'prefer not to say', "first_name" varchar, "gender_id" integer, "language_preference" varchar, "last_name" varchar, "onboarded" boolean DEFAULT FALSE NOT NULL, "phone_number" varchar, "prior_treatment" boolean DEFAULT FALSE, "pronouns" varchar, "race_id" integer, "remote_visit_preference" varchar, "risk_tolerance" varchar, "sex_assigned_at_birth" varchar, "state" varchar, "transportation_reliable" boolean DEFAULT TRUE, "trial_type_preference" varchar, "updated_at" datetime(6) NOT NULL, "user_id" integer NOT NULL, "willing_travel_miles" integer, "zip_code" varchar)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profiles_on_gender_id" ON "profiles" ("gender_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profiles_on_race_id" ON "profiles" ("race_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE INDEX "index_profiles_on_user_id" ON "profiles" ("user_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE IF EXISTS "races"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TABLE "races" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "name" varchar NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_races_on_name" ON "races" ("name")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE IF EXISTS "saved_trials"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "saved_trials" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "completion_date" date, "created_at" datetime(6) NOT NULL, "enrollment_count" integer, "match_score" decimal(5,2), "max_age" integer, "min_age" varchar, "nct_id" varchar NOT NULL, "phase" varchar, "sponsor" varchar, "start_date" date, "status" varchar DEFAULT 'interested' NOT NULL, "study_type" varchar, "summary" text, "tags" varchar, "trial_status" varchar, "trial_title" varchar, "updated_at" datetime(6) NOT NULL, "user_id" integer NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_saved_trials_on_created_at" ON "saved_trials" ("created_at")[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE INDEX "index_saved_trials_on_status" ON "saved_trials" ("status")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_saved_trials_on_user_and_nct" ON "saved_trials" ("user_id", "nct_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_saved_trials_on_user_id" ON "saved_trials" ("user_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE IF EXISTS "users"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "users" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "email" varchar DEFAULT '' NOT NULL, "encrypted_password" varchar DEFAULT '' NOT NULL, "remember_created_at" datetime(6), "reset_password_sent_at" datetime(6), "reset_password_token" varchar, "role" varchar DEFAULT 'member' NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_users_on_email" ON "users" ("email")[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_users_on_reset_password_token" ON "users" ("reset_password_token")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = ON[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = OFF[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN immediate TRANSACTION[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TEMPORARY TABLE "aactive_storage_attachments" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "blob_id" bigint NOT NULL, "created_at" datetime(6) NOT NULL, "name" varchar NOT NULL, "record_id" bigint NOT NULL, "record_type" varchar NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "tindex_aactive_storage_attachments_uniqueness" ON "aactive_storage_attachments" ("record_type", "record_id", "name", "blob_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_aactive_storage_attachments_on_blob_id" ON "aactive_storage_attachments" ("blob_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "aactive_storage_attachments" ("id","blob_id","created_at","name","record_id","record_type")
+                     SELECT "id","blob_id","created_at","name","record_id","record_type" FROM "active_storage_attachments"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE "active_storage_attachments"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TABLE "active_storage_attachments" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "blob_id" bigint NOT NULL, "created_at" datetime(6) NOT NULL, "name" varchar NOT NULL, "record_id" bigint NOT NULL, "record_type" varchar NOT NULL, CONSTRAINT "fk_rails_c3b3935057"
+FOREIGN KEY ("blob_id")
+  REFERENCES "active_storage_blobs" ("id")
+)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_active_storage_attachments_on_blob_id" ON "active_storage_attachments" ("blob_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_active_storage_attachments_uniqueness" ON "active_storage_attachments" ("record_type", "record_id", "name", "blob_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "active_storage_attachments" ("id","blob_id","created_at","name","record_id","record_type")
+                     SELECT "id","blob_id","created_at","name","record_id","record_type" FROM "aactive_storage_attachments"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "aactive_storage_attachments"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mCOMMIT TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = 0[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = 1[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = ON[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = OFF[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN immediate TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TEMPORARY TABLE "aactive_storage_variant_records" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "blob_id" bigint NOT NULL, "variation_digest" varchar NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "tindex_aactive_storage_variant_records_uniqueness" ON "aactive_storage_variant_records" ("blob_id", "variation_digest")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "aactive_storage_variant_records" ("id","blob_id","variation_digest")
+                     SELECT "id","blob_id","variation_digest" FROM "active_storage_variant_records"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "active_storage_variant_records"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TABLE "active_storage_variant_records" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "blob_id" bigint NOT NULL, "variation_digest" varchar NOT NULL, CONSTRAINT "fk_rails_993965df05"
+FOREIGN KEY ("blob_id")
+  REFERENCES "active_storage_blobs" ("id")
+)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_active_storage_variant_records_uniqueness" ON "active_storage_variant_records" ("blob_id", "variation_digest")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "active_storage_variant_records" ("id","blob_id","variation_digest")
+                     SELECT "id","blob_id","variation_digest" FROM "aactive_storage_variant_records"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "aactive_storage_variant_records"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mCOMMIT TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = 0[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = 1[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = ON[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = OFF[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN immediate TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TEMPORARY TABLE "aprofile_conditions" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "condition_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "is_primary" boolean DEFAULT FALSE, "profile_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_aprofile_conditions_on_profile_id" ON "aprofile_conditions" ("profile_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "tindex_aprofile_conditions_on_profile_id_and_condition_id" ON "aprofile_conditions" ("profile_id", "condition_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_aprofile_conditions_on_condition_id" ON "aprofile_conditions" ("condition_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "aprofile_conditions" ("id","condition_id","created_at","is_primary","profile_id","updated_at")
+                     SELECT "id","condition_id","created_at","is_primary","profile_id","updated_at" FROM "profile_conditions"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE "profile_conditions"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TABLE "profile_conditions" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "condition_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "is_primary" boolean DEFAULT FALSE, "profile_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_b7890b47af"
+FOREIGN KEY ("condition_id")
+  REFERENCES "conditions" ("id")
+)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profile_conditions_on_condition_id" ON "profile_conditions" ("condition_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_profile_conditions_on_profile_id_and_condition_id" ON "profile_conditions" ("profile_id", "condition_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profile_conditions_on_profile_id" ON "profile_conditions" ("profile_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "profile_conditions" ("id","condition_id","created_at","is_primary","profile_id","updated_at")
+                     SELECT "id","condition_id","created_at","is_primary","profile_id","updated_at" FROM "aprofile_conditions"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "aprofile_conditions"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mCOMMIT TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = 0[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = 1[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = ON[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = OFF[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN immediate TRANSACTION[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TEMPORARY TABLE "aprofile_conditions" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "condition_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "is_primary" boolean DEFAULT FALSE, "profile_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_aprofile_conditions_on_profile_id" ON "aprofile_conditions" ("profile_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "tindex_aprofile_conditions_on_profile_id_and_condition_id" ON "aprofile_conditions" ("profile_id", "condition_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_aprofile_conditions_on_condition_id" ON "aprofile_conditions" ("condition_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "aprofile_conditions" ("id","condition_id","created_at","is_primary","profile_id","updated_at")
+                     SELECT "id","condition_id","created_at","is_primary","profile_id","updated_at" FROM "profile_conditions"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE "profile_conditions"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TABLE "profile_conditions" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "condition_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "is_primary" boolean DEFAULT FALSE, "profile_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_b7890b47af"
+FOREIGN KEY ("condition_id")
+  REFERENCES "conditions" ("id")
+, CONSTRAINT "fk_rails_48603c2141"
+FOREIGN KEY ("profile_id")
+  REFERENCES "profiles" ("id")
+)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profile_conditions_on_condition_id" ON "profile_conditions" ("condition_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_profile_conditions_on_profile_id_and_condition_id" ON "profile_conditions" ("profile_id", "condition_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profile_conditions_on_profile_id" ON "profile_conditions" ("profile_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "profile_conditions" ("id","condition_id","created_at","is_primary","profile_id","updated_at")
+                     SELECT "id","condition_id","created_at","is_primary","profile_id","updated_at" FROM "aprofile_conditions"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "aprofile_conditions"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mCOMMIT TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = 0[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = 1[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = ON[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = OFF[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN immediate TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TEMPORARY TABLE "aprofile_identities" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "identity_id" integer NOT NULL, "profile_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_aprofile_identities_on_profile_id" ON "aprofile_identities" ("profile_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "tindex_aprofile_identities_on_profile_id_and_identity_id" ON "aprofile_identities" ("profile_id", "identity_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_aprofile_identities_on_identity_id" ON "aprofile_identities" ("identity_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "aprofile_identities" ("id","created_at","identity_id","profile_id","updated_at")
+                     SELECT "id","created_at","identity_id","profile_id","updated_at" FROM "profile_identities"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "profile_identities"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TABLE "profile_identities" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "identity_id" integer NOT NULL, "profile_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_0ed689f0d9"
+FOREIGN KEY ("identity_id")
+  REFERENCES "identities" ("id")
+)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profile_identities_on_identity_id" ON "profile_identities" ("identity_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_profile_identities_on_profile_id_and_identity_id" ON "profile_identities" ("profile_id", "identity_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profile_identities_on_profile_id" ON "profile_identities" ("profile_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "profile_identities" ("id","created_at","identity_id","profile_id","updated_at")
+                     SELECT "id","created_at","identity_id","profile_id","updated_at" FROM "aprofile_identities"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "aprofile_identities"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mCOMMIT TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = 0[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = 1[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = ON[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = OFF[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN immediate TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TEMPORARY TABLE "aprofile_identities" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "identity_id" integer NOT NULL, "profile_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_aprofile_identities_on_profile_id" ON "aprofile_identities" ("profile_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "tindex_aprofile_identities_on_profile_id_and_identity_id" ON "aprofile_identities" ("profile_id", "identity_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_aprofile_identities_on_identity_id" ON "aprofile_identities" ("identity_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "aprofile_identities" ("id","created_at","identity_id","profile_id","updated_at")
+                     SELECT "id","created_at","identity_id","profile_id","updated_at" FROM "profile_identities"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "profile_identities"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TABLE "profile_identities" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "identity_id" integer NOT NULL, "profile_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_0ed689f0d9"
+FOREIGN KEY ("identity_id")
+  REFERENCES "identities" ("id")
+, CONSTRAINT "fk_rails_b059e8fa31"
+FOREIGN KEY ("profile_id")
+  REFERENCES "profiles" ("id")
+)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profile_identities_on_identity_id" ON "profile_identities" ("identity_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_profile_identities_on_profile_id_and_identity_id" ON "profile_identities" ("profile_id", "identity_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profile_identities_on_profile_id" ON "profile_identities" ("profile_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "profile_identities" ("id","created_at","identity_id","profile_id","updated_at")
+                     SELECT "id","created_at","identity_id","profile_id","updated_at" FROM "aprofile_identities"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE "aprofile_identities"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mCOMMIT TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = 0[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = 1[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = ON[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = OFF[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN immediate TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TEMPORARY TABLE "aprofile_interests" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "interest_id" integer NOT NULL, "profile_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_aprofile_interests_on_profile_id" ON "aprofile_interests" ("profile_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "tindex_aprofile_interests_on_profile_id_and_interest_id" ON "aprofile_interests" ("profile_id", "interest_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_aprofile_interests_on_interest_id" ON "aprofile_interests" ("interest_id")[0m
+  [1m[35mSQL (0.3ms)[0m  [1m[32mINSERT INTO "aprofile_interests" ("id","created_at","interest_id","profile_id","updated_at")
+                     SELECT "id","created_at","interest_id","profile_id","updated_at" FROM "profile_interests"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "profile_interests"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TABLE "profile_interests" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "interest_id" integer NOT NULL, "profile_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_05f7d11076"
+FOREIGN KEY ("interest_id")
+  REFERENCES "interests" ("id")
+)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profile_interests_on_interest_id" ON "profile_interests" ("interest_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_profile_interests_on_profile_id_and_interest_id" ON "profile_interests" ("profile_id", "interest_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profile_interests_on_profile_id" ON "profile_interests" ("profile_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "profile_interests" ("id","created_at","interest_id","profile_id","updated_at")
+                     SELECT "id","created_at","interest_id","profile_id","updated_at" FROM "aprofile_interests"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "aprofile_interests"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mCOMMIT TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = 0[0m
+  [1m[35m (0.2ms)[0m  [1m[35mPRAGMA foreign_keys = 1[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = ON[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = OFF[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN immediate TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TEMPORARY TABLE "aprofile_interests" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "interest_id" integer NOT NULL, "profile_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_aprofile_interests_on_profile_id" ON "aprofile_interests" ("profile_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "tindex_aprofile_interests_on_profile_id_and_interest_id" ON "aprofile_interests" ("profile_id", "interest_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_aprofile_interests_on_interest_id" ON "aprofile_interests" ("interest_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "aprofile_interests" ("id","created_at","interest_id","profile_id","updated_at")
+                     SELECT "id","created_at","interest_id","profile_id","updated_at" FROM "profile_interests"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE "profile_interests"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TABLE "profile_interests" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime(6) NOT NULL, "interest_id" integer NOT NULL, "profile_id" integer NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_05f7d11076"
+FOREIGN KEY ("interest_id")
+  REFERENCES "interests" ("id")
+, CONSTRAINT "fk_rails_69d6b546cc"
+FOREIGN KEY ("profile_id")
+  REFERENCES "profiles" ("id")
+)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profile_interests_on_interest_id" ON "profile_interests" ("interest_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_profile_interests_on_profile_id_and_interest_id" ON "profile_interests" ("profile_id", "interest_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profile_interests_on_profile_id" ON "profile_interests" ("profile_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "profile_interests" ("id","created_at","interest_id","profile_id","updated_at")
+                     SELECT "id","created_at","interest_id","profile_id","updated_at" FROM "aprofile_interests"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "aprofile_interests"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mCOMMIT TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = 0[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = 1[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = ON[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = OFF[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN immediate TRANSACTION[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TEMPORARY TABLE "aprofiles" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "birth_year" integer, "city" varchar, "contact_preference" varchar, "country" varchar DEFAULT 'US', "created_at" datetime(6) NOT NULL, "current_treatment" varchar, "diagnosis_timing" varchar, "ethnicity" varchar DEFAULT 'prefer not to say', "first_name" varchar, "gender_id" integer, "language_preference" varchar, "last_name" varchar, "onboarded" boolean DEFAULT FALSE NOT NULL, "phone_number" varchar, "prior_treatment" boolean DEFAULT FALSE, "pronouns" varchar, "race_id" integer, "remote_visit_preference" varchar, "risk_tolerance" varchar, "sex_assigned_at_birth" varchar, "state" varchar, "transportation_reliable" boolean DEFAULT TRUE, "trial_type_preference" varchar, "updated_at" datetime(6) NOT NULL, "user_id" integer NOT NULL, "willing_travel_miles" integer, "zip_code" varchar)[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE INDEX "tindex_aprofiles_on_user_id" ON "aprofiles" ("user_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_aprofiles_on_race_id" ON "aprofiles" ("race_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_aprofiles_on_gender_id" ON "aprofiles" ("gender_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "aprofiles" ("id","birth_year","city","contact_preference","country","created_at","current_treatment","diagnosis_timing","ethnicity","first_name","gender_id","language_preference","last_name","onboarded","phone_number","prior_treatment","pronouns","race_id","remote_visit_preference","risk_tolerance","sex_assigned_at_birth","state","transportation_reliable","trial_type_preference","updated_at","user_id","willing_travel_miles","zip_code")
+                     SELECT "id","birth_year","city","contact_preference","country","created_at","current_treatment","diagnosis_timing","ethnicity","first_name","gender_id","language_preference","last_name","onboarded","phone_number","prior_treatment","pronouns","race_id","remote_visit_preference","risk_tolerance","sex_assigned_at_birth","state","transportation_reliable","trial_type_preference","updated_at","user_id","willing_travel_miles","zip_code" FROM "profiles"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "profiles"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "profiles" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "birth_year" integer, "city" varchar, "contact_preference" varchar, "country" varchar DEFAULT 'US', "created_at" datetime(6) NOT NULL, "current_treatment" varchar, "diagnosis_timing" varchar, "ethnicity" varchar DEFAULT 'prefer not to say', "first_name" varchar, "gender_id" integer, "language_preference" varchar, "last_name" varchar, "onboarded" boolean DEFAULT FALSE NOT NULL, "phone_number" varchar, "prior_treatment" boolean DEFAULT FALSE, "pronouns" varchar, "race_id" integer, "remote_visit_preference" varchar, "risk_tolerance" varchar, "sex_assigned_at_birth" varchar, "state" varchar, "transportation_reliable" boolean DEFAULT TRUE, "trial_type_preference" varchar, "updated_at" datetime(6) NOT NULL, "user_id" integer NOT NULL, "willing_travel_miles" integer, "zip_code" varchar, CONSTRAINT "fk_rails_47249dde4d"
+FOREIGN KEY ("gender_id")
+  REFERENCES "genders" ("id")
+)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profiles_on_gender_id" ON "profiles" ("gender_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profiles_on_race_id" ON "profiles" ("race_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profiles_on_user_id" ON "profiles" ("user_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "profiles" ("id","birth_year","city","contact_preference","country","created_at","current_treatment","diagnosis_timing","ethnicity","first_name","gender_id","language_preference","last_name","onboarded","phone_number","prior_treatment","pronouns","race_id","remote_visit_preference","risk_tolerance","sex_assigned_at_birth","state","transportation_reliable","trial_type_preference","updated_at","user_id","willing_travel_miles","zip_code")
+                     SELECT "id","birth_year","city","contact_preference","country","created_at","current_treatment","diagnosis_timing","ethnicity","first_name","gender_id","language_preference","last_name","onboarded","phone_number","prior_treatment","pronouns","race_id","remote_visit_preference","risk_tolerance","sex_assigned_at_birth","state","transportation_reliable","trial_type_preference","updated_at","user_id","willing_travel_miles","zip_code" FROM "aprofiles"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "aprofiles"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mCOMMIT TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = 0[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = 1[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = ON[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = OFF[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN immediate TRANSACTION[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TEMPORARY TABLE "aprofiles" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "birth_year" integer, "city" varchar, "contact_preference" varchar, "country" varchar DEFAULT 'US', "created_at" datetime(6) NOT NULL, "current_treatment" varchar, "diagnosis_timing" varchar, "ethnicity" varchar DEFAULT 'prefer not to say', "first_name" varchar, "gender_id" integer, "language_preference" varchar, "last_name" varchar, "onboarded" boolean DEFAULT FALSE NOT NULL, "phone_number" varchar, "prior_treatment" boolean DEFAULT FALSE, "pronouns" varchar, "race_id" integer, "remote_visit_preference" varchar, "risk_tolerance" varchar, "sex_assigned_at_birth" varchar, "state" varchar, "transportation_reliable" boolean DEFAULT TRUE, "trial_type_preference" varchar, "updated_at" datetime(6) NOT NULL, "user_id" integer NOT NULL, "willing_travel_miles" integer, "zip_code" varchar)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_aprofiles_on_user_id" ON "aprofiles" ("user_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_aprofiles_on_race_id" ON "aprofiles" ("race_id")[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE INDEX "tindex_aprofiles_on_gender_id" ON "aprofiles" ("gender_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "aprofiles" ("id","birth_year","city","contact_preference","country","created_at","current_treatment","diagnosis_timing","ethnicity","first_name","gender_id","language_preference","last_name","onboarded","phone_number","prior_treatment","pronouns","race_id","remote_visit_preference","risk_tolerance","sex_assigned_at_birth","state","transportation_reliable","trial_type_preference","updated_at","user_id","willing_travel_miles","zip_code")
+                     SELECT "id","birth_year","city","contact_preference","country","created_at","current_treatment","diagnosis_timing","ethnicity","first_name","gender_id","language_preference","last_name","onboarded","phone_number","prior_treatment","pronouns","race_id","remote_visit_preference","risk_tolerance","sex_assigned_at_birth","state","transportation_reliable","trial_type_preference","updated_at","user_id","willing_travel_miles","zip_code" FROM "profiles"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE "profiles"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "profiles" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "birth_year" integer, "city" varchar, "contact_preference" varchar, "country" varchar DEFAULT 'US', "created_at" datetime(6) NOT NULL, "current_treatment" varchar, "diagnosis_timing" varchar, "ethnicity" varchar DEFAULT 'prefer not to say', "first_name" varchar, "gender_id" integer, "language_preference" varchar, "last_name" varchar, "onboarded" boolean DEFAULT FALSE NOT NULL, "phone_number" varchar, "prior_treatment" boolean DEFAULT FALSE, "pronouns" varchar, "race_id" integer, "remote_visit_preference" varchar, "risk_tolerance" varchar, "sex_assigned_at_birth" varchar, "state" varchar, "transportation_reliable" boolean DEFAULT TRUE, "trial_type_preference" varchar, "updated_at" datetime(6) NOT NULL, "user_id" integer NOT NULL, "willing_travel_miles" integer, "zip_code" varchar, CONSTRAINT "fk_rails_47249dde4d"
+FOREIGN KEY ("gender_id")
+  REFERENCES "genders" ("id")
+, CONSTRAINT "fk_rails_e8361907ce"
+FOREIGN KEY ("race_id")
+  REFERENCES "races" ("id")
+)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profiles_on_gender_id" ON "profiles" ("gender_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profiles_on_race_id" ON "profiles" ("race_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profiles_on_user_id" ON "profiles" ("user_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "profiles" ("id","birth_year","city","contact_preference","country","created_at","current_treatment","diagnosis_timing","ethnicity","first_name","gender_id","language_preference","last_name","onboarded","phone_number","prior_treatment","pronouns","race_id","remote_visit_preference","risk_tolerance","sex_assigned_at_birth","state","transportation_reliable","trial_type_preference","updated_at","user_id","willing_travel_miles","zip_code")
+                     SELECT "id","birth_year","city","contact_preference","country","created_at","current_treatment","diagnosis_timing","ethnicity","first_name","gender_id","language_preference","last_name","onboarded","phone_number","prior_treatment","pronouns","race_id","remote_visit_preference","risk_tolerance","sex_assigned_at_birth","state","transportation_reliable","trial_type_preference","updated_at","user_id","willing_travel_miles","zip_code" FROM "aprofiles"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "aprofiles"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mCOMMIT TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = 0[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = 1[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = ON[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = OFF[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN immediate TRANSACTION[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TEMPORARY TABLE "aprofiles" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "birth_year" integer, "city" varchar, "contact_preference" varchar, "country" varchar DEFAULT 'US', "created_at" datetime(6) NOT NULL, "current_treatment" varchar, "diagnosis_timing" varchar, "ethnicity" varchar DEFAULT 'prefer not to say', "first_name" varchar, "gender_id" integer, "language_preference" varchar, "last_name" varchar, "onboarded" boolean DEFAULT FALSE NOT NULL, "phone_number" varchar, "prior_treatment" boolean DEFAULT FALSE, "pronouns" varchar, "race_id" integer, "remote_visit_preference" varchar, "risk_tolerance" varchar, "sex_assigned_at_birth" varchar, "state" varchar, "transportation_reliable" boolean DEFAULT TRUE, "trial_type_preference" varchar, "updated_at" datetime(6) NOT NULL, "user_id" integer NOT NULL, "willing_travel_miles" integer, "zip_code" varchar)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_aprofiles_on_user_id" ON "aprofiles" ("user_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_aprofiles_on_race_id" ON "aprofiles" ("race_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_aprofiles_on_gender_id" ON "aprofiles" ("gender_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "aprofiles" ("id","birth_year","city","contact_preference","country","created_at","current_treatment","diagnosis_timing","ethnicity","first_name","gender_id","language_preference","last_name","onboarded","phone_number","prior_treatment","pronouns","race_id","remote_visit_preference","risk_tolerance","sex_assigned_at_birth","state","transportation_reliable","trial_type_preference","updated_at","user_id","willing_travel_miles","zip_code")
+                     SELECT "id","birth_year","city","contact_preference","country","created_at","current_treatment","diagnosis_timing","ethnicity","first_name","gender_id","language_preference","last_name","onboarded","phone_number","prior_treatment","pronouns","race_id","remote_visit_preference","risk_tolerance","sex_assigned_at_birth","state","transportation_reliable","trial_type_preference","updated_at","user_id","willing_travel_miles","zip_code" FROM "profiles"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mDROP TABLE "profiles"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "profiles" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "birth_year" integer, "city" varchar, "contact_preference" varchar, "country" varchar DEFAULT 'US', "created_at" datetime(6) NOT NULL, "current_treatment" varchar, "diagnosis_timing" varchar, "ethnicity" varchar DEFAULT 'prefer not to say', "first_name" varchar, "gender_id" integer, "language_preference" varchar, "last_name" varchar, "onboarded" boolean DEFAULT FALSE NOT NULL, "phone_number" varchar, "prior_treatment" boolean DEFAULT FALSE, "pronouns" varchar, "race_id" integer, "remote_visit_preference" varchar, "risk_tolerance" varchar, "sex_assigned_at_birth" varchar, "state" varchar, "transportation_reliable" boolean DEFAULT TRUE, "trial_type_preference" varchar, "updated_at" datetime(6) NOT NULL, "user_id" integer NOT NULL, "willing_travel_miles" integer, "zip_code" varchar, CONSTRAINT "fk_rails_e8361907ce"
+FOREIGN KEY ("race_id")
+  REFERENCES "races" ("id")
+, CONSTRAINT "fk_rails_47249dde4d"
+FOREIGN KEY ("gender_id")
+  REFERENCES "genders" ("id")
+, CONSTRAINT "fk_rails_e424190865"
+FOREIGN KEY ("user_id")
+  REFERENCES "users" ("id")
+)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profiles_on_gender_id" ON "profiles" ("gender_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profiles_on_race_id" ON "profiles" ("race_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_profiles_on_user_id" ON "profiles" ("user_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "profiles" ("id","birth_year","city","contact_preference","country","created_at","current_treatment","diagnosis_timing","ethnicity","first_name","gender_id","language_preference","last_name","onboarded","phone_number","prior_treatment","pronouns","race_id","remote_visit_preference","risk_tolerance","sex_assigned_at_birth","state","transportation_reliable","trial_type_preference","updated_at","user_id","willing_travel_miles","zip_code")
+                     SELECT "id","birth_year","city","contact_preference","country","created_at","current_treatment","diagnosis_timing","ethnicity","first_name","gender_id","language_preference","last_name","onboarded","phone_number","prior_treatment","pronouns","race_id","remote_visit_preference","risk_tolerance","sex_assigned_at_birth","state","transportation_reliable","trial_type_preference","updated_at","user_id","willing_travel_miles","zip_code" FROM "aprofiles"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "aprofiles"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mCOMMIT TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = 0[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = 1[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = ON[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = OFF[0m
+  [1m[36mTRANSACTION (0.0ms)[0m  [1m[36mBEGIN immediate TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE TEMPORARY TABLE "asaved_trials" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "completion_date" date, "created_at" datetime(6) NOT NULL, "enrollment_count" integer, "match_score" decimal(5,2), "max_age" integer, "min_age" varchar, "nct_id" varchar NOT NULL, "phase" varchar, "sponsor" varchar, "start_date" date, "status" varchar DEFAULT 'interested' NOT NULL, "study_type" varchar, "summary" text, "tags" varchar, "trial_status" varchar, "trial_title" varchar, "updated_at" datetime(6) NOT NULL, "user_id" integer NOT NULL)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_asaved_trials_on_user_id" ON "asaved_trials" ("user_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "tindex_asaved_trials_on_user_and_nct" ON "asaved_trials" ("user_id", "nct_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_asaved_trials_on_status" ON "asaved_trials" ("status")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "tindex_asaved_trials_on_created_at" ON "asaved_trials" ("created_at")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "asaved_trials" ("id","completion_date","created_at","enrollment_count","match_score","max_age","min_age","nct_id","phase","sponsor","start_date","status","study_type","summary","tags","trial_status","trial_title","updated_at","user_id")
+                     SELECT "id","completion_date","created_at","enrollment_count","match_score","max_age","min_age","nct_id","phase","sponsor","start_date","status","study_type","summary","tags","trial_status","trial_title","updated_at","user_id" FROM "saved_trials"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "saved_trials"[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "saved_trials" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "completion_date" date, "created_at" datetime(6) NOT NULL, "enrollment_count" integer, "match_score" decimal(5,2), "max_age" integer, "min_age" varchar, "nct_id" varchar NOT NULL, "phase" varchar, "sponsor" varchar, "start_date" date, "status" varchar DEFAULT 'interested' NOT NULL, "study_type" varchar, "summary" text, "tags" varchar, "trial_status" varchar, "trial_title" varchar, "updated_at" datetime(6) NOT NULL, "user_id" integer NOT NULL, CONSTRAINT "fk_rails_c59bb8b026"
+FOREIGN KEY ("user_id")
+  REFERENCES "users" ("id")
+)[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_saved_trials_on_created_at" ON "saved_trials" ("created_at")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_saved_trials_on_status" ON "saved_trials" ("status")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_saved_trials_on_user_and_nct" ON "saved_trials" ("user_id", "nct_id")[0m
+  [1m[35m (0.0ms)[0m  [1m[35mCREATE INDEX "index_saved_trials_on_user_id" ON "saved_trials" ("user_id")[0m
+  [1m[35mSQL (0.0ms)[0m  [1m[32mINSERT INTO "saved_trials" ("id","completion_date","created_at","enrollment_count","match_score","max_age","min_age","nct_id","phase","sponsor","start_date","status","study_type","summary","tags","trial_status","trial_title","updated_at","user_id")
+                     SELECT "id","completion_date","created_at","enrollment_count","match_score","max_age","min_age","nct_id","phase","sponsor","start_date","status","study_type","summary","tags","trial_status","trial_title","updated_at","user_id" FROM "asaved_trials"[0m
+  [1m[35m (0.0ms)[0m  [1m[35mDROP TABLE "asaved_trials"[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[36mCOMMIT TRANSACTION[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA defer_foreign_keys = 0[0m
+  [1m[35m (0.0ms)[0m  [1m[35mPRAGMA foreign_keys = 1[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" varchar NOT NULL PRIMARY KEY)[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.0ms)[0m  [1m[32mINSERT INTO "schema_migrations" (version) VALUES (20260118073959)[0m
+  [1m[35m (0.0ms)[0m  [1m[32mINSERT INTO "schema_migrations" (version) VALUES
+(20251106010821),
+(20251106010801),
+(20251103184001),
+(20251103183906),
+(20251103182006),
+(20251103181744),
+(20251026221120),
+(20251026220827),
+(20251026220724),
+(20251026073539),
+(20251025212930),
+(20251025153230);[0m
+  [1m[35m (0.1ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" varchar NOT NULL PRIMARY KEY, "value" varchar, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL)[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.0ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::InternalMetadata Create (0.0ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('environment', 'test', '2026-06-22 23:47:08.933576', '2026-06-22 23:47:08.933576') RETURNING "key"[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.0ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "environment"]]
+  [1m[36mActiveRecord::InternalMetadata Load (0.0ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "schema_sha1"]]
+  [1m[36mActiveRecord::InternalMetadata Create (0.0ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('schema_sha1', '1933981c1cb0f1648b848f1945e1ad52a93ec3f3', '2026-06-22 23:47:08.933944', '2026-06-22 23:47:08.933944') RETURNING "key"[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.2ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "schema_sha1"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.1ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = ? ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1[0m  [[nil, "schema_sha1"]]
+  [1m[36mActiveRecord::SchemaMigration Load (0.0ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
