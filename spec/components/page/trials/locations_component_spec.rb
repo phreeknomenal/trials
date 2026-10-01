@@ -178,7 +178,24 @@ RSpec.describe Page::Trials::LocationsComponent, type: :component do
     it "says how far each one is" do
       render_sites(sites, with_profile: located)
 
-      expect(page.first("li").text).to match(/\d+ miles away/)
+      expect(page.text).to match(/\d+ miles away/)
+    end
+
+    # "0 miles away" is what a site in the reader's own town rounds to, and it
+    # reads as a failed calculation rather than as the best news on the page.
+    it "says under a mile rather than zero for a site in the same town" do
+      render_sites([with_coords(city: "Birmingham", lat: 33.5211, lon: -86.8065),
+        with_coords(city: "Toronto", state: nil, lat: 43.6532, lon: -79.3832)], with_profile: located)
+
+      expect(page.first("li").text).to include("Under a mile away")
+      expect(page.text).not_to include("0 miles away")
+    end
+
+    it "says one mile rather than one miles" do
+      render_sites([with_coords(city: "Close", lat: 33.5355, lon: -86.8066),
+        with_coords(city: "Toronto", state: nil, lat: 43.6532, lon: -79.3832)], with_profile: located)
+
+      expect(page.text).not_to include("1 miles away")
     end
 
     # Rounded to the mile: the registry gives a town centroid and the profile a

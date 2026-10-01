@@ -177,6 +177,45 @@ RSpec.describe "The merged search", type: :request do
     end
   end
 
+  # query.locn is a place-name match: "35203" returned nothing at all while
+  # "Birmingham, Alabama" returned four, and the field has invited a zip since
+  # it was written.
+  describe "searching by postal code" do
+    before do
+      ZipCode.create!(zip: "35203", city: "Birmingham", state: "Alabama", lat: 33.521, lon: -86.8066)
+      sign_in user
+    end
+
+    it "asks the registry for the town, not the digits" do
+      expect(ClinicalTrialClient).to receive(:advanced_search)
+        .with(hash_including(location: "Birmingham, Alabama"))
+        .and_return({studies: [], total_count: 0})
+
+      get "/search", params: {condition: "asthma", location: "35203"}
+    end
+
+    it "asks for a radius instead once one is chosen" do
+      expect(ClinicalTrialClient).to receive(:advanced_search)
+        .with(hash_including(within_miles: 50, origin: [33.521, -86.8066]))
+        .and_return({studies: [], total_count: 0})
+
+      get "/search", params: {condition: "asthma", location: "35203", within_miles: "50"}
+    end
+
+    # The cards still say how far each study is from the reader's own zip, so a
+    # notice reading "we could not tell where to measure from" above "128 miles
+    # away" would be two true sentences contradicting each other.
+    it "says which filter was dropped rather than that it cannot measure" do
+      user.profile.update_columns(zip_code: "35203")
+      stub_search(studies: [])
+
+      get "/search", params: {condition: "asthma", location: "Chicago, IL", within_miles: "50"}
+
+      expect(response.body).to include("50 mile filter was not applied")
+      expect(response.body).not_to include("could not tell where to measure")
+    end
+  end
+
   # The save control needs to know which of the listed studies are already
   # saved. Asked per card that is one query per row.
   describe "saved state on the results page" do

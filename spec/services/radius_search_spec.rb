@@ -40,13 +40,13 @@ RSpec.describe "Searching within a radius" do
       expect(origin_for("60601")).to eq([41.8858, -87.6229])
     end
 
-    it "falls back to the profile when nothing useful was typed" do
-      expect(origin_for("Chicago, IL")).to eq([33.521, -86.8066])
+    it "measures from the profile when no location was typed at all" do
+      expect(origin_for(nil)).to eq([33.521, -86.8066])
     end
 
-    it "has nowhere to measure from when neither resolves" do
-      profile.update_columns(zip_code: nil)
-
+    # Measuring it from the profile instead would silently answer a different
+    # question: fifty miles from Birmingham, for a search that said Chicago.
+    it "anchors nothing to a typed place name, even with a profile to fall back on" do
       expect(origin_for("Chicago, IL")).to be_nil
     end
 
@@ -57,6 +57,29 @@ RSpec.describe "Searching within a radius" do
         search_params: {condition: "asthma", location: "Chicago, IL", within_miles: 50})
 
       expect(service.send(:radius_unanchored?)).to be(true)
+    end
+
+    # query.locn is a place-name match: "35203" returns nothing at all while
+    # "Birmingham, Alabama" returns four, and the field has invited a zip since
+    # it was written.
+    describe "a typed postal code" do
+      def resolved_for(location, within_miles: nil)
+        described_class.new(profile: profile,
+          search_params: {condition: "asthma", location: location, within_miles: within_miles}.compact)
+          .send(:resolved_location)
+      end
+
+      it "becomes the town the registry can actually match" do
+        expect(resolved_for("35203")).to eq("Birmingham, Alabama")
+      end
+
+      it "gives way to the radius when one was chosen" do
+        expect(resolved_for("35203", within_miles: 50)).to be_nil
+      end
+
+      it "leaves a place name alone" do
+        expect(resolved_for("Chicago, IL")).to eq("Chicago, IL")
+      end
     end
 
     it "reports nothing wrong when no radius was asked for" do

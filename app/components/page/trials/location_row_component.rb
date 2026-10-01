@@ -16,10 +16,15 @@ class Page::Trials::LocationRowComponent < ApplicationComponent
   # Rounded to the mile. The registry gives a town centroid and the profile a
   # postal code centroid, so a tenth of a mile would be precision neither end
   # of the calculation has.
+  #
+  # Under a mile rather than "0 miles away", which is what a site in the
+  # reader's own town rounded to and reads as a failed calculation rather than
+  # as the best news on the page.
   def distance_phrase
     return nil if miles.blank?
+    return "Under a mile away" if miles < 1
 
-    "#{miles.round} miles away"
+    "#{helpers.pluralize(miles.round, "mile")} away"
   end
 
   # The facility's own name where the registry gives one, which it does on
