@@ -14,11 +14,14 @@ require "rails_helper"
 RSpec.describe "Stimulus wiring" do
   let(:controller_dir) { Rails.root.join("app/javascript/controllers") }
 
-  # Controllers the markup names that have never been written. Listed rather
-  # than silenced: each is a control that renders, looks live and does nothing
-  # when used, and each is in Tasks/trials-dead-stimulus-controllers.md. This
-  # list only ever shrinks — a new name here means a new dead control shipped.
-  let(:known_missing) { %w[password-visibility sortable] }
+  # Controllers the markup names that have never been written. Empty, and it
+  # should stay that way: a name here is a control that renders, looks live and
+  # does nothing when used.
+  #
+  # It held password-visibility and sortable. Both were resolved by deleting the
+  # components that named them, which nothing had rendered either, so the
+  # controls were never on a screen to be broken.
+  let(:known_missing) { [] }
 
   def markup_files
     Dir.glob(Rails.root.join("app/{views,components}/**/*.{erb,rb}"))
