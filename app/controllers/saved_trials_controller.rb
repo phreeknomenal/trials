@@ -3,6 +3,7 @@ class SavedTrialsController < ApplicationController
   before_action :set_saved_trial, only: [:show, :edit, :update, :destroy]
   after_action :verify_authorized
   include Paginatable
+  include RefreshesSavedTrials
 
   def index
     authorize SavedTrial
@@ -48,6 +49,8 @@ class SavedTrialsController < ApplicationController
     # `limit:`, not `items:` -- Pagy 43 renamed it and ignores the old key,
     # so this paginated at Pagy's default rather than the value passed.
     @pagy, @saved_trials = pagy(@saved_trials, limit: page_size)
+
+    refresh_saved_trials_later
   end
 
   # One request for a whole selection.

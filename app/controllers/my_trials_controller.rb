@@ -1,5 +1,6 @@
 class MyTrialsController < ApplicationController
   include Secured
+  include RefreshesSavedTrials
 
   # How long a study can sit in applying or contacted before the dashboard
   # raises it. Long enough that a site has had a fair chance to answer.
@@ -32,6 +33,8 @@ class MyTrialsController < ApplicationController
     # The panel reports sections answered, the same measure the profile page
     # shows, so the two cannot disagree about how complete a profile is.
     @sections = ProfileSections.new(@profile) if @profile
+
+    refresh_saved_trials_later
   end
 
   def saved_trials
