@@ -77,6 +77,19 @@ RSpec.describe RegistryChange do
       )
     end
 
+    # The show page builds the change, then acknowledges it, then renders it.
+    # Acknowledging rewrites trial_status on the same record.
+    it "still describes the change after it has been acknowledged" do
+      record = create(:saved_trial, trial_status: "RECRUITING", registry_status: "COMPLETED",
+        registry_checked_at: Time.current)
+      change = described_class.for(record)
+
+      record.acknowledge_registry!
+
+      expect(change.explanation).to include("listed as recruiting")
+      expect(change.explanation).to include("now lists it as completed")
+    end
+
     it "dates an update and says the registry does not record what changed" do
       change = described_class.for(saved(latest: Date.new(2026, 9, 20)))
       expect(change.explanation).to include("September 20, 2026")

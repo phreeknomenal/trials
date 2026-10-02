@@ -15,7 +15,7 @@ class RegistryChange
     updated: {label: "Updated since you last looked", icon: "clock_arrow", tone: :neutral}
   }.freeze
 
-  attr_reader :kind, :saved_trial
+  attr_reader :kind, :from_status, :to_status, :updated_on
 
   def self.for(saved_trial)
     kind = kind_for(saved_trial)
@@ -40,9 +40,15 @@ class RegistryChange
     :updated if seen && latest && latest > seen
   end
 
+  # Copied out of the record rather than read from it later. The show page
+  # builds a change, acknowledges it, then renders it, and acknowledging
+  # rewrites trial_status on that same record.
   def initialize(kind:, saved_trial:)
     @kind = kind
-    @saved_trial = saved_trial
+    @from_status = saved_trial.trial_status
+    @to_status = saved_trial.registry_status
+    @updated_on = saved_trial.registry_last_update
+    @stop_reason = saved_trial.registry_why_stopped
   end
 
   def label = KINDS.fetch(kind)[:label]
@@ -57,10 +63,10 @@ class RegistryChange
   # updated case says so instead of guessing.
   def explanation
     if status_change?
-      "It was listed as #{status_label(saved_trial.trial_status)} when you last looked. " \
-        "The registry now lists it as #{status_label(saved_trial.registry_status)}."
+      "It was listed as #{status_label(from_status)} when you last looked. " \
+        "The registry now lists it as #{status_label(to_status)}."
     else
-      "The study team edited its registry record on #{saved_trial.registry_last_update.to_fs(:long)}. " \
+      "The study team edited its registry record on #{updated_on.to_fs(:long)}. " \
         "The registry does not say what changed, so the full study is the place to check."
     end
   end
@@ -68,7 +74,7 @@ class RegistryChange
   # Only when the study actually stopped. A why_stopped left over from an
   # earlier suspension would be wrong under "Now recruiting".
   def why_stopped
-    saved_trial.registry_why_stopped.presence if kind == :stopped
+    @stop_reason.presence if kind == :stopped
   end
 
   private
