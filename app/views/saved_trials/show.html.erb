@@ -32,6 +32,8 @@
         ) %>
   </div>
 
+  <%= render Page::SavedTrials::RegistryChangeNoticeComponent.new(change: @registry_change, nct_id: @saved_trial.nct_id) %>
+
   <%= render Page::SavedTrials::PipelineComponent.new(saved_trial: @saved_trial) %>
 
   <div class="grid gap-6 lg:grid-cols-[1fr_320px] items-start">

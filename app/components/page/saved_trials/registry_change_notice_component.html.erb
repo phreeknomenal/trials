@@ -1,0 +1,17 @@
+<div id="registry-change" class="rounded-card border <%= box_classes %> p-4 flex items-start gap-3">
+  <span class="shrink-0 mt-0.5 <%= icon_classes %>">
+    <%= render Utilities::IconComponent.new(change.icon, size: 5) %>
+  </span>
+  <div class="flex flex-col gap-1 min-w-0">
+    <p class="text-sm font-semibold text-ink dark:text-ink-on-dark"><%= change.label %></p>
+    <p class="text-sm text-ink-2 dark:text-ink-2-on-dark"><%= change.explanation %></p>
+    <% if change.why_stopped %>
+      <p class="text-sm text-ink-2 dark:text-ink-2-on-dark">
+        <span class="font-semibold text-ink dark:text-ink-on-dark">The study team's reason:</span>
+        <%= change.why_stopped %>
+      </p>
+    <% end %>
+    <%= link_to "Open the full study", search_path(nct_id),
+          class: "text-sm font-semibold text-sky-600 dark:text-sky-300 hover:text-sky-700 dark:hover:text-sky-200 w-fit" %>
+  </div>
+</div>
