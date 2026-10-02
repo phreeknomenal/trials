@@ -26,7 +26,10 @@
           align-items: stretch, which makes an inline-flex badge as wide as the
           title beneath it. %>
       <div class="flex flex-col items-start gap-2 min-w-0">
-        <%= render Shared::StatusBadgeComponent.new(status: saved_trial.status) %>
+        <div class="flex flex-wrap gap-2">
+          <%= render Shared::StatusBadgeComponent.new(status: saved_trial.status) %>
+          <%= render Page::SavedTrials::RegistryChangeBadgeComponent.new(change: RegistryChange.for(saved_trial)) %>
+        </div>
         <h2 class="font-primary text-lg font-bold leading-snug tracking-tight text-ink dark:text-ink-on-dark">
           <%= link_to saved_trial.trial_title, saved_trial_path(saved_trial),
                 class: "hover:text-sky-600 dark:hover:text-sky-300" %>

@@ -80,6 +80,11 @@ class SavedTrialsController < ApplicationController
 
   def show
     authorize @saved_trial
+
+    # Built before acknowledging, so the page can say what changed. Opening the
+    # study is the person seeing the change, so the card badge clears after this.
+    @registry_change = RegistryChange.for(@saved_trial)
+    @saved_trial.acknowledge_registry! if @registry_change
   end
 
   def edit
