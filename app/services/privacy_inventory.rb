@@ -118,11 +118,12 @@ class PrivacyInventory
 
     Entry.new(
       title: "Studies you saved",
-      examples: "Which studies you saved, the status you set on each, your tags, your own notes, and the registry details of that study as they stood when you saved it",
+      examples: "Which studies you saved, the status you set on each, your tags, your own notes, the registry details of that study as they stood when you saved it, and what the registry said when we last checked it, at most once a day",
       collected_when: "As you use the app",
       model_name: "SavedTrial",
       columns: %w[nct_id status tags match_score trial_title trial_status summary sponsor phase study_type
-        enrollment_count min_age max_age start_date completion_date],
+        enrollment_count min_age max_age start_date completion_date
+        registry_status registry_last_update registry_why_stopped registry_checked_at seen_last_update],
       extras: ["Your notes on a saved study"]
     ),
 
