@@ -1,0 +1,82 @@
+<section id="prescreen" class="mb-8 rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-6 lg:p-8 flex flex-col gap-5">
+  <%# Subscribed in every state. The job broadcasts a page refresh when the
+      questions are ready or have failed, and the page morphs itself. %>
+  <%= helpers.turbo_stream_from stream_name %>
+
+  <header class="flex flex-col gap-1">
+    <%= render Typography::HeadingComponent.new(size: :section, text: "Check the study's own criteria") %>
+    <p class="text-meta text-ink-3 dark:text-ink-3-on-dark">
+      Plain-language questions written from this study's eligibility criteria.
+      Your answers sort the criteria above. They do not change your match score,
+      and only the study team can confirm eligibility.
+    </p>
+  </header>
+
+  <%# The refusal message from the rate limits replaces this element. %>
+  <div id="<%= target_id %>" class="flex flex-col gap-4">
+    <% case state %>
+    <% when :none, :failed, :outdated %>
+      <% if state == :failed %>
+        <p class="text-sm text-ink-2 dark:text-ink-2-on-dark">
+          <%= prescreen.error_message.presence || GenerateStudyPrescreenJob::GENERIC_ERROR_MESSAGE %>
+        </p>
+      <% elsif state == :outdated %>
+        <p class="text-sm text-ink-2 dark:text-ink-2-on-dark">
+          The study has changed its criteria since these questions were written.
+        </p>
+      <% end %>
+      <%= button_to write_button_label, helpers.study_prescreen_path(nct_id), method: :post,
+            class: Buttons::ButtonStyles.classes("secondary"), form_class: "w-fit" %>
+
+    <% when :pending %>
+      <p class="flex items-center gap-2 text-sm text-ink-2 dark:text-ink-2-on-dark" role="status">
+        <%= render Utilities::IconComponent.new("spinner", size: 4, options: {class: "animate-spin"}) %>
+        Writing questions from this study's criteria. This page updates when they are ready.
+      </p>
+
+    <% when :nothing_to_ask %>
+      <p class="text-sm text-ink-2 dark:text-ink-2-on-dark">
+        None of this study's criteria are things you could answer about yourself.
+        The study team checks them at the screening visit.
+      </p>
+
+    <% when :ready %>
+      <% if signed_in? %>
+        <p class="text-meta text-ink-3 dark:text-ink-3-on-dark">
+          You have answered <%= answered_count %> of <%= questions.size %>.
+          Your answers are saved to your account and deleted with it.
+        </p>
+      <% else %>
+        <p class="text-sm text-ink-2 dark:text-ink-2-on-dark">
+          <%= link_to "Sign in", helpers.new_user_session_path,
+                class: "font-semibold text-sky-600 dark:text-sky-300 hover:text-sky-700 dark:hover:text-sky-200" %>
+          to answer. Your answers are saved to your account.
+        </p>
+      <% end %>
+
+      <ol class="divide-y divide-line dark:divide-line-on-dark">
+        <% questions.each do |question| %>
+          <li class="py-4 flex flex-col gap-2" data-question-key="<%= question.key %>">
+            <p class="text-body font-semibold text-ink dark:text-ink-on-dark"><%= question.text %></p>
+            <%# The study's own sentence, because the question is a paraphrase. %>
+            <p class="text-xs leading-relaxed text-ink-3 dark:text-ink-3-on-dark">
+              <span class="font-semibold">From the study:</span> <%= question.source %>
+            </p>
+
+            <% if signed_in? %>
+              <div class="flex flex-wrap gap-2 pt-1" role="group" aria-label="Your answer">
+                <% ANSWER_LABELS.each do |value, label| %>
+                  <% selected = answer_for(question) == value %>
+                  <%= button_to label, helpers.prescreen_answers_path(nct_id), method: :post,
+                        params: {question_key: question.key, answer: value},
+                        class: button_classes(selected),
+                        aria: {pressed: selected} %>
+                <% end %>
+              </div>
+            <% end %>
+          </li>
+        <% end %>
+      </ol>
+    <% end %>
+  </div>
+</section>

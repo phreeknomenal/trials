@@ -4,6 +4,11 @@
                                     @study[:central_contacts].present? ||
                                     @study[:overall_officials].present?) %>
 
+<%# Answering a question and the questions arriving both refresh this page.
+    Morphing with scroll kept makes each land in place instead of a reload
+    that jumps back to the top. %>
+<% turbo_refreshes_with method: :morph, scroll: :preserve %>
+
 <% if @error.present? %>
   <!-- Error State -->
   <div class="min-h-screen flex items-center justify-center px-5">
@@ -69,6 +74,15 @@
                 score_breakdown: @score_breakdown
               ) %>
         </div>
+
+        <%= render Page::Trials::PrescreenComponent.new(
+              nct_id: @nct_id,
+              study: @study,
+              prescreen: @prescreen,
+              current: @prescreen_current,
+              answers: @prescreen_answers,
+              signed_in: user_signed_in?
+            ) %>
 
         <!-- Overview -->
         <%= render Page::Trials::OverviewComponent.new(

@@ -21,7 +21,7 @@ class StudyPrescreensController < ApplicationController
     record = StudyPrescreen.find_or_create_pending(nct_id)
     enqueue(record)
 
-    redirect_to search_path(nct_id, anchor: "prescreen"), status: :see_other
+    redirect_back_or_to search_path(nct_id), status: :see_other
   end
 
   private

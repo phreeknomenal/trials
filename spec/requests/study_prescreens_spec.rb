@@ -14,7 +14,7 @@ RSpec.describe "Writing prescreen questions", type: :request do
 
   it "queues the questions and sends the visitor back to the study" do
     expect { generate }.to have_enqueued_job(GenerateStudyPrescreenJob).with(nct_id)
-    expect(response).to redirect_to(search_path(nct_id, anchor: "prescreen"))
+    expect(response).to redirect_to(search_path(nct_id))
   end
 
   it "does not queue a second job while one is running" do

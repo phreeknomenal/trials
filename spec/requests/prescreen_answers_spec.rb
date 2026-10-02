@@ -21,7 +21,7 @@ RSpec.describe "Answering prescreen questions", type: :request do
       answer
 
       expect(PrescreenAnswer.for(user, nct_id)).to eq("q-0" => "yes")
-      expect(response).to redirect_to(search_path(nct_id, anchor: "prescreen"))
+      expect(response).to redirect_to(search_path(nct_id))
     end
 
     it "changes an earlier answer instead of adding a second" do

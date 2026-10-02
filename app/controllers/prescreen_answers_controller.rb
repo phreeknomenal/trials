@@ -16,16 +16,16 @@ class PrescreenAnswersController < ApplicationController
     # Only keys the study's questions actually have. Anything else would be a
     # row no page ever reads.
     unless prescreen&.question_list&.any? { |question| question.key == question_key }
-      return redirect_to search_path(nct_id, anchor: "prescreen"), status: :see_other,
+      return redirect_back_or_to search_path(nct_id), status: :see_other,
         alert: "That question is no longer on this study. The questions may have been updated."
     end
 
     answer = current_user.prescreen_answers.find_or_initialize_by(nct_id: nct_id, question_key: question_key)
 
     if answer.update(answer: params[:answer])
-      redirect_to search_path(nct_id, anchor: "prescreen"), status: :see_other
+      redirect_back_or_to search_path(nct_id), status: :see_other
     else
-      redirect_to search_path(nct_id, anchor: "prescreen"), status: :see_other,
+      redirect_back_or_to search_path(nct_id), status: :see_other,
         alert: "Answers can be yes, no, or not sure."
     end
   end
