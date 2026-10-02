@@ -32,11 +32,24 @@ class SearchController < ApplicationController
     return if @error
 
     calculate_trial_score
-    @eligibility_checklist = EligibilityChecker.new(@profile, @study).build_checklist
+    load_prescreen
+    @eligibility_checklist = EligibilityChecker.new(
+      @profile, @study,
+      prescreen: (@prescreen if @prescreen_current),
+      answers: @prescreen_answers
+    ).build_checklist
     @similar_trials = similar_trials
   end
 
   private
+
+  # Questions written from criteria the study has since edited are not shown,
+  # and their answers are not counted. The panel offers to rewrite them.
+  def load_prescreen
+    @prescreen = StudyPrescreen.find_by(nct_id: @nct_id)
+    @prescreen_current = @prescreen&.current_for?(@study) || false
+    @prescreen_answers = PrescreenAnswer.for(current_user, @nct_id)
+  end
 
   def perform_search
     current_page_num = params[:page]&.to_i || 1

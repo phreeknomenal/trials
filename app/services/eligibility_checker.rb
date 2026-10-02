@@ -1,7 +1,22 @@
 class EligibilityChecker
-  def initialize(profile, trial_data)
+  # Said on every item a person's own answer rules out. The study team's limits
+  # are facts from the registry; this is the person's account of themselves,
+  # and the panel must not read as a verdict.
+  SELF_REPORTED_NOTE = "Based on your answer. The study team makes the final call.".freeze
+
+  ANSWER_WORDS = {
+    PrescreenAnswer::YES => "yes",
+    PrescreenAnswer::NO => "no",
+    PrescreenAnswer::UNSURE => "not sure"
+  }.freeze
+
+  # prescreen is only passed when it was written from the study's current
+  # criteria. answers maps question keys to a person's answers.
+  def initialize(profile, trial_data, prescreen: nil, answers: {})
     @profile = profile
     @trial = trial_data
+    @prescreen = prescreen
+    @answers = answers
   end
 
   def build_checklist
@@ -12,11 +27,39 @@ class EligibilityChecker
       check_sex,
       check_status,
       check_conditions,
-      check_parsed_criteria
+      *criteria_items
     ].compact
   end
 
   private
+
+  # The keyword skim is a rough stand-in for the study's real questions, so it
+  # goes once those exist. Unanswered questions stay in the question panel
+  # rather than here, or "You meet 4 of 6" would become "4 of 18" before anyone
+  # had answered anything.
+  def criteria_items
+    return [check_parsed_criteria] unless @prescreen
+
+    @prescreen.question_list.filter_map do |question|
+      answer = @answers[question.key]
+      answered_item(question, answer) if answer
+    end
+  end
+
+  def answered_item(question, answer)
+    status = if question.qualifies?(answer)
+      "met"
+    elsif question.disqualifies?(answer)
+      "not_met"
+    else
+      "unknown"
+    end
+
+    explanation = "You answered #{ANSWER_WORDS.fetch(answer)}."
+    explanation += " #{SELF_REPORTED_NOTE}" if status == "not_met"
+
+    build_item(question.text, status, explanation, is_expandable: true, full_text: question.source)
+  end
 
   def check_age
     min_age = parse_age(@trial[:min_age])
