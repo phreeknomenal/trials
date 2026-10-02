@@ -37,3 +37,6 @@
 !/app/assets/builds/.keep
 
 /scratch/
+# Ignore key files for decrypting credentials and more.
+/config/*.key
+
