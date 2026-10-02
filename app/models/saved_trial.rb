@@ -70,6 +70,44 @@ class SavedTrial < ApplicationRecord
 
   has_rich_text :notes
 
+  # How long a registry check stays good. Statuses move on a scale of weeks, and
+  # the check is one API call per row, so once a day is plenty.
+  RECHECK_AFTER = 24.hours
+
+  scope :registry_stale, -> {
+    where(registry_checked_at: nil).or(where(registry_checked_at: ...RECHECK_AFTER.ago))
+  }
+
+  # What the registry says now. update_columns, not update, because updated_at
+  # is the person's own activity. The dashboard's "awaiting reply" panel reads it
+  # as "nothing has moved", and a background check is not the person moving.
+  #
+  # The first check is the only point the registry date is known, so it becomes
+  # the baseline rather than a change. trial_status needs no such step: it was
+  # written at save time.
+  def record_registry!(study)
+    attributes = {
+      registry_status: study[:status],
+      registry_last_update: study[:last_update],
+      registry_why_stopped: study[:why_stopped],
+      registry_checked_at: Time.current
+    }
+    attributes[:seen_last_update] = study[:last_update] if seen_last_update.nil?
+
+    update_columns(attributes)
+  end
+
+  # The person has now seen the latest, so it becomes the baseline. Called when
+  # the saved study is opened, after the page has explained what changed.
+  def acknowledge_registry!
+    return unless registry_checked_at
+
+    attributes = {seen_last_update: registry_last_update}
+    attributes[:trial_status] = registry_status if registry_status.present?
+
+    update_columns(attributes)
+  end
+
   def tags_array
     tags.present? ? tags.split(",").map(&:strip) : []
   end
