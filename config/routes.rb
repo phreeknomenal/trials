@@ -81,6 +81,10 @@ Rails.application.routes.draw do
   # Generation is bounded by rate limits instead of by authentication.
   post "summaries/:nct_id", to: "readable_summaries#create", as: :readable_summary
 
+  # Same reasoning: the questions are per study, so writing them is public and
+  # rate limited. Answering them is per person and needs an account.
+  post "prescreens/:nct_id", to: "study_prescreens#create", as: :study_prescreen
+
   # Keep old saved_trials routes for backward compatibility
   resources :saved_trials, only: [:index, :show, :edit, :create, :update, :destroy] do
     # One request for a selection, rather than one per row. The page offered a
