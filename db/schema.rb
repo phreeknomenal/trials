@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_28_165304) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_02_040557) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -184,6 +184,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_28_165304) do
     t.integer "min_age"
     t.string "nct_id", null: false
     t.string "phase"
+    t.datetime "registry_checked_at"
+    t.date "registry_last_update"
+    t.string "registry_status"
+    t.text "registry_why_stopped"
+    t.date "seen_last_update"
     t.string "sponsor"
     t.date "start_date"
     t.string "status", default: "interested", null: false

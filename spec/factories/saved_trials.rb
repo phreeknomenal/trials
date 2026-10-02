@@ -2,25 +2,30 @@
 #
 # Table name: saved_trials
 #
-#  id               :bigint           not null, primary key
-#  completion_date  :date
-#  enrollment_count :integer
-#  match_score      :decimal(5, 2)
-#  max_age          :integer
-#  min_age          :integer
-#  phase            :string
-#  sponsor          :string
-#  start_date       :date
-#  status           :string           default("interested"), not null
-#  study_type       :string
-#  summary          :text
-#  tags             :string
-#  trial_status     :string
-#  trial_title      :string
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
-#  nct_id           :string           not null
-#  user_id          :bigint           not null
+#  id                   :bigint           not null, primary key
+#  completion_date      :date
+#  enrollment_count     :integer
+#  match_score          :decimal(5, 2)
+#  max_age              :integer
+#  min_age              :integer
+#  phase                :string
+#  registry_checked_at  :datetime
+#  registry_last_update :date
+#  registry_status      :string
+#  registry_why_stopped :text
+#  seen_last_update     :date
+#  sponsor              :string
+#  start_date           :date
+#  status               :string           default("interested"), not null
+#  study_type           :string
+#  summary              :text
+#  tags                 :string
+#  trial_status         :string
+#  trial_title          :string
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  nct_id               :string           not null
+#  user_id              :bigint           not null
 #
 # Indexes
 #
