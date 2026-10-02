@@ -36,6 +36,7 @@ class User < ApplicationRecord
 
   has_one :profile, dependent: :destroy
   has_many :saved_trials, dependent: :destroy
+  has_many :prescreen_answers, dependent: :destroy
 
   validates :email, presence: true, uniqueness: true
   validates :password, presence: true

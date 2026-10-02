@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_02_040557) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_02_044653) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -89,6 +89,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_040557) do
     t.text "name", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_interests_on_name", unique: true
+  end
+
+  create_table "prescreen_answers", force: :cascade do |t|
+    t.string "answer", null: false
+    t.datetime "created_at", null: false
+    t.string "nct_id", null: false
+    t.string "question_key", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id", "nct_id", "question_key"], name: "index_prescreen_answers_on_user_study_question", unique: true
+    t.index ["user_id"], name: "index_prescreen_answers_on_user_id"
   end
 
   create_table "profile_conditions", force: :cascade do |t|
@@ -376,6 +387,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_040557) do
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
   end
 
+  create_table "study_prescreens", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "criteria_digest"
+    t.text "error_message"
+    t.datetime "generated_at"
+    t.string "nct_id", null: false
+    t.jsonb "questions", default: [], null: false
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.index ["nct_id"], name: "index_study_prescreens_on_nct_id", unique: true
+  end
+
   create_table "testimonials", force: :cascade do |t|
     t.string "author_name", null: false
     t.string "author_role"
@@ -419,6 +442,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_02_040557) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "prescreen_answers", "users"
   add_foreign_key "profile_conditions", "conditions"
   add_foreign_key "profile_conditions", "profiles"
   add_foreign_key "profile_identities", "identities"
