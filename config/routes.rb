@@ -84,6 +84,7 @@ Rails.application.routes.draw do
   # Same reasoning: the questions are per study, so writing them is public and
   # rate limited. Answering them is per person and needs an account.
   post "prescreens/:nct_id", to: "study_prescreens#create", as: :study_prescreen
+  post "prescreens/:nct_id/answers", to: "prescreen_answers#create", as: :prescreen_answers
 
   # Keep old saved_trials routes for backward compatibility
   resources :saved_trials, only: [:index, :show, :edit, :create, :update, :destroy] do
