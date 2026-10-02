@@ -46,7 +46,7 @@ module PaidGenerationLimits
   end
 
   def reject_invalid_nct_id
-    return if nct_id.to_s.match?(ReadableStudySummary::NCT_ID_FORMAT)
+    return if nct_id.to_s.match?(GeneratedPerStudy::NCT_ID_FORMAT)
 
     respond_to do |format|
       format.turbo_stream { head :unprocessable_entity }
