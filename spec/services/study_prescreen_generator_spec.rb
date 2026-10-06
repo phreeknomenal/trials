@@ -63,6 +63,12 @@ RSpec.describe StudyPrescreenGenerator do
       ))
     end
 
+    # The live check on NCT05641272 asked "Are you between 12 and 60 years
+    # old?", which repeated the profile's own age line in the criteria panel.
+    it "tells the model to leave age and sex to the profile" do
+      expect(described_class::SYSTEM_PROMPT).to match(/skip age and sex/i)
+    end
+
     it "sends both lists, labelled" do
       respond_with([])
 

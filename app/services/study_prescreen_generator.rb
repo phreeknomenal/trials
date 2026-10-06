@@ -28,6 +28,8 @@ class StudyPrescreenGenerator
 
     Only ask about what a person would know about their own life and health: diagnoses they have been given, treatments and medicines they have had, pregnancy, smoking, and similar. Skip criteria that need a test result, a clinician's assessment, or the study team's judgment, such as lab values, performance scores, organ function, or "in the opinion of the investigator". The study team checks those at screening, so asking a patient produces only "not sure".
 
+    Also skip age and sex. The app already checks both against the person's profile, so a question about them would repeat a line the person can already see.
+
     Keep the criterion's meaning exactly, including time windows and thresholds. Do not add conditions, explain the study, or advise whether to join.
 
     For each question:
