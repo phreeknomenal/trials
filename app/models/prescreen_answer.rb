@@ -35,6 +35,26 @@ class PrescreenAnswer < ApplicationRecord
   validates :question_key, presence: true, uniqueness: {scope: [:user_id, :nct_id]}
   validates :answer, presence: true, inclusion: {in: ANSWERS}
 
+  # One statement, INSERT ... ON CONFLICT DO UPDATE, rather than find then
+  # save. Two first answers to the same question can arrive together (Yes, then
+  # No, clicked quickly: two forms, two requests). Find-then-save let both see
+  # no row; the second then failed the uniqueness validation or hit the unique
+  # index and raised. Here the later write simply wins, which is the answer the
+  # person meant.
+  #
+  # upsert skips validations, so the answer is checked first. False means the
+  # answer was not one of ANSWERS and nothing was written.
+  def self.record(user:, nct_id:, question_key:, answer:)
+    return false unless ANSWERS.include?(answer)
+
+    upsert(
+      {user_id: user.id, nct_id: nct_id, question_key: question_key, answer: answer},
+      unique_by: %i[user_id nct_id question_key],
+      update_only: [:answer]
+    )
+    true
+  end
+
   # question_key => answer, for one person and one study.
   def self.for(user, nct_id)
     return {} unless user

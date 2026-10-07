@@ -20,9 +20,7 @@ class PrescreenAnswersController < ApplicationController
         alert: "That question is no longer on this study. The questions may have been updated."
     end
 
-    answer = current_user.prescreen_answers.find_or_initialize_by(nct_id: nct_id, question_key: question_key)
-
-    if answer.update(answer: params[:answer])
+    if PrescreenAnswer.record(user: current_user, nct_id: nct_id, question_key: question_key, answer: params[:answer].to_s)
       redirect_back_or_to search_path(nct_id), status: :see_other
     else
       redirect_back_or_to search_path(nct_id), status: :see_other,
