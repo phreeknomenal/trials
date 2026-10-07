@@ -1,0 +1,120 @@
+<%# One generation queue. A div, not a section: the problem lists inside are
+    the sections, each found by its heading. %>
+<div id="<%= feed.dom_id %>" class="flex flex-col gap-5">
+  <h2 class="font-primary text-xl font-bold tracking-tight text-ink dark:text-ink-on-dark"><%= feed.title %></h2>
+
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <%= render Admin::StatCardComponent.new(label: "Completed", value: number_with_delimiter(feed.completed_count)) %>
+    <%= render Admin::StatCardComponent.new(label: "Pending, healthy", value: feed.pending.size) %>
+    <%= render Admin::StatCardComponent.new(
+          label: "Stale over #{distance_of_time_in_words(GeneratedPerStudy::STALE_AFTER)}",
+          value: feed.stale.size, tone: :alert
+        ) %>
+    <%= render Admin::StatCardComponent.new(label: "Failed", value: feed.failed.size, tone: :alert) %>
+  </div>
+
+  <% if feed.failed.any? %>
+    <section class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-6 flex flex-col gap-4">
+      <div class="flex flex-wrap items-center gap-3">
+        <h3 class="font-primary text-body font-bold text-ink dark:text-ink-on-dark">Failed</h3>
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-crit/12 dark:bg-crit-on-dark/20 px-3 py-1 text-xs font-semibold text-crit dark:text-crit-on-dark">
+          <%= render Utilities::IconComponent.new("close_circle", size: 3) %>
+          <%= pluralize(feed.failed.size, "study") %>
+        </span>
+      </div>
+
+      <ul class="flex flex-col gap-3">
+        <% feed.failed.each do |row| %>
+          <li class="flex flex-wrap items-center gap-4 rounded-control border border-line dark:border-line-on-dark p-4">
+            <span class="font-mono text-meta text-ink dark:text-ink-on-dark w-32 shrink-0"><%= row.nct_id %></span>
+            <div class="grow min-w-0 flex flex-col gap-0.5">
+              <%# Shown whenever it is there. Today it is the same generic line
+                  on every failure; once the cause is recorded it will already
+                  be on screen. %>
+              <span class="text-meta font-semibold text-ink dark:text-ink-on-dark">
+                <%= row.error_message.presence || "No error message recorded." %>
+              </span>
+              <span class="text-xs text-ink-3 dark:text-ink-3-on-dark">
+                Failed <%= time_ago_in_words(row.updated_at) %> ago
+              </span>
+            </div>
+            <%= button_to "Retry", public_send(feed.retry_route, row.nct_id), method: :post,
+                  class: Buttons::ButtonStyles.classes("primary", size: "px-4 py-2 text-meta"),
+                  form: {class: "shrink-0"} %>
+          </li>
+        <% end %>
+      </ul>
+
+      <%# The board tells one failure apart from another: a timeout is worth
+          retrying, a study with no source text will fail every time. Both jobs
+          write a GENERIC_ERROR_MESSAGE for every failure and puts the real cause
+          in the Rails log only, so this page cannot make that distinction and
+          says so rather than implying it can.
+          Tasks/trials-record-summary-failure-cause.md %>
+      <p class="text-xs text-ink-3 dark:text-ink-3-on-dark">
+        Why each of these failed is in the Rails log, not here: the app records the same
+        message for every failure. <%= feed.failure_note %>
+      </p>
+    </section>
+  <% end %>
+
+  <% if feed.stale.any? %>
+    <section class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-6 flex flex-col gap-4">
+      <div class="flex flex-wrap items-center gap-3">
+        <h3 class="font-primary text-body font-bold text-ink dark:text-ink-on-dark">Stale</h3>
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-warn/12 dark:bg-warn-on-dark/20 px-3 py-1 text-xs font-semibold text-warn dark:text-warn-on-dark">
+          <%= render Utilities::IconComponent.new("exclamation_circle", size: 3) %>
+          <%= pluralize(feed.stale.size, "stuck job") %>
+        </span>
+      </div>
+
+      <ul class="flex flex-col gap-3">
+        <% feed.stale.each do |row| %>
+          <li class="flex flex-wrap items-center gap-4 rounded-control border border-line dark:border-line-on-dark p-4">
+            <span class="font-mono text-meta text-ink dark:text-ink-on-dark w-32 shrink-0"><%= row.nct_id %></span>
+            <div class="grow min-w-0 flex flex-col gap-0.5">
+              <span class="text-meta font-semibold text-ink dark:text-ink-on-dark">
+                Pending for <%= time_ago_in_words(row.updated_at) %>
+              </span>
+              <span class="text-xs text-ink-3 dark:text-ink-3-on-dark">
+                The job died mid-run. The patient is still looking at a spinner.
+              </span>
+            </div>
+            <%= button_to "Requeue", public_send(feed.retry_route, row.nct_id), method: :post,
+                  class: Buttons::ButtonStyles.classes("primary", size: "px-4 py-2 text-meta"),
+                  form: {class: "shrink-0"} %>
+          </li>
+        <% end %>
+      </ul>
+
+      <p class="text-xs text-ink-3 dark:text-ink-3-on-dark">
+        Stale means pending with no movement for more than
+        <%= distance_of_time_in_words(GeneratedPerStudy::STALE_AFTER) %>, which is the difference
+        between a job that died and one that started a second ago. A raw pending count cannot tell
+        them apart.
+      </p>
+    </section>
+  <% end %>
+
+  <% if feed.pending.any? %>
+    <section class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-6 flex flex-col gap-3">
+      <h3 class="font-primary text-body font-bold text-ink dark:text-ink-on-dark">Pending, running normally</h3>
+
+      <ul class="flex flex-col gap-2.5">
+        <% feed.pending.each do |row| %>
+          <li class="flex flex-wrap items-center gap-4">
+            <span class="font-mono text-meta text-ink dark:text-ink-on-dark w-32 shrink-0"><%= row.nct_id %></span>
+            <span class="inline-flex items-center gap-2 text-meta text-ink-2 dark:text-ink-2-on-dark">
+              <span class="text-sky-600 dark:text-sky-300">
+                <%= render Utilities::IconComponent.new("spinner", size: 4) %>
+              </span>
+              Started <%= time_ago_in_words(row.created_at) %> ago
+            </span>
+          </li>
+        <% end %>
+      </ul>
+
+      <p class="text-xs text-ink-3 dark:text-ink-3-on-dark">No action offered. These are working.</p>
+    </section>
+  <% end %>
+</div>

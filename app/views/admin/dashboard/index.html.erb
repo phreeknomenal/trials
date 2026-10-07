@@ -31,7 +31,7 @@
         ) %>
 
     <%= render Admin::StatCardComponent.new(
-          label: "Readable summaries", value: number_with_delimiter(@summaries_by_status.fetch("completed", 0)),
+          label: "Readable summaries", value: number_with_delimiter(@summaries_completed),
           hint: "Cached, one per study"
         ) %>
   </div>
@@ -59,21 +59,25 @@
     </section>
   </div>
 
-  <section class="flex flex-col gap-3">
-    <div class="flex flex-wrap items-baseline justify-between gap-3">
-      <h2 class="font-primary text-body font-bold text-ink dark:text-ink-on-dark">Summary generation</h2>
-      <%= link_to "Open operations", admin_operations_path,
-            class: "text-meta font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>
-    </div>
+  <%# One block per paid generation queue, from the same list the operations
+      page reads, so a new queue cannot be on one page and missing from the other. %>
+  <% @feeds.each do |feed| %>
+    <section class="flex flex-col gap-3">
+      <div class="flex flex-wrap items-baseline justify-between gap-3">
+        <h2 class="font-primary text-body font-bold text-ink dark:text-ink-on-dark"><%= feed.title %></h2>
+        <%= link_to "Open operations", admin_operations_path(anchor: feed.dom_id),
+              class: "text-meta font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>
+      </div>
 
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <%= render Admin::StatCardComponent.new(label: "Completed", value: @summaries_by_status.fetch("completed", 0)) %>
-      <%= render Admin::StatCardComponent.new(label: "Pending", value: @summaries_by_status.fetch("pending", 0)) %>
-      <%= render Admin::StatCardComponent.new(label: "Stale", value: @summaries_stale, tone: :alert,
-            hint: "pending over #{distance_of_time_in_words(ReadableStudySummary::STALE_AFTER)}") %>
-      <%= render Admin::StatCardComponent.new(label: "Failed", value: @summaries_failed, tone: :alert) %>
-    </div>
-  </section>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <%= render Admin::StatCardComponent.new(label: "Completed", value: feed.completed_count) %>
+        <%= render Admin::StatCardComponent.new(label: "Pending", value: feed.pending.size + feed.stale.size) %>
+        <%= render Admin::StatCardComponent.new(label: "Stale", value: feed.stale.size, tone: :alert,
+              hint: "pending over #{distance_of_time_in_words(GeneratedPerStudy::STALE_AFTER)}") %>
+        <%= render Admin::StatCardComponent.new(label: "Failed", value: feed.failed.size, tone: :alert) %>
+      </div>
+    </section>
+  <% end %>
 
   <%# The content counts the board leaves off the overview. Kept, smaller: the
       seeded placeholder count is the one number that has already been wrong in

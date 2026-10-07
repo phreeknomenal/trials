@@ -127,6 +127,18 @@ class PrivacyInventory
       extras: ["Your notes on a saved study"]
     ),
 
+    # Self-reported health information. Kept separate from "Your health"
+    # because it is collected per study and only when the person chooses to
+    # answer, not as part of the profile.
+    Entry.new(
+      title: "Your answers to study questions",
+      examples: "The yes, no or not sure you give to a study's eligibility questions, and which study and question each answer belongs to. Used only to sort that study's criteria for you. Never used in your match score",
+      collected_when: "When you answer a study's questions",
+      model_name: "PrescreenAnswer",
+      columns: %w[nct_id question_key answer],
+      extras: []
+    ),
+
     Entry.new(
       title: "Messages you send us",
       examples: "The name, email address, subject and message you type into the contact form",
@@ -139,7 +151,7 @@ class PrivacyInventory
 
   # The models the table claims to cover. Anything here is checked; anything not
   # here is out of scope and should be added deliberately.
-  COVERED_MODELS = %w[User Profile SavedTrial ContactMessage].freeze
+  COVERED_MODELS = %w[User Profile SavedTrial PrescreenAnswer ContactMessage].freeze
 
   class << self
     def entries = ENTRIES

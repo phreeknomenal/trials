@@ -2,12 +2,12 @@
   <div class="flex flex-wrap items-end justify-between gap-4">
     <div class="flex flex-col gap-1">
       <h1 class="font-primary text-2xl font-bold tracking-tight text-ink dark:text-ink-on-dark">
-        Summary generation queue
+        Generation queues
       </h1>
       <%# From the board, and the reason this screen is worth opening: every row
           is somebody waiting. %>
       <p class="text-meta text-ink-3 dark:text-ink-3-on-dark">
-        Every row is one study's plain-language summary. A patient asked for each of these.
+        Every row is one study waiting on a paid Claude call. A patient asked for each of these.
       </p>
     </div>
 
@@ -19,18 +19,9 @@
     <% end %>
   </div>
 
-  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-    <%= render Admin::StatCardComponent.new(label: "Completed", value: number_with_delimiter(@completed_count)) %>
-    <%= render Admin::StatCardComponent.new(label: "Pending, healthy", value: @pending.size) %>
-    <%= render Admin::StatCardComponent.new(
-          label: "Stale over #{distance_of_time_in_words(ReadableStudySummary::STALE_AFTER)}",
-          value: @stale.size, tone: :alert
-        ) %>
-    <%= render Admin::StatCardComponent.new(label: "Failed", value: @failed.size, tone: :alert) %>
-  </div>
-
-  <%# The healthy state is one line, not four empty tables. The sections below
-      render only when they have rows. %>
+  <%# The healthy state is one line for the whole page, not one per queue: a
+      healthy prescreen queue must not say "nothing stuck" while summaries fail.
+      The sections below render only when they have rows. %>
   <% if @healthy %>
     <section class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-5 flex items-center gap-3.5">
       <span class="w-10 h-10 shrink-0 rounded-chip bg-good/12 dark:bg-good-on-dark/20 text-good dark:text-good-on-dark flex items-center justify-center">
@@ -39,116 +30,15 @@
       <div class="flex flex-col gap-0.5">
         <span class="text-body font-semibold text-ink dark:text-ink-on-dark">Nothing stuck or failed</span>
         <span class="text-meta text-ink-3 dark:text-ink-3-on-dark">
-          <%= pluralize(@completed_count, "summary") %> cached, <%= @pending.size %> generating now.
+          <%= @feeds.map { |feed| pluralize(feed.completed_count, feed.noun) }.to_sentence %> cached,
+          <%= @feeds.sum { |feed| feed.pending.size } %> generating now.
         </span>
       </div>
     </section>
   <% end %>
 
-  <% if @failed.any? %>
-    <section class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-6 flex flex-col gap-4">
-      <div class="flex flex-wrap items-center gap-3">
-        <h2 class="font-primary text-body font-bold text-ink dark:text-ink-on-dark">Failed</h2>
-        <span class="inline-flex items-center gap-1.5 rounded-full bg-crit/12 dark:bg-crit-on-dark/20 px-3 py-1 text-xs font-semibold text-crit dark:text-crit-on-dark">
-          <%= render Utilities::IconComponent.new("close_circle", size: 3) %>
-          <%= pluralize(@failed.size, "study") %>
-        </span>
-      </div>
-
-      <ul class="flex flex-col gap-3">
-        <% @failed.each do |summary| %>
-          <li class="flex flex-wrap items-center gap-4 rounded-control border border-line dark:border-line-on-dark p-4">
-            <span class="font-mono text-meta text-ink dark:text-ink-on-dark w-32 shrink-0"><%= summary.nct_id %></span>
-            <div class="grow min-w-0 flex flex-col gap-0.5">
-              <%# Shown whenever it is there. Today it is the same generic line
-                  on every failure; once the cause is recorded it will already
-                  be on screen. %>
-              <span class="text-meta font-semibold text-ink dark:text-ink-on-dark">
-                <%= summary.error_message.presence || "No error message recorded." %>
-              </span>
-              <span class="text-xs text-ink-3 dark:text-ink-3-on-dark">
-                Failed <%= time_ago_in_words(summary.updated_at) %> ago
-              </span>
-            </div>
-            <%= button_to "Retry", readable_summary_path(summary.nct_id), method: :post,
-                  class: Buttons::ButtonStyles.classes("primary", size: "px-4 py-2 text-meta"),
-                  form: {class: "shrink-0"} %>
-          </li>
-        <% end %>
-      </ul>
-
-      <%# The board tells one failure apart from another: a timeout is worth
-          retrying, a study with no source text will fail every time. The job
-          writes GENERIC_ERROR_MESSAGE for every failure and puts the real cause
-          in the Rails log only, so this page cannot make that distinction and
-          says so rather than implying it can.
-          Tasks/trials-record-summary-failure-cause.md %>
-      <p class="text-xs text-ink-3 dark:text-ink-3-on-dark">
-        Why each of these failed is in the Rails log, not here: the app records the same
-        message for every failure. Retrying a study whose registry record has no summary
-        text will fail again.
-      </p>
-    </section>
-  <% end %>
-
-  <% if @stale.any? %>
-    <section class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-6 flex flex-col gap-4">
-      <div class="flex flex-wrap items-center gap-3">
-        <h2 class="font-primary text-body font-bold text-ink dark:text-ink-on-dark">Stale</h2>
-        <span class="inline-flex items-center gap-1.5 rounded-full bg-warn/12 dark:bg-warn-on-dark/20 px-3 py-1 text-xs font-semibold text-warn dark:text-warn-on-dark">
-          <%= render Utilities::IconComponent.new("exclamation_circle", size: 3) %>
-          <%= pluralize(@stale.size, "stuck job") %>
-        </span>
-      </div>
-
-      <ul class="flex flex-col gap-3">
-        <% @stale.each do |summary| %>
-          <li class="flex flex-wrap items-center gap-4 rounded-control border border-line dark:border-line-on-dark p-4">
-            <span class="font-mono text-meta text-ink dark:text-ink-on-dark w-32 shrink-0"><%= summary.nct_id %></span>
-            <div class="grow min-w-0 flex flex-col gap-0.5">
-              <span class="text-meta font-semibold text-ink dark:text-ink-on-dark">
-                Pending for <%= time_ago_in_words(summary.updated_at) %>
-              </span>
-              <span class="text-xs text-ink-3 dark:text-ink-3-on-dark">
-                The job died mid-run. The patient is still looking at a spinner.
-              </span>
-            </div>
-            <%= button_to "Requeue", readable_summary_path(summary.nct_id), method: :post,
-                  class: Buttons::ButtonStyles.classes("primary", size: "px-4 py-2 text-meta"),
-                  form: {class: "shrink-0"} %>
-          </li>
-        <% end %>
-      </ul>
-
-      <p class="text-xs text-ink-3 dark:text-ink-3-on-dark">
-        Stale means pending with no movement for more than
-        <%= distance_of_time_in_words(ReadableStudySummary::STALE_AFTER) %>, which is the difference
-        between a job that died and one that started a second ago. A raw pending count cannot tell
-        them apart.
-      </p>
-    </section>
-  <% end %>
-
-  <% if @pending.any? %>
-    <section class="rounded-panel border border-line dark:border-line-on-dark bg-surface dark:bg-surface-on-dark p-6 flex flex-col gap-3">
-      <h2 class="font-primary text-body font-bold text-ink dark:text-ink-on-dark">Pending, running normally</h2>
-
-      <ul class="flex flex-col gap-2.5">
-        <% @pending.each do |summary| %>
-          <li class="flex flex-wrap items-center gap-4">
-            <span class="font-mono text-meta text-ink dark:text-ink-on-dark w-32 shrink-0"><%= summary.nct_id %></span>
-            <span class="inline-flex items-center gap-2 text-meta text-ink-2 dark:text-ink-2-on-dark">
-              <span class="text-sky-600 dark:text-sky-300">
-                <%= render Utilities::IconComponent.new("spinner", size: 4) %>
-              </span>
-              Started <%= time_ago_in_words(summary.created_at) %> ago
-            </span>
-          </li>
-        <% end %>
-      </ul>
-
-      <p class="text-xs text-ink-3 dark:text-ink-3-on-dark">No action offered. These are working.</p>
-    </section>
+  <% @feeds.each do |feed| %>
+    <%= render "feed", feed: feed %>
   <% end %>
 
   <%# Retrying costs a paid Claude call and goes through the same limits as a

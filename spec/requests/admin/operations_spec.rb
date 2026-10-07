@@ -62,7 +62,7 @@ RSpec.describe "Admin operations", type: :request do
       # markup rather than which list the record landed in.
       page = Nokogiri::HTML(response.body)
       section_for = ->(heading) {
-        page.css("section").find { |s| s.css("h2").text.include?(heading) }.to_s
+        page.css("#readable_study_summary-feed section").find { |s| s.css("h3").text.include?(heading) }.to_s
       }
 
       expect(section_for.call("Stale")).to include("NCT22222222")

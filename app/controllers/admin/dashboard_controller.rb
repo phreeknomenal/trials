@@ -23,9 +23,8 @@ module Admin
         .to_h
         .transform_keys { |status| status.to_s.tr("_", " ").upcase_first }
 
-      @summaries_by_status = ReadableStudySummary.group(:status).count
-      @summaries_failed = ReadableStudySummary.failed.count
-      @summaries_stale = ReadableStudySummary.stale.count
+      @summaries_completed = ReadableStudySummary.completed.count
+      @feeds = GenerationFeed.all
 
       @testimonials_total = Testimonial.count
       @testimonials_placeholder = Testimonial.placeholder.count
