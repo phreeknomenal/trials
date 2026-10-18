@@ -14,7 +14,7 @@ gem "cocoon"
 gem "devise"
 gem "faker"
 gem "httparty"
-gem "image_processing", "~> 2.1"
+gem "image_processing", "~> 2.2"
 # image_processing 2 dropped its backend dependencies, so the processor is now
 # declared here. Rails defaults active_storage.variant_processor to :vips.
 #
