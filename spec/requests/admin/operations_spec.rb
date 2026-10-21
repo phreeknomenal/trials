@@ -127,7 +127,7 @@ RSpec.describe "Admin operations", type: :request do
     end
   end
 
-  context "as a member" do
+  context "when signed in as a member" do
     it "is denied" do
       sign_in create(:user, role: "member")
 
