@@ -1,0 +1,7 @@
+plugins:
+  - rubocop-rspec
+
+ignore:
+  - "spec/**/*":
+      - RSpec/MultipleExpectations
+      - RSpec/ExampleLength
