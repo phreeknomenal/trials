@@ -159,14 +159,14 @@ RSpec.describe Page::Trials::LocationsComponent, type: :component do
       create(:user).profile.tap { |p| p.update_columns(zip_code: "35203", state: "Alabama", willing_travel_miles: 50) }
     end
 
-    def with_coords(city:, lat:, lon:, state: "Alabama")
-      site(city: city, state: state).merge(geo_point: {lat: lat, lon: lon})
-    end
-
     let(:sites) do
       [with_coords(city: "Toronto", state: nil, lat: 43.6532, lon: -79.3832),
         with_coords(city: "Tuscaloosa", lat: 33.1969, lon: -87.5627),
         with_coords(city: "Birmingham", lat: 33.5045, lon: -86.8055)]
+    end
+
+    def with_coords(city:, lat:, lon:, state: "Alabama")
+      site(city: city, state: state).merge(geo_point: {lat: lat, lon: lon})
     end
 
     it "orders the sites by how far away they actually are" do

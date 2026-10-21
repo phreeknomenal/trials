@@ -53,13 +53,13 @@ RSpec.describe TrialStatus do
   # reading about their own eligibility.
   describe ".label" do
     it "says a registry status the way a person would" do
-      expect(TrialStatus.label("NOT_YET_RECRUITING")).to eq("Not yet recruiting")
-      expect(TrialStatus.label("ACTIVE_NOT_RECRUITING")).to eq("Active not recruiting")
+      expect(described_class.label("NOT_YET_RECRUITING")).to eq("Not yet recruiting")
+      expect(described_class.label("ACTIVE_NOT_RECRUITING")).to eq("Active not recruiting")
     end
 
     it "has nothing to say about a missing status" do
-      expect(TrialStatus.label(nil)).to be_nil
-      expect(TrialStatus.label("  ")).to be_nil
+      expect(described_class.label(nil)).to be_nil
+      expect(described_class.label("  ")).to be_nil
     end
   end
 end

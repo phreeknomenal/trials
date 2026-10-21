@@ -15,9 +15,9 @@ RSpec.describe Layout::Navigation::Menu::FooterLinkComponent, type: :component d
   end
 
   describe "signed out" do
-    before { signed_in(false) }
-
     subject(:page) { render_inline(described_class.new) }
+
+    before { signed_in(false) }
 
     it "makes every entry an anchor" do
       labels = page.css("li").map { |li| li.text.strip }
@@ -60,9 +60,9 @@ RSpec.describe Layout::Navigation::Menu::FooterLinkComponent, type: :component d
   end
 
   describe "signed in" do
-    before { signed_in(true) }
-
     subject(:page) { render_inline(described_class.new) }
+
+    before { signed_in(true) }
 
     it "swaps the auth links for account links" do
       expect(page.text).to include("Sign out", "Account settings")
