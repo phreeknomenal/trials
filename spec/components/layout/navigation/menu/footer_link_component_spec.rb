@@ -11,7 +11,7 @@ RSpec.describe Layout::Navigation::Menu::FooterLinkComponent, type: :component d
   # Stubbed rather than signed in with Warden: a component spec runs outside the
   # middleware stack, so `user_signed_in?` has no proxy to ask.
   def signed_in(value)
-    allow_any_instance_of(ApplicationComponent).to receive(:user_signed_in?).and_return(value)
+    allow(vc_test_controller).to receive(:user_signed_in?).and_return(value)
   end
 
   describe "signed out" do

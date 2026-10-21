@@ -4,9 +4,11 @@ RSpec.describe Layout::Navigation::TabBarComponent, type: :component do
   let(:user) { create(:user) }
   let(:profile) { user.profile }
 
+  # current_profile is AuthenticationHelper reading current_user, so stubbing the
+  # controller's user exercises the same lookup the app does.
   def signed_in(value, with_profile: nil)
-    allow_any_instance_of(ApplicationComponent).to receive(:user_signed_in?).and_return(value)
-    allow_any_instance_of(ApplicationComponent).to receive(:current_profile).and_return(with_profile)
+    user = instance_double(User, profile: with_profile) if value
+    allow(vc_test_controller).to receive_messages(user_signed_in?: value, current_user: user)
   end
 
   describe "who sees it" do
