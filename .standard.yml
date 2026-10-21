@@ -1,6 +1,7 @@
 plugins:
   - rubocop-rspec
 
+# Keep this cop list in sync with .rubocop.yml, which editors read.
 ignore:
   - "spec/**/*":
       # Request and component specs assert on several parts of one response.
