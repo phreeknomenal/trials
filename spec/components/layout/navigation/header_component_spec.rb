@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe Layout::Navigation::HeaderComponent, type: :component do
-  # See the menu component spec: the header renders nested components that each
-  # resolve the user_signed_in? delegation on their own.
-  before { allow_any_instance_of(ApplicationComponent).to receive(:user_signed_in?).and_return(false) }
+  # See the menu component spec: the header renders nested components, and the
+  # controller is the one place they all ask.
+  before { allow(vc_test_controller).to receive(:user_signed_in?).and_return(false) }
 
   # The bug this was fixed for. Every control used to sit inside a
   # hidden lg:flex wrapper with nothing behind it, so below 1024px the header

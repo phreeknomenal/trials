@@ -1,11 +1,11 @@
 require "rails_helper"
 
 RSpec.describe Layout::Navigation::Menu::HeaderMenuComponent, type: :component do
-  # Stubbed on ApplicationComponent rather than the instance because the header
-  # renders this component twice, and each nested instance resolves the
-  # delegation on its own.
+  # Stubbed on the test controller rather than the component because the header
+  # renders this component twice, and every nested instance delegates through
+  # helpers to the same controller.
   def signed_in(value)
-    allow_any_instance_of(ApplicationComponent).to receive(:user_signed_in?).and_return(value)
+    allow(vc_test_controller).to receive(:user_signed_in?).and_return(value)
   end
 
   before { signed_in(false) }

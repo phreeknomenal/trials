@@ -1,0 +1,15 @@
+plugins:
+  - rubocop-rspec
+
+# Keep this cop list in sync with .rubocop.yml, which editors read.
+ignore:
+  - "spec/**/*":
+      # Request and component specs assert on several parts of one response.
+      - RSpec/MultipleExpectations
+      - RSpec/ExampleLength
+      # Large classes are split into topic files (trial_scorer_distance_spec.rb
+      # beside trial_scorer_spec.rb), and some specs guard build output or
+      # wiring rather than a class (tailwind_build_spec.rb, stimulus_wiring_spec.rb).
+      - RSpec/DescribeClass
+      - RSpec/DescribeMethod
+      - RSpec/SpecFilePathFormat

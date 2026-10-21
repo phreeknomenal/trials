@@ -187,19 +187,21 @@ RSpec.describe "The merged search", type: :request do
     end
 
     it "asks the registry for the town, not the digits" do
-      expect(ClinicalTrialClient).to receive(:advanced_search)
-        .with(hash_including(location: "Birmingham, Alabama"))
-        .and_return({studies: [], total_count: 0})
+      stub_search(studies: [])
 
       get "/search", params: {condition: "asthma", location: "35203"}
+
+      expect(ClinicalTrialClient).to have_received(:advanced_search)
+        .with(hash_including(location: "Birmingham, Alabama"))
     end
 
     it "asks for a radius instead once one is chosen" do
-      expect(ClinicalTrialClient).to receive(:advanced_search)
-        .with(hash_including(within_miles: 50, origin: [33.521, -86.8066]))
-        .and_return({studies: [], total_count: 0})
+      stub_search(studies: [])
 
       get "/search", params: {condition: "asthma", location: "35203", within_miles: "50"}
+
+      expect(ClinicalTrialClient).to have_received(:advanced_search)
+        .with(hash_including(within_miles: 50, origin: [33.521, -86.8066]))
     end
 
     # The cards still say how far each study is from the reader's own zip, so a
