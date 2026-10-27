@@ -91,6 +91,25 @@ RSpec.describe Profile do
     end
   end
 
+  describe "having no diagnosis yet" do
+    it "records it when the conditions step is ticked with no conditions" do
+      profile = create(:profile, diagnosis_timing: nil)
+      profile.profile_conditions.destroy_all
+
+      profile.update!(no_conditions: "1")
+
+      expect(profile.reload).to be_no_diagnosis
+    end
+
+    it "leaves a timing the person chose alone" do
+      profile = create(:profile, diagnosis_timing: Profile::NOT_SURE)
+
+      profile.update!(no_conditions: "1")
+
+      expect(profile.reload.diagnosis_timing).to eq(Profile::NOT_SURE)
+    end
+  end
+
   describe "resolving city and state from zip" do
     before { create(:zip_code, zip: "44106", city: "Cleveland", state: "Ohio") }
 

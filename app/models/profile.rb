@@ -93,8 +93,11 @@ class Profile < ApplicationRecord
   SIX_TO_TWENTYFOUR_MONTHS = "6-24 months"
   GREATER_THAN_TWO_YEARS = "> 2 years"
   NOT_SURE = "not sure"
+  # Someone still seeking a diagnosis had no true answer to "when were you
+  # diagnosed", and "not sure" says something different.
+  NO_DIAGNOSIS = "no diagnosis yet"
 
-  DIAGNOSIS_TIMING_OPTIONS = [LESS_THAN_SIX_MONTHS, SIX_TO_TWENTYFOUR_MONTHS, GREATER_THAN_TWO_YEARS, NOT_SURE].freeze
+  DIAGNOSIS_TIMING_OPTIONS = [LESS_THAN_SIX_MONTHS, SIX_TO_TWENTYFOUR_MONTHS, GREATER_THAN_TWO_YEARS, NOT_SURE, NO_DIAGNOSIS].freeze
 
   # Treatments
   NONE = "none"
@@ -209,8 +212,9 @@ class Profile < ApplicationRecord
     :city, :state, :zip_code,
     with: ->(value) { value.presence }
 
-  # Set by the conditions step when someone has no diagnosis yet. Not stored:
-  # it only tells the step's validation that an empty list was deliberate.
+  # Set by the conditions step when someone has no diagnosis yet. Not a column:
+  # it tells the step's validation that an empty list was deliberate, and
+  # records NO_DIAGNOSIS so the profile can say so later.
   attr_accessor :no_conditions
 
   has_one_attached :avatar
@@ -256,6 +260,7 @@ class Profile < ApplicationRecord
   # the zip changes on its own, both are re-resolved: someone who moves and
   # updates only their zip should not keep their old city.
   before_validation :resolve_city_and_state_from_zip
+  before_validation :record_no_diagnosis
 
   # `onboarded` predates the wizard and is still read by the admin user list and
   # the user_onboarded? helper. Deriving it from progress keeps the two from
@@ -331,6 +336,10 @@ class Profile < ApplicationRecord
     onboarding_progress >= Onboarding.complete_number
   end
 
+  # True when someone has said they have no diagnosis, which answers the
+  # conditions question as fully as listing one does.
+  def no_diagnosis? = diagnosis_timing == NO_DIAGNOSIS
+
   private
 
   def flag_onboarded_once_required_steps_are_done
@@ -347,6 +356,15 @@ class Profile < ApplicationRecord
     elsif avatar.blob.byte_size > AVATAR_MAX_BYTES
       errors.add(:avatar, "must be smaller than 10 MB")
     end
+  end
+
+  # Only fills a blank. A timing someone chose themselves is never overwritten
+  # by ticking the box.
+  def record_no_diagnosis
+    return unless no_conditions == "1" && diagnosis_timing.blank?
+    return if profile_conditions.reject(&:marked_for_destruction?).any?
+
+    self.diagnosis_timing = NO_DIAGNOSIS
   end
 
   def must_list_a_condition
