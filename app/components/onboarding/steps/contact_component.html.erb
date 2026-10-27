@@ -1,0 +1,19 @@
+<div class="space-y-5">
+  <%= render Forms::FieldComponent.new(
+    form: form, attribute: :contact_preference, field_type: :select,
+    label: "How would you like to be contacted?",
+    select_options: contact_options,
+    options: {include_blank: UNANSWERED_PROMPT, autofocus: true, data: {onboarding_target: "firstField"}}
+  ) %>
+
+  <%= render Forms::FieldComponent.new(
+    form: form, attribute: :phone_number, label: "Phone number",
+    options: {type: "tel", autocomplete: "tel"},
+    hint: "Only needed for text messages."
+  ) %>
+
+  <%= render Forms::FieldComponent.new(
+    form: form, attribute: :language_preference, label: "Preferred language",
+    options: {autocomplete: "language", placeholder: "e.g. English"}
+  ) %>
+</div>

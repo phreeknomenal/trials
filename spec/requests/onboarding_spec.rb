@@ -17,7 +17,8 @@ RSpec.describe "Onboarding wizard", type: :request do
       "logistics" => {willing_travel_miles: Profile::FIFTY_MILES},
       "preferences" => {risk_tolerance: Profile::TESTED},
       "about_you" => {ethnicity: Profile::NOT_HISPANIC_OR_LATINO},
-      "community" => {interest_ids: []}
+      "community" => {interest_ids: []},
+      "contact" => {contact_preference: Profile::EMAIL}
     }.fetch(slug)
   end
 
@@ -389,6 +390,32 @@ RSpec.describe "Onboarding wizard", type: :request do
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.body).to include("must be a PNG, JPEG or WebP image")
+    end
+  end
+
+  # How to reach someone was a profile section the wizard never asked about,
+  # so it stayed empty for everyone who did not go looking for it.
+  describe "the contact step" do
+    before { profile.update_columns(onboarding_step: Onboarding.find("contact").number) }
+
+    it "asks how a study team should reach you" do
+      get step_path("contact")
+
+      expect(response.body).to include("How should a study team reach you?")
+    end
+
+    it "saves the answers and finishes the wizard" do
+      patch step_path("contact"), params: {profile: {contact_preference: Profile::SMS, phone_number: "205 555 0100"}}
+
+      expect(response).to redirect_to(root_path)
+      expect(profile.reload).to have_attributes(contact_preference: Profile::SMS, phone_number: "205 555 0100")
+      expect(profile).to be_profile_completed
+    end
+
+    it "can be skipped" do
+      post skip_onboarding_step_path(step: "contact")
+
+      expect(profile.reload).to be_profile_completed
     end
   end
 

@@ -20,7 +20,8 @@ class Onboarding::PanelComponent < ApplicationComponent
     "logistics" => %i[location],
     "preferences" => %i[study_type phase_risk],
     "about_you" => [],
-    "community" => []
+    "community" => [],
+    "contact" => []
   }.freeze
 
   NOTES = {
@@ -31,7 +32,8 @@ class Onboarding::PanelComponent < ApplicationComponent
     "logistics" => "Distance changes the ranking, not the list. A study further than you would travel drops down rather than disappearing.",
     "preferences" => "Answer only if you have a view. No preference scores neutrally rather than against you.",
     "about_you" => "None of this affects matching. It is what lets a study report who took part, which is how under-representation gets noticed at all. You can skip it.",
-    "community" => "Nothing here changes a score. It is for finding people looking for the same things, and you can skip it."
+    "community" => "Nothing here changes a score. It is for finding people looking for the same things, and you can skip it.",
+    "contact" => "Nothing here changes a score, and nobody is contacted on your behalf. A study team sees it only when you ask them to reach you. You can skip it."
   }.freeze
 
   # Reference rather than persuasion: the prompt already says to answer only if

@@ -137,7 +137,8 @@ class ProfileSections
     "logistics" => "travel",
     "preferences" => "preferences",
     "about_you" => "background",
-    "community" => "community"
+    "community" => "community",
+    "contact" => "contact"
   }.freeze
 
   def self.for_step(step_slug) = find(STEP_SECTIONS.fetch(step_slug.to_s))
