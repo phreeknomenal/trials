@@ -16,7 +16,7 @@
               <%= [@profile.first_name, @profile.last_name].compact_blank.join(" ").presence || "Your profile" %>
             </p>
             <p class="text-sm text-ink-3 dark:text-ink-3-on-dark truncate">
-              <%= [@profile.pronouns, [@profile.city, @profile.state].compact_blank.join(", ").presence].compact_blank.join(" · ") %>
+              <%= [@profile.displayed_pronouns, [@profile.city, @profile.state].compact_blank.join(", ").presence].compact_blank.join(" · ") %>
             </p>
           </div>
           <%# Opens the section that holds the picker, rather than a separate

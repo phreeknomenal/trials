@@ -95,7 +95,7 @@ class EligibilityChecker
 
   def check_sex
     trial_sex = @trial[:sex]&.downcase
-    profile_sex = @profile.sex_assigned_at_birth&.downcase
+    profile_sex = @profile.sex_for_matching&.downcase
 
     case trial_sex
     when nil, "all"

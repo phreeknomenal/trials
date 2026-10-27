@@ -10,14 +10,15 @@
       form: form, attribute: :sex_assigned_at_birth, field_type: :select,
       label: "Sex assigned at birth",
       select_options: sex_options,
-      options: {include_blank: "Prefer not to answer"}
+      options: {include_blank: UNANSWERED_PROMPT}
     ) %>
-    <%# Blank is the decline path. It scores neutral and disqualifies nobody,
-        which is why the two non-binary options were removed in #96: they were
-        read as definite answers and ruled the user out of every sex-restricted
-        study. %>
+    <%# "Prefer not to say" is stored, so the profile can show it was declined,
+        but Profile#sex_for_matching reads it as blank. It scores neutral and
+        disqualifies nobody, which is why the two non-binary options were
+        removed in #96: they were read as definite answers and ruled the user
+        out of every sex-restricted study. %>
     <p class="mt-2 text-xs text-ink-3 dark:text-ink-3-on-dark">
-      Studies list eligibility as all, female, or male. Leaving this blank keeps you eligible everywhere.
+      Studies list eligibility as all, female, or male. Prefer not to say keeps you eligible everywhere.
     </p>
   </div>
 </div>

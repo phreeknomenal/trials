@@ -22,6 +22,15 @@ RSpec.describe TrialScorer, "scoring location by distance" do
     described_class.new(profile, trial).send(:score_location)
   end
 
+  # No preference is stored as zero, and zero used as a limit would divide by
+  # zero in the falloff. It has to score exactly as an unanswered question.
+  it "scores no travel preference as it scores no answer" do
+    tuscaloosa_area = site(33.0, -87.9)
+
+    expect(location_score(tuscaloosa_area, willing_travel_miles: Profile::NO_TRAVEL_PREFERENCE))
+      .to eq(location_score(tuscaloosa_area, willing_travel_miles: nil))
+  end
+
   it "gives full marks inside the distance the profile said it could travel" do
     expect(location_score(site(33.5045, -86.8055))).to eq(100)
   end

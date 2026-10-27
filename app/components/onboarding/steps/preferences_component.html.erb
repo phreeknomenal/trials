@@ -3,7 +3,7 @@
     form: form, attribute: :trial_type_preference, field_type: :select,
     label: "Interventional, observational, or either?",
     select_options: trial_type_options,
-    options: {include_blank: "No preference", autofocus: true, data: {onboarding_target: "firstField"}}
+    options: {include_blank: UNANSWERED_PROMPT, autofocus: true, data: {onboarding_target: "firstField"}}
   ) %>
 
   <div>
@@ -11,13 +11,13 @@
       form: form, attribute: :risk_tolerance, field_type: :select,
       label: "How established should the treatment be?",
       select_options: risk_options,
-      options: {include_blank: "No preference"}
+      options: {include_blank: UNANSWERED_PROMPT}
     ) %>
     <%# Answering this used to score 0 against every real trial, because the
         scorer compared "phase 4" against the registry's "PHASE4". Fixed in #97;
         without that this screen would have made every user's matches worse. %>
     <p class="mt-2 text-xs text-ink-3 dark:text-ink-3-on-dark">
-      Leaving this blank does not hide anything from you. It only stops us ranking by phase.
+      No preference does not hide anything from you. It only stops us ranking by phase.
     </p>
   </div>
 </div>

@@ -23,6 +23,27 @@ RSpec.describe "The profile page", type: :request do
       expect(response.body).to include("Does not affect matching")
     end
 
+    # The reported bug. "No preference" saved nil, the value a skipped question
+    # saves, so the profile said "Not answered" to someone who had answered.
+    it "reads back a no preference answer as no preference" do
+      profile.update_columns(remote_visit_preference: Profile::NO_PREFERENCE,
+        willing_travel_miles: Profile::NO_TRAVEL_PREFERENCE)
+
+      get profile_path(profile)
+
+      travel = Nokogiri::HTML(response.body).at_css("#travel")
+      expect(travel.text).to include("No preference")
+      expect(travel.text).not_to include("Not answered")
+    end
+
+    it "keeps a declined pronoun off the identity card" do
+      profile.update_columns(pronouns: Profile::PREFER_NOT_TO_SAY, city: "Cleveland", state: "Ohio")
+
+      get profile_path(profile)
+
+      expect(Nokogiri::HTML(response.body).at_css("aside").text).not_to match(/prefer not to say/i)
+    end
+
     # A blank cell reads as a rendering fault. An unanswered question should read
     # as a question still open.
     it "says a field is unanswered rather than leaving it blank" do

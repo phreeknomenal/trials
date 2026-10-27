@@ -33,10 +33,10 @@ module ProfileFieldsHelper
   # a number, or a checkbox.
   OPTIONS = {
     pronouns: -> { Profile::PRONOUN_OPTIONS },
-    sex_assigned_at_birth: -> { Profile::SEX_ASSIGNED_AT_BIRTH_OPTIONS },
+    sex_assigned_at_birth: -> { Profile::SEX_ASSIGNED_AT_BIRTH_ANSWERS },
     diagnosis_timing: -> { Profile::DIAGNOSIS_TIMING_OPTIONS },
     current_treatment: -> { Profile::TREATMENT_OPTIONS },
-    willing_travel_miles: -> { Profile::TRAVEL_MILES_OPTIONS },
+    willing_travel_miles: -> { Profile::TRAVEL_MILES_ANSWERS },
     remote_visit_preference: -> { Profile::REMOTE_VISIT_PREFERENCE_OPTIONS },
     trial_type_preference: -> { Profile::TRIAL_TYPE_PREFERENCE_OPTIONS },
     risk_tolerance: -> { Profile::RISK_TOLERANCE_OPTIONS },
@@ -61,10 +61,12 @@ module ProfileFieldsHelper
     args = {form: form, attribute: field, label: profile_field_label(field)}
 
     if ASSOCIATIONS.key?(field)
+      # Gender and race have their own "Prefer not to say" rows, so the blank is
+      # only "not answered", as it is for every other select.
       args.merge(field_type: :select, select_options: ASSOCIATIONS[field].all.map { |r| [r.name, r.id] },
-        options: {include_blank: "Prefer not to say"})
+        options: {include_blank: "Not answered"})
     elsif OPTIONS.key?(field)
-      args.merge(field_type: :select, select_options: OPTIONS[field].call.map { |o| [o.to_s.humanize, o] },
+      args.merge(field_type: :select, select_options: OPTIONS[field].call.map { |o| [profile_option_label(field, o), o] },
         options: {include_blank: "Not answered"})
     elsif BOOLEANS.include?(field)
       args.merge(field_type: :checkbox)
@@ -110,6 +112,18 @@ module ProfileFieldsHelper
     # birth_year is the only field whose stored value is not what someone wants
     # to read back.
     return "#{value} · age #{profile.age}" if field == :birth_year && profile.age.present?
+
+    profile_option_label(field, value)
+  end
+
+  # Travel is stored as a number of miles, which reads as a bare "50" without
+  # this, and its no-preference answer is stored as zero.
+  def profile_option_label(field, value)
+    if field == :willing_travel_miles
+      return "No preference" if value == Profile::NO_TRAVEL_PREFERENCE
+
+      return "Up to #{value} miles"
+    end
 
     value.to_s.humanize
   end

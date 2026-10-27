@@ -29,7 +29,7 @@ class Onboarding::PanelComponent < ApplicationComponent
     "location" => "Only the ZIP is stored, never a street address. It decides which sites count as near you.",
     "conditions" => "The largest single factor. Everything else adjusts a ranking; this decides which studies are in it at all.",
     "logistics" => "Distance changes the ranking, not the list. A study further than you would travel drops down rather than disappearing.",
-    "preferences" => "Answer only if you have a view. Left blank, these score neutrally rather than against you.",
+    "preferences" => "Answer only if you have a view. No preference scores neutrally rather than against you.",
     "about_you" => "None of this affects matching. It is what lets a study report who took part, which is how under-representation gets noticed at all. You can skip it.",
     "community" => "Nothing here changes a score. It is for finding people looking for the same things, and you can skip it."
   }.freeze

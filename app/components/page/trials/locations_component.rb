@@ -52,7 +52,7 @@ class Page::Trials::LocationsComponent < ApplicationComponent
   def origin = @origin ||= profile&.coordinates
 
   # The one number this app has collected since onboarding and never read.
-  def travel_limit = profile&.willing_travel_miles
+  def travel_limit = profile&.travel_limit_miles
 
   def within_limit?(location)
     return false if travel_limit.blank?
