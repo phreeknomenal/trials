@@ -193,6 +193,11 @@ class Profile < ApplicationRecord
   attr_accessor :no_conditions
 
   has_one_attached :avatar
+
+  # The picker's accept attribute is a browser hint, not a rule. These are the
+  # formats the 80 and 160 pixel variants can be made from.
+  AVATAR_CONTENT_TYPES = %w[image/png image/jpeg image/webp].freeze
+  AVATAR_MAX_BYTES = 10.megabytes
   has_rich_text :about
 
   validates :user_id, uniqueness: true
@@ -219,6 +224,7 @@ class Profile < ApplicationRecord
   validates :risk_tolerance, inclusion: {in: RISK_TOLERANCE_OPTIONS}, allow_blank: true
   validates :contact_preference, inclusion: {in: CONTACT_PREFERENCE_OPTIONS}, allow_blank: true
   validates :onboarded, inclusion: [true, false]
+  validate :avatar_must_be_a_supported_image
 
   # Onboarding asks for a zip code and TrialScorer#score_location needs city and
   # state. Nothing connected the two, so location scored a flat neutral 50 for
@@ -290,6 +296,18 @@ class Profile < ApplicationRecord
 
   def flag_onboarded_once_required_steps_are_done
     self.onboarded = true if onboarding_unlocked?
+  end
+
+  # Only a newly chosen file is checked. One already stored was accepted when it
+  # arrived, and re-checking it would block saving unrelated fields.
+  def avatar_must_be_a_supported_image
+    return unless attachment_changes["avatar"] && avatar.attached?
+
+    if AVATAR_CONTENT_TYPES.exclude?(avatar.blob.content_type)
+      errors.add(:avatar, "must be a PNG, JPEG or WebP image")
+    elsif avatar.blob.byte_size > AVATAR_MAX_BYTES
+      errors.add(:avatar, "must be smaller than 10 MB")
+    end
   end
 
   def must_list_a_condition

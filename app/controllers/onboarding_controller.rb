@@ -5,6 +5,8 @@
 # everything on abandon, and blocked the app with a CSS overlay while
 # ApplicationController#ensure_profile_completed was an empty stub.
 class OnboardingController < ApplicationController
+  include AvatarUpload
+
   # No navigation chrome. The wizard is the only thing on screen.
   layout "onboarding"
 
@@ -22,7 +24,7 @@ class OnboardingController < ApplicationController
   def update
     @profile.assign_attributes(step_params)
 
-    if @profile.save(context: @step.context)
+    if save_with_avatar(@profile) { @profile.save(context: @step.context) }
       advance_past(@step)
       redirect_to destination_after(@step)
     else

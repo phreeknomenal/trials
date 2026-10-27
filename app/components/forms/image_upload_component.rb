@@ -15,7 +15,14 @@ class Forms::ImageUploadComponent < ApplicationComponent
     @initials = initials
   end
 
-  def current_image? = current.respond_to?(:attached?) && current.attached?
+  # Persisted, not just attached. A file chosen on a submission that failed
+  # validation is attached in memory with no stored blob, and image_tag on it
+  # raises, so a step re-rendered with any error became a 500.
+  def current_image? = current.respond_to?(:attached?) && current.attached? && current.blob.persisted?
 
   def button_label = current_image? ? "Change photo" : "Add a photo"
+
+  def errors = form.object.errors[attribute]
+
+  def error_message = "#{form.object.class.human_attribute_name(attribute)} #{errors.to_sentence}"
 end
