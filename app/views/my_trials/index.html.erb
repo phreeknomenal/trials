@@ -139,7 +139,8 @@
             <ul class="flex flex-col gap-2">
               <% @strength.unanswered.each do |slug, step, _| %>
                 <li>
-                  <%= link_to onboarding_step_path(slug), class: "flex items-start gap-2 text-sm text-ink-2 dark:text-ink-2-on-dark hover:text-sky-700 dark:hover:text-sky-300" do %>
+                  <% section = ProfileSections.for_step(slug) %>
+                  <%= link_to profile_path(@profile, section: section.slug, anchor: section.slug), class: "flex items-start gap-2 text-sm text-ink-2 dark:text-ink-2-on-dark hover:text-sky-700 dark:hover:text-sky-300" do %>
                     <span class="shrink-0 mt-0.5 text-ink-4 dark:text-ink-4-on-dark">
                       <%= render Utilities::IconComponent.new("question_circle", size: 4) %>
                     </span>
