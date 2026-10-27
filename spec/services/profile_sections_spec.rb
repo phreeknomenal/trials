@@ -30,34 +30,66 @@ RSpec.describe ProfileSections do
     expect(described_class.find("background")).not_to be_affects_matching
   end
 
-  describe "#answered?" do
+  describe "#complete?" do
+    def complete?(slug, subject = profile) = described_class.new(subject).complete?(described_class.find(slug))
+
     it "is false for a section with nothing in it" do
       profile.update_columns(phone_number: nil, contact_preference: nil, language_preference: nil)
 
-      expect(described_class.new(profile).answered?(described_class.find("contact"))).to be(false)
+      expect(complete?("contact")).to be(false)
     end
 
-    it "is true once any one field has a value" do
-      profile.update_columns(phone_number: "205 555 0100", contact_preference: nil, language_preference: nil)
+    # The old rule. One answer out of several made a section look finished.
+    it "is false while any checked question is still open" do
+      profile.update_columns(trial_type_preference: Profile::EITHER, risk_tolerance: nil)
 
-      expect(described_class.new(profile).answered?(described_class.find("contact"))).to be(true)
+      expect(complete?("preferences")).to be(false)
+    end
+
+    it "counts a decline as an answer" do
+      profile.update_columns(trial_type_preference: Profile::NO_PREFERENCE, risk_tolerance: Profile::NO_PREFERENCE)
+
+      expect(complete?("preferences")).to be(true)
+    end
+
+    # An unticked checkbox saves false, and present? reads false as blank.
+    it "counts a false checkbox as an answer" do
+      profile.update_columns(willing_travel_miles: Profile::FIFTY_MILES,
+        remote_visit_preference: Profile::HYBRID, transportation_reliable: false)
+
+      expect(complete?("travel")).to be(true)
+    end
+
+    it "does not ask for a bio or a country" do
+      profile.update_columns(first_name: "M", last_name: "B", pronouns: Profile::HE_HIM, country: nil)
+      profile.update!(about: "")
+
+      expect(complete?("about_you")).to be(true)
+    end
+
+    it "asks for a phone number only when texts are the preference" do
+      profile.update_columns(contact_preference: Profile::SMS, language_preference: "English", phone_number: nil)
+      expect(complete?("contact")).to be(false)
+
+      profile.update_columns(contact_preference: Profile::EMAIL)
+      expect(complete?("contact")).to be(true)
     end
 
     # Conditions are an association rather than a column, so the generic check
     # cannot see them.
-    it "counts conditions as answered once one is listed" do
+    it "counts conditions as complete once one is listed" do
       profile.profile_conditions.destroy_all
       profile.update_columns(diagnosis_timing: nil)
       profile.conditions << Condition.create!(name: "Asthma")
 
-      expect(described_class.new(profile).answered?(described_class.find("conditions"))).to be(true)
+      expect(complete?("conditions")).to be(true)
     end
 
     it "counts saying there is no diagnosis yet as answering conditions" do
       profile.profile_conditions.destroy_all
       profile.update_columns(diagnosis_timing: Profile::NO_DIAGNOSIS)
 
-      expect(described_class.new(profile.reload).answered?(described_class.find("conditions"))).to be(true)
+      expect(complete?("conditions", profile.reload)).to be(true)
     end
   end
 

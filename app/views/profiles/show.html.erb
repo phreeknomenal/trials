@@ -33,7 +33,7 @@
           <div class="flex items-baseline justify-between gap-2 mb-2">
             <p class="text-sm font-bold text-ink dark:text-ink-on-dark">Profile strength</p>
             <p class="text-sm font-bold tabular-nums text-ink-2 dark:text-ink-2-on-dark">
-              <%= @sections.answered_count %> of <%= @sections.total %>
+              <%= @sections.complete_count %> of <%= @sections.total %>
             </p>
           </div>
           <div class="h-2 rounded-full bg-surface-2 dark:bg-surface-2-on-dark overflow-hidden">
@@ -52,13 +52,16 @@
 
         <nav class="flex flex-col gap-0.5" aria-label="Profile sections">
           <% ProfileSections.all.each do |section| %>
+            <% incomplete = @sections.incomplete?(section) %>
+            <%# Red rather than the amber it was. Amber read as a status, not as
+                something left to do, and the strength bar was the only other
+                sign. The border is always present so the link does not shift
+                when a section is finished. %>
             <%= link_to "##{section.slug}",
-                  class: "flex items-center justify-between gap-2 rounded-nav px-3 py-2 text-sm font-medium text-ink-2 dark:text-ink-2-on-dark hover:bg-surface-2 dark:hover:bg-surface-on-dark" do %>
+                  class: "flex items-center justify-between gap-2 rounded-nav border px-3 py-2 text-sm font-medium text-ink-2 dark:text-ink-2-on-dark hover:bg-surface-2 dark:hover:bg-surface-on-dark #{incomplete ? "border-crit dark:border-crit-on-dark" : "border-transparent"}" do %>
               <span><%= section.heading %></span>
-              <%# A dot marks a section with nothing in it, so what is missing is
-                  visible without opening each one. %>
-              <% unless @sections.answered?(section) %>
-                <span class="w-1.5 h-1.5 rounded-full bg-warn shrink-0" aria-label="nothing answered"></span>
+              <% if incomplete %>
+                <span class="w-1.5 h-1.5 rounded-full bg-crit dark:bg-crit-on-dark shrink-0" role="img" aria-label="incomplete"></span>
               <% end %>
             <% end %>
           <% end %>
@@ -89,6 +92,7 @@
       <% ProfileSections.all.each do |section| %>
         <%= render "profiles/section",
               section: section,
+              sections: @sections,
               profile: @profile,
               editing: @editing&.slug == section.slug %>
       <% end %>

@@ -263,4 +263,32 @@ RSpec.describe "The profile page", type: :request do
       expect(response.body).not_to include(onboarding_step_path("community"))
     end
   end
+
+  # The only sign of a gap used to be the strength bar and a small amber dot.
+  describe "marking incomplete sections" do
+    let(:page) { Nokogiri::HTML(response.body) }
+
+    before do
+      profile.update_columns(trial_type_preference: nil, risk_tolerance: nil)
+      get profile_path(profile)
+    end
+
+    it "outlines the section in red and says so" do
+      section = page.at_css("section#preferences")
+
+      expect(section["class"]).to include("border-crit")
+      expect(section.text).to include("Incomplete")
+    end
+
+    it "outlines its link in red with a red dot" do
+      link = page.at_css("nav[aria-label='Profile sections'] a[href='#preferences']")
+
+      expect(link["class"]).to include("border-crit")
+      expect(link.at_css("[aria-label='incomplete']")["class"]).to include("bg-crit")
+    end
+
+    it "leaves a complete section alone" do
+      expect(page.at_css("section#location")["class"]).not_to include("border-crit")
+    end
+  end
 end

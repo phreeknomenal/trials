@@ -22,8 +22,12 @@ class ProfileSections
   # :context is the validation context a save runs under. Most sections use
   # :update; conditions borrows the wizard step's rule that an empty list needs
   # the "no diagnosis yet" box.
-  Section = Data.define(:slug, :heading, :blurb, :impact, :fields, :permitted, :context) do
-    def initialize(context: :update, **)
+  #
+  # :checks is which fields must be answered for the section to be complete.
+  # It defaults to every field, and leaves out the ones that are not questions:
+  # a free-text bio, and the city and state the ZIP fills in.
+  Section = Data.define(:slug, :heading, :blurb, :impact, :fields, :permitted, :context, :checks) do
+    def initialize(fields:, context: :update, checks: fields, **)
       super
     end
 
@@ -42,6 +46,7 @@ class ProfileSections
       blurb: "Only used to address you in the app. Never sent to a study team.",
       impact: :none,
       fields: %i[first_name last_name pronouns about],
+      checks: %i[first_name last_name pronouns],
       # avatar rides with the names and pronouns, matching where the wizard now
       # collects it. It is not in :fields because it is rendered by its own
       # picker rather than through the generic field helper.
@@ -75,6 +80,7 @@ class ProfileSections
       blurb: "Your ZIP decides which study sites count as near you. No street address is stored.",
       impact: :affects,
       fields: %i[zip_code city state country],
+      checks: %i[zip_code],
       permitted: %i[zip_code city state country]
     ),
     Section.new(
@@ -118,6 +124,8 @@ class ProfileSections
       blurb: "Used only if you ask a study team to get in touch.",
       impact: :none,
       fields: %i[phone_number contact_preference language_preference],
+      # The phone number is only asked for by the text message preference.
+      checks: %i[contact_preference language_preference],
       permitted: %i[phone_number contact_preference language_preference]
     )
   ].freeze
@@ -153,20 +161,35 @@ class ProfileSections
 
   attr_reader :profile
 
-  # A section counts as answered when any of its own fields has a value.
-  # Conditions live on an association rather than a column, so health asks that
-  # separately.
-  def answered_count = self.class.all.count { |section| answered?(section) }
+  # A section is complete when every question it checks has an answer, and a
+  # decline such as "Prefer not to say" is an answer. It used to need only one
+  # field, so a section with one answer out of five looked finished, and the
+  # only sign of a gap was a small amber dot.
+  def complete_count = self.class.all.count { |section| complete?(section) }
 
   def total = self.class.all.length
 
-  def percent = ((answered_count.to_f / total) * 100).round
+  def percent = ((complete_count.to_f / total) * 100).round
 
-  def answered?(section)
+  def complete?(section)
     case section.slug
     when "conditions" then profile.conditions.any? || profile.no_diagnosis?
     when "community" then profile.identities.any? || profile.interests.any?
-    else section.fields.any? { |field| profile.public_send(field).present? }
+    when "contact" then checks_answered?(section) && (profile.contact_preference != Profile::SMS || answered?(:phone_number))
+    else checks_answered?(section)
     end
+  end
+
+  def incomplete?(section) = !complete?(section)
+
+  private
+
+  def checks_answered?(section) = section.checks.all? { |field| answered?(field) }
+
+  # false is an answer. A checkbox left unticked saves false, and present? would
+  # read that as a question nobody answered.
+  def answered?(field)
+    value = profile.public_send(field)
+    value == false || value.present?
   end
 end
