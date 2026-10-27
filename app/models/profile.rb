@@ -358,13 +358,18 @@ class Profile < ApplicationRecord
     end
   end
 
-  # Only fills a blank. A timing someone chose themselves is never overwritten
-  # by ticking the box.
+  # Runs only when the conditions form was submitted, which is when
+  # no_conditions arrives. Ticking the box fills a blank timing and never
+  # overwrites one someone chose. Listing a condition clears a "no diagnosis
+  # yet" that it now contradicts.
   def record_no_diagnosis
-    return unless no_conditions == "1" && diagnosis_timing.blank?
-    return if profile_conditions.reject(&:marked_for_destruction?).any?
+    return if no_conditions.nil?
 
-    self.diagnosis_timing = NO_DIAGNOSIS
+    if profile_conditions.reject(&:marked_for_destruction?).any?
+      self.diagnosis_timing = nil if no_diagnosis?
+    elsif no_conditions == "1" && diagnosis_timing.blank?
+      self.diagnosis_timing = NO_DIAGNOSIS
+    end
   end
 
   def must_list_a_condition

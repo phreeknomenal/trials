@@ -210,4 +210,57 @@ RSpec.describe "The profile page", type: :request do
       ProfileSections.all.each { |s| expect(response.body).to include("##{s.slug}") }
     end
   end
+
+  # Both used to be a link into the wizard, which redirects a finished profile
+  # to the home page, so neither could be changed at all after onboarding.
+  describe "editing conditions and community in place" do
+    let(:asthma) { Condition.create!(name: "asthma") }
+
+    it "opens the conditions editor on the profile page" do
+      get profile_path(profile, section: "conditions")
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Add another condition")
+      expect(response.body).not_to include(onboarding_step_path("conditions"))
+    end
+
+    it "adds a condition from the profile" do
+      profile.profile_conditions.destroy_all
+
+      patch profile_path(profile, section: "conditions"), params: {
+        profile: {no_conditions: "0", profile_conditions_attributes: {"0" => {condition_id: asthma.id, is_primary: "1"}}}
+      }
+
+      expect(response).to redirect_to(profile_path(profile))
+      expect(profile.reload.conditions).to contain_exactly(asthma)
+    end
+
+    it "refuses to empty the list without saying there is no diagnosis" do
+      existing = profile.profile_conditions.first || profile.profile_conditions.create!(condition: asthma)
+
+      patch profile_path(profile, section: "conditions"), params: {
+        profile: {no_conditions: "0", profile_conditions_attributes: {"0" => {id: existing.id, _destroy: "1"}}}
+      }
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.body).to include("tell us you do not have a diagnosis yet")
+    end
+
+    it "saves community choices from the profile" do
+      interest = Interest.create!(name: "support groups")
+
+      patch profile_path(profile, section: "community"), params: {profile: {interest_ids: ["", interest.id]}}
+
+      expect(profile.reload.interests).to contain_exactly(interest)
+    end
+
+    it "opens the community editor on the profile page" do
+      Interest.create!(name: "support groups")
+
+      get profile_path(profile, section: "community")
+
+      expect(response.body).to include("Support Groups")
+      expect(response.body).not_to include(onboarding_step_path("community"))
+    end
+  end
 end

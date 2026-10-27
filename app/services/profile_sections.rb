@@ -19,7 +19,14 @@ class ProfileSections
     none: "Does not affect matching"
   }.freeze
 
-  Section = Data.define(:slug, :heading, :blurb, :impact, :fields, :permitted) do
+  # :context is the validation context a save runs under. Most sections use
+  # :update; conditions borrows the wizard step's rule that an empty list needs
+  # the "no diagnosis yet" box.
+  Section = Data.define(:slug, :heading, :blurb, :impact, :fields, :permitted, :context) do
+    def initialize(context: :update, **)
+      super
+    end
+
     def impact_label = IMPACT.fetch(impact)
 
     def affects_matching? = impact != :none
@@ -43,12 +50,24 @@ class ProfileSections
     Section.new(
       slug: "health",
       heading: "Health",
-      blurb: "What studies are scored against. Changing anything here rescores every match.",
-      impact: :primary,
+      blurb: "Age and sex are the two answers a study can rule you out on. Changing anything here rescores every match.",
+      impact: :affects,
       fields: %i[birth_year sex_assigned_at_birth diagnosis_timing current_treatment prior_treatment],
-      permitted: [:birth_year, :sex_assigned_at_birth, :diagnosis_timing, :current_treatment,
-        :prior_treatment, :no_conditions,
-        {profile_conditions_attributes: [:id, :condition_id, :is_primary, :_destroy]}]
+      permitted: %i[birth_year sex_assigned_at_birth diagnosis_timing current_treatment prior_treatment]
+    ),
+    # Its own section rather than a line inside Health. It carries the largest
+    # single weight, and it used to be editable only through a link into the
+    # wizard, which sends anyone who has finished it back to the home page.
+    Section.new(
+      slug: "conditions",
+      heading: "Conditions",
+      blurb: "What you are looking for a study about. Changing this rescores every match.",
+      impact: :primary,
+      # Rendered by the wizard's conditions step, which handles the primary flag
+      # and the no-diagnosis box, so there are no generic fields.
+      fields: [],
+      permitted: [:no_conditions, {profile_conditions_attributes: [:id, :condition_id, :is_primary, :_destroy]}],
+      context: :onboarding_conditions
     ),
     Section.new(
       slug: "location",
@@ -87,8 +106,9 @@ class ProfileSections
       heading: "What brings you here",
       blurb: "For finding people looking for the same things. It changes no score.",
       impact: :none,
-      # Rendered by the wizard's step rather than a generic field, so :fields is
-      # empty here and the section links across instead of duplicating it.
+      # Rendered by the wizard's community step, inline, so there are no generic
+      # fields. It used to link into the wizard, which a finished profile cannot
+      # reopen.
       fields: [],
       permitted: [{identity_ids: [], interest_ids: []}]
     ),
@@ -105,6 +125,22 @@ class ProfileSections
   def self.all = SECTIONS
 
   def self.find(slug) = SECTIONS.find { |s| s.slug == slug.to_s }
+
+  # Where each wizard step's answers are edited once the wizard is behind you.
+  # The wizard redirects a finished profile home, so a link to a step is a dead
+  # end for exactly the people most likely to follow it.
+  STEP_SECTIONS = {
+    "identity" => "about_you",
+    "basics" => "health",
+    "location" => "location",
+    "conditions" => "conditions",
+    "logistics" => "travel",
+    "preferences" => "preferences",
+    "about_you" => "background",
+    "community" => "community"
+  }.freeze
+
+  def self.for_step(step_slug) = find(STEP_SECTIONS.fetch(step_slug.to_s))
 
   # Every attribute any section can write. Used only to assert in a spec that no
   # field fell out of the page when the single form was broken up.
@@ -126,8 +162,10 @@ class ProfileSections
   def percent = ((answered_count.to_f / total) * 100).round
 
   def answered?(section)
-    return true if section.slug == "health" && profile.conditions.any?
-
-    section.fields.any? { |field| profile.public_send(field).present? }
+    case section.slug
+    when "conditions" then profile.conditions.any? || profile.no_diagnosis?
+    when "community" then profile.identities.any? || profile.interests.any?
+    else section.fields.any? { |field| profile.public_send(field).present? }
+    end
   end
 end

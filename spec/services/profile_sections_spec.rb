@@ -23,8 +23,10 @@ RSpec.describe ProfileSections do
     expect(plain).to eq(plain.uniq)
   end
 
-  it "marks health as the largest factor and background as no factor" do
-    expect(described_class.find("health").impact_label).to eq("Largest factor in matching")
+  # Conditions carry the largest single weight in TrialScorer::WEIGHTS, so the
+  # label belongs on them rather than on Health.
+  it "marks conditions as the largest factor and background as no factor" do
+    expect(described_class.find("conditions").impact_label).to eq("Largest factor in matching")
     expect(described_class.find("background")).not_to be_affects_matching
   end
 
@@ -43,12 +45,27 @@ RSpec.describe ProfileSections do
 
     # Conditions are an association rather than a column, so the generic check
     # cannot see them.
-    it "counts health as answered when there are conditions but no other field" do
-      profile.update_columns(birth_year: nil, sex_assigned_at_birth: nil, diagnosis_timing: nil,
-        current_treatment: nil, prior_treatment: nil)
+    it "counts conditions as answered once one is listed" do
+      profile.profile_conditions.destroy_all
+      profile.update_columns(diagnosis_timing: nil)
       profile.conditions << Condition.create!(name: "Asthma")
 
-      expect(described_class.new(profile).answered?(described_class.find("health"))).to be(true)
+      expect(described_class.new(profile).answered?(described_class.find("conditions"))).to be(true)
+    end
+
+    it "counts saying there is no diagnosis yet as answering conditions" do
+      profile.profile_conditions.destroy_all
+      profile.update_columns(diagnosis_timing: Profile::NO_DIAGNOSIS)
+
+      expect(described_class.new(profile.reload).answered?(described_class.find("conditions"))).to be(true)
+    end
+  end
+
+  # The wizard sends a finished profile home, so every place that offers to fill
+  # in a step has to point at the profile section instead.
+  it "maps every wizard step to a profile section" do
+    Onboarding.steps.each do |step|
+      expect(described_class.for_step(step.slug)).to be_a(described_class::Section)
     end
   end
 
