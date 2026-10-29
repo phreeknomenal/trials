@@ -1,4 +1,6 @@
 class ProfilesController < ApplicationController
+  include AvatarUpload
+
   before_action :authenticate_user!
   before_action :set_profile, only: [:show, :edit, :update]
 
@@ -39,7 +41,9 @@ class ProfilesController < ApplicationController
   def update
     authorize @profile
 
-    if @profile.update(profile_params)
+    @profile.assign_attributes(profile_params)
+
+    if save_with_avatar(@profile) { @profile.save(context: editing_section&.context || :update) }
       redirect_to profile_path(@profile), notice: "#{editing_section&.heading || "Profile"} saved."
     else
       # Back to the same section with its errors, rather than to a page with no

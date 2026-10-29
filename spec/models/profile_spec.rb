@@ -62,19 +62,51 @@ RSpec.describe Profile do
     end
 
     it "rejects values that were removed from the offered list" do
-      ["intersex", "prefer not to say"].each do |removed|
-        profile = build(:profile, sex_assigned_at_birth: removed)
+      profile = build(:profile, sex_assigned_at_birth: "intersex")
 
-        expect(profile).not_to be_valid
-        expect(profile.errors[:sex_assigned_at_birth]).to be_present
-      end
+      expect(profile).not_to be_valid
+      expect(profile.errors[:sex_assigned_at_birth]).to be_present
     end
 
-    # PREFER_NOT_TO_SAY stays defined because ethnicity still uses it and
-    # defaults to it. Only the sex list dropped it.
-    it "keeps prefer not to say available for ethnicity" do
-      expect(Profile::ETHNICITY_OPTIONS).to include(Profile::PREFER_NOT_TO_SAY)
-      expect(Profile::SEX_ASSIGNED_AT_BIRTH_OPTIONS).not_to include(Profile::PREFER_NOT_TO_SAY)
+    # Stored so the profile can say the question was declined rather than
+    # skipped. The guard #96 needed now lives in the reader: nothing that scores
+    # or gates sees the decline.
+    it "stores prefer not to say but hides it from matching" do
+      profile = build(:profile, sex_assigned_at_birth: Profile::PREFER_NOT_TO_SAY)
+
+      expect(profile).to be_valid
+      expect(profile.sex_for_matching).to be_nil
+    end
+
+    it "never disqualifies a profile that declined from a sex-restricted trial" do
+      profile = create(:profile, sex_assigned_at_birth: Profile::PREFER_NOT_TO_SAY)
+      result = TrialScorer.new(profile, {sex: "FEMALE"}).calculate_score
+
+      expect(result[:disqualifiers]).not_to include(:sex)
+      expect(result[:breakdown][:sex]).to eq(50)
+    end
+
+    it "keeps the scored list to the two values the registry filters on" do
+      expect(Profile::SEX_ASSIGNED_AT_BIRTH_OPTIONS).to eq([Profile::FEMALE, Profile::MALE])
+    end
+  end
+
+  describe "having no diagnosis yet" do
+    it "records it when the conditions step is ticked with no conditions" do
+      profile = create(:profile, diagnosis_timing: nil)
+      profile.profile_conditions.destroy_all
+
+      profile.update!(no_conditions: "1")
+
+      expect(profile.reload).to be_no_diagnosis
+    end
+
+    it "leaves a timing the person chose alone" do
+      profile = create(:profile, diagnosis_timing: Profile::NOT_SURE)
+
+      profile.update!(no_conditions: "1")
+
+      expect(profile.reload.diagnosis_timing).to eq(Profile::NOT_SURE)
     end
   end
 

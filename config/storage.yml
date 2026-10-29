@@ -15,6 +15,12 @@ amazon:
   secret_access_key: <%= ENV["AWS_SECRET_ACCESS_KEY"] %>
   region: <%= ENV.fetch("AWS_REGION", "us-east-1") %>
   bucket: <%= ENV["AWS_BUCKET"] %>
+  # aws-sdk-s3 1.178 began adding a CRC32 checksum to every upload by default.
+  # Active Storage already sends Content-MD5, and S3-compatible stores such as
+  # R2 reject a request carrying both. Send the SDK's checksums only when the
+  # operation requires one.
+  request_checksum_calculation: when_required
+  response_checksum_validation: when_required
 <% if ENV["AWS_ENDPOINT"].present? %>
   endpoint: <%= ENV["AWS_ENDPOINT"] %>
 <% end %>

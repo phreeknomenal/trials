@@ -46,13 +46,20 @@
 #
 
 class Profile < ApplicationRecord
+  # Declining is an answer. These used to be the blank option on each select,
+  # which saved nil, the same value a skipped question saves, so the profile
+  # read "Not answered" back to someone who had answered. Each is stored as
+  # itself and read as no answer wherever a score or an eligibility gate looks.
+  PREFER_NOT_TO_SAY = "prefer not to say"
+  NO_PREFERENCE = "no preference"
+
   # Pronouns
   HE_HIM = "he/him"
   SHE_HER = "she/her"
   THEY_THEM = "they/them"
   OTHER = "other"
 
-  PRONOUN_OPTIONS = [HE_HIM, SHE_HER, THEY_THEM, OTHER].freeze
+  PRONOUN_OPTIONS = [HE_HIM, SHE_HER, THEY_THEM, OTHER, PREFER_NOT_TO_SAY].freeze
 
   # Sexes
   #
@@ -67,9 +74,13 @@ class Profile < ApplicationRecord
   # available and now actually works.
   FEMALE = "female"
   MALE = "male"
-  PREFER_NOT_TO_SAY = "prefer not to say"
 
   SEX_ASSIGNED_AT_BIRTH_OPTIONS = [FEMALE, MALE].freeze
+
+  # What the question accepts. PREFER_NOT_TO_SAY is stored so the profile can
+  # say it was declined, and #sex_for_matching hides it from the scorer and the
+  # eligibility checker, which treat it exactly as they treat blank.
+  SEX_ASSIGNED_AT_BIRTH_ANSWERS = [*SEX_ASSIGNED_AT_BIRTH_OPTIONS, PREFER_NOT_TO_SAY].freeze
 
   # Ethnicity
   HISPANIC_OR_LATINO = "hispanic or latino"
@@ -82,8 +93,11 @@ class Profile < ApplicationRecord
   SIX_TO_TWENTYFOUR_MONTHS = "6-24 months"
   GREATER_THAN_TWO_YEARS = "> 2 years"
   NOT_SURE = "not sure"
+  # Someone still seeking a diagnosis had no true answer to "when were you
+  # diagnosed", and "not sure" says something different.
+  NO_DIAGNOSIS = "no diagnosis yet"
 
-  DIAGNOSIS_TIMING_OPTIONS = [LESS_THAN_SIX_MONTHS, SIX_TO_TWENTYFOUR_MONTHS, GREATER_THAN_TWO_YEARS, NOT_SURE].freeze
+  DIAGNOSIS_TIMING_OPTIONS = [LESS_THAN_SIX_MONTHS, SIX_TO_TWENTYFOUR_MONTHS, GREATER_THAN_TWO_YEARS, NOT_SURE, NO_DIAGNOSIS].freeze
 
   # Treatments
   NONE = "none"
@@ -116,6 +130,13 @@ class Profile < ApplicationRecord
     HUNDRED_MILES
   ].freeze
 
+  # An integer column, so "no preference" needs a number. Zero cannot be a real
+  # limit, and #travel_limit_miles turns it back into nil before anything
+  # measures with it.
+  NO_TRAVEL_PREFERENCE = 0
+
+  TRAVEL_MILES_ANSWERS = [*TRAVEL_MILES_OPTIONS, NO_TRAVEL_PREFERENCE].freeze
+
   # Remote Visit Preferences
   IN_PERSON_ONLY = "in-person only"
   HYBRID = "hybrid (some virtual visits)"
@@ -124,7 +145,8 @@ class Profile < ApplicationRecord
   REMOTE_VISIT_PREFERENCE_OPTIONS = [
     IN_PERSON_ONLY,
     HYBRID,
-    REMOTE
+    REMOTE,
+    NO_PREFERENCE
   ].freeze
 
   # Trial Type Preferences
@@ -135,7 +157,8 @@ class Profile < ApplicationRecord
   TRIAL_TYPE_PREFERENCE_OPTIONS = [
     INTERVENTIONAL,
     OBSERVATIONAL,
-    EITHER
+    EITHER,
+    NO_PREFERENCE
   ].freeze
 
   # Risk Tolerances
@@ -146,7 +169,8 @@ class Profile < ApplicationRecord
   RISK_TOLERANCE_OPTIONS = [
     APPROVED_ONLY,
     TESTED,
-    EARLY_STAGE_OKAY
+    EARLY_STAGE_OKAY,
+    NO_PREFERENCE
   ].freeze
 
   # Contact Preferences
@@ -188,11 +212,17 @@ class Profile < ApplicationRecord
     :city, :state, :zip_code,
     with: ->(value) { value.presence }
 
-  # Set by the conditions step when someone has no diagnosis yet. Not stored:
-  # it only tells the step's validation that an empty list was deliberate.
+  # Set by the conditions step when someone has no diagnosis yet. Not a column:
+  # it tells the step's validation that an empty list was deliberate, and
+  # records NO_DIAGNOSIS so the profile can say so later.
   attr_accessor :no_conditions
 
   has_one_attached :avatar
+
+  # The picker's accept attribute is a browser hint, not a rule. These are the
+  # formats the 80 and 160 pixel variants can be made from.
+  AVATAR_CONTENT_TYPES = %w[image/png image/jpeg image/webp].freeze
+  AVATAR_MAX_BYTES = 10.megabytes
   has_rich_text :about
 
   validates :user_id, uniqueness: true
@@ -209,16 +239,17 @@ class Profile < ApplicationRecord
   validate :must_list_a_condition, on: :onboarding_conditions
   validates :onboarding_step, numericality: {only_integer: true, greater_than_or_equal_to: 1}
   validates :pronouns, inclusion: {in: PRONOUN_OPTIONS}, allow_blank: true
-  validates :sex_assigned_at_birth, inclusion: {in: SEX_ASSIGNED_AT_BIRTH_OPTIONS}, allow_blank: true
+  validates :sex_assigned_at_birth, inclusion: {in: SEX_ASSIGNED_AT_BIRTH_ANSWERS}, allow_blank: true
   validates :ethnicity, inclusion: {in: ETHNICITY_OPTIONS}, allow_blank: true
   validates :diagnosis_timing, inclusion: {in: DIAGNOSIS_TIMING_OPTIONS}, allow_blank: true
   validates :current_treatment, inclusion: {in: TREATMENT_OPTIONS}, allow_blank: true
-  validates :willing_travel_miles, inclusion: {in: TRAVEL_MILES_OPTIONS}, allow_blank: true
+  validates :willing_travel_miles, inclusion: {in: TRAVEL_MILES_ANSWERS}, allow_blank: true
   validates :remote_visit_preference, inclusion: {in: REMOTE_VISIT_PREFERENCE_OPTIONS}, allow_blank: true
   validates :trial_type_preference, inclusion: {in: TRIAL_TYPE_PREFERENCE_OPTIONS}, allow_blank: true
   validates :risk_tolerance, inclusion: {in: RISK_TOLERANCE_OPTIONS}, allow_blank: true
   validates :contact_preference, inclusion: {in: CONTACT_PREFERENCE_OPTIONS}, allow_blank: true
   validates :onboarded, inclusion: [true, false]
+  validate :avatar_must_be_a_supported_image
 
   # Onboarding asks for a zip code and TrialScorer#score_location needs city and
   # state. Nothing connected the two, so location scored a flat neutral 50 for
@@ -229,6 +260,7 @@ class Profile < ApplicationRecord
   # the zip changes on its own, both are re-resolved: someone who moves and
   # updates only their zip should not keep their old city.
   before_validation :resolve_city_and_state_from_zip
+  before_validation :record_no_diagnosis
 
   # `onboarded` predates the wizard and is still read by the admin user list and
   # the user_onboarded? helper. Deriving it from progress keeps the two from
@@ -246,6 +278,24 @@ class Profile < ApplicationRecord
   # page has to render without anyway.
   def coordinates
     ZipCode.lookup(zip_code)&.coordinates
+  end
+
+  # Nil when declined or unanswered. The scorer and eligibility checker read
+  # this rather than the column, so declining can never become a mismatch.
+  def sex_for_matching
+    sex_assigned_at_birth unless sex_assigned_at_birth == PREFER_NOT_TO_SAY
+  end
+
+  # Nil when there is no preference or no answer, so callers fall back to their
+  # own assumption rather than measuring against zero miles.
+  def travel_limit_miles
+    willing_travel_miles unless willing_travel_miles == NO_TRAVEL_PREFERENCE
+  end
+
+  # Pronouns to address someone by. A decline is kept on the profile page but
+  # never printed beside their name.
+  def displayed_pronouns
+    pronouns unless pronouns == PREFER_NOT_TO_SAY
   end
 
   def initials
@@ -286,10 +336,40 @@ class Profile < ApplicationRecord
     onboarding_progress >= Onboarding.complete_number
   end
 
+  # True when someone has said they have no diagnosis, which answers the
+  # conditions question as fully as listing one does.
+  def no_diagnosis? = diagnosis_timing == NO_DIAGNOSIS
+
   private
 
   def flag_onboarded_once_required_steps_are_done
     self.onboarded = true if onboarding_unlocked?
+  end
+
+  # Only a newly chosen file is checked. One already stored was accepted when it
+  # arrived, and re-checking it would block saving unrelated fields.
+  def avatar_must_be_a_supported_image
+    return unless attachment_changes["avatar"] && avatar.attached?
+
+    if AVATAR_CONTENT_TYPES.exclude?(avatar.blob.content_type)
+      errors.add(:avatar, "must be a PNG, JPEG or WebP image")
+    elsif avatar.blob.byte_size > AVATAR_MAX_BYTES
+      errors.add(:avatar, "must be smaller than 10 MB")
+    end
+  end
+
+  # Runs only when the conditions form was submitted, which is when
+  # no_conditions arrives. Ticking the box fills a blank timing and never
+  # overwrites one someone chose. Listing a condition clears a "no diagnosis
+  # yet" that it now contradicts.
+  def record_no_diagnosis
+    return if no_conditions.nil?
+
+    if profile_conditions.reject(&:marked_for_destruction?).any?
+      self.diagnosis_timing = nil if no_diagnosis?
+    elsif no_conditions == "1" && diagnosis_timing.blank?
+      self.diagnosis_timing = NO_DIAGNOSIS
+    end
   end
 
   def must_list_a_condition

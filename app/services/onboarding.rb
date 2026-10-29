@@ -96,6 +96,16 @@ module Onboarding
       prompt: "Pick as many as you like, or none. This is for finding people looking for the same things, and it changes no score.",
       required: false,
       permitted: [{identity_ids: [], interest_ids: []}]
+    ),
+    # Last, and appended rather than inserted. onboarding_step stores a step's
+    # position, so a step added anywhere earlier would move everyone partway
+    # through the wizard onto a different question.
+    Step.new(
+      slug: "contact",
+      heading: "How should a study team reach you?",
+      prompt: "Only used if you ask a study team to get in touch. Nothing here is shared until you do.",
+      required: false,
+      permitted: [:phone_number, :contact_preference, :language_preference]
     )
   ].freeze
 

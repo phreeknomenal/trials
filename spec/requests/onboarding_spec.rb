@@ -17,7 +17,8 @@ RSpec.describe "Onboarding wizard", type: :request do
       "logistics" => {willing_travel_miles: Profile::FIFTY_MILES},
       "preferences" => {risk_tolerance: Profile::TESTED},
       "about_you" => {ethnicity: Profile::NOT_HISPANIC_OR_LATINO},
-      "community" => {interest_ids: []}
+      "community" => {interest_ids: []},
+      "contact" => {contact_preference: Profile::EMAIL}
     }.fetch(slug)
   end
 
@@ -335,6 +336,89 @@ RSpec.describe "Onboarding wizard", type: :request do
 
   # #99 shipped with four steps, so profiles finished under it sit at step 5.
   # Growing STEPS to seven must find them mid-wizard rather than locked out.
+  # Reproduces production: storage refused the file after the profile and blob
+  # rows had committed, which answered with a 500 and left a blob with no file
+  # behind it, rendered as a broken image on every later visit.
+  describe "uploading a photo" do
+    let(:photo) { fixture_file_upload("avatar.png", "image/png") }
+
+    def submit_identity_with(file)
+      patch step_path("identity"), params: {profile: payload_for("identity").merge(avatar: file)}
+    end
+
+    it "attaches a photo storage accepts" do
+      submit_identity_with(photo)
+
+      expect(response).to redirect_to(step_path("basics"))
+      expect(profile.reload.avatar).to be_attached
+    end
+
+    context "when storage refuses the file" do
+      before { allow(ActiveStorage::Blob.service).to receive(:upload).and_raise(ActiveStorage::IntegrityError) }
+
+      it "re-renders the step saying the photo was not saved" do
+        submit_identity_with(photo)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include("Photo could not be saved")
+      end
+
+      it "leaves no blob pointing at a file that never arrived" do
+        expect { submit_identity_with(photo) }.not_to change(ActiveStorage::Blob, :count)
+        expect(profile.reload.avatar).not_to be_attached
+      end
+
+      it "keeps the rest of the answers and holds the step" do
+        submit_identity_with(photo)
+
+        expect(profile.reload).to have_attributes(first_name: "M", onboarding_step: 1)
+      end
+    end
+
+    it "re-renders a step that failed validation while a photo was chosen" do
+      patch step_path("identity"), params: {profile: {first_name: "", last_name: "B", avatar: photo}}
+
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    # Active Storage reads the type from the bytes, not the name or the header
+    # the browser sent, so the file has to genuinely not be an image.
+    it "refuses a file that is not a supported image" do
+      file = Rack::Test::UploadedFile.new(StringIO.new("not an image"), "image/heic", original_filename: "photo.heic")
+
+      submit_identity_with(file)
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.body).to include("must be a PNG, JPEG or WebP image")
+    end
+  end
+
+  # How to reach someone was a profile section the wizard never asked about,
+  # so it stayed empty for everyone who did not go looking for it.
+  describe "the contact step" do
+    before { profile.update_columns(onboarding_step: Onboarding.find("contact").number) }
+
+    it "asks how a study team should reach you" do
+      get step_path("contact")
+
+      expect(response.body).to include("How should a study team reach you?")
+    end
+
+    it "saves the answers and finishes the wizard" do
+      patch step_path("contact"), params: {profile: {contact_preference: Profile::SMS, phone_number: "205 555 0100"}}
+
+      expect(response).to redirect_to(root_path)
+      expect(profile.reload).to have_attributes(contact_preference: Profile::SMS, phone_number: "205 555 0100")
+      expect(profile).to be_profile_completed
+    end
+
+    it "can be skipped" do
+      post skip_onboarding_step_path(step: "contact")
+
+      expect(profile.reload).to be_profile_completed
+    end
+  end
+
   describe "a profile finished under the four-step wizard" do
     before { profile.update_columns(onboarding_step: 5, onboarded: true) }
 

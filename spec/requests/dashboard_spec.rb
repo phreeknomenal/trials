@@ -172,4 +172,16 @@ RSpec.describe "The dashboard", type: :request do
       expect(response.body).to include("Put two or three side by side")
     end
   end
+
+  # These linked into the wizard, which sends a finished profile home, so the
+  # one prompt to sharpen matching led nowhere for the people it was shown to.
+  it "points an unanswered scoring question at its profile section" do
+    stub_recommendations
+    user.profile.update_columns(willing_travel_miles: nil, remote_visit_preference: nil)
+
+    get my_trials_root_path
+
+    expect(response.body).to include(profile_path(user.profile, section: "travel", anchor: "travel"))
+    expect(response.body).not_to include(onboarding_step_path("logistics"))
+  end
 end

@@ -563,4 +563,23 @@ RSpec.describe TrialScorer do
         .to be < described_class.new(far, cleveland).send(:score_location)
     end
   end
+
+  # A stored "no preference" has to score as the unanswered question it
+  # replaced. It is not "either", which says both kinds suit.
+  describe "no preference" do
+    def breakdown(**attrs)
+      described_class.new(create(:profile, **attrs), {study_type: "INTERVENTIONAL", phase: ["PHASE1"]})
+        .calculate_score[:breakdown]
+    end
+
+    it "scores study type as neutral, the same as no answer" do
+      expect(breakdown(trial_type_preference: Profile::NO_PREFERENCE)[:study_type])
+        .to eq(breakdown(trial_type_preference: nil)[:study_type])
+    end
+
+    it "scores phase risk the same as no answer" do
+      expect(breakdown(risk_tolerance: Profile::NO_PREFERENCE)[:phase_risk])
+        .to eq(breakdown(risk_tolerance: nil)[:phase_risk])
+    end
+  end
 end

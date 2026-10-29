@@ -1,6 +1,6 @@
 class Onboarding::Steps::PreferencesComponent < Onboarding::Steps::BaseComponent
   def trial_type_options
-    Profile::TRIAL_TYPE_PREFERENCE_OPTIONS.map { |option| [option.titleize, option] }
+    Profile::TRIAL_TYPE_PREFERENCE_OPTIONS.map { |option| [option_label(option), option] }
   end
 
   # Spelled out rather than titleized. "Approved Treatments Only" tells someone
@@ -12,6 +12,6 @@ class Onboarding::Steps::PreferencesComponent < Onboarding::Steps::BaseComponent
   }.freeze
 
   def risk_options
-    Profile::RISK_TOLERANCE_OPTIONS.map { |option| [RISK_DESCRIPTIONS.fetch(option, option.titleize), option] }
+    Profile::RISK_TOLERANCE_OPTIONS.map { |option| [RISK_DESCRIPTIONS.fetch(option) { option_label(option) }, option] }
   end
 end

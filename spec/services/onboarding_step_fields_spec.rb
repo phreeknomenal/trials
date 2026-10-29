@@ -94,4 +94,17 @@ RSpec.describe "Onboarding step grouping" do
   it "counts its own steps rather than stating a number" do
     expect(Onboarding.count).to eq(Onboarding.steps.length)
   end
+
+  describe "contact" do
+    it "collects how a study team should reach you, and is optional" do
+      expect(step("contact").permitted).to contain_exactly(:phone_number, :contact_preference, :language_preference)
+      expect(step("contact")).not_to be_required
+    end
+
+    # onboarding_step stores a position, so a step added anywhere but the end
+    # moves everyone partway through onto a different question.
+    it "comes last" do
+      expect(Onboarding.steps.last.slug).to eq("contact")
+    end
+  end
 end

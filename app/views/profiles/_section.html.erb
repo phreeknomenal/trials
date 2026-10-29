@@ -1,7 +1,14 @@
 <%# One section, read or being edited. Both states live here so the two cannot
     show different fields, which is how a read view and an edit form drift into
     disagreeing about what a section contains. %>
-<section id="<%= section.slug %>" class="rounded-panel border <%= editing ? "border-navy-600 dark:border-sky-400" : "border-line dark:border-line-on-dark" %> bg-surface dark:bg-surface-on-dark p-5 lg:p-6">
+<% incomplete = sections.incomplete?(section) %>
+<%# Editing wins, so the section being worked on stays the one outlined in
+    navy. Otherwise an incomplete section is outlined in red to match its link. %>
+<% border = if editing then "border-navy-600 dark:border-sky-400"
+            elsif incomplete then "border-crit dark:border-crit-on-dark"
+            else "border-line dark:border-line-on-dark"
+            end %>
+<section id="<%= section.slug %>" class="rounded-panel border <%= border %> bg-surface dark:bg-surface-on-dark p-5 lg:p-6">
 
   <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
     <div>
@@ -15,6 +22,10 @@
         <% end %>
         <%= section.impact_label %>
       </span>
+      <%# Said in words as well, so the red outline is not the only signal. %>
+      <% if incomplete %>
+        <span class="ml-3 mt-2 inline-flex text-xs font-semibold text-crit dark:text-crit-on-dark">Incomplete</span>
+      <% end %>
     </div>
 
     <% if editing %>
@@ -42,18 +53,18 @@
         <%= render Forms::FieldComponent.new(**profile_field_args(f, field)) %>
       <% end %>
 
-      <% if section.slug == "community" %>
-        <p class="text-sm text-ink-3 dark:text-ink-3-on-dark">
-          Edited on the step that collects it, which handles the pill lists.
-          <%= link_to "Choose what brings you here", onboarding_step_path("community"), class: "font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>
-        </p>
+      <%# The wizard's own steps, rendered in place. They used to be reached by a
+          link into the wizard, which redirects a finished profile home, so
+          neither could be edited at all once onboarding was done. %>
+      <% if section.slug == "conditions" %>
+        <% profile.errors[:base].each do |message| %>
+          <p class="<%= Forms::FieldStyles::MESSAGE %>"><%= message %></p>
+        <% end %>
+        <%= render Onboarding::Steps::ConditionsComponent.new(form: f, profile: profile) %>
       <% end %>
 
-      <% if section.slug == "health" %>
-        <p class="text-sm text-ink-3 dark:text-ink-3-on-dark">
-          Conditions are edited from the onboarding step, which handles the primary flag.
-          <%= link_to "Edit conditions", onboarding_step_path("conditions"), class: "font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>
-        </p>
+      <% if section.slug == "community" %>
+        <%= render Onboarding::Steps::CommunityComponent.new(form: f, profile: profile) %>
       <% end %>
 
       <div class="flex flex-wrap items-center gap-3 pt-1">
@@ -71,13 +82,6 @@
   <% else %>
     <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
       <% if section.slug == "community" %>
-        <p class="text-sm text-ink-3 dark:text-ink-3-on-dark">
-          Edited on the step that collects it, which handles the pill lists.
-          <%= link_to "Choose what brings you here", onboarding_step_path("community"), class: "font-semibold text-sky-700 dark:text-sky-300 hover:underline" %>
-        </p>
-      <% end %>
-
-      <% if section.slug == "community" %>
         <div class="sm:col-span-2">
           <dt class="text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Selected</dt>
           <dd class="mt-1 flex flex-wrap gap-1.5">
@@ -93,18 +97,24 @@
         </div>
       <% end %>
 
-      <% if section.slug == "health" %>
+      <% if section.slug == "conditions" %>
         <div class="sm:col-span-2">
           <dt class="text-xs font-semibold uppercase tracking-wide text-ink-3 dark:text-ink-3-on-dark">Conditions</dt>
           <dd class="mt-1 flex flex-wrap gap-1.5">
-            <% if profile.conditions.any? %>
-              <% profile.conditions.each do |condition| %>
-                <span class="inline-flex items-center rounded-chip bg-surface-2 dark:bg-surface-2-on-dark px-2.5 py-1 text-sm font-semibold text-ink-2 dark:text-ink-2-on-dark">
-                  <%= condition.name %>
+            <% if profile.profile_conditions.any? %>
+              <%# Primary first, because it is the one matching leans on. %>
+              <% profile.profile_conditions.includes(:condition).sort_by { |pc| [pc.is_primary ? 0 : 1, pc.condition.name] }.each do |pc| %>
+                <span class="inline-flex items-center gap-1.5 rounded-chip bg-surface-2 dark:bg-surface-2-on-dark px-2.5 py-1 text-sm font-semibold text-ink-2 dark:text-ink-2-on-dark">
+                  <%= pc.condition.name.titleize %>
+                  <% if pc.is_primary %>
+                    <span class="text-xs font-bold text-sky-700 dark:text-sky-300">Primary</span>
+                  <% end %>
                 </span>
               <% end %>
+            <% elsif profile.no_diagnosis? %>
+              <span class="text-sm text-ink dark:text-ink-2-on-dark">No diagnosis yet</span>
             <% else %>
-              <span class="text-sm text-ink-4 dark:text-ink-4-on-dark">Not answered</span>
+              <%= unanswered_profile_field %>
             <% end %>
           </dd>
         </div>

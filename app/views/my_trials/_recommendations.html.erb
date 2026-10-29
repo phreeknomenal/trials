@@ -35,7 +35,7 @@
       <p class="text-sm text-ink-2 dark:text-ink-2-on-dark mb-3">
         Matching starts with a condition. It is the largest single factor in how studies are ranked for you.
       </p>
-      <%= link_to "Add a condition", onboarding_step_path("conditions"),
+      <%= link_to "Add a condition", profile_path(@profile, section: "conditions", anchor: "conditions"),
             class: Buttons::ButtonStyles.classes("primary", size: "px-3 py-1.5 text-sm") %>
     </div>
 

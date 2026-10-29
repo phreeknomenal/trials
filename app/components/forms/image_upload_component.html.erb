@@ -37,6 +37,15 @@
 
     <p class="text-xs text-ink-3 dark:text-ink-3-on-dark">PNG, JPEG or WebP. Optional.</p>
 
+    <% if errors.any? %>
+      <p class="<%= Forms::FieldStyles::MESSAGE %>">
+        <span class="shrink-0 mt-0.5">
+          <%= render Utilities::IconComponent.new("exclamation_circle", size: 4) %>
+        </span>
+        <span><%= error_message %></span>
+      </p>
+    <% end %>
+
     <p data-avatar-upload-target="filename" class="text-xs font-medium text-ink-2 dark:text-ink-2-on-dark truncate max-w-[220px]"></p>
 
     <button type="button" hidden data-avatar-upload-target="remove" data-action="avatar-upload#remove"

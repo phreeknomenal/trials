@@ -15,12 +15,14 @@ class TrialScorer
     trial_type_preferences: {
       either: "either",
       interventional: "interventional",
-      observational: "observational"
+      observational: "observational",
+      no_preference: "no preference"
     },
     risk_tolerance_levels: {
       approved_only: "approved treatments only",
       tested: "tested in other patients",
-      early_stage_okay: "early-stage is okay"
+      early_stage_okay: "early-stage is okay",
+      no_preference: "no preference"
     }
   }.freeze
 
@@ -85,7 +87,7 @@ class TrialScorer
   end
 
   def definite_sex_mismatch?
-    @profile.sex_assigned_at_birth.present? && score_sex.zero?
+    @profile.sex_for_matching.present? && score_sex.zero?
   end
 
   public
@@ -113,7 +115,7 @@ class TrialScorer
 
   def score_sex
     trial_sex = @trial[:sex]&.downcase
-    profile_sex = @profile.sex_assigned_at_birth&.downcase
+    profile_sex = @profile.sex_for_matching&.downcase
 
     return 100 if trial_sex.nil? || trial_sex == "all"
     return 50 if profile_sex.nil? # Unknown sex, neutral score
@@ -159,7 +161,7 @@ class TrialScorer
     miles = nearest_site_miles
     return location_score_without_distance if miles.nil?
 
-    limit = @profile.willing_travel_miles.presence || ASSUMED_TRAVEL_MILES
+    limit = @profile.travel_limit_miles || ASSUMED_TRAVEL_MILES
     return 100 if miles <= limit
 
     beyond = (miles - limit) / (FALLOFF_MULTIPLE * limit)
@@ -210,12 +212,15 @@ class TrialScorer
   DEFAULT_DISTANT_SCORE = 25
 
   def distant_location_score
-    DISTANT_LOCATION_SCORES.fetch(@profile.willing_travel_miles, DEFAULT_DISTANT_SCORE)
+    DISTANT_LOCATION_SCORES.fetch(@profile.travel_limit_miles, DEFAULT_DISTANT_SCORE)
   end
 
   def score_study_type
     return 100 if @profile.trial_type_preference == @config[:trial_type_preferences][:either]
-    return 50 unless @profile.trial_type_preference
+    # No preference scores as an unanswered question did, neutral. It is not
+    # "either", which says both kinds suit and earns full marks.
+    return 50 if @profile.trial_type_preference.nil? ||
+      @profile.trial_type_preference == @config[:trial_type_preferences][:no_preference]
 
     trial_type = @trial[:study_type]&.downcase
     preference = @profile.trial_type_preference&.downcase
@@ -234,7 +239,8 @@ class TrialScorer
   # cannot both be right. A study with no FDA phase administers no
   # investigational drug, so there is no phase risk to be cautious about.
   def score_phase_risk
-    return 100 unless @profile.risk_tolerance
+    return 100 if @profile.risk_tolerance.nil? ||
+      @profile.risk_tolerance == @config[:risk_tolerance_levels][:no_preference]
 
     phase = @trial[:phase]
     return 100 if TrialPhase.blank?(phase)

@@ -13,7 +13,7 @@
   <%= render Forms::FieldComponent.new(
     form: form, attribute: :pronouns, field_type: :select, label: "Pronouns",
     select_options: pronoun_options,
-    options: {include_blank: "Prefer not to say"},
+    options: {include_blank: UNANSWERED_PROMPT},
     hint: "Shown only to you, in this app."
   ) %>
 
