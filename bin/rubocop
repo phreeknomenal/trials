@@ -2,7 +2,6 @@
 require "rubygems"
 require "bundler/setup"
 
-# explicit rubocop config increases performance slightly while avoiding config confusion.
-ARGV.unshift("--config", File.expand_path("../.rubocop.yml", __dir__))
-
-load Gem.bin_path("rubocop", "rubocop")
+# This app lints with Standard (see .standard.yml). Delegate so bin/rubocop
+# applies the same rules as CI instead of RuboCop's stock defaults.
+load Gem.bin_path("standard", "standardrb")

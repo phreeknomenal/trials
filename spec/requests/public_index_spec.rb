@@ -18,9 +18,11 @@ RSpec.describe "GET /", type: :request do
     # Its absence is a stronger guarantee than the stub was, and the landing page
     # should make no registry call by any route.
     it "does not call the trials API" do
-      expect(ClinicalTrialClient).not_to receive(:advanced_search)
+      allow(ClinicalTrialClient).to receive(:advanced_search)
 
       get root_path(query: "diabetes")
+
+      expect(ClinicalTrialClient).not_to have_received(:advanced_search)
     end
 
     it "no longer has an unfiltered term search to call" do

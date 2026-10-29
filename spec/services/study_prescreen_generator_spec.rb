@@ -3,8 +3,8 @@ require "rails_helper"
 RSpec.describe StudyPrescreenGenerator do
   let(:nct_id) { "NCT01234567" }
   let(:client) { instance_double(Anthropic::Client) }
-  let(:beta) { double("beta") }
-  let(:messages) { double("messages") }
+  let(:beta) { instance_double(Anthropic::Resources::Beta) }
+  let(:messages) { instance_double(Anthropic::Resources::Beta::Messages) }
   let(:study) do
     {
       inclusion_criteria: "* Diagnosis of moderate asthma for at least 1 year\n* Age 18 to 65",
@@ -28,8 +28,13 @@ RSpec.describe StudyPrescreenGenerator do
   def respond_with(questions, stop_reason: :end_turn)
     body = JSON.generate({"questions" => questions})
     allow(messages).to receive(:create).and_return(
-      double("message", stop_reason: stop_reason, content: [double("text_block", type: :text, text: body)])
+      beta_message(stop_reason, body)
     )
+  end
+
+  def beta_message(stop_reason, text)
+    block = instance_double(Anthropic::Models::Beta::BetaTextBlock, type: :text, text: text)
+    instance_double(Anthropic::Models::Beta::BetaMessage, stop_reason: stop_reason, content: [block])
   end
 
   def generate = described_class.new(nct_id).call
@@ -156,7 +161,7 @@ RSpec.describe StudyPrescreenGenerator do
 
     it "raises on output it cannot parse" do
       allow(messages).to receive(:create).and_return(
-        double("message", stop_reason: :end_turn, content: [double("text_block", type: :text, text: "not json")])
+        beta_message(:end_turn, "not json")
       )
 
       expect { generate }.to raise_error(described_class::GenerationError, /could not read/)

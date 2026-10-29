@@ -62,7 +62,7 @@ RSpec.describe "Saved trials pagination", type: :request do
     end
   end
 
-  context "page size" do
+  context "with more trials than fit on a page" do
     before { create_trials(25) }
 
     # `items:` was silently ignored by Pagy 43, so this paginated at the gem

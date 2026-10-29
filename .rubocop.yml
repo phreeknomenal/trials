@@ -1,0 +1,40 @@
+# CI lints with `bundle exec standardrb`, which reads .standard.yml. This file
+# exists for editors and tools that run plain RuboCop, which otherwise falls
+# back to stock defaults (single quotes, Metrics/BlockLength) that Standard
+# turns off. Loading Standard's rulesets this way is per its README.
+require:
+  - standard
+  - standard-custom
+  - standard-performance
+
+plugins:
+  - rubocop-performance
+  - rubocop-rspec
+
+AllCops:
+  SuggestExtensions: false
+  # Standard skips these by default; plain RuboCop does not.
+  Exclude:
+    - "bin/**/*"
+    - "db/schema.rb"
+    - "node_modules/**/*"
+    - "tmp/**/*"
+    - "vendor/**/*"
+
+inherit_gem:
+  standard: config/base.yml
+  standard-custom: config/base.yml
+  standard-performance: config/base.yml
+
+# The RSpec cops .standard.yml ignores for specs. Keep the two lists in sync;
+# see .standard.yml for why each is off.
+RSpec/MultipleExpectations:
+  Enabled: false
+RSpec/ExampleLength:
+  Enabled: false
+RSpec/DescribeClass:
+  Enabled: false
+RSpec/DescribeMethod:
+  Enabled: false
+RSpec/SpecFilePathFormat:
+  Enabled: false

@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe ReadableStudySummaryGenerator do
   let(:nct_id) { "NCT01234567" }
   let(:client) { instance_double(Anthropic::Client) }
-  let(:messages) { double("messages") }
+  let(:messages) { instance_double(Anthropic::Resources::Messages) }
 
   before do
     allow(ENV).to receive(:fetch).and_call_original
@@ -13,11 +13,11 @@ RSpec.describe ReadableStudySummaryGenerator do
   end
 
   def text_block(text)
-    double("text_block", type: :text, text: text)
+    instance_double(Anthropic::Models::TextBlock, type: :text, text: text)
   end
 
   def message(stop_reason:, blocks:)
-    double("message", stop_reason: stop_reason, content: blocks)
+    instance_double(Anthropic::Models::Message, stop_reason: stop_reason, content: blocks)
   end
 
   describe "#call" do
@@ -46,9 +46,9 @@ RSpec.describe ReadableStudySummaryGenerator do
         {summary: nil, detailed_description: nil}
       )
 
-      expect(Anthropic::Client).not_to receive(:new)
       expect { described_class.new(nct_id).call }
         .to raise_error(ReadableStudySummaryGenerator::GenerationError, /no source text/i)
+      expect(Anthropic::Client).not_to have_received(:new)
     end
 
     it "raises when the model refuses" do

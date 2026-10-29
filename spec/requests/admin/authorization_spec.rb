@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Admin access", type: :request do
   describe "GET /admin" do
-    context "as an unauthenticated visitor" do
+    context "when signed out" do
       it "redirects to sign in" do
         get admin_root_path
 
@@ -16,7 +16,7 @@ RSpec.describe "Admin access", type: :request do
       end
     end
 
-    context "as a member" do
+    context "when signed in as a member" do
       let(:user) { create(:user, role: "member") }
 
       before { sign_in user }
@@ -43,7 +43,7 @@ RSpec.describe "Admin access", type: :request do
     end
 
     User::STAFF_ROLES.each do |role|
-      context "as #{role}" do
+      context "when signed in as #{role}" do
         let(:user) { create(:user, role: role) }
 
         before { sign_in user }

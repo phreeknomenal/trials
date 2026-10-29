@@ -21,6 +21,8 @@ RSpec.describe "Onboarding wizard", type: :request do
     }.fetch(slug)
   end
 
+  before { sign_in user }
+
   # Fails loudly rather than skipping a step nobody wrote a payload for, which
   # would leave the wizard specs silently covering less than every step.
   it "has a payload for every step" do
@@ -32,8 +34,6 @@ RSpec.describe "Onboarding wizard", type: :request do
   def complete_required_steps
     %w[identity basics location conditions].each { |slug| submit(slug) }
   end
-
-  before { sign_in user }
 
   describe "the gate" do
     # ApplicationController#ensure_profile_completed was an empty stub while a
